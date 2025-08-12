@@ -11,6 +11,25 @@ class ShoppingServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(
             __DIR__ . '/config/shopping.php', 'shopping'
         );
+
+        // Register Category Repository
+        $this->app->bind(
+            \Fereydooni\Shopping\app\Repositories\Interfaces\CategoryRepositoryInterface::class,
+            \Fereydooni\Shopping\app\Repositories\CategoryRepository::class
+        );
+
+        // Register Category Service
+        $this->app->scoped('shopping.category', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\CategoryService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CategoryRepositoryInterface::class),
+                $app->make(\Fereydooni\Shopping\app\Actions\Category\CreateCategoryAction::class),
+                $app->make(\Fereydooni\Shopping\app\Actions\Category\UpdateCategoryAction::class),
+                $app->make(\Fereydooni\Shopping\app\Actions\Category\DeleteCategoryAction::class),
+                $app->make(\Fereydooni\Shopping\app\Actions\Category\MoveCategoryAction::class),
+                $app->make(\Fereydooni\Shopping\app\Actions\Category\GetCategoryTreeAction::class),
+                $app->make(\Fereydooni\Shopping\app\Actions\Category\SearchCategoriesAction::class)
+            );
+        });
     }
 
     public function boot(): void

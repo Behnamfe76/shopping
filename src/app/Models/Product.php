@@ -8,9 +8,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Fereydooni\Shopping\app\Enums\ProductStatus;
 use Fereydooni\Shopping\app\Enums\ProductType;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Product extends Model
+class Product extends Model implements HasMedia
 {
+    use InteractsWithMedia;
+
     protected $fillable = [
         'category_id',
         'brand_id',
@@ -77,18 +81,5 @@ class Product extends Model
         return $this->hasMany(OrderItem::class);
     }
 
-    public function media(): MorphMany
-    {
-        return $this->morphMany(config('media.model'), 'mediable');
-    }
 
-    public function images()
-    {
-        return $this->media()->where('collection_name', 'images');
-    }
-
-    public function mainImage()
-    {
-        return $this->media()->where('collection_name', 'images')->where('is_main', true)->first();
-    }
 }

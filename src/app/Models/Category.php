@@ -5,10 +5,13 @@ namespace Fereydooni\Shopping\app\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Category extends Model
+class Category extends Model implements HasMedia
 {
+    use InteractsWithMedia;
+
     protected $fillable = [
         'parent_id',
         'name',
@@ -46,13 +49,5 @@ class Category extends Model
         return $this->parent()->with('allParents');
     }
 
-    public function media(): MorphMany
-    {
-        return $this->morphMany(config('media.model'), 'mediable');
-    }
 
-    public function image()
-    {
-        return $this->media()->where('collection_name', 'image')->first();
-    }
 }

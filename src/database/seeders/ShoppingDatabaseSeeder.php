@@ -9,6 +9,7 @@ class ShoppingDatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            CategoryPermissionSeeder::class,
             CategorySeeder::class,
             BrandSeeder::class,
             ProductAttributeSeeder::class,
