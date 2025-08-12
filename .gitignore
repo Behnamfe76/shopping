@@ -1,0 +1,61 @@
+# Dependencies
+/vendor/
+/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Composer
+composer.phar
+composer.lock
+
+# Laravel specific
+.env
+.env.backup
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+
+# IDE and Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Cache and temporary files
+*.cache
+*.tmp
+*.temp
+
+# Build artifacts
+/build/
+/dist/
+
+# Testing
+/coverage/
+.phpunit.cache/
+
+# Package specific
+*.zip
+*.tar.gz
+
+# Backup files
+*.bak
+*.backup
+
+# Local configuration
+config/local.php
