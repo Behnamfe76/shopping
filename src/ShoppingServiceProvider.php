@@ -18,6 +18,12 @@ class ShoppingServiceProvider extends ServiceProvider
             \Fereydooni\Shopping\app\Repositories\CategoryRepository::class
         );
 
+        // Register Address Repository
+        $this->app->bind(
+            \Fereydooni\Shopping\app\Repositories\Interfaces\AddressRepositoryInterface::class,
+            \Fereydooni\Shopping\app\Repositories\AddressRepository::class
+        );
+
         // Register Category Service
         $this->app->scoped('shopping.category', function ($app) {
             return new \Fereydooni\Shopping\app\Services\CategoryService(
@@ -30,6 +36,13 @@ class ShoppingServiceProvider extends ServiceProvider
                 $app->make(\Fereydooni\Shopping\app\Actions\Category\SearchCategoriesAction::class)
             );
         });
+
+        // Register Address Service
+        $this->app->scoped('shopping.address', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\AddressService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\AddressRepositoryInterface::class)
+            );
+        });
     }
 
     public function boot(): void
@@ -37,6 +50,7 @@ class ShoppingServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__ . '/database/migrations');
 
         $this->loadRoutesFrom(__DIR__ . '/routes/web.php');
+        $this->loadRoutesFrom(__DIR__ . '/routes/api.php');
 
         $this->loadViewsFrom(__DIR__ . '/resources/views', 'shopping');
 
