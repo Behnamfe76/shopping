@@ -17,9 +17,14 @@ class Category extends Model implements HasMedia
         'name',
         'slug',
         'description',
+        'status',
+        'sort_order',
+        'is_default',
     ];
 
     protected $casts = [
+        'status' => \Fereydooni\Shopping\app\Enums\CategoryStatus::class,
+        'is_default' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];

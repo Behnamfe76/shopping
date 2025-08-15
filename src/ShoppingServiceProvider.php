@@ -3,6 +3,7 @@
 namespace Fereydooni\Shopping;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class ShoppingServiceProvider extends ServiceProvider
 {
@@ -43,6 +44,13 @@ class ShoppingServiceProvider extends ServiceProvider
                 $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\AddressRepositoryInterface::class)
             );
         });
+
+        // Register Category Service
+        $this->app->scoped('shopping.category', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\CategoryService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CategoryRepositoryInterface::class)
+            );
+        });
     }
 
     public function boot(): void
@@ -65,5 +73,17 @@ class ShoppingServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/resources/views' => resource_path('views/vendor/shopping'),
         ], 'shopping-views');
+
+        // Register policies
+        $this->registerPolicies();
+    }
+
+    /**
+     * Register the application's policies.
+     */
+    protected function registerPolicies(): void
+    {
+        Gate::policy(\Fereydooni\Shopping\app\Models\Address::class, \Fereydooni\Shopping\app\Policies\AddressPolicy::class);
+        Gate::policy(\Fereydooni\Shopping\app\Models\Category::class, \Fereydooni\Shopping\app\Policies\CategoryPolicy::class);
     }
 }

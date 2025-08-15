@@ -7,6 +7,7 @@ use Spatie\LaravelData\Attributes\MapName;
 use Spatie\LaravelData\Attributes\WithTransformer;
 use Spatie\LaravelData\Transformers\DateTimeTransformer;
 use Illuminate\Support\Carbon;
+use Fereydooni\Shopping\app\Enums\CategoryStatus;
 
 class CategoryDTO extends Data
 {
@@ -16,6 +17,9 @@ class CategoryDTO extends Data
         public string $name,
         public string $slug,
         public ?string $description,
+        public CategoryStatus $status,
+        public int $sort_order,
+        public bool $is_default,
         public ?Carbon $created_at,
         public ?Carbon $updated_at,
         public ?CategoryDTO $parent = null,
@@ -23,6 +27,7 @@ class CategoryDTO extends Data
         public ?int $products_count = null,
         public ?int $depth = null,
         public ?array $path = null,
+        public ?array $media = null,
     ) {
     }
 
@@ -34,6 +39,9 @@ class CategoryDTO extends Data
             name: $category->name,
             slug: $category->slug,
             description: $category->description,
+            status: $category->status ?? CategoryStatus::DRAFT,
+            sort_order: $category->sort_order ?? 0,
+            is_default: $category->is_default ?? false,
             created_at: $category->created_at,
             updated_at: $category->updated_at,
             parent: $category->parent ? static::fromModel($category->parent) : null,
@@ -41,6 +49,7 @@ class CategoryDTO extends Data
             products_count: $category->products_count ?? null,
             depth: null, // Will be calculated separately
             path: null, // Will be calculated separately
+            media: $category->getMedia() ? $category->getMedia()->toArray() : null,
         );
     }
 
@@ -51,6 +60,9 @@ class CategoryDTO extends Data
             'slug' => 'nullable|string|max:255|unique:categories,slug',
             'description' => 'nullable|string',
             'parent_id' => 'nullable|integer|exists:categories,id',
+            'status' => 'required|in:' . implode(',', array_column(CategoryStatus::cases(), 'value')),
+            'sort_order' => 'integer|min:0',
+            'is_default' => 'boolean',
         ];
     }
 
@@ -61,6 +73,10 @@ class CategoryDTO extends Data
             'name.max' => 'Category name cannot exceed 255 characters',
             'slug.unique' => 'This slug is already taken',
             'parent_id.exists' => 'Selected parent category does not exist',
+            'status.required' => 'Category status is required',
+            'status.in' => 'Invalid category status selected',
+            'sort_order.integer' => 'Sort order must be a number',
+            'sort_order.min' => 'Sort order cannot be negative',
         ];
     }
 }
