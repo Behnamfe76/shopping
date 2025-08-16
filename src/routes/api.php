@@ -16,6 +16,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductTagController as ApiP
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductVariantController as ApiProductVariantController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ShipmentController as ApiShipmentController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ShipmentItemController as ApiShipmentItemController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\TransactionController as ApiTransactionController;
 
 Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     // Address API routes
@@ -1046,6 +1047,53 @@ Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:
                     Route::get('/status', [ApiShipmentItemController::class, 'getStatus'])->name('status');
                 });
             });
+        });
+    });
+
+    // Transaction API routes
+    Route::prefix('transactions')->name('transactions.')->group(function () {
+        // List transactions
+        Route::get('/', [ApiTransactionController::class, 'index'])->name('index');
+
+        // Get transaction count
+        Route::get('/count', [ApiTransactionController::class, 'getCount'])->name('count');
+
+        // Get transaction revenue
+        Route::get('/revenue', [ApiTransactionController::class, 'getRevenue'])->name('revenue');
+
+        // Search transactions
+        Route::get('/search', [ApiTransactionController::class, 'search'])->name('search');
+
+        // Get transaction statistics
+        Route::get('/statistics', [ApiTransactionController::class, 'statistics'])->name('statistics');
+
+        // Create transaction
+        Route::post('/', [ApiTransactionController::class, 'store'])->name('store');
+
+        // Filter by gateway
+        Route::get('/by-gateway/{gateway}', [ApiTransactionController::class, 'getByGateway'])->name('by-gateway');
+
+        // Filter by status
+        Route::get('/by-status/{status}', [ApiTransactionController::class, 'getByStatus'])->name('by-status');
+
+        // Transaction-specific routes
+        Route::prefix('{transaction}')->group(function () {
+            // Show transaction
+            Route::get('/', [ApiTransactionController::class, 'show'])->name('show');
+
+            // Update transaction (full update)
+            Route::put('/', [ApiTransactionController::class, 'update'])->name('update');
+
+            // Update transaction (partial update)
+            Route::patch('/', [ApiTransactionController::class, 'update'])->name('update.partial');
+
+            // Delete transaction
+            Route::delete('/', [ApiTransactionController::class, 'destroy'])->name('destroy');
+
+            // Transaction status management
+            Route::post('/success', [ApiTransactionController::class, 'markAsSuccess'])->name('success');
+            Route::post('/failed', [ApiTransactionController::class, 'markAsFailed'])->name('failed');
+            Route::post('/refund', [ApiTransactionController::class, 'markAsRefunded'])->name('refund');
         });
     });
 });

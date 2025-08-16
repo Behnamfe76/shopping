@@ -352,6 +352,26 @@ class ShoppingServiceProvider extends ServiceProvider
                 $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\UserSubscriptionRepositoryInterface::class)
             );
         });
+
+        // Register Transaction Repository
+        $this->app->bind(
+            \Fereydooni\Shopping\app\Repositories\Interfaces\TransactionRepositoryInterface::class,
+            \Fereydooni\Shopping\app\Repositories\TransactionRepository::class
+        );
+
+        // Register Transaction Service
+        $this->app->scoped('shopping.transaction', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\TransactionService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\TransactionRepositoryInterface::class)
+            );
+        });
+
+        // Register Transaction Facade
+        $this->app->singleton('shopping.transaction.facade', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\TransactionService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\TransactionRepositoryInterface::class)
+            );
+        });
     }
 
     public function boot(): void
@@ -403,6 +423,7 @@ class ShoppingServiceProvider extends ServiceProvider
         Gate::policy(\Fereydooni\Shopping\app\Models\ProductVariant::class, \Fereydooni\Shopping\app\Policies\ProductVariantPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\Shipment::class, \Fereydooni\Shopping\app\Policies\ShipmentPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\ShipmentItem::class, \Fereydooni\Shopping\app\Policies\ShipmentItemPolicy::class);
+        Gate::policy(\Fereydooni\Shopping\app\Models\Transaction::class, \Fereydooni\Shopping\app\Policies\TransactionPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\Subscription::class, \Fereydooni\Shopping\app\Policies\SubscriptionPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\UserSubscription::class, \Fereydooni\Shopping\app\Policies\UserSubscriptionPolicy::class);
     }

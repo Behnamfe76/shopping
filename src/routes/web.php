@@ -18,6 +18,7 @@ use Fereydooni\Shopping\app\Http\Controllers\ProductTagController;
 use Fereydooni\Shopping\app\Http\Controllers\ProductVariantController;
 use Fereydooni\Shopping\app\Http\Controllers\ShipmentController;
 use Fereydooni\Shopping\app\Http\Controllers\ShipmentItemController;
+use Fereydooni\Shopping\app\Http\Controllers\TransactionController;
 
 Route::prefix('shopping')->name('shopping.')->group(function () {
     // Product routes
@@ -646,5 +647,39 @@ Route::prefix('shopping')->name('shopping.')->group(function () {
             Route::get('/analytics', [ShipmentItemController::class, 'analytics'])->name('analytics');
             Route::get('/top-shipped', [ShipmentItemController::class, 'topShipped'])->name('top-shipped');
         });
+    });
+
+    // Transaction routes (with policy authorization)
+    Route::middleware(['auth'])->group(function () {
+        // Basic CRUD operations
+        Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
+        Route::get('/transactions/create', [TransactionController::class, 'create'])->name('transactions.create');
+        Route::post('/transactions', [TransactionController::class, 'store'])->name('transactions.store');
+        Route::get('/transactions/{transaction}', [TransactionController::class, 'show'])->name('transactions.show');
+        Route::get('/transactions/{transaction}/edit', [TransactionController::class, 'edit'])->name('transactions.edit');
+        Route::put('/transactions/{transaction}', [TransactionController::class, 'update'])->name('transactions.update');
+        Route::delete('/transactions/{transaction}', [TransactionController::class, 'destroy'])->name('transactions.destroy');
+
+        // Transaction status management
+        Route::post('/transactions/{transaction}/success', [TransactionController::class, 'markAsSuccess'])->name('transactions.success');
+        Route::post('/transactions/{transaction}/failed', [TransactionController::class, 'markAsFailed'])->name('transactions.failed');
+        Route::post('/transactions/{transaction}/refund', [TransactionController::class, 'markAsRefunded'])->name('transactions.refund');
+
+        // Search and filtering
+        Route::get('/transactions/search', [TransactionController::class, 'search'])->name('transactions.search');
+        Route::get('/transactions/statistics', [TransactionController::class, 'statistics'])->name('transactions.statistics');
+
+        // Transaction-specific routes
+        Route::get('/transactions/by-order/{order}', [TransactionController::class, 'byOrder'])->name('transactions.by-order');
+        Route::get('/transactions/by-user/{user}', [TransactionController::class, 'byUser'])->name('transactions.by-user');
+        Route::get('/transactions/by-gateway/{gateway}', [TransactionController::class, 'byGateway'])->name('transactions.by-gateway');
+        Route::get('/transactions/by-status/{status}', [TransactionController::class, 'byStatus'])->name('transactions.by-status');
+        Route::get('/transactions/by-currency/{currency}', [TransactionController::class, 'byCurrency'])->name('transactions.by-currency');
+
+        // Analytics and reports
+        Route::get('/transactions/revenue', [TransactionController::class, 'revenue'])->name('transactions.revenue');
+        Route::get('/transactions/gateway-performance', [TransactionController::class, 'gatewayPerformance'])->name('transactions.gateway-performance');
+        Route::get('/transactions/success-rate', [TransactionController::class, 'successRate'])->name('transactions.success-rate');
+        Route::get('/transactions/refund-rate', [TransactionController::class, 'refundRate'])->name('transactions.refund-rate');
     });
 });
