@@ -25,6 +25,12 @@ class ShoppingServiceProvider extends ServiceProvider
             \Fereydooni\Shopping\app\Repositories\AddressRepository::class
         );
 
+        // Register Brand Repository
+        $this->app->bind(
+            \Fereydooni\Shopping\app\Repositories\Interfaces\BrandRepositoryInterface::class,
+            \Fereydooni\Shopping\app\Repositories\BrandRepository::class
+        );
+
         // Register Category Service
         $this->app->scoped('shopping.category', function ($app) {
             return new \Fereydooni\Shopping\app\Services\CategoryService(
@@ -45,10 +51,10 @@ class ShoppingServiceProvider extends ServiceProvider
             );
         });
 
-        // Register Category Service
-        $this->app->scoped('shopping.category', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\CategoryService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CategoryRepositoryInterface::class)
+        // Register Brand Service
+        $this->app->scoped('shopping.brand', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\BrandService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\BrandRepositoryInterface::class)
             );
         });
     }
@@ -85,5 +91,6 @@ class ShoppingServiceProvider extends ServiceProvider
     {
         Gate::policy(\Fereydooni\Shopping\app\Models\Address::class, \Fereydooni\Shopping\app\Policies\AddressPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\Category::class, \Fereydooni\Shopping\app\Policies\CategoryPolicy::class);
+        Gate::policy(\Fereydooni\Shopping\app\Models\Brand::class, \Fereydooni\Shopping\app\Policies\BrandPolicy::class);
     }
 }

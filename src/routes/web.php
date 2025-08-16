@@ -33,9 +33,23 @@ Route::prefix('shopping')->name('shopping.')->group(function () {
         Route::get('/categories/stats', [CategoryController::class, 'stats'])->name('categories.stats');
     });
 
-    // Brand routes
-    Route::get('/brands', [BrandController::class, 'index'])->name('brands.index');
-    Route::get('/brands/{brand:slug}', [BrandController::class, 'show'])->name('brands.show');
+    // Brand routes (with policy authorization)
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/brands', [BrandController::class, 'index'])->name('brands.index');
+        Route::get('/brands/create', [BrandController::class, 'create'])->name('brands.create');
+        Route::post('/brands', [BrandController::class, 'store'])->name('brands.store');
+        Route::get('/brands/{brand:slug}', [BrandController::class, 'show'])->name('brands.show');
+        Route::get('/brands/{brand:slug}/edit', [BrandController::class, 'edit'])->name('brands.edit');
+        Route::put('/brands/{brand:slug}', [BrandController::class, 'update'])->name('brands.update');
+        Route::delete('/brands/{brand:slug}', [BrandController::class, 'destroy'])->name('brands.destroy');
+        Route::post('/brands/{brand:slug}/toggle-active', [BrandController::class, 'toggleActive'])->name('brands.toggle-active');
+        Route::post('/brands/{brand:slug}/toggle-featured', [BrandController::class, 'toggleFeatured'])->name('brands.toggle-featured');
+        Route::get('/brands/search', [BrandController::class, 'search'])->name('brands.search');
+        Route::get('/brands/active', [BrandController::class, 'active'])->name('brands.active');
+        Route::get('/brands/featured', [BrandController::class, 'featured'])->name('brands.featured');
+        Route::get('/brands/popular', [BrandController::class, 'popular'])->name('brands.popular');
+        Route::get('/brands/alphabetical/{letter}', [BrandController::class, 'alphabetical'])->name('brands.alphabetical');
+    });
 
     // Cart routes
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
