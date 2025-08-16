@@ -4,27 +4,20 @@ namespace Fereydooni\Shopping\app\Events;
 
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Fereydooni\Shopping\app\Models\Order;
 use Fereydooni\Shopping\app\Models\OrderStatusHistory;
 
-class OrderStatusChanged
+class OrderStatusHistoryCreated
 {
     use Dispatchable, SerializesModels;
 
-    public Order $order;
     public OrderStatusHistory $history;
-    public string $oldStatus;
-    public string $newStatus;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(Order $order, OrderStatusHistory $history, string $oldStatus, string $newStatus)
+    public function __construct(OrderStatusHistory $history)
     {
-        $this->order = $order;
         $this->history = $history;
-        $this->oldStatus = $oldStatus;
-        $this->newStatus = $newStatus;
     }
 
     /**
@@ -32,7 +25,7 @@ class OrderStatusChanged
      */
     public function broadcastAs(): string
     {
-        return 'order.status-changed';
+        return 'order-status-history.created';
     }
 
     /**
@@ -41,17 +34,16 @@ class OrderStatusChanged
     public function broadcastWith(): array
     {
         return [
-            'order_id' => $this->order->id,
-            'old_status' => $this->oldStatus,
-            'new_status' => $this->newStatus,
+            'id' => $this->history->id,
+            'order_id' => $this->history->order_id,
+            'old_status' => $this->history->old_status,
+            'new_status' => $this->history->new_status,
             'changed_by' => $this->history->changed_by,
             'changed_at' => $this->history->changed_at?->toISOString(),
             'note' => $this->history->note,
             'is_system_change' => $this->history->is_system_change,
             'change_type' => $this->history->change_type,
             'change_category' => $this->history->change_category,
-            'order_total' => $this->order->total_amount,
-            'order_currency' => $this->order->currency,
         ];
     }
 }

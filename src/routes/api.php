@@ -6,6 +6,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CategoryController as ApiCat
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\BrandController as ApiBrandController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\OrderController as ApiOrderController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\OrderItemController as ApiOrderItemController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\OrderStatusHistoryController as ApiOrderStatusHistoryController;
 
 Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     // Address API routes
@@ -265,6 +266,51 @@ Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:
 
             // Get item status
             Route::get('/status', [ApiOrderItemController::class, 'getStatus'])->name('status');
+        });
+    });
+
+    // OrderStatusHistory API routes
+    Route::prefix('order-status-history')->name('order-status-history.')->group(function () {
+        // List status history
+        Route::get('/', [ApiOrderStatusHistoryController::class, 'index'])->name('index');
+
+        // Get history count
+        Route::get('/count', [ApiOrderStatusHistoryController::class, 'getCount'])->name('count');
+
+        // Search status history
+        Route::get('/search', [ApiOrderStatusHistoryController::class, 'search'])->name('search');
+
+        // Get status change frequency
+        Route::get('/frequency', [ApiOrderStatusHistoryController::class, 'getFrequency'])->name('frequency');
+
+        // Get history by order/user/status
+        Route::get('/by-order/{order}', [ApiOrderStatusHistoryController::class, 'byOrder'])->name('by-order');
+        Route::get('/by-user/{user}', [ApiOrderStatusHistoryController::class, 'byUser'])->name('by-user');
+        Route::get('/by-status/{status}', [ApiOrderStatusHistoryController::class, 'byStatus'])->name('by-status');
+
+        // Get order timeline
+        Route::get('/timeline/{order}', [ApiOrderStatusHistoryController::class, 'timeline'])->name('timeline');
+
+        // Analytics and reports
+        Route::get('/analytics', [ApiOrderStatusHistoryController::class, 'analytics'])->name('analytics');
+        Route::get('/reports', [ApiOrderStatusHistoryController::class, 'reports'])->name('reports');
+
+        // Create status history
+        Route::post('/', [ApiOrderStatusHistoryController::class, 'store'])->name('store');
+
+        // StatusHistory-specific routes
+        Route::prefix('{history}')->group(function () {
+            // Show status history
+            Route::get('/', [ApiOrderStatusHistoryController::class, 'show'])->name('show');
+
+            // Update status history (full update)
+            Route::put('/', [ApiOrderStatusHistoryController::class, 'update'])->name('update');
+
+            // Update status history (partial update)
+            Route::patch('/', [ApiOrderStatusHistoryController::class, 'update'])->name('update.partial');
+
+            // Delete status history
+            Route::delete('/', [ApiOrderStatusHistoryController::class, 'destroy'])->name('destroy');
         });
     });
 });

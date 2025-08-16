@@ -84,6 +84,19 @@ class ShoppingServiceProvider extends ServiceProvider
             );
         });
 
+        // Register OrderStatusHistory Repository
+        $this->app->bind(
+            \Fereydooni\Shopping\app\Repositories\Interfaces\OrderStatusHistoryRepositoryInterface::class,
+            \Fereydooni\Shopping\app\Repositories\OrderStatusHistoryRepository::class
+        );
+
+        // Register OrderStatusHistory Service
+        $this->app->scoped('shopping.order-status-history', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\OrderStatusHistoryService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\OrderStatusHistoryRepositoryInterface::class)
+            );
+        });
+
         // Register Facades
         $this->app->singleton('shopping.order.facade', function ($app) {
             return new \Fereydooni\Shopping\app\Services\OrderService(
@@ -94,6 +107,12 @@ class ShoppingServiceProvider extends ServiceProvider
         $this->app->singleton('shopping.order-item.facade', function ($app) {
             return new \Fereydooni\Shopping\app\Services\OrderItemService(
                 $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\OrderItemRepositoryInterface::class)
+            );
+        });
+
+        $this->app->singleton('shopping.order-status-history.facade', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\OrderStatusHistoryService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\OrderStatusHistoryRepositoryInterface::class)
             );
         });
     }
@@ -133,5 +152,6 @@ class ShoppingServiceProvider extends ServiceProvider
         Gate::policy(\Fereydooni\Shopping\app\Models\Brand::class, \Fereydooni\Shopping\app\Policies\BrandPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\Order::class, \Fereydooni\Shopping\app\Policies\OrderPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\OrderItem::class, \Fereydooni\Shopping\app\Policies\OrderItemPolicy::class);
+        Gate::policy(\Fereydooni\Shopping\app\Models\OrderStatusHistory::class, \Fereydooni\Shopping\app\Policies\OrderStatusHistoryPolicy::class);
     }
 }

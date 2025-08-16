@@ -6,6 +6,7 @@ use Fereydooni\Shopping\app\Http\Controllers\CategoryController;
 use Fereydooni\Shopping\app\Http\Controllers\BrandController;
 use Fereydooni\Shopping\app\Http\Controllers\OrderController;
 use Fereydooni\Shopping\app\Http\Controllers\OrderItemController;
+use Fereydooni\Shopping\app\Http\Controllers\OrderStatusHistoryController;
 use Fereydooni\Shopping\app\Http\Controllers\CartController;
 use Fereydooni\Shopping\app\Http\Controllers\AddressController;
 
@@ -117,5 +118,21 @@ Route::prefix('shopping')->name('shopping.')->group(function () {
         // Order-specific routes
         Route::get('/order-items/by-order/{order}', [OrderItemController::class, 'byOrder'])->name('order-items.by-order');
         Route::get('/order-items/by-product/{product}', [OrderItemController::class, 'byProduct'])->name('order-items.by-product');
+    });
+
+    // OrderStatusHistory routes (with policy authorization)
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/order-status-history', [OrderStatusHistoryController::class, 'index'])->name('order-status-history.index');
+        Route::get('/order-status-history/{history}', [OrderStatusHistoryController::class, 'show'])->name('order-status-history.show');
+        Route::post('/order-status-history', [OrderStatusHistoryController::class, 'store'])->name('order-status-history.store');
+        Route::put('/order-status-history/{history}', [OrderStatusHistoryController::class, 'update'])->name('order-status-history.update');
+        Route::delete('/order-status-history/{history}', [OrderStatusHistoryController::class, 'destroy'])->name('order-status-history.destroy');
+        Route::get('/order-status-history/search', [OrderStatusHistoryController::class, 'search'])->name('order-status-history.search');
+        Route::get('/order-status-history/by-order/{order}', [OrderStatusHistoryController::class, 'byOrder'])->name('order-status-history.by-order');
+        Route::get('/order-status-history/by-user/{user}', [OrderStatusHistoryController::class, 'byUser'])->name('order-status-history.by-user');
+        Route::get('/order-status-history/by-status/{status}', [OrderStatusHistoryController::class, 'byStatus'])->name('order-status-history.by-status');
+        Route::get('/order-status-history/timeline/{order}', [OrderStatusHistoryController::class, 'timeline'])->name('order-status-history.timeline');
+        Route::get('/order-status-history/analytics', [OrderStatusHistoryController::class, 'analytics'])->name('order-status-history.analytics');
+        Route::get('/order-status-history/reports', [OrderStatusHistoryController::class, 'reports'])->name('order-status-history.reports');
     });
 });

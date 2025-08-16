@@ -4,9 +4,9 @@ namespace Fereydooni\Shopping\app\Listeners;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Fereydooni\Shopping\app\Events\OrderCreated;
-use Fereydooni\Shopping\app\Events\OrderUpdated;
-use Fereydooni\Shopping\app\Events\OrderCancelled;
+use Illuminate\Support\Facades\Cache;
+use Fereydooni\Shopping\app\Events\OrderStatusHistoryCreated;
+use Fereydooni\Shopping\app\Events\OrderStatusChanged;
 
 class UpdateOrderCache implements ShouldQueue
 {
@@ -21,81 +21,139 @@ class UpdateOrderCache implements ShouldQueue
     }
 
     /**
-     * Handle order created event.
+     * Handle the event.
      */
-    public function handleOrderCreated(OrderCreated $event): void
+    public function handle(OrderStatusHistoryCreated $event): void
     {
-        $order = $event->order;
+        $history = $event->history;
+        $orderId = $history->order_id;
 
-        // Clear relevant caches
-        $this->clearOrderCaches($order);
+        // Clear order cache
+        $this->clearOrderCache($orderId);
 
-        // Warm up new caches
-        $this->warmOrderCaches($order);
+        // Clear order timeline cache
+        $this->clearTimelineCache($orderId);
 
-        \Log::info("Order cache updated for new order #{$order->id}");
+        // Clear analytics cache
+        $this->clearAnalyticsCache();
+
+        // Update order status cache
+        $this->updateOrderStatusCache($orderId, $history->new_status);
     }
 
     /**
-     * Handle order updated event.
+     * Handle order status changed event.
      */
-    public function handleOrderUpdated(OrderUpdated $event): void
+    public function handleOrderStatusChanged(OrderStatusChanged $event): void
     {
         $order = $event->order;
+        $orderId = $order->id;
 
-        // Clear relevant caches
-        $this->clearOrderCaches($order);
+        // Clear order cache
+        $this->clearOrderCache($orderId);
 
-        // Warm up updated caches
-        $this->warmOrderCaches($order);
+        // Clear order timeline cache
+        $this->clearTimelineCache($orderId);
 
-        \Log::info("Order cache updated for modified order #{$order->id}");
-    }
+        // Clear analytics cache
+        $this->clearAnalyticsCache();
 
-    /**
-     * Handle order cancelled event.
-     */
-    public function handleOrderCancelled(OrderCancelled $event): void
-    {
-        $order = $event->order;
-
-        // Clear relevant caches
-        $this->clearOrderCaches($order);
-
-        \Log::info("Order cache cleared for cancelled order #{$order->id}");
-    }
-
-    /**
-     * Clear order-related caches
-     */
-    private function clearOrderCaches($order): void
-    {
-        // Clear order-specific cache
-        \Cache::forget("order.{$order->id}");
+        // Update order status cache
+        $this->updateOrderStatusCache($orderId, $event->newStatus);
 
         // Clear user orders cache
-        \Cache::forget("user.{$order->user_id}.orders");
-
-        // Clear order count caches
-        \Cache::forget('orders.count.total');
-        \Cache::forget("orders.count.status.{$order->status}");
-        \Cache::forget("orders.count.user.{$order->user_id}");
-
-        // Clear revenue caches
-        \Cache::forget('orders.revenue.total');
-        \Cache::forget("orders.revenue.user.{$order->user_id}");
+        if ($order->user_id) {
+            $this->clearUserOrdersCache($order->user_id);
+        }
     }
 
     /**
-     * Warm up order-related caches
+     * Clear order cache.
      */
-    private function warmOrderCaches($order): void
+    private function clearOrderCache(int $orderId): void
     {
-        // Cache order data
-        \Cache::put("order.{$order->id}", $order, now()->addHours(24));
+        $cacheKeys = [
+            "order.{$orderId}",
+            "order.{$orderId}.details",
+            "order.{$orderId}.status",
+            "order.{$orderId}.history",
+        ];
 
-        // Cache user orders (would need to fetch and cache)
-        // $userOrders = Order::where('user_id', $order->user_id)->get();
-        // \Cache::put("user.{$order->user_id}.orders", $userOrders, now()->addHours(1));
+        foreach ($cacheKeys as $key) {
+            Cache::forget($key);
+        }
+    }
+
+    /**
+     * Clear order timeline cache.
+     */
+    private function clearTimelineCache(int $orderId): void
+    {
+        $cacheKeys = [
+            "order.{$orderId}.timeline",
+            "order.{$orderId}.timeline.detailed",
+        ];
+
+        foreach ($cacheKeys as $key) {
+            Cache::forget($key);
+        }
+    }
+
+    /**
+     * Clear analytics cache.
+     */
+    private function clearAnalyticsCache(): void
+    {
+        $cacheKeys = [
+            'order-status-analytics',
+            'order-status-analytics.daily',
+            'order-status-analytics.weekly',
+            'order-status-analytics.monthly',
+            'order-status-frequency',
+            'order-status-distribution',
+        ];
+
+        foreach ($cacheKeys as $key) {
+            Cache::forget($key);
+        }
+    }
+
+    /**
+     * Update order status cache.
+     */
+    private function updateOrderStatusCache(int $orderId, string $newStatus): void
+    {
+        $cacheKey = "order.{$orderId}.status";
+        Cache::put($cacheKey, $newStatus, now()->addHours(24));
+    }
+
+    /**
+     * Clear user orders cache.
+     */
+    private function clearUserOrdersCache(int $userId): void
+    {
+        $cacheKeys = [
+            "user.{$userId}.orders",
+            "user.{$userId}.orders.pending",
+            "user.{$userId}.orders.completed",
+            "user.{$userId}.orders.cancelled",
+        ];
+
+        foreach ($cacheKeys as $key) {
+            Cache::forget($key);
+        }
+    }
+
+    /**
+     * Handle a job failure.
+     */
+    public function failed(OrderStatusHistoryCreated $event, \Throwable $exception): void
+    {
+        \Log::error('Failed to update order cache', [
+            'history_id' => $event->history->id,
+            'order_id' => $event->history->order_id,
+            'error' => $exception->getMessage(),
+            'trace' => $exception->getTraceAsString(),
+        ]);
     }
 }
