@@ -17,6 +17,21 @@ use Fereydooni\Shopping\app\Listeners\UpdateProductSearchIndex;
 use Fereydooni\Shopping\app\Listeners\UpdateProductFilterCache;
 use Fereydooni\Shopping\app\Listeners\UpdateProductTagIndex;
 use Fereydooni\Shopping\app\Listeners\GenerateProductTagReport;
+use Fereydooni\Shopping\app\Events\ProductVariantCreated;
+use Fereydooni\Shopping\app\Events\ProductVariantUpdated;
+use Fereydooni\Shopping\app\Events\ProductVariantDeleted;
+use Fereydooni\Shopping\app\Events\ProductVariantStatusChanged;
+use Fereydooni\Shopping\app\Events\ProductVariantStockUpdated;
+use Fereydooni\Shopping\app\Events\ProductVariantPriceUpdated;
+use Fereydooni\Shopping\app\Events\ProductVariantLowStock;
+use Fereydooni\Shopping\app\Events\ProductVariantOutOfStock;
+use Fereydooni\Shopping\app\Listeners\SendProductVariantCreatedNotification;
+use Fereydooni\Shopping\app\Listeners\UpdateProductVariantCache;
+use Fereydooni\Shopping\app\Listeners\UpdateProductInventoryCache;
+use Fereydooni\Shopping\app\Listeners\UpdateProductPricingCache;
+use Fereydooni\Shopping\app\Listeners\SendLowStockNotification;
+use Fereydooni\Shopping\app\Listeners\SendOutOfStockNotification;
+use Fereydooni\Shopping\app\Listeners\GenerateProductVariantReport;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -78,6 +93,51 @@ class EventServiceProvider extends ServiceProvider
             UpdateProductFilterCache::class,
             UpdateProductTagIndex::class,
             GenerateProductTagReport::class,
+        ],
+        ProductVariantCreated::class => [
+            SendProductVariantCreatedNotification::class,
+            UpdateProductVariantCache::class,
+            UpdateProductInventoryCache::class,
+            UpdateProductPricingCache::class,
+            GenerateProductVariantReport::class,
+        ],
+        ProductVariantUpdated::class => [
+            UpdateProductVariantCache::class,
+            UpdateProductInventoryCache::class,
+            UpdateProductPricingCache::class,
+            GenerateProductVariantReport::class,
+        ],
+        ProductVariantDeleted::class => [
+            UpdateProductVariantCache::class,
+            UpdateProductInventoryCache::class,
+            UpdateProductPricingCache::class,
+            GenerateProductVariantReport::class,
+        ],
+        ProductVariantStatusChanged::class => [
+            UpdateProductVariantCache::class,
+            UpdateProductInventoryCache::class,
+            UpdateProductPricingCache::class,
+            GenerateProductVariantReport::class,
+        ],
+        ProductVariantStockUpdated::class => [
+            UpdateProductVariantCache::class,
+            UpdateProductInventoryCache::class,
+            GenerateProductVariantReport::class,
+        ],
+        ProductVariantPriceUpdated::class => [
+            UpdateProductVariantCache::class,
+            UpdateProductPricingCache::class,
+            GenerateProductVariantReport::class,
+        ],
+        ProductVariantLowStock::class => [
+            SendLowStockNotification::class,
+            UpdateProductInventoryCache::class,
+            GenerateProductVariantReport::class,
+        ],
+        ProductVariantOutOfStock::class => [
+            SendOutOfStockNotification::class,
+            UpdateProductInventoryCache::class,
+            GenerateProductVariantReport::class,
         ],
     ];
 

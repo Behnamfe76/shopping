@@ -13,6 +13,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductDiscountController as
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductMetaController as ApiProductMetaController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductReviewController as ApiProductReviewController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductTagController as ApiProductTagController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductVariantController as ApiProductVariantController;
 
 Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     // Address API routes
@@ -814,6 +815,95 @@ Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:
             // Status management
             Route::post('/toggle-active', [ApiProductTagController::class, 'toggleActive'])->name('toggle-active');
             Route::post('/toggle-featured', [ApiProductTagController::class, 'toggleFeatured'])->name('toggle-featured');
+        });
+    });
+
+    // ProductVariant API routes
+    Route::prefix('product-variants')->name('product-variants.')->group(function () {
+        // List product variants
+        Route::get('/', [ApiProductVariantController::class, 'index'])->name('index');
+
+        // Get product variant count
+        Route::get('/count', [ApiProductVariantController::class, 'getCount'])->name('count');
+
+        // Search product variants
+        Route::get('/search', [ApiProductVariantController::class, 'search'])->name('search');
+
+        // Filter by status
+        Route::get('/active', [ApiProductVariantController::class, 'active'])->name('active');
+        Route::get('/in-stock', [ApiProductVariantController::class, 'inStock'])->name('in-stock');
+        Route::get('/out-of-stock', [ApiProductVariantController::class, 'outOfStock'])->name('out-of-stock');
+        Route::get('/low-stock', [ApiProductVariantController::class, 'lowStock'])->name('low-stock');
+
+        // Filter by relationships
+        Route::get('/by-product/{product}', [ApiProductVariantController::class, 'byProduct'])->name('by-product');
+        Route::get('/by-sku/{sku}', [ApiProductVariantController::class, 'bySku'])->name('by-sku');
+        Route::get('/by-barcode/{barcode}', [ApiProductVariantController::class, 'byBarcode'])->name('by-barcode');
+
+        // Filter by ranges
+        Route::get('/by-price-range', [ApiProductVariantController::class, 'byPriceRange'])->name('by-price-range');
+        Route::get('/by-stock-range', [ApiProductVariantController::class, 'byStockRange'])->name('by-stock-range');
+        Route::get('/by-weight-range', [ApiProductVariantController::class, 'byWeightRange'])->name('by-weight-range');
+
+        // List methods
+        Route::get('/skus', [ApiProductVariantController::class, 'getSkus'])->name('skus');
+        Route::get('/barcodes', [ApiProductVariantController::class, 'getBarcodes'])->name('barcodes');
+        Route::get('/prices', [ApiProductVariantController::class, 'getPrices'])->name('prices');
+        Route::get('/weights', [ApiProductVariantController::class, 'getWeights'])->name('weights');
+
+        // Bulk operations
+        Route::post('/bulk-create/{product}', [ApiProductVariantController::class, 'bulkCreate'])->name('bulk-create');
+        Route::put('/bulk-update', [ApiProductVariantController::class, 'bulkUpdate'])->name('bulk-update');
+        Route::delete('/bulk-delete', [ApiProductVariantController::class, 'bulkDelete'])->name('bulk-delete');
+
+        // Import/Export operations
+        Route::post('/import/{product}', [ApiProductVariantController::class, 'import'])->name('import');
+        Route::get('/export/{product}', [ApiProductVariantController::class, 'export'])->name('export');
+        Route::post('/sync/{product}', [ApiProductVariantController::class, 'sync'])->name('sync');
+
+        // Create product variant
+        Route::post('/', [ApiProductVariantController::class, 'store'])->name('store');
+
+        // ProductVariant-specific routes
+        Route::prefix('{variant}')->group(function () {
+            // Show product variant
+            Route::get('/', [ApiProductVariantController::class, 'show'])->name('show');
+
+            // Update product variant (full update)
+            Route::put('/', [ApiProductVariantController::class, 'update'])->name('update');
+
+            // Update product variant (partial update)
+            Route::patch('/', [ApiProductVariantController::class, 'update'])->name('update.partial');
+
+            // Delete product variant
+            Route::delete('/', [ApiProductVariantController::class, 'destroy'])->name('destroy');
+
+            // Status management
+            Route::post('/toggle-active', [ApiProductVariantController::class, 'toggleActive'])->name('toggle-active');
+            Route::post('/toggle-featured', [ApiProductVariantController::class, 'toggleFeatured'])->name('toggle-featured');
+
+            // Inventory management
+            Route::post('/update-stock', [ApiProductVariantController::class, 'updateStock'])->name('update-stock');
+            Route::post('/reserve-stock', [ApiProductVariantController::class, 'reserveStock'])->name('reserve-stock');
+            Route::post('/release-stock', [ApiProductVariantController::class, 'releaseStock'])->name('release-stock');
+            Route::post('/adjust-stock', [ApiProductVariantController::class, 'adjustStock'])->name('adjust-stock');
+
+            // Pricing management
+            Route::post('/set-price', [ApiProductVariantController::class, 'setPrice'])->name('set-price');
+            Route::post('/set-sale-price', [ApiProductVariantController::class, 'setSalePrice'])->name('set-sale-price');
+            Route::post('/set-compare-price', [ApiProductVariantController::class, 'setComparePrice'])->name('set-compare-price');
+
+            // Inventory management
+            Route::get('/inventory', [ApiProductVariantController::class, 'inventory'])->name('inventory');
+            Route::get('/inventory-history', [ApiProductVariantController::class, 'inventoryHistory'])->name('inventory-history');
+            Route::get('/inventory-alerts', [ApiProductVariantController::class, 'inventoryAlerts'])->name('inventory-alerts');
+
+            // Analytics
+            Route::get('/analytics', [ApiProductVariantController::class, 'analytics'])->name('analytics');
+            Route::get('/sales', [ApiProductVariantController::class, 'sales'])->name('sales');
+            Route::get('/revenue', [ApiProductVariantController::class, 'revenue'])->name('revenue');
+            Route::get('/profit', [ApiProductVariantController::class, 'profit'])->name('profit');
+            Route::get('/margin', [ApiProductVariantController::class, 'margin'])->name('margin');
         });
     });
 });

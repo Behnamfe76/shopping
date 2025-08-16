@@ -15,6 +15,7 @@ use Fereydooni\Shopping\app\Http\Controllers\ProductDiscountController;
 use Fereydooni\Shopping\app\Http\Controllers\ProductMetaController;
 use Fereydooni\Shopping\app\Http\Controllers\ProductReviewController;
 use Fereydooni\Shopping\app\Http\Controllers\ProductTagController;
+use Fereydooni\Shopping\app\Http\Controllers\ProductVariantController;
 
 Route::prefix('shopping')->name('shopping.')->group(function () {
     // Product routes
@@ -471,5 +472,78 @@ Route::prefix('shopping')->name('shopping.')->group(function () {
         Route::get('/product-tags/recommendations/{product}', [ProductTagController::class, 'recommendations'])->name('product-tags.recommendations');
         Route::get('/product-tags/forecast/{tag}', [ProductTagController::class, 'forecast'])->name('product-tags.forecast');
         Route::get('/product-tags/performance/{tag}', [ProductTagController::class, 'performance'])->name('product-tags.performance');
+    });
+
+    // ProductVariant routes (with policy authorization)
+    Route::middleware(['auth'])->group(function () {
+        // Basic CRUD operations
+        Route::get('/product-variants', [ProductVariantController::class, 'index'])->name('product-variants.index');
+        Route::get('/product-variants/create', [ProductVariantController::class, 'create'])->name('product-variants.create');
+        Route::post('/product-variants', [ProductVariantController::class, 'store'])->name('product-variants.store');
+        Route::get('/product-variants/{variant}', [ProductVariantController::class, 'show'])->name('product-variants.show');
+        Route::get('/product-variants/{variant}/edit', [ProductVariantController::class, 'edit'])->name('product-variants.edit');
+        Route::put('/product-variants/{variant}', [ProductVariantController::class, 'update'])->name('product-variants.update');
+        Route::delete('/product-variants/{variant}', [ProductVariantController::class, 'destroy'])->name('product-variants.destroy');
+
+        // Status management
+        Route::post('/product-variants/{variant}/toggle-active', [ProductVariantController::class, 'toggleActive'])->name('product-variants.toggle-active');
+        Route::post('/product-variants/{variant}/toggle-featured', [ProductVariantController::class, 'toggleFeatured'])->name('product-variants.toggle-featured');
+
+        // Inventory management
+        Route::post('/product-variants/{variant}/update-stock', [ProductVariantController::class, 'updateStock'])->name('product-variants.update-stock');
+        Route::post('/product-variants/{variant}/reserve-stock', [ProductVariantController::class, 'reserveStock'])->name('product-variants.reserve-stock');
+        Route::post('/product-variants/{variant}/release-stock', [ProductVariantController::class, 'releaseStock'])->name('product-variants.release-stock');
+        Route::post('/product-variants/{variant}/adjust-stock', [ProductVariantController::class, 'adjustStock'])->name('product-variants.adjust-stock');
+
+        // Pricing management
+        Route::post('/product-variants/{variant}/set-price', [ProductVariantController::class, 'setPrice'])->name('product-variants.set-price');
+        Route::post('/product-variants/{variant}/set-sale-price', [ProductVariantController::class, 'setSalePrice'])->name('product-variants.set-sale-price');
+        Route::post('/product-variants/{variant}/set-compare-price', [ProductVariantController::class, 'setComparePrice'])->name('product-variants.set-compare-price');
+
+        // Search and filtering
+        Route::get('/product-variants/search', [ProductVariantController::class, 'search'])->name('product-variants.search');
+        Route::get('/product-variants/active', [ProductVariantController::class, 'active'])->name('product-variants.active');
+        Route::get('/product-variants/in-stock', [ProductVariantController::class, 'inStock'])->name('product-variants.in-stock');
+        Route::get('/product-variants/out-of-stock', [ProductVariantController::class, 'outOfStock'])->name('product-variants.out-of-stock');
+        Route::get('/product-variants/low-stock', [ProductVariantController::class, 'lowStock'])->name('product-variants.low-stock');
+
+        // Relationship queries
+        Route::get('/product-variants/by-product/{product}', [ProductVariantController::class, 'byProduct'])->name('product-variants.by-product');
+        Route::get('/product-variants/by-sku/{sku}', [ProductVariantController::class, 'bySku'])->name('product-variants.by-sku');
+        Route::get('/product-variants/by-barcode/{barcode}', [ProductVariantController::class, 'byBarcode'])->name('product-variants.by-barcode');
+
+        // Range-based queries
+        Route::get('/product-variants/by-price-range', [ProductVariantController::class, 'byPriceRange'])->name('product-variants.by-price-range');
+        Route::get('/product-variants/by-stock-range', [ProductVariantController::class, 'byStockRange'])->name('product-variants.by-stock-range');
+        Route::get('/product-variants/by-weight-range', [ProductVariantController::class, 'byWeightRange'])->name('product-variants.by-weight-range');
+
+        // List methods
+        Route::get('/product-variants/skus', [ProductVariantController::class, 'getSkus'])->name('product-variants.skus');
+        Route::get('/product-variants/barcodes', [ProductVariantController::class, 'getBarcodes'])->name('product-variants.barcodes');
+        Route::get('/product-variants/prices', [ProductVariantController::class, 'getPrices'])->name('product-variants.prices');
+        Route::get('/product-variants/weights', [ProductVariantController::class, 'getWeights'])->name('product-variants.weights');
+
+        // Bulk operations
+        Route::post('/product-variants/bulk-create/{product}', [ProductVariantController::class, 'bulkCreate'])->name('product-variants.bulk-create');
+        Route::put('/product-variants/bulk-update', [ProductVariantController::class, 'bulkUpdate'])->name('product-variants.bulk-update');
+        Route::delete('/product-variants/bulk-delete', [ProductVariantController::class, 'bulkDelete'])->name('product-variants.bulk-delete');
+
+        // Import/Export operations
+        Route::post('/product-variants/import/{product}', [ProductVariantController::class, 'import'])->name('product-variants.import');
+        Route::get('/product-variants/export/{product}', [ProductVariantController::class, 'export'])->name('product-variants.export');
+        Route::post('/product-variants/sync/{product}', [ProductVariantController::class, 'sync'])->name('product-variants.sync');
+
+        // Inventory management
+        Route::get('/product-variants/inventory/{variant}', [ProductVariantController::class, 'inventory'])->name('product-variants.inventory');
+        Route::get('/product-variants/inventory-history/{variant}', [ProductVariantController::class, 'inventoryHistory'])->name('product-variants.inventory-history');
+        Route::get('/product-variants/inventory-alerts/{variant}', [ProductVariantController::class, 'inventoryAlerts'])->name('product-variants.inventory-alerts');
+
+        // Analytics
+        Route::get('/product-variants/analytics/{variant}', [ProductVariantController::class, 'analytics'])->name('product-variants.analytics');
+        Route::get('/product-variants/analytics-by-product/{product}', [ProductVariantController::class, 'analyticsByProduct'])->name('product-variants.analytics-by-product');
+        Route::get('/product-variants/sales/{variant}', [ProductVariantController::class, 'sales'])->name('product-variants.sales');
+        Route::get('/product-variants/revenue/{variant}', [ProductVariantController::class, 'revenue'])->name('product-variants.revenue');
+        Route::get('/product-variants/profit/{variant}', [ProductVariantController::class, 'profit'])->name('product-variants.profit');
+        Route::get('/product-variants/margin/{variant}', [ProductVariantController::class, 'margin'])->name('product-variants.margin');
     });
 });
