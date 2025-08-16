@@ -515,4 +515,77 @@ Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:
         // Recommendations
         Route::get('/recommendations/{product}', [ApiProductDiscountController::class, 'recommendations'])->name('recommendations');
     });
+
+    // Product API routes
+    Route::prefix('products')->name('products.')->group(function () {
+        // List products
+        Route::get('/', [ApiProductController::class, 'index'])->name('index');
+
+        // Get product count
+        Route::get('/count', [ApiProductController::class, 'getCount'])->name('count');
+
+        // Get product analytics
+        Route::get('/analytics', [ApiProductController::class, 'getAnalytics'])->name('analytics');
+
+        // Search products
+        Route::get('/search', [ApiProductController::class, 'search'])->name('search');
+
+        // Filter by status
+        Route::get('/active', [ApiProductController::class, 'active'])->name('active');
+        Route::get('/featured', [ApiProductController::class, 'featured'])->name('featured');
+        Route::get('/in-stock', [ApiProductController::class, 'inStock'])->name('in-stock');
+        Route::get('/low-stock', [ApiProductController::class, 'lowStock'])->name('low-stock');
+        Route::get('/out-of-stock', [ApiProductController::class, 'outOfStock'])->name('out-of-stock');
+
+        // Analytics and reporting
+        Route::get('/top-selling', [ApiProductController::class, 'topSelling'])->name('top-selling');
+        Route::get('/most-viewed', [ApiProductController::class, 'mostViewed'])->name('most-viewed');
+        Route::get('/best-rated', [ApiProductController::class, 'bestRated'])->name('best-rated');
+        Route::get('/new-arrivals', [ApiProductController::class, 'newArrivals'])->name('new-arrivals');
+        Route::get('/on-sale', [ApiProductController::class, 'onSale'])->name('on-sale');
+
+        // Filter by relationship
+        Route::get('/by-category/{category}', [ApiProductController::class, 'byCategory'])->name('by-category');
+        Route::get('/by-brand/{brand}', [ApiProductController::class, 'byBrand'])->name('by-brand');
+        Route::get('/related/{product}', [ApiProductController::class, 'related'])->name('related');
+
+        // Bulk operations
+        Route::post('/bulk-operations', [ApiProductController::class, 'bulkOperations'])->name('bulk-operations');
+
+        // Inventory management
+        Route::get('/inventory/{product}', [ApiProductController::class, 'getInventoryLevel'])->name('inventory');
+        Route::post('/inventory/update', [ApiProductController::class, 'updateInventory'])->name('update-inventory');
+
+        // Create product
+        Route::post('/', [ApiProductController::class, 'store'])->name('store');
+
+        // Product-specific routes
+        Route::prefix('{product}')->group(function () {
+            // Show product
+            Route::get('/', [ApiProductController::class, 'show'])->name('show');
+
+            // Update product (full update)
+            Route::put('/', [ApiProductController::class, 'update'])->name('update');
+
+            // Update product (partial update)
+            Route::patch('/', [ApiProductController::class, 'update'])->name('update.partial');
+
+            // Delete product
+            Route::delete('/', [ApiProductController::class, 'destroy'])->name('destroy');
+
+            // Status management
+            Route::post('/toggle-active', [ApiProductController::class, 'toggleActive'])->name('toggle-active');
+            Route::post('/toggle-featured', [ApiProductController::class, 'toggleFeatured'])->name('toggle-featured');
+            Route::post('/publish', [ApiProductController::class, 'publish'])->name('publish');
+            Route::post('/unpublish', [ApiProductController::class, 'unpublish'])->name('unpublish');
+            Route::post('/archive', [ApiProductController::class, 'archive'])->name('archive');
+
+            // Media management
+            Route::post('/media', [ApiProductController::class, 'uploadMedia'])->name('upload-media');
+            Route::delete('/media/{media}', [ApiProductController::class, 'deleteMedia'])->name('delete-media');
+
+            // Product operations
+            Route::post('/duplicate', [ApiProductController::class, 'duplicate'])->name('duplicate');
+        });
+    });
 });

@@ -7,6 +7,8 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
+use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia;
 
 trait HasMediaOperations
 {
@@ -158,5 +160,39 @@ trait HasMediaOperations
     public function deleteBanner(object $item): bool
     {
         return $this->deleteAllMedia($item, 'banner');
+    }
+
+    public function addMedia(Model $model, $file, string $collection = 'default'): bool
+    {
+        if (!$model instanceof HasMedia) {
+            return false;
+        }
+
+        $model->addMedia($file)->toMediaCollection($collection);
+        return true;
+    }
+
+    public function removeMedia(Model $model, int $mediaId): bool
+    {
+        if (!$model instanceof HasMedia) {
+            return false;
+        }
+
+        $media = $model->media()->find($mediaId);
+        if ($media) {
+            $media->delete();
+            return true;
+        }
+
+        return false;
+    }
+
+    public function getMedia(Model $model, string $collection = 'default'): Collection
+    {
+        if (!$model instanceof HasMedia) {
+            return collect();
+        }
+
+        return $model->getMedia($collection);
     }
 }

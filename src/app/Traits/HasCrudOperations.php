@@ -6,234 +6,185 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
-use Spatie\LaravelData\Data;
 
 trait HasCrudOperations
 {
-    /**
-     * Get all items
-     */
+    protected Model $model;
+    protected string $dtoClass;
+
+    // Basic CRUD operations
     public function all(): Collection
     {
-        return $this->repository->all();
+        return $this->model::all();
     }
 
-    /**
-     * Find item by ID
-     */
-    public function find(int $id): ?object
-    {
-        return $this->repository->find($id);
-    }
-
-    /**
-     * Find item by ID and return as DTO
-     */
-    public function findDTO(int $id): ?Data
-    {
-        return $this->repository->findDTO($id);
-    }
-
-    /**
-     * Find items by user ID
-     */
-    public function findByUser(int $userId): Collection
-    {
-        return $this->repository->findByUser($userId);
-    }
-
-    /**
-     * Find items by user ID and return as DTOs
-     */
-    public function findByUserDTO(int $userId): Collection
-    {
-        return $this->repository->findByUserDTO($userId);
-    }
-
-    /**
-     * Create new item
-     */
-    public function create(array $data): object
-    {
-        $this->validateData($data);
-        return $this->repository->create($data);
-    }
-
-    /**
-     * Create new item and return as DTO
-     */
-    public function createDTO(array $data): Data
-    {
-        $this->validateData($data);
-        return $this->repository->createAndReturnDTO($data);
-    }
-
-    /**
-     * Update item
-     */
-    public function update(object $item, array $data): bool
-    {
-        $this->validateData($data, $item);
-        return $this->repository->update($item, $data);
-    }
-
-    /**
-     * Update item and return as DTO
-     */
-    public function updateDTO(object $item, array $data): ?Data
-    {
-        $this->validateData($data, $item);
-        return $this->repository->updateAndReturnDTO($item, $data);
-    }
-
-    /**
-     * Delete item
-     */
-    public function delete(object $item): bool
-    {
-        return $this->repository->delete($item);
-    }
-
-    /**
-     * Paginate items (regular pagination)
-     */
     public function paginate(int $perPage = 15): LengthAwarePaginator
     {
-        return $this->repository->paginate($perPage);
+        return $this->model::paginate($perPage);
     }
 
-    /**
-     * Paginate items by user (regular pagination)
-     */
-    public function paginateByUser(int $userId, int $perPage = 15): LengthAwarePaginator
-    {
-        return $this->repository->paginateByUser($userId, $perPage);
-    }
-
-    /**
-     * Simple paginate items
-     */
     public function simplePaginate(int $perPage = 15): Paginator
     {
-        return $this->repository->simplePaginate($perPage);
+        return $this->model::simplePaginate($perPage);
     }
 
-    /**
-     * Simple paginate items by user
-     */
-    public function simplePaginateByUser(int $userId, int $perPage = 15): Paginator
-    {
-        return $this->repository->simplePaginateByUser($userId, $perPage);
-    }
-
-    /**
-     * Cursor paginate items
-     */
     public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
     {
-        return $this->repository->cursorPaginate($perPage, $cursor);
+        return $this->model::cursorPaginate($perPage, ['*'], 'id', $cursor);
     }
 
-    /**
-     * Cursor paginate items by user
-     */
-    public function cursorPaginateByUser(int $userId, int $perPage = 15, string $cursor = null): CursorPaginator
+    public function find(int $id): ?Model
     {
-        return $this->repository->cursorPaginateByUser($userId, $perPage, $cursor);
+        return $this->model::find($id);
     }
 
-    /**
-     * Count items by user
-     */
-    public function countByUser(int $userId): int
+    public function findDTO(int $id): mixed
     {
-        return $this->repository->countByUser($userId);
+        $model = $this->find($id);
+        return $model ? $this->dtoClass::fromModel($model) : null;
     }
 
-    /**
-     * Delete all items by user
-     */
-    public function deleteByUser(int $userId): bool
+    public function create(array $data): Model
     {
-        return $this->repository->deleteByUser($userId);
+        $validated = $this->validateData($data);
+        return $this->model::create($validated);
     }
 
-    /**
-     * Update all items by user
-     */
-    public function updateByUser(int $userId, array $data): bool
+    public function createAndReturnDTO(array $data): mixed
     {
-        return $this->repository->updateByUser($userId, $data);
+        $model = $this->create($data);
+        return $this->dtoClass::fromModel($model);
     }
 
-    /**
-     * Validate data using DTO rules
-     */
-    protected function validateData(array $data, ?object $item = null): void
+    public function update(Model $model, array $data): bool
     {
-        $dtoClass = $this->getDtoClass();
+        $validated = $this->validateData($data, $model->id);
+        return $model->update($validated);
+    }
 
-        if (!class_exists($dtoClass)) {
-            throw new \InvalidArgumentException("DTO class {$dtoClass} not found");
+    public function updateAndReturnDTO(Model $model, array $data): mixed
+    {
+        $updated = $this->update($model, $data);
+        return $updated ? $this->dtoClass::fromModel($model->fresh()) : null;
+    }
+
+    public function delete(Model $model): bool
+    {
+        return $model->delete();
+    }
+
+    // Bulk operations
+    public function bulkCreate(array $items): Collection
+    {
+        $validatedItems = [];
+        foreach ($items as $item) {
+            $validatedItems[] = $this->validateData($item);
         }
 
-        $rules = $dtoClass::rules();
-        $messages = $dtoClass::messages();
+        return $this->model::insert($validatedItems);
+    }
 
-        // Remove user_id validation for updates
-        if ($item && isset($rules['user_id'])) {
-            unset($rules['user_id']);
+    public function bulkUpdate(array $updates): bool
+    {
+        return DB::transaction(function () use ($updates) {
+            foreach ($updates as $update) {
+                if (!isset($update['id'])) {
+                    continue;
+                }
+                $model = $this->find($update['id']);
+                if ($model) {
+                    $this->update($model, $update);
+                }
+            }
+            return true;
+        });
+    }
+
+    public function bulkDelete(array $ids): bool
+    {
+        return $this->model::whereIn('id', $ids)->delete() > 0;
+    }
+
+    // Search functionality
+    public function search(string $query, array $fields = []): Collection
+    {
+        $searchFields = $fields ?: $this->getSearchableFields();
+
+        return $this->model::where(function ($q) use ($query, $searchFields) {
+            foreach ($searchFields as $field) {
+                $q->orWhere($field, 'LIKE', "%{$query}%");
+            }
+        })->get();
+    }
+
+    public function searchDTO(string $query, array $fields = []): Collection
+    {
+        $models = $this->search($query, $fields);
+        return $models->map(fn($model) => $this->dtoClass::fromModel($model));
+    }
+
+    // Validation
+    protected function validateData(array $data, ?int $excludeId = null): array
+    {
+        $rules = $this->dtoClass::rules();
+
+        if ($excludeId) {
+            $rules = $this->updateUniqueRules($rules, $excludeId);
         }
 
-        // Set user_id if not provided (assuming authenticated user)
-        if (!isset($data['user_id']) && !$item) {
-            $data['user_id'] = auth()->id();
-        }
-
-        $validator = Validator::make($data, $rules, $messages);
+        $validator = Validator::make($data, $rules, $this->dtoClass::messages());
 
         if ($validator->fails()) {
-            throw new ValidationException($validator);
-        }
-    }
-
-    /**
-     * Get the DTO class for this service
-     */
-    protected function getDtoClass(): string
-    {
-        // Extract model name from repository class
-        $repositoryClass = get_class($this->repository);
-        $modelName = class_basename(str_replace('Repository', '', $repositoryClass));
-
-        return "Fereydooni\\Shopping\\app\\DTOs\\{$modelName}DTO";
-    }
-
-    /**
-     * Check if user can perform action on item
-     */
-    protected function canUserPerformAction(object $item, string $action): bool
-    {
-        $userId = auth()->id();
-
-        // Check if item belongs to user
-        if (isset($item->user_id) && $item->user_id !== $userId) {
-            return false;
+            throw new \Illuminate\Validation\ValidationException($validator);
         }
 
-        // Check permissions
-        $permission = $this->getPermissionName($action);
-        return auth()->user()->can($permission);
+        return $validator->validated();
     }
 
-    /**
-     * Get permission name for action
-     */
-    protected function getPermissionName(string $action): string
+    protected function updateUniqueRules(array $rules, int $excludeId): array
     {
-        $modelName = strtolower(class_basename($this->repository));
-        return "{$modelName}.{$action}";
+        foreach ($rules as $field => $fieldRules) {
+            $rules[$field] = array_map(function ($rule) use ($excludeId) {
+                if (is_string($rule) && str_starts_with($rule, 'unique:')) {
+                    $parts = explode(',', $rule);
+                    if (count($parts) >= 2) {
+                        $table = $parts[1];
+                        return "unique:{$table},{$parts[2] ?? $field},{$excludeId}";
+                    }
+                }
+                return $rule;
+            }, $fieldRules);
+        }
+        return $rules;
+    }
+
+    protected function getSearchableFields(): array
+    {
+        return ['title', 'name', 'description', 'slug'];
+    }
+
+    // Soft delete support
+    public function withTrashed(): self
+    {
+        $this->model = $this->model::withTrashed();
+        return $this;
+    }
+
+    public function onlyTrashed(): Collection
+    {
+        return $this->model::onlyTrashed()->get();
+    }
+
+    public function restore(Model $model): bool
+    {
+        return $model->restore();
+    }
+
+    public function forceDelete(Model $model): bool
+    {
+        return $model->forceDelete();
     }
 }

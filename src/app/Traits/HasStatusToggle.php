@@ -2,180 +2,135 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 trait HasStatusToggle
 {
-    /**
-     * Toggle active status
-     */
-    public function toggleActive(object $item): bool
+    public function toggleActive(Model $model): bool
     {
-        $this->validateStatusToggle($item, 'active');
-
-        $newStatus = !$item->is_active;
-        $data = ['is_active' => $newStatus];
-
-        $result = $this->repository->update($item, $data);
-
-        if ($result) {
-            $this->fireStatusChangedEvent($item, 'active', $newStatus);
+        if (!$this->canToggleStatus($model, 'active')) {
+            return false;
         }
 
-        return $result;
-    }
+        $model->is_active = !$model->is_active;
+        $saved = $model->save();
 
-    /**
-     * Toggle featured status
-     */
-    public function toggleFeatured(object $item): bool
-    {
-        $this->validateStatusToggle($item, 'featured');
-
-        $newStatus = !$item->is_featured;
-        $data = ['is_featured' => $newStatus];
-
-        $result = $this->repository->update($item, $data);
-
-        if ($result) {
-            $this->fireStatusChangedEvent($item, 'featured', $newStatus);
+        if ($saved) {
+            $this->logStatusChange($model, 'active', $model->is_active);
         }
 
-        return $result;
+        return $saved;
     }
 
-    /**
-     * Set active status
-     */
-    public function setActive(object $item, bool $status): bool
+    public function toggleFeatured(Model $model): bool
     {
-        $this->validateStatusToggle($item, 'active');
-
-        if ($item->is_active === $status) {
-            return true; // No change needed
+        if (!$this->canToggleStatus($model, 'featured')) {
+            return false;
         }
 
-        $data = ['is_active' => $status];
-        $result = $this->repository->update($item, $data);
+        $model->is_featured = !$model->is_featured;
+        $saved = $model->save();
 
-        if ($result) {
-            $this->fireStatusChangedEvent($item, 'active', $status);
+        if ($saved) {
+            $this->logStatusChange($model, 'featured', $model->is_featured);
         }
 
-        return $result;
+        return $saved;
     }
 
-    /**
-     * Set featured status
-     */
-    public function setFeatured(object $item, bool $status): bool
+    public function publish(Model $model): bool
     {
-        $this->validateStatusToggle($item, 'featured');
-
-        if ($item->is_featured === $status) {
-            return true; // No change needed
+        if (!$this->canChangeStatus($model, 'published')) {
+            return false;
         }
 
-        $data = ['is_featured' => $status];
-        $result = $this->repository->update($item, $data);
+        $model->status = 'published';
+        $saved = $model->save();
 
-        if ($result) {
-            $this->fireStatusChangedEvent($item, 'featured', $status);
+        if ($saved) {
+            $this->logStatusChange($model, 'status', 'published');
         }
 
-        return $result;
+        return $saved;
     }
 
-    /**
-     * Get active items
-     */
-    public function getActive(): Collection
+    public function unpublish(Model $model): bool
     {
-        return $this->repository->findActive();
-    }
-
-    /**
-     * Get active items as DTOs
-     */
-    public function getActiveDTO(): Collection
-    {
-        return $this->repository->findActiveDTO();
-    }
-
-    /**
-     * Get featured items
-     */
-    public function getFeatured(): Collection
-    {
-        return $this->repository->findFeatured();
-    }
-
-    /**
-     * Get featured items as DTOs
-     */
-    public function getFeaturedDTO(): Collection
-    {
-        return $this->repository->findFeaturedDTO();
-    }
-
-    /**
-     * Validate status toggle operation
-     */
-    protected function validateStatusToggle(object $item, string $statusType): void
-    {
-        $rules = [
-            'status' => 'required|in:active,featured',
-        ];
-
-        $data = ['status' => $statusType];
-
-        $validator = Validator::make($data, $rules);
-
-        if ($validator->fails()) {
-            throw new ValidationException($validator);
+        if (!$this->canChangeStatus($model, 'draft')) {
+            return false;
         }
+
+        $model->status = 'draft';
+        $saved = $model->save();
+
+        if ($saved) {
+            $this->logStatusChange($model, 'status', 'draft');
+        }
+
+        return $saved;
     }
 
-    /**
-     * Fire status changed event
-     */
-    protected function fireStatusChangedEvent(object $item, string $statusType, bool $newStatus): void
+    public function archive(Model $model): bool
     {
-        // This method can be overridden in specific services to fire custom events
-        // For now, we'll leave it empty as a placeholder
+        if (!$this->canChangeStatus($model, 'archived')) {
+            return false;
+        }
+
+        $model->status = 'archived';
+        $saved = $model->save();
+
+        if ($saved) {
+            $this->logStatusChange($model, 'status', 'archived');
+        }
+
+        return $saved;
     }
 
-    /**
-     * Check if item is active
-     */
-    public function isActive(object $item): bool
+    protected function canToggleStatus(Model $model, string $statusType): bool
     {
-        return $item->is_active;
+        $user = Auth::user();
+        if (!$user) {
+            return false;
+        }
+
+        $permission = $this->getStatusPermission($statusType);
+        return $user->can($permission, $model);
     }
 
-    /**
-     * Check if item is featured
-     */
-    public function isFeatured(object $item): bool
+    protected function canChangeStatus(Model $model, string $newStatus): bool
     {
-        return $item->is_featured;
+        $user = Auth::user();
+        if (!$user) {
+            return false;
+        }
+
+        $permission = $this->getStatusChangePermission($newStatus);
+        return $user->can($permission, $model);
     }
 
-    /**
-     * Get active count
-     */
-    public function getActiveCount(): int
+    protected function getStatusPermission(string $statusType): string
     {
-        return $this->repository->getActiveBrandCount();
+        $modelName = strtolower(class_basename($model));
+        return "{$modelName}.toggle.{$statusType}";
     }
 
-    /**
-     * Get featured count
-     */
-    public function getFeaturedCount(): int
+    protected function getStatusChangePermission(string $status): string
     {
-        return $this->repository->getFeaturedBrandCount();
+        $modelName = strtolower(class_basename($model));
+        return "{$modelName}.{$status}";
+    }
+
+    protected function logStatusChange(Model $model, string $field, $value): void
+    {
+        // Log status change for audit trail
+        // This can be implemented based on your logging requirements
+        logger()->info("Status changed", [
+            'model' => get_class($model),
+            'model_id' => $model->id,
+            'field' => $field,
+            'value' => $value,
+            'user_id' => Auth::id(),
+        ]);
     }
 }

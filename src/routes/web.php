@@ -255,4 +255,48 @@ Route::prefix('shopping')->name('shopping.')->group(function () {
         Route::get('/product-discounts/{discount}/forecast', [ProductDiscountController::class, 'forecast'])->name('product-discounts.forecast');
         Route::get('/product-discounts/recommendations/{product}', [ProductDiscountController::class, 'recommendations'])->name('product-discounts.recommendations');
     });
+
+    // Product routes (with policy authorization)
+    Route::middleware(['auth'])->group(function () {
+        // Basic CRUD operations
+        Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+        Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
+        Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+        Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
+        Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
+        Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
+        Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+
+        // Status management
+        Route::post('/products/{product}/toggle-active', [ProductController::class, 'toggleActive'])->name('products.toggle-active');
+        Route::post('/products/{product}/toggle-featured', [ProductController::class, 'toggleFeatured'])->name('products.toggle-featured');
+        Route::post('/products/{product}/publish', [ProductController::class, 'publish'])->name('products.publish');
+        Route::post('/products/{product}/unpublish', [ProductController::class, 'unpublish'])->name('products.unpublish');
+        Route::post('/products/{product}/archive', [ProductController::class, 'archive'])->name('products.archive');
+
+        // Search and filtering
+        Route::get('/products/search', [ProductController::class, 'search'])->name('products.search');
+        Route::get('/products/active', [ProductController::class, 'active'])->name('products.active');
+        Route::get('/products/featured', [ProductController::class, 'featured'])->name('products.featured');
+        Route::get('/products/in-stock', [ProductController::class, 'inStock'])->name('products.in-stock');
+        Route::get('/products/low-stock', [ProductController::class, 'lowStock'])->name('products.low-stock');
+        Route::get('/products/out-of-stock', [ProductController::class, 'outOfStock'])->name('products.out-of-stock');
+        Route::get('/products/top-selling', [ProductController::class, 'topSelling'])->name('products.top-selling');
+        Route::get('/products/most-viewed', [ProductController::class, 'mostViewed'])->name('products.most-viewed');
+        Route::get('/products/best-rated', [ProductController::class, 'bestRated'])->name('products.best-rated');
+        Route::get('/products/new-arrivals', [ProductController::class, 'newArrivals'])->name('products.new-arrivals');
+        Route::get('/products/on-sale', [ProductController::class, 'onSale'])->name('products.on-sale');
+
+        // Category and brand filtering
+        Route::get('/products/by-category/{category}', [ProductController::class, 'byCategory'])->name('products.by-category');
+        Route::get('/products/by-brand/{brand}', [ProductController::class, 'byBrand'])->name('products.by-brand');
+        Route::get('/products/related/{product}', [ProductController::class, 'related'])->name('products.related');
+
+        // Media management
+        Route::post('/products/{product}/media', [ProductController::class, 'uploadMedia'])->name('products.upload-media');
+        Route::delete('/products/{product}/media/{media}', [ProductController::class, 'deleteMedia'])->name('products.delete-media');
+
+        // Product operations
+        Route::post('/products/{product}/duplicate', [ProductController::class, 'duplicate'])->name('products.duplicate');
+    });
 });
