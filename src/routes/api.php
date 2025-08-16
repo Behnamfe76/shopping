@@ -17,6 +17,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductVariantController as 
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ShipmentController as ApiShipmentController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ShipmentItemController as ApiShipmentItemController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\TransactionController as ApiTransactionController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\UserSubscriptionController as ApiUserSubscriptionController;
 
 Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     // Address API routes
@@ -1094,6 +1095,76 @@ Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:
             Route::post('/success', [ApiTransactionController::class, 'markAsSuccess'])->name('success');
             Route::post('/failed', [ApiTransactionController::class, 'markAsFailed'])->name('failed');
             Route::post('/refund', [ApiTransactionController::class, 'markAsRefunded'])->name('refund');
+        });
+    });
+
+    // UserSubscription API routes
+    Route::prefix('user-subscriptions')->name('user-subscriptions.')->group(function () {
+        // List user subscriptions
+        Route::get('/', [ApiUserSubscriptionController::class, 'index'])->name('index');
+
+        // Get user subscription count
+        Route::get('/count', [ApiUserSubscriptionController::class, 'getCount'])->name('count');
+
+        // Search user subscriptions
+        Route::get('/search', [ApiUserSubscriptionController::class, 'search'])->name('search');
+
+        // Get user subscription statistics
+        Route::get('/statistics', [ApiUserSubscriptionController::class, 'statistics'])->name('statistics');
+
+        // Get user subscription analytics
+        Route::get('/analytics', [ApiUserSubscriptionController::class, 'analytics'])->name('analytics');
+
+        // Get user subscription revenue
+        Route::get('/revenue', [ApiUserSubscriptionController::class, 'revenue'])->name('revenue');
+
+        // Get popular subscriptions
+        Route::get('/popular', [ApiUserSubscriptionController::class, 'popular'])->name('popular');
+
+        // Filter by status
+        Route::get('/active', [ApiUserSubscriptionController::class, 'getActive'])->name('active');
+        Route::get('/trial', [ApiUserSubscriptionController::class, 'getTrial'])->name('trial');
+        Route::get('/expired', [ApiUserSubscriptionController::class, 'getExpired'])->name('expired');
+        Route::get('/cancelled', [ApiUserSubscriptionController::class, 'getCancelled'])->name('cancelled');
+        Route::get('/paused', [ApiUserSubscriptionController::class, 'getPaused'])->name('paused');
+
+        // Renewal and expiration tracking
+        Route::get('/renewals', [ApiUserSubscriptionController::class, 'getRenewals'])->name('renewals');
+        Route::get('/expiring-trials', [ApiUserSubscriptionController::class, 'getExpiringTrials'])->name('expiring-trials');
+        Route::get('/expiring', [ApiUserSubscriptionController::class, 'getExpiring'])->name('expiring');
+
+        // Create user subscription
+        Route::post('/', [ApiUserSubscriptionController::class, 'store'])->name('store');
+
+        // Filter by user
+        Route::get('/by-user/{user}', [ApiUserSubscriptionController::class, 'getByUser'])->name('by-user');
+
+        // Filter by subscription
+        Route::get('/by-subscription/{subscription}', [ApiUserSubscriptionController::class, 'getBySubscription'])->name('by-subscription');
+
+        // Filter by status
+        Route::get('/by-status/{status}', [ApiUserSubscriptionController::class, 'getByStatus'])->name('by-status');
+
+        // User subscription-specific routes
+        Route::prefix('{userSubscription}')->group(function () {
+            // Show user subscription
+            Route::get('/', [ApiUserSubscriptionController::class, 'show'])->name('show');
+
+            // Update user subscription (full update)
+            Route::put('/', [ApiUserSubscriptionController::class, 'update'])->name('update');
+
+            // Update user subscription (partial update)
+            Route::patch('/', [ApiUserSubscriptionController::class, 'update'])->name('update.partial');
+
+            // Delete user subscription
+            Route::delete('/', [ApiUserSubscriptionController::class, 'destroy'])->name('destroy');
+
+            // Lifecycle management
+            Route::post('/activate', [ApiUserSubscriptionController::class, 'activate'])->name('activate');
+            Route::post('/cancel', [ApiUserSubscriptionController::class, 'cancel'])->name('cancel');
+            Route::post('/renew', [ApiUserSubscriptionController::class, 'renew'])->name('renew');
+            Route::post('/pause', [ApiUserSubscriptionController::class, 'pause'])->name('pause');
+            Route::post('/resume', [ApiUserSubscriptionController::class, 'resume'])->name('resume');
         });
     });
 });

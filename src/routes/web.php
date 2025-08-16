@@ -19,6 +19,7 @@ use Fereydooni\Shopping\app\Http\Controllers\ProductVariantController;
 use Fereydooni\Shopping\app\Http\Controllers\ShipmentController;
 use Fereydooni\Shopping\app\Http\Controllers\ShipmentItemController;
 use Fereydooni\Shopping\app\Http\Controllers\TransactionController;
+use Fereydooni\Shopping\app\Http\Controllers\UserSubscriptionController;
 
 Route::prefix('shopping')->name('shopping.')->group(function () {
     // Product routes
@@ -681,5 +682,48 @@ Route::prefix('shopping')->name('shopping.')->group(function () {
         Route::get('/transactions/gateway-performance', [TransactionController::class, 'gatewayPerformance'])->name('transactions.gateway-performance');
         Route::get('/transactions/success-rate', [TransactionController::class, 'successRate'])->name('transactions.success-rate');
         Route::get('/transactions/refund-rate', [TransactionController::class, 'refundRate'])->name('transactions.refund-rate');
+    });
+
+    // UserSubscription routes (with policy authorization)
+    Route::middleware(['auth'])->group(function () {
+        // Basic CRUD operations
+        Route::get('/user-subscriptions', [UserSubscriptionController::class, 'index'])->name('user-subscriptions.index');
+        Route::get('/user-subscriptions/create', [UserSubscriptionController::class, 'create'])->name('user-subscriptions.create');
+        Route::post('/user-subscriptions', [UserSubscriptionController::class, 'store'])->name('user-subscriptions.store');
+        Route::get('/user-subscriptions/{userSubscription}', [UserSubscriptionController::class, 'show'])->name('user-subscriptions.show');
+        Route::get('/user-subscriptions/{userSubscription}/edit', [UserSubscriptionController::class, 'edit'])->name('user-subscriptions.edit');
+        Route::put('/user-subscriptions/{userSubscription}', [UserSubscriptionController::class, 'update'])->name('user-subscriptions.update');
+        Route::delete('/user-subscriptions/{userSubscription}', [UserSubscriptionController::class, 'destroy'])->name('user-subscriptions.destroy');
+
+        // Lifecycle management
+        Route::post('/user-subscriptions/{userSubscription}/activate', [UserSubscriptionController::class, 'activate'])->name('user-subscriptions.activate');
+        Route::post('/user-subscriptions/{userSubscription}/cancel', [UserSubscriptionController::class, 'cancel'])->name('user-subscriptions.cancel');
+        Route::post('/user-subscriptions/{userSubscription}/renew', [UserSubscriptionController::class, 'renew'])->name('user-subscriptions.renew');
+        Route::post('/user-subscriptions/{userSubscription}/pause', [UserSubscriptionController::class, 'pause'])->name('user-subscriptions.pause');
+        Route::post('/user-subscriptions/{userSubscription}/resume', [UserSubscriptionController::class, 'resume'])->name('user-subscriptions.resume');
+
+        // Search and filtering
+        Route::get('/user-subscriptions/search', [UserSubscriptionController::class, 'search'])->name('user-subscriptions.search');
+        Route::get('/user-subscriptions/active', [UserSubscriptionController::class, 'active'])->name('user-subscriptions.active');
+        Route::get('/user-subscriptions/trial', [UserSubscriptionController::class, 'trial'])->name('user-subscriptions.trial');
+        Route::get('/user-subscriptions/expired', [UserSubscriptionController::class, 'expired'])->name('user-subscriptions.expired');
+        Route::get('/user-subscriptions/cancelled', [UserSubscriptionController::class, 'cancelled'])->name('user-subscriptions.cancelled');
+        Route::get('/user-subscriptions/paused', [UserSubscriptionController::class, 'paused'])->name('user-subscriptions.paused');
+
+        // Analytics and statistics
+        Route::get('/user-subscriptions/statistics', [UserSubscriptionController::class, 'statistics'])->name('user-subscriptions.statistics');
+        Route::get('/user-subscriptions/analytics', [UserSubscriptionController::class, 'analytics'])->name('user-subscriptions.analytics');
+        Route::get('/user-subscriptions/revenue', [UserSubscriptionController::class, 'revenue'])->name('user-subscriptions.revenue');
+        Route::get('/user-subscriptions/popular', [UserSubscriptionController::class, 'popular'])->name('user-subscriptions.popular');
+
+        // Renewal and expiration tracking
+        Route::get('/user-subscriptions/renewals', [UserSubscriptionController::class, 'renewals'])->name('user-subscriptions.renewals');
+        Route::get('/user-subscriptions/expiring-trials', [UserSubscriptionController::class, 'expiringTrials'])->name('user-subscriptions.expiring-trials');
+        Route::get('/user-subscriptions/expiring', [UserSubscriptionController::class, 'expiring'])->name('user-subscriptions.expiring');
+
+        // User-specific routes
+        Route::get('/user-subscriptions/by-user/{user}', [UserSubscriptionController::class, 'byUser'])->name('user-subscriptions.by-user');
+        Route::get('/user-subscriptions/by-subscription/{subscription}', [UserSubscriptionController::class, 'bySubscription'])->name('user-subscriptions.by-subscription');
+        Route::get('/user-subscriptions/by-status/{status}', [UserSubscriptionController::class, 'byStatus'])->name('user-subscriptions.by-status');
     });
 });
