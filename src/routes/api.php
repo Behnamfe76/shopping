@@ -8,6 +8,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Api\V1\OrderController as ApiOrderC
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\OrderItemController as ApiOrderItemController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\OrderStatusHistoryController as ApiOrderStatusHistoryController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductAttributeController as ApiProductAttributeController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductAttributeValueController as ApiProductAttributeValueController;
 
 Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     // Address API routes
@@ -385,6 +386,71 @@ Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:
                 Route::put('/{value}', [ApiProductAttributeController::class, 'updateValue'])->name('update');
                 Route::delete('/{value}', [ApiProductAttributeController::class, 'deleteValue'])->name('destroy');
             });
+        });
+    });
+
+    // ProductAttributeValue API routes
+    Route::prefix('product-attribute-values')->name('product-attribute-values.')->group(function () {
+        // List product attribute values
+        Route::get('/', [ApiProductAttributeValueController::class, 'index'])->name('index');
+
+        // Get value count
+        Route::get('/count', [ApiProductAttributeValueController::class, 'getCount'])->name('count');
+
+        // Search product attribute values
+        Route::get('/search', [ApiProductAttributeValueController::class, 'search'])->name('search');
+
+        // Filter by status
+        Route::get('/active', [ApiProductAttributeValueController::class, 'active'])->name('active');
+        Route::get('/default', [ApiProductAttributeValueController::class, 'default'])->name('default');
+
+        // Usage analytics
+        Route::get('/most-used', [ApiProductAttributeValueController::class, 'mostUsed'])->name('most-used');
+        Route::get('/least-used', [ApiProductAttributeValueController::class, 'leastUsed'])->name('least-used');
+        Route::get('/unused', [ApiProductAttributeValueController::class, 'unused'])->name('unused');
+
+        // Filter by relationship
+        Route::get('/by-attribute/{attribute}', [ApiProductAttributeValueController::class, 'byAttribute'])->name('by-attribute');
+        Route::get('/by-variant/{variant}', [ApiProductAttributeValueController::class, 'byVariant'])->name('by-variant');
+        Route::get('/by-product/{product}', [ApiProductAttributeValueController::class, 'byProduct'])->name('by-product');
+        Route::get('/by-category/{category}', [ApiProductAttributeValueController::class, 'byCategory'])->name('by-category');
+        Route::get('/by-brand/{brand}', [ApiProductAttributeValueController::class, 'byBrand'])->name('by-brand');
+
+        // Create product attribute value
+        Route::post('/', [ApiProductAttributeValueController::class, 'store'])->name('store');
+
+        // ProductAttributeValue-specific routes
+        Route::prefix('{value}')->group(function () {
+            // Show product attribute value
+            Route::get('/', [ApiProductAttributeValueController::class, 'show'])->name('show');
+
+            // Update product attribute value (full update)
+            Route::put('/', [ApiProductAttributeValueController::class, 'update'])->name('update');
+
+            // Update product attribute value (partial update)
+            Route::patch('/', [ApiProductAttributeValueController::class, 'update'])->name('update.partial');
+
+            // Delete product attribute value
+            Route::delete('/', [ApiProductAttributeValueController::class, 'destroy'])->name('destroy');
+
+            // Status management
+            Route::post('/toggle-active', [ApiProductAttributeValueController::class, 'toggleActive'])->name('toggle-active');
+            Route::post('/toggle-default', [ApiProductAttributeValueController::class, 'toggleDefault'])->name('toggle-default');
+            Route::post('/set-default', [ApiProductAttributeValueController::class, 'setDefault'])->name('set-default');
+
+            // Usage and analytics
+            Route::get('/usage', [ApiProductAttributeValueController::class, 'getUsage'])->name('usage');
+            Route::get('/analytics', [ApiProductAttributeValueController::class, 'getAnalytics'])->name('analytics');
+
+            // Relationship management
+            Route::post('/assign-variant/{variant}', [ApiProductAttributeValueController::class, 'assignToVariant'])->name('assign-variant');
+            Route::delete('/remove-variant/{variant}', [ApiProductAttributeValueController::class, 'removeFromVariant'])->name('remove-variant');
+            Route::post('/assign-product/{product}', [ApiProductAttributeValueController::class, 'assignToProduct'])->name('assign-product');
+            Route::delete('/remove-product/{product}', [ApiProductAttributeValueController::class, 'removeFromProduct'])->name('remove-product');
+            Route::post('/assign-category/{category}', [ApiProductAttributeValueController::class, 'assignToCategory'])->name('assign-category');
+            Route::delete('/remove-category/{category}', [ApiProductAttributeValueController::class, 'removeFromCategory'])->name('remove-category');
+            Route::post('/assign-brand/{brand}', [ApiProductAttributeValueController::class, 'assignToBrand'])->name('assign-brand');
+            Route::delete('/remove-brand/{brand}', [ApiProductAttributeValueController::class, 'removeFromBrand'])->name('remove-brand');
         });
     });
 });

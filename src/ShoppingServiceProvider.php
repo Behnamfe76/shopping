@@ -110,6 +110,19 @@ class ShoppingServiceProvider extends ServiceProvider
             );
         });
 
+        // Register ProductAttributeValue Repository
+        $this->app->bind(
+            \Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeValueRepositoryInterface::class,
+            \Fereydooni\Shopping\app\Repositories\ProductAttributeValueRepository::class
+        );
+
+        // Register ProductAttributeValue Service
+        $this->app->scoped('shopping.product-attribute-value', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\ProductAttributeValueService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeValueRepositoryInterface::class)
+            );
+        });
+
         // Register Facades
         $this->app->singleton('shopping.order.facade', function ($app) {
             return new \Fereydooni\Shopping\app\Services\OrderService(
@@ -132,6 +145,12 @@ class ShoppingServiceProvider extends ServiceProvider
         $this->app->singleton('shopping.product-attribute.facade', function ($app) {
             return new \Fereydooni\Shopping\app\Services\ProductAttributeService(
                 $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeRepositoryInterface::class)
+            );
+        });
+
+        $this->app->singleton('shopping.product-attribute-value.facade', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\ProductAttributeValueService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeValueRepositoryInterface::class)
             );
         });
     }
@@ -173,5 +192,6 @@ class ShoppingServiceProvider extends ServiceProvider
         Gate::policy(\Fereydooni\Shopping\app\Models\OrderItem::class, \Fereydooni\Shopping\app\Policies\OrderItemPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\OrderStatusHistory::class, \Fereydooni\Shopping\app\Policies\OrderStatusHistoryPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\ProductAttribute::class, \Fereydooni\Shopping\app\Policies\ProductAttributePolicy::class);
+        Gate::policy(\Fereydooni\Shopping\app\Models\ProductAttributeValue::class, \Fereydooni\Shopping\app\Policies\ProductAttributeValuePolicy::class);
     }
 }

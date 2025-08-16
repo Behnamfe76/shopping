@@ -10,6 +10,7 @@ use Fereydooni\Shopping\app\Http\Controllers\OrderStatusHistoryController;
 use Fereydooni\Shopping\app\Http\Controllers\CartController;
 use Fereydooni\Shopping\app\Http\Controllers\AddressController;
 use Fereydooni\Shopping\app\Http\Controllers\ProductAttributeController;
+use Fereydooni\Shopping\app\Http\Controllers\ProductAttributeValueController;
 
 Route::prefix('shopping')->name('shopping.')->group(function () {
     // Product routes
@@ -173,5 +174,47 @@ Route::prefix('shopping')->name('shopping.')->group(function () {
         Route::post('/product-attributes/{attribute:slug}/values', [ProductAttributeController::class, 'addValue'])->name('product-attributes.add-value');
         Route::put('/product-attributes/{attribute:slug}/values/{value}', [ProductAttributeController::class, 'updateValue'])->name('product-attributes.update-value');
         Route::delete('/product-attributes/{attribute:slug}/values/{value}', [ProductAttributeController::class, 'deleteValue'])->name('product-attributes.delete-value');
+    });
+
+    // ProductAttributeValue routes (with policy authorization)
+    Route::middleware(['auth'])->group(function () {
+        // Basic CRUD operations
+        Route::get('/product-attribute-values', [ProductAttributeValueController::class, 'index'])->name('product-attribute-values.index');
+        Route::get('/product-attribute-values/create', [ProductAttributeValueController::class, 'create'])->name('product-attribute-values.create');
+        Route::post('/product-attribute-values', [ProductAttributeValueController::class, 'store'])->name('product-attribute-values.store');
+        Route::get('/product-attribute-values/{value}', [ProductAttributeValueController::class, 'show'])->name('product-attribute-values.show');
+        Route::get('/product-attribute-values/{value}/edit', [ProductAttributeValueController::class, 'edit'])->name('product-attribute-values.edit');
+        Route::put('/product-attribute-values/{value}', [ProductAttributeValueController::class, 'update'])->name('product-attribute-values.update');
+        Route::delete('/product-attribute-values/{value}', [ProductAttributeValueController::class, 'destroy'])->name('product-attribute-values.destroy');
+
+        // Status management
+        Route::post('/product-attribute-values/{value}/toggle-active', [ProductAttributeValueController::class, 'toggleActive'])->name('product-attribute-values.toggle-active');
+        Route::post('/product-attribute-values/{value}/toggle-default', [ProductAttributeValueController::class, 'toggleDefault'])->name('product-attribute-values.toggle-default');
+        Route::post('/product-attribute-values/{value}/set-default', [ProductAttributeValueController::class, 'setDefault'])->name('product-attribute-values.set-default');
+
+        // Search and filtering
+        Route::get('/product-attribute-values/search', [ProductAttributeValueController::class, 'search'])->name('product-attribute-values.search');
+        Route::get('/product-attribute-values/active', [ProductAttributeValueController::class, 'active'])->name('product-attribute-values.active');
+        Route::get('/product-attribute-values/default', [ProductAttributeValueController::class, 'default'])->name('product-attribute-values.default');
+        Route::get('/product-attribute-values/most-used', [ProductAttributeValueController::class, 'mostUsed'])->name('product-attribute-values.most-used');
+        Route::get('/product-attribute-values/least-used', [ProductAttributeValueController::class, 'leastUsed'])->name('product-attribute-values.least-used');
+        Route::get('/product-attribute-values/unused', [ProductAttributeValueController::class, 'unused'])->name('product-attribute-values.unused');
+
+        // Relationship queries
+        Route::get('/product-attribute-values/by-attribute/{attribute}', [ProductAttributeValueController::class, 'byAttribute'])->name('product-attribute-values.by-attribute');
+        Route::get('/product-attribute-values/by-variant/{variant}', [ProductAttributeValueController::class, 'byVariant'])->name('product-attribute-values.by-variant');
+        Route::get('/product-attribute-values/by-product/{product}', [ProductAttributeValueController::class, 'byProduct'])->name('product-attribute-values.by-product');
+        Route::get('/product-attribute-values/by-category/{category}', [ProductAttributeValueController::class, 'byCategory'])->name('product-attribute-values.by-category');
+        Route::get('/product-attribute-values/by-brand/{brand}', [ProductAttributeValueController::class, 'byBrand'])->name('product-attribute-values.by-brand');
+
+        // Relationship management
+        Route::post('/product-attribute-values/{value}/assign-variant/{variant}', [ProductAttributeValueController::class, 'assignToVariant'])->name('product-attribute-values.assign-variant');
+        Route::delete('/product-attribute-values/{value}/remove-variant/{variant}', [ProductAttributeValueController::class, 'removeFromVariant'])->name('product-attribute-values.remove-variant');
+        Route::post('/product-attribute-values/{value}/assign-product/{product}', [ProductAttributeValueController::class, 'assignToProduct'])->name('product-attribute-values.assign-product');
+        Route::delete('/product-attribute-values/{value}/remove-product/{product}', [ProductAttributeValueController::class, 'removeFromProduct'])->name('product-attribute-values.remove-product');
+        Route::post('/product-attribute-values/{value}/assign-category/{category}', [ProductAttributeValueController::class, 'assignToCategory'])->name('product-attribute-values.assign-category');
+        Route::delete('/product-attribute-values/{value}/remove-category/{category}', [ProductAttributeValueController::class, 'removeFromCategory'])->name('product-attribute-values.remove-category');
+        Route::post('/product-attribute-values/{value}/assign-brand/{brand}', [ProductAttributeValueController::class, 'assignToBrand'])->name('product-attribute-values.assign-brand');
+        Route::delete('/product-attribute-values/{value}/remove-brand/{brand}', [ProductAttributeValueController::class, 'removeFromBrand'])->name('product-attribute-values.remove-brand');
     });
 });

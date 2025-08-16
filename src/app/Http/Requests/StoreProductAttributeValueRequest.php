@@ -5,14 +5,14 @@ namespace Fereydooni\Shopping\app\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UpdateProductAttributeValueRequest extends FormRequest
+class StoreProductAttributeValueRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return $this->user()->can('update', $this->route('value'));
+        return $this->user()->can('create', \Fereydooni\Shopping\app\Models\ProductAttributeValue::class);
     }
 
     /**
@@ -20,17 +20,10 @@ class UpdateProductAttributeValueRequest extends FormRequest
      */
     public function rules(): array
     {
-        $valueId = $this->route('value')->id;
-
         return [
-            'attribute_id' => 'sometimes|integer|exists:product_attributes,id',
-            'value' => 'sometimes|string|max:1000',
-            'slug' => [
-                'nullable',
-                'string',
-                'max:255',
-                Rule::unique('product_attribute_values', 'slug')->ignore($valueId),
-            ],
+            'attribute_id' => 'required|integer|exists:product_attributes,id',
+            'value' => 'required|string|max:1000',
+            'slug' => 'nullable|string|max:255|unique:product_attribute_values,slug',
             'description' => 'nullable|string|max:1000',
             'sort_order' => 'nullable|integer|min:0',
             'is_active' => 'nullable|boolean',
@@ -48,8 +41,10 @@ class UpdateProductAttributeValueRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'attribute_id.required' => 'Attribute ID is required',
             'attribute_id.integer' => 'Attribute ID must be a number',
             'attribute_id.exists' => 'Selected attribute does not exist',
+            'value.required' => 'Attribute value is required',
             'value.string' => 'Attribute value must be a string',
             'value.max' => 'Attribute value cannot exceed 1000 characters',
             'slug.string' => 'Slug must be a string',
@@ -92,4 +87,3 @@ class UpdateProductAttributeValueRequest extends FormRequest
         ];
     }
 }
-
