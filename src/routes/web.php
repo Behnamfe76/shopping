@@ -12,6 +12,7 @@ use Fereydooni\Shopping\app\Http\Controllers\AddressController;
 use Fereydooni\Shopping\app\Http\Controllers\ProductAttributeController;
 use Fereydooni\Shopping\app\Http\Controllers\ProductAttributeValueController;
 use Fereydooni\Shopping\app\Http\Controllers\ProductDiscountController;
+use Fereydooni\Shopping\app\Http\Controllers\ProductMetaController;
 
 Route::prefix('shopping')->name('shopping.')->group(function () {
     // Product routes
@@ -298,5 +299,50 @@ Route::prefix('shopping')->name('shopping.')->group(function () {
 
         // Product operations
         Route::post('/products/{product}/duplicate', [ProductController::class, 'duplicate'])->name('products.duplicate');
+    });
+
+    // ProductMeta routes (with policy authorization)
+    Route::middleware(['auth'])->group(function () {
+        // Basic CRUD operations
+        Route::get('/product-meta', [ProductMetaController::class, 'index'])->name('product-meta.index');
+        Route::post('/product-meta', [ProductMetaController::class, 'store'])->name('product-meta.store');
+        Route::get('/product-meta/{meta}', [ProductMetaController::class, 'show'])->name('product-meta.show');
+        Route::put('/product-meta/{meta}', [ProductMetaController::class, 'update'])->name('product-meta.update');
+        Route::delete('/product-meta/{meta}', [ProductMetaController::class, 'destroy'])->name('product-meta.destroy');
+
+        // Status management
+        Route::post('/product-meta/{meta}/toggle-public', [ProductMetaController::class, 'togglePublic'])->name('product-meta.toggle-public');
+        Route::post('/product-meta/{meta}/toggle-searchable', [ProductMetaController::class, 'toggleSearchable'])->name('product-meta.toggle-searchable');
+        Route::post('/product-meta/{meta}/toggle-filterable', [ProductMetaController::class, 'toggleFilterable'])->name('product-meta.toggle-filterable');
+
+        // Search and filtering
+        Route::get('/product-meta/search', [ProductMetaController::class, 'search'])->name('product-meta.search');
+        Route::get('/product-meta/public', [ProductMetaController::class, 'public'])->name('product-meta.public');
+        Route::get('/product-meta/private', [ProductMetaController::class, 'private'])->name('product-meta.private');
+        Route::get('/product-meta/searchable', [ProductMetaController::class, 'searchable'])->name('product-meta.searchable');
+        Route::get('/product-meta/filterable', [ProductMetaController::class, 'filterable'])->name('product-meta.filterable');
+
+        // Relationship queries
+        Route::get('/product-meta/by-product/{product}', [ProductMetaController::class, 'byProduct'])->name('product-meta.by-product');
+        Route::get('/product-meta/by-key/{key}', [ProductMetaController::class, 'byKey'])->name('product-meta.by-key');
+        Route::get('/product-meta/by-type/{type}', [ProductMetaController::class, 'byType'])->name('product-meta.by-type');
+
+        // Analytics and reporting
+        Route::get('/product-meta/keys', [ProductMetaController::class, 'getKeys'])->name('product-meta.keys');
+        Route::get('/product-meta/types', [ProductMetaController::class, 'getTypes'])->name('product-meta.types');
+        Route::get('/product-meta/values/{key}', [ProductMetaController::class, 'getValuesByKey'])->name('product-meta.values-by-key');
+
+        // Bulk operations
+        Route::post('/product-meta/bulk-create/{product}', [ProductMetaController::class, 'bulkCreate'])->name('product-meta.bulk-create');
+        Route::put('/product-meta/bulk-update/{product}', [ProductMetaController::class, 'bulkUpdate'])->name('product-meta.bulk-update');
+        Route::delete('/product-meta/bulk-delete/{product}', [ProductMetaController::class, 'bulkDelete'])->name('product-meta.bulk-delete');
+
+        // Import/Export operations
+        Route::post('/product-meta/import/{product}', [ProductMetaController::class, 'import'])->name('product-meta.import');
+        Route::get('/product-meta/export/{product}', [ProductMetaController::class, 'export'])->name('product-meta.export');
+        Route::post('/product-meta/sync/{product}', [ProductMetaController::class, 'sync'])->name('product-meta.sync');
+
+        // Analytics
+        Route::get('/product-meta/analytics/{key}', [ProductMetaController::class, 'analytics'])->name('product-meta.analytics');
     });
 });

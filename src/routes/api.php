@@ -10,6 +10,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Api\V1\OrderStatusHistoryController
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductAttributeController as ApiProductAttributeController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductAttributeValueController as ApiProductAttributeValueController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductDiscountController as ApiProductDiscountController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductMetaController as ApiProductMetaController;
 
 Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     // Address API routes
@@ -586,6 +587,70 @@ Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:
 
             // Product operations
             Route::post('/duplicate', [ApiProductController::class, 'duplicate'])->name('duplicate');
+        });
+    });
+
+    // ProductMeta API routes
+    Route::prefix('product-meta')->name('product-meta.')->group(function () {
+        // List product meta
+        Route::get('/', [ApiProductMetaController::class, 'index'])->name('index');
+
+        // Get product meta count
+        Route::get('/count', [ApiProductMetaController::class, 'getCount'])->name('count');
+
+        // Search product meta
+        Route::get('/search', [ApiProductMetaController::class, 'search'])->name('search');
+
+        // Filter by visibility
+        Route::get('/public', [ApiProductMetaController::class, 'public'])->name('public');
+        Route::get('/private', [ApiProductMetaController::class, 'private'])->name('private');
+        Route::get('/searchable', [ApiProductMetaController::class, 'searchable'])->name('searchable');
+        Route::get('/filterable', [ApiProductMetaController::class, 'filterable'])->name('filterable');
+
+        // Filter by relationship
+        Route::get('/by-product/{product}', [ApiProductMetaController::class, 'byProduct'])->name('by-product');
+        Route::get('/by-key/{key}', [ApiProductMetaController::class, 'byKey'])->name('by-key');
+        Route::get('/by-type/{type}', [ApiProductMetaController::class, 'byType'])->name('by-type');
+
+        // Analytics and reporting
+        Route::get('/keys', [ApiProductMetaController::class, 'getKeys'])->name('keys');
+        Route::get('/types', [ApiProductMetaController::class, 'getTypes'])->name('types');
+        Route::get('/values/{key}', [ApiProductMetaController::class, 'getValuesByKey'])->name('values-by-key');
+
+        // Bulk operations
+        Route::post('/bulk-create/{product}', [ApiProductMetaController::class, 'bulkCreate'])->name('bulk-create');
+        Route::put('/bulk-update/{product}', [ApiProductMetaController::class, 'bulkUpdate'])->name('bulk-update');
+        Route::delete('/bulk-delete/{product}', [ApiProductMetaController::class, 'bulkDelete'])->name('bulk-delete');
+
+        // Import/Export operations
+        Route::post('/import/{product}', [ApiProductMetaController::class, 'import'])->name('import');
+        Route::get('/export/{product}', [ApiProductMetaController::class, 'export'])->name('export');
+        Route::post('/sync/{product}', [ApiProductMetaController::class, 'sync'])->name('sync');
+
+        // Analytics
+        Route::get('/analytics/{key}', [ApiProductMetaController::class, 'analytics'])->name('analytics');
+
+        // Create product meta
+        Route::post('/', [ApiProductMetaController::class, 'store'])->name('store');
+
+        // ProductMeta-specific routes
+        Route::prefix('{meta}')->group(function () {
+            // Show product meta
+            Route::get('/', [ApiProductMetaController::class, 'show'])->name('show');
+
+            // Update product meta (full update)
+            Route::put('/', [ApiProductMetaController::class, 'update'])->name('update');
+
+            // Update product meta (partial update)
+            Route::patch('/', [ApiProductMetaController::class, 'update'])->name('update.partial');
+
+            // Delete product meta
+            Route::delete('/', [ApiProductMetaController::class, 'destroy'])->name('destroy');
+
+            // Status management
+            Route::post('/toggle-public', [ApiProductMetaController::class, 'togglePublic'])->name('toggle-public');
+            Route::post('/toggle-searchable', [ApiProductMetaController::class, 'toggleSearchable'])->name('toggle-searchable');
+            Route::post('/toggle-filterable', [ApiProductMetaController::class, 'toggleFilterable'])->name('toggle-filterable');
         });
     });
 });

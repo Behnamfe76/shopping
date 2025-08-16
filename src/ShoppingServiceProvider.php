@@ -192,6 +192,26 @@ class ShoppingServiceProvider extends ServiceProvider
                 $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductRepositoryInterface::class)
             );
         });
+
+        // Register ProductMeta Repository
+        $this->app->bind(
+            \Fereydooni\Shopping\app\Repositories\Interfaces\ProductMetaRepositoryInterface::class,
+            \Fereydooni\Shopping\app\Repositories\ProductMetaRepository::class
+        );
+
+        // Register ProductMeta Service
+        $this->app->scoped('shopping.product-meta', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\ProductMetaService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductMetaRepositoryInterface::class)
+            );
+        });
+
+        // Register ProductMeta Facade
+        $this->app->singleton('shopping.product-meta.facade', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\ProductMetaService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductMetaRepositoryInterface::class)
+            );
+        });
     }
 
     public function boot(): void
@@ -234,5 +254,6 @@ class ShoppingServiceProvider extends ServiceProvider
         Gate::policy(\Fereydooni\Shopping\app\Models\ProductAttributeValue::class, \Fereydooni\Shopping\app\Policies\ProductAttributeValuePolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\ProductDiscount::class, \Fereydooni\Shopping\app\Policies\ProductDiscountPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\Product::class, \Fereydooni\Shopping\app\Policies\ProductPolicy::class);
+        Gate::policy(\Fereydooni\Shopping\app\Models\ProductMeta::class, \Fereydooni\Shopping\app\Policies\ProductMetaPolicy::class);
     }
 }
