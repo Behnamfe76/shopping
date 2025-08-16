@@ -9,6 +9,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Api\V1\OrderItemController as ApiOr
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\OrderStatusHistoryController as ApiOrderStatusHistoryController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductAttributeController as ApiProductAttributeController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductAttributeValueController as ApiProductAttributeValueController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductDiscountController as ApiProductDiscountController;
 
 Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     // Address API routes
@@ -452,5 +453,66 @@ Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:
             Route::post('/assign-brand/{brand}', [ApiProductAttributeValueController::class, 'assignToBrand'])->name('assign-brand');
             Route::delete('/remove-brand/{brand}', [ApiProductAttributeValueController::class, 'removeFromBrand'])->name('remove-brand');
         });
+    });
+
+    // ProductDiscount API routes
+    Route::prefix('product-discounts')->name('product-discounts.')->group(function () {
+        // List product discounts
+        Route::get('/', [ApiProductDiscountController::class, 'index'])->name('index');
+
+        // Get discount count
+        Route::get('/count', [ApiProductDiscountController::class, 'getCount'])->name('count');
+
+        // Search product discounts
+        Route::get('/search', [ApiProductDiscountController::class, 'search'])->name('search');
+
+        // Filter by status
+        Route::get('/active', [ApiProductDiscountController::class, 'active'])->name('active');
+        Route::get('/expired', [ApiProductDiscountController::class, 'expired'])->name('expired');
+        Route::get('/upcoming', [ApiProductDiscountController::class, 'upcoming'])->name('upcoming');
+        Route::get('/current', [ApiProductDiscountController::class, 'current'])->name('current');
+
+        // Filter by relationship
+        Route::get('/by-product/{product}', [ApiProductDiscountController::class, 'byProduct'])->name('by-product');
+        Route::get('/by-type/{type}', [ApiProductDiscountController::class, 'byType'])->name('by-type');
+
+        // Get best discount for product
+        Route::get('/best/{product}', [ApiProductDiscountController::class, 'getBest'])->name('best');
+
+        // Create product discount
+        Route::post('/', [ApiProductDiscountController::class, 'store'])->name('store');
+
+        // ProductDiscount-specific routes
+        Route::prefix('{discount}')->group(function () {
+            // Show product discount
+            Route::get('/', [ApiProductDiscountController::class, 'show'])->name('show');
+
+            // Update product discount (full update)
+            Route::put('/', [ApiProductDiscountController::class, 'update'])->name('update');
+
+            // Update product discount (partial update)
+            Route::patch('/', [ApiProductDiscountController::class, 'update'])->name('update.partial');
+
+            // Delete product discount
+            Route::delete('/', [ApiProductDiscountController::class, 'destroy'])->name('destroy');
+
+            // Status management
+            Route::post('/toggle-active', [ApiProductDiscountController::class, 'toggleActive'])->name('toggle-active');
+            Route::post('/extend', [ApiProductDiscountController::class, 'extend'])->name('extend');
+            Route::post('/shorten', [ApiProductDiscountController::class, 'shorten'])->name('shorten');
+
+            // Calculation and application
+            Route::post('/calculate', [ApiProductDiscountController::class, 'calculate'])->name('calculate');
+            Route::post('/apply', [ApiProductDiscountController::class, 'apply'])->name('apply');
+            Route::post('/validate', [ApiProductDiscountController::class, 'validate'])->name('validate');
+
+            // Analytics and reporting
+            Route::get('/analytics', [ApiProductDiscountController::class, 'analytics'])->name('analytics');
+            Route::get('/performance', [ApiProductDiscountController::class, 'performance'])->name('performance');
+            Route::get('/forecast', [ApiProductDiscountController::class, 'forecast'])->name('forecast');
+        });
+
+        // Recommendations
+        Route::get('/recommendations/{product}', [ApiProductDiscountController::class, 'recommendations'])->name('recommendations');
     });
 });

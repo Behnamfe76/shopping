@@ -11,6 +11,7 @@ use Fereydooni\Shopping\app\Http\Controllers\CartController;
 use Fereydooni\Shopping\app\Http\Controllers\AddressController;
 use Fereydooni\Shopping\app\Http\Controllers\ProductAttributeController;
 use Fereydooni\Shopping\app\Http\Controllers\ProductAttributeValueController;
+use Fereydooni\Shopping\app\Http\Controllers\ProductDiscountController;
 
 Route::prefix('shopping')->name('shopping.')->group(function () {
     // Product routes
@@ -216,5 +217,42 @@ Route::prefix('shopping')->name('shopping.')->group(function () {
         Route::delete('/product-attribute-values/{value}/remove-category/{category}', [ProductAttributeValueController::class, 'removeFromCategory'])->name('product-attribute-values.remove-category');
         Route::post('/product-attribute-values/{value}/assign-brand/{brand}', [ProductAttributeValueController::class, 'assignToBrand'])->name('product-attribute-values.assign-brand');
         Route::delete('/product-attribute-values/{value}/remove-brand/{brand}', [ProductAttributeValueController::class, 'removeFromBrand'])->name('product-attribute-values.remove-brand');
+    });
+
+    // ProductDiscount routes (with policy authorization)
+    Route::middleware(['auth'])->group(function () {
+        // Basic CRUD operations
+        Route::get('/product-discounts', [ProductDiscountController::class, 'index'])->name('product-discounts.index');
+        Route::get('/product-discounts/create', [ProductDiscountController::class, 'create'])->name('product-discounts.create');
+        Route::post('/product-discounts', [ProductDiscountController::class, 'store'])->name('product-discounts.store');
+        Route::get('/product-discounts/{discount}', [ProductDiscountController::class, 'show'])->name('product-discounts.show');
+        Route::get('/product-discounts/{discount}/edit', [ProductDiscountController::class, 'edit'])->name('product-discounts.edit');
+        Route::put('/product-discounts/{discount}', [ProductDiscountController::class, 'update'])->name('product-discounts.update');
+        Route::delete('/product-discounts/{discount}', [ProductDiscountController::class, 'destroy'])->name('product-discounts.destroy');
+
+        // Status management
+        Route::post('/product-discounts/{discount}/toggle-active', [ProductDiscountController::class, 'toggleActive'])->name('product-discounts.toggle-active');
+        Route::post('/product-discounts/{discount}/extend', [ProductDiscountController::class, 'extend'])->name('product-discounts.extend');
+        Route::post('/product-discounts/{discount}/shorten', [ProductDiscountController::class, 'shorten'])->name('product-discounts.shorten');
+
+        // Search and filtering
+        Route::get('/product-discounts/search', [ProductDiscountController::class, 'search'])->name('product-discounts.search');
+        Route::get('/product-discounts/active', [ProductDiscountController::class, 'active'])->name('product-discounts.active');
+        Route::get('/product-discounts/expired', [ProductDiscountController::class, 'expired'])->name('product-discounts.expired');
+        Route::get('/product-discounts/upcoming', [ProductDiscountController::class, 'upcoming'])->name('product-discounts.upcoming');
+        Route::get('/product-discounts/current', [ProductDiscountController::class, 'current'])->name('product-discounts.current');
+        Route::get('/product-discounts/by-product/{product}', [ProductDiscountController::class, 'byProduct'])->name('product-discounts.by-product');
+        Route::get('/product-discounts/by-type/{type}', [ProductDiscountController::class, 'byType'])->name('product-discounts.by-type');
+
+        // Calculation and application
+        Route::post('/product-discounts/{discount}/calculate', [ProductDiscountController::class, 'calculate'])->name('product-discounts.calculate');
+        Route::post('/product-discounts/{discount}/apply', [ProductDiscountController::class, 'apply'])->name('product-discounts.apply');
+        Route::post('/product-discounts/{discount}/validate', [ProductDiscountController::class, 'validate'])->name('product-discounts.validate');
+
+        // Analytics and reporting
+        Route::get('/product-discounts/{discount}/analytics', [ProductDiscountController::class, 'analytics'])->name('product-discounts.analytics');
+        Route::get('/product-discounts/{discount}/performance', [ProductDiscountController::class, 'performance'])->name('product-discounts.performance');
+        Route::get('/product-discounts/{discount}/forecast', [ProductDiscountController::class, 'forecast'])->name('product-discounts.forecast');
+        Route::get('/product-discounts/recommendations/{product}', [ProductDiscountController::class, 'recommendations'])->name('product-discounts.recommendations');
     });
 });
