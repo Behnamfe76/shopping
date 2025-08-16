@@ -312,6 +312,46 @@ class ShoppingServiceProvider extends ServiceProvider
                 $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ShipmentItemRepositoryInterface::class)
             );
         });
+
+        // Register Subscription Repository
+        $this->app->bind(
+            \Fereydooni\Shopping\app\Repositories\Interfaces\SubscriptionRepositoryInterface::class,
+            \Fereydooni\Shopping\app\Repositories\SubscriptionRepository::class
+        );
+
+        // Register Subscription Service
+        $this->app->scoped('shopping.subscription', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\SubscriptionService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\SubscriptionRepositoryInterface::class)
+            );
+        });
+
+        // Register Subscription Facade
+        $this->app->singleton('shopping.subscription.facade', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\SubscriptionService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\SubscriptionRepositoryInterface::class)
+            );
+        });
+
+        // Register UserSubscription Repository
+        $this->app->bind(
+            \Fereydooni\Shopping\app\Repositories\Interfaces\UserSubscriptionRepositoryInterface::class,
+            \Fereydooni\Shopping\app\Repositories\UserSubscriptionRepository::class
+        );
+
+        // Register UserSubscription Service
+        $this->app->scoped('shopping.user-subscription', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\UserSubscriptionService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\UserSubscriptionRepositoryInterface::class)
+            );
+        });
+
+        // Register UserSubscription Facade
+        $this->app->singleton('shopping.user-subscription.facade', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\UserSubscriptionService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\UserSubscriptionRepositoryInterface::class)
+            );
+        });
     }
 
     public function boot(): void
@@ -363,5 +403,7 @@ class ShoppingServiceProvider extends ServiceProvider
         Gate::policy(\Fereydooni\Shopping\app\Models\ProductVariant::class, \Fereydooni\Shopping\app\Policies\ProductVariantPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\Shipment::class, \Fereydooni\Shopping\app\Policies\ShipmentPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\ShipmentItem::class, \Fereydooni\Shopping\app\Policies\ShipmentItemPolicy::class);
+        Gate::policy(\Fereydooni\Shopping\app\Models\Subscription::class, \Fereydooni\Shopping\app\Policies\SubscriptionPolicy::class);
+        Gate::policy(\Fereydooni\Shopping\app\Models\UserSubscription::class, \Fereydooni\Shopping\app\Policies\UserSubscriptionPolicy::class);
     }
 }
