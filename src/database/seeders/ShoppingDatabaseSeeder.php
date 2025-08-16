@@ -11,6 +11,7 @@ class ShoppingDatabaseSeeder extends Seeder
         $this->call([
             CategoryPermissionSeeder::class,
             AddressPermissionSeeder::class,
+            OrderPermissionSeeder::class,
             CategorySeeder::class,
             BrandSeeder::class,
             ProductAttributeSeeder::class,

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\AddressController as ApiAddressController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CategoryController as ApiCategoryController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\BrandController as ApiBrandController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\OrderController as ApiOrderController;
 
 Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     // Address API routes
@@ -153,6 +154,58 @@ Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:
 
             // Delete brand media
             Route::delete('/media/{media}', [ApiBrandController::class, 'deleteMedia'])->name('media.delete');
+        });
+    });
+
+    // Order API routes
+    Route::prefix('orders')->name('orders.')->group(function () {
+        // List orders
+        Route::get('/', [ApiOrderController::class, 'index'])->name('index');
+
+        // Get order count
+        Route::get('/count', [ApiOrderController::class, 'getCount'])->name('count');
+
+        // Get total revenue
+        Route::get('/revenue', [ApiOrderController::class, 'getRevenue'])->name('revenue');
+
+        // Search orders
+        Route::get('/search', [ApiOrderController::class, 'search'])->name('search');
+
+        // Get orders by status
+        Route::get('/pending', [ApiOrderController::class, 'pending'])->name('pending');
+        Route::get('/shipped', [ApiOrderController::class, 'shipped'])->name('shipped');
+        Route::get('/completed', [ApiOrderController::class, 'completed'])->name('completed');
+        Route::get('/cancelled', [ApiOrderController::class, 'cancelled'])->name('cancelled');
+
+        // Create order
+        Route::post('/', [ApiOrderController::class, 'store'])->name('store');
+
+        // Order-specific routes
+        Route::prefix('{order}')->group(function () {
+            // Show order
+            Route::get('/', [ApiOrderController::class, 'show'])->name('show');
+
+            // Update order (full update)
+            Route::put('/', [ApiOrderController::class, 'update'])->name('update');
+
+            // Update order (partial update)
+            Route::patch('/', [ApiOrderController::class, 'update'])->name('update.partial');
+
+            // Delete order
+            Route::delete('/', [ApiOrderController::class, 'destroy'])->name('destroy');
+
+            // Order status management
+            Route::post('/cancel', [ApiOrderController::class, 'cancel'])->name('cancel');
+            Route::post('/mark-paid', [ApiOrderController::class, 'markPaid'])->name('mark-paid');
+            Route::post('/mark-shipped', [ApiOrderController::class, 'markShipped'])->name('mark-shipped');
+            Route::post('/mark-completed', [ApiOrderController::class, 'markCompleted'])->name('mark-completed');
+
+            // Order notes
+            Route::get('/notes', [ApiOrderController::class, 'getNotes'])->name('notes');
+            Route::post('/notes', [ApiOrderController::class, 'addNote'])->name('add-note');
+
+            // Process refund
+            Route::post('/refund', [ApiOrderController::class, 'processRefund'])->name('refund');
         });
     });
 });

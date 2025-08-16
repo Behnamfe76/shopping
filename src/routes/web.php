@@ -58,10 +58,27 @@ Route::prefix('shopping')->name('shopping.')->group(function () {
     Route::delete('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
     Route::delete('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
 
-    // Order routes
-    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
-    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+    // Order routes (with policy authorization)
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+        Route::get('/orders/create', [OrderController::class, 'create'])->name('orders.create');
+        Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+        Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+        Route::get('/orders/{order}/edit', [OrderController::class, 'edit'])->name('orders.edit');
+        Route::put('/orders/{order}', [OrderController::class, 'update'])->name('orders.update');
+        Route::delete('/orders/{order}', [OrderController::class, 'destroy'])->name('orders.destroy');
+        Route::post('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
+        Route::post('/orders/{order}/mark-paid', [OrderController::class, 'markPaid'])->name('orders.mark-paid');
+        Route::post('/orders/{order}/mark-shipped', [OrderController::class, 'markShipped'])->name('orders.mark-shipped');
+        Route::post('/orders/{order}/mark-completed', [OrderController::class, 'markCompleted'])->name('orders.mark-completed');
+        Route::get('/orders/search', [OrderController::class, 'search'])->name('orders.search');
+        Route::get('/orders/pending', [OrderController::class, 'pending'])->name('orders.pending');
+        Route::get('/orders/shipped', [OrderController::class, 'shipped'])->name('orders.shipped');
+        Route::get('/orders/completed', [OrderController::class, 'completed'])->name('orders.completed');
+        Route::get('/orders/cancelled', [OrderController::class, 'cancelled'])->name('orders.cancelled');
+        Route::post('/orders/{order}/notes', [OrderController::class, 'addNote'])->name('orders.add-note');
+        Route::get('/orders/{order}/notes', [OrderController::class, 'getNotes'])->name('orders.notes');
+    });
 
     // Address routes (with policy authorization)
     Route::middleware(['auth'])->group(function () {

@@ -31,6 +31,12 @@ class ShoppingServiceProvider extends ServiceProvider
             \Fereydooni\Shopping\app\Repositories\BrandRepository::class
         );
 
+        // Register Order Repository
+        $this->app->bind(
+            \Fereydooni\Shopping\app\Repositories\Interfaces\OrderRepositoryInterface::class,
+            \Fereydooni\Shopping\app\Repositories\OrderRepository::class
+        );
+
         // Register Category Service
         $this->app->scoped('shopping.category', function ($app) {
             return new \Fereydooni\Shopping\app\Services\CategoryService(
@@ -55,6 +61,20 @@ class ShoppingServiceProvider extends ServiceProvider
         $this->app->scoped('shopping.brand', function ($app) {
             return new \Fereydooni\Shopping\app\Services\BrandService(
                 $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\BrandRepositoryInterface::class)
+            );
+        });
+
+        // Register Order Service
+        $this->app->scoped('shopping.order', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\OrderService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\OrderRepositoryInterface::class)
+            );
+        });
+
+        // Register Facades
+        $this->app->singleton('shopping.order.facade', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\OrderService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\OrderRepositoryInterface::class)
             );
         });
     }
@@ -92,5 +112,6 @@ class ShoppingServiceProvider extends ServiceProvider
         Gate::policy(\Fereydooni\Shopping\app\Models\Address::class, \Fereydooni\Shopping\app\Policies\AddressPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\Category::class, \Fereydooni\Shopping\app\Policies\CategoryPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\Brand::class, \Fereydooni\Shopping\app\Policies\BrandPolicy::class);
+        Gate::policy(\Fereydooni\Shopping\app\Models\Order::class, \Fereydooni\Shopping\app\Policies\OrderPolicy::class);
     }
 }
