@@ -12,6 +12,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductAttributeValueControl
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductDiscountController as ApiProductDiscountController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductMetaController as ApiProductMetaController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductReviewController as ApiProductReviewController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductTagController as ApiProductTagController;
 
 Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     // Address API routes
@@ -728,6 +729,91 @@ Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:
             // Vote management
             Route::post('/vote', [ApiProductReviewController::class, 'vote'])->name('vote');
             Route::post('/flag', [ApiProductReviewController::class, 'flag'])->name('flag');
+        });
+    });
+
+    // ProductTag API routes
+    Route::prefix('product-tags')->name('product-tags.')->group(function () {
+        // List product tags
+        Route::get('/', [ApiProductTagController::class, 'index'])->name('index');
+
+        // Get product tag count
+        Route::get('/count', [ApiProductTagController::class, 'getCount'])->name('count');
+
+        // Search product tags
+        Route::get('/search', [ApiProductTagController::class, 'search'])->name('search');
+
+        // Filter by status
+        Route::get('/active', [ApiProductTagController::class, 'active'])->name('active');
+        Route::get('/featured', [ApiProductTagController::class, 'featured'])->name('featured');
+        Route::get('/popular', [ApiProductTagController::class, 'popular'])->name('popular');
+        Route::get('/recent', [ApiProductTagController::class, 'recent'])->name('recent');
+
+        // Filter by attributes
+        Route::get('/by-color/{color}', [ApiProductTagController::class, 'byColor'])->name('by-color');
+        Route::get('/by-icon/{icon}', [ApiProductTagController::class, 'byIcon'])->name('by-icon');
+        Route::get('/by-usage/{count}', [ApiProductTagController::class, 'byUsage'])->name('by-usage');
+
+        // List methods
+        Route::get('/names', [ApiProductTagController::class, 'getNames'])->name('names');
+        Route::get('/slugs', [ApiProductTagController::class, 'getSlugs'])->name('slugs');
+        Route::get('/colors', [ApiProductTagController::class, 'getColors'])->name('colors');
+        Route::get('/icons', [ApiProductTagController::class, 'getIcons'])->name('icons');
+
+        // Bulk operations
+        Route::post('/bulk-create', [ApiProductTagController::class, 'bulkCreate'])->name('bulk-create');
+        Route::put('/bulk-update', [ApiProductTagController::class, 'bulkUpdate'])->name('bulk-update');
+        Route::delete('/bulk-delete', [ApiProductTagController::class, 'bulkDelete'])->name('bulk-delete');
+
+        // Import/Export operations
+        Route::post('/import', [ApiProductTagController::class, 'import'])->name('import');
+        Route::get('/export', [ApiProductTagController::class, 'export'])->name('export');
+
+        // Tag management
+        Route::post('/sync/{product}', [ApiProductTagController::class, 'sync'])->name('sync');
+        Route::post('/merge/{tag1}/{tag2}', [ApiProductTagController::class, 'merge'])->name('merge');
+        Route::post('/split/{tag}', [ApiProductTagController::class, 'split'])->name('split');
+
+        // Suggestions and autocomplete
+        Route::get('/suggestions', [ApiProductTagController::class, 'suggestions'])->name('suggestions');
+        Route::get('/autocomplete', [ApiProductTagController::class, 'autocomplete'])->name('autocomplete');
+
+        // Relationships
+        Route::get('/related/{tag}', [ApiProductTagController::class, 'related'])->name('related');
+        Route::get('/synonyms/{tag}', [ApiProductTagController::class, 'synonyms'])->name('synonyms');
+        Route::get('/hierarchy/{tag}', [ApiProductTagController::class, 'hierarchy'])->name('hierarchy');
+        Route::get('/tree', [ApiProductTagController::class, 'tree'])->name('tree');
+        Route::get('/cloud', [ApiProductTagController::class, 'cloud'])->name('cloud');
+        Route::get('/stats', [ApiProductTagController::class, 'stats'])->name('stats');
+
+        // Analytics
+        Route::get('/analytics/{tag}', [ApiProductTagController::class, 'analytics'])->name('analytics');
+        Route::get('/trends/{tag}', [ApiProductTagController::class, 'trends'])->name('trends');
+        Route::get('/comparison/{tag1}/{tag2}', [ApiProductTagController::class, 'comparison'])->name('comparison');
+        Route::get('/recommendations/{product}', [ApiProductTagController::class, 'recommendations'])->name('recommendations');
+        Route::get('/forecast/{tag}', [ApiProductTagController::class, 'forecast'])->name('forecast');
+        Route::get('/performance/{tag}', [ApiProductTagController::class, 'performance'])->name('performance');
+
+        // Create product tag
+        Route::post('/', [ApiProductTagController::class, 'store'])->name('store');
+
+        // ProductTag-specific routes
+        Route::prefix('{tag:slug}')->group(function () {
+            // Show product tag
+            Route::get('/', [ApiProductTagController::class, 'show'])->name('show');
+
+            // Update product tag (full update)
+            Route::put('/', [ApiProductTagController::class, 'update'])->name('update');
+
+            // Update product tag (partial update)
+            Route::patch('/', [ApiProductTagController::class, 'update'])->name('update.partial');
+
+            // Delete product tag
+            Route::delete('/', [ApiProductTagController::class, 'destroy'])->name('destroy');
+
+            // Status management
+            Route::post('/toggle-active', [ApiProductTagController::class, 'toggleActive'])->name('toggle-active');
+            Route::post('/toggle-featured', [ApiProductTagController::class, 'toggleFeatured'])->name('toggle-featured');
         });
     });
 });

@@ -14,6 +14,7 @@ use Fereydooni\Shopping\app\Http\Controllers\ProductAttributeValueController;
 use Fereydooni\Shopping\app\Http\Controllers\ProductDiscountController;
 use Fereydooni\Shopping\app\Http\Controllers\ProductMetaController;
 use Fereydooni\Shopping\app\Http\Controllers\ProductReviewController;
+use Fereydooni\Shopping\app\Http\Controllers\ProductTagController;
 
 Route::prefix('shopping')->name('shopping.')->group(function () {
     // Product routes
@@ -404,5 +405,71 @@ Route::prefix('shopping')->name('shopping.')->group(function () {
         Route::get('/product-reviews/analytics/{review}', [ProductReviewController::class, 'analytics'])->name('product-reviews.analytics');
         Route::get('/product-reviews/analytics-by-product/{product}', [ProductReviewController::class, 'analyticsByProduct'])->name('product-reviews.analytics-by-product');
         Route::get('/product-reviews/analytics-by-user/{user}', [ProductReviewController::class, 'analyticsByUser'])->name('product-reviews.analytics-by-user');
+    });
+
+    // ProductTag routes (with policy authorization)
+    Route::middleware(['auth'])->group(function () {
+        // Basic CRUD operations
+        Route::get('/product-tags', [ProductTagController::class, 'index'])->name('product-tags.index');
+        Route::get('/product-tags/create', [ProductTagController::class, 'create'])->name('product-tags.create');
+        Route::post('/product-tags', [ProductTagController::class, 'store'])->name('product-tags.store');
+        Route::get('/product-tags/{tag:slug}', [ProductTagController::class, 'show'])->name('product-tags.show');
+        Route::get('/product-tags/{tag:slug}/edit', [ProductTagController::class, 'edit'])->name('product-tags.edit');
+        Route::put('/product-tags/{tag:slug}', [ProductTagController::class, 'update'])->name('product-tags.update');
+        Route::delete('/product-tags/{tag:slug}', [ProductTagController::class, 'destroy'])->name('product-tags.destroy');
+
+        // Status management
+        Route::post('/product-tags/{tag:slug}/toggle-active', [ProductTagController::class, 'toggleActive'])->name('product-tags.toggle-active');
+        Route::post('/product-tags/{tag:slug}/toggle-featured', [ProductTagController::class, 'toggleFeatured'])->name('product-tags.toggle-featured');
+
+        // Search and filtering
+        Route::get('/product-tags/search', [ProductTagController::class, 'search'])->name('product-tags.search');
+        Route::get('/product-tags/active', [ProductTagController::class, 'active'])->name('product-tags.active');
+        Route::get('/product-tags/featured', [ProductTagController::class, 'featured'])->name('product-tags.featured');
+        Route::get('/product-tags/popular', [ProductTagController::class, 'popular'])->name('product-tags.popular');
+        Route::get('/product-tags/recent', [ProductTagController::class, 'recent'])->name('product-tags.recent');
+        Route::get('/product-tags/by-color/{color}', [ProductTagController::class, 'byColor'])->name('product-tags.by-color');
+        Route::get('/product-tags/by-icon/{icon}', [ProductTagController::class, 'byIcon'])->name('product-tags.by-icon');
+        Route::get('/product-tags/by-usage/{count}', [ProductTagController::class, 'byUsage'])->name('product-tags.by-usage');
+
+        // List methods
+        Route::get('/product-tags/names', [ProductTagController::class, 'getNames'])->name('product-tags.names');
+        Route::get('/product-tags/slugs', [ProductTagController::class, 'getSlugs'])->name('product-tags.slugs');
+        Route::get('/product-tags/colors', [ProductTagController::class, 'getColors'])->name('product-tags.colors');
+        Route::get('/product-tags/icons', [ProductTagController::class, 'getIcons'])->name('product-tags.icons');
+
+        // Bulk operations
+        Route::post('/product-tags/bulk-create', [ProductTagController::class, 'bulkCreate'])->name('product-tags.bulk-create');
+        Route::put('/product-tags/bulk-update', [ProductTagController::class, 'bulkUpdate'])->name('product-tags.bulk-update');
+        Route::delete('/product-tags/bulk-delete', [ProductTagController::class, 'bulkDelete'])->name('product-tags.bulk-delete');
+
+        // Import/Export operations
+        Route::post('/product-tags/import', [ProductTagController::class, 'import'])->name('product-tags.import');
+        Route::get('/product-tags/export', [ProductTagController::class, 'export'])->name('product-tags.export');
+
+        // Tag management
+        Route::post('/product-tags/sync/{product}', [ProductTagController::class, 'sync'])->name('product-tags.sync');
+        Route::post('/product-tags/merge/{tag1}/{tag2}', [ProductTagController::class, 'merge'])->name('product-tags.merge');
+        Route::post('/product-tags/split/{tag}', [ProductTagController::class, 'split'])->name('product-tags.split');
+
+        // Suggestions and autocomplete
+        Route::get('/product-tags/suggestions', [ProductTagController::class, 'suggestions'])->name('product-tags.suggestions');
+        Route::get('/product-tags/autocomplete', [ProductTagController::class, 'autocomplete'])->name('product-tags.autocomplete');
+
+        // Relationships
+        Route::get('/product-tags/related/{tag}', [ProductTagController::class, 'related'])->name('product-tags.related');
+        Route::get('/product-tags/synonyms/{tag}', [ProductTagController::class, 'synonyms'])->name('product-tags.synonyms');
+        Route::get('/product-tags/hierarchy/{tag}', [ProductTagController::class, 'hierarchy'])->name('product-tags.hierarchy');
+        Route::get('/product-tags/tree', [ProductTagController::class, 'tree'])->name('product-tags.tree');
+        Route::get('/product-tags/cloud', [ProductTagController::class, 'cloud'])->name('product-tags.cloud');
+        Route::get('/product-tags/stats', [ProductTagController::class, 'stats'])->name('product-tags.stats');
+
+        // Analytics
+        Route::get('/product-tags/analytics/{tag}', [ProductTagController::class, 'analytics'])->name('product-tags.analytics');
+        Route::get('/product-tags/trends/{tag}', [ProductTagController::class, 'trends'])->name('product-tags.trends');
+        Route::get('/product-tags/comparison/{tag1}/{tag2}', [ProductTagController::class, 'comparison'])->name('product-tags.comparison');
+        Route::get('/product-tags/recommendations/{product}', [ProductTagController::class, 'recommendations'])->name('product-tags.recommendations');
+        Route::get('/product-tags/forecast/{tag}', [ProductTagController::class, 'forecast'])->name('product-tags.forecast');
+        Route::get('/product-tags/performance/{tag}', [ProductTagController::class, 'performance'])->name('product-tags.performance');
     });
 });

@@ -20,6 +20,7 @@ class ShoppingDatabaseSeeder extends Seeder
             ProductPermissionSeeder::class,
             ProductMetaPermissionSeeder::class,
             ProductReviewPermissionSeeder::class,
+            ProductTagPermissionSeeder::class,
             CategorySeeder::class,
             BrandSeeder::class,
             ProductAttributeSeeder::class,

@@ -2,9 +2,10 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
-use Fereydooni\Shopping\app\Events\ProductCreated;
-use Fereydooni\Shopping\app\Events\ProductUpdated;
-use Fereydooni\Shopping\app\Events\ProductDeleted;
+use Fereydooni\Shopping\app\Events\ProductTagCreated;
+use Fereydooni\Shopping\app\Events\ProductTagUpdated;
+use Fereydooni\Shopping\app\Events\ProductTagDeleted;
+use Fereydooni\Shopping\app\Events\ProductTagSynced;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
@@ -26,105 +27,51 @@ class UpdateProductSearchIndex implements ShouldQueue
      */
     public function handle($event): void
     {
-        $product = $event->product;
+        // Update search index for products that use this tag
+        $this->updateProductSearchIndex($event);
+    }
 
-        // Update search index based on event type
-        switch (get_class($event)) {
-            case ProductCreated::class:
-                $this->addToSearchIndex($product);
-                break;
-            case ProductUpdated::class:
-                $this->updateSearchIndex($product);
-                break;
-            case ProductDeleted::class:
-                $this->removeFromSearchIndex($product);
-                break;
+    /**
+     * Update product search index
+     */
+    private function updateProductSearchIndex($event): void
+    {
+        try {
+            if ($event instanceof ProductTagSynced) {
+                // Update search index for the specific product
+                $this->updateProductIndex($event->productId);
+            } else {
+                // Update search index for all products using this tag
+                $tagId = $event->tag->id ?? null;
+                if ($tagId) {
+                    $this->updateProductsByTag($tagId);
+                }
+            }
+        } catch (\Exception $e) {
+            Log::error('Failed to update product search index', [
+                'event' => get_class($event),
+                'error' => $e->getMessage(),
+            ]);
         }
-
-        Log::info('Product search index updated', [
-            'product_id' => $product->id,
-            'event' => get_class($event)
-        ]);
     }
 
     /**
-     * Add product to search index.
+     * Update specific product index
      */
-    private function addToSearchIndex($product): void
+    private function updateProductIndex(int $productId): void
     {
-        // Implementation for adding product to search index
-        // This could use Elasticsearch, Algolia, or other search services
-
-        // Example implementation for Elasticsearch:
-        // $searchData = [
-        //     'id' => $product->id,
-        //     'title' => $product->title,
-        //     'description' => $product->description,
-        //     'sku' => $product->sku,
-        //     'category' => $product->category->name ?? '',
-        //     'brand' => $product->brand->name ?? '',
-        //     'price' => $product->price,
-        //     'status' => $product->status,
-        //     'is_active' => $product->is_active,
-        //     'is_featured' => $product->is_featured,
-        // ];
-        //
-        // Elasticsearch::index([
-        //     'index' => 'products',
-        //     'id' => $product->id,
-        //     'body' => $searchData
-        // ]);
+        // Implementation for updating specific product search index
+        // This would typically involve updating Elasticsearch, Algolia, or similar
+        Log::info('Updating product search index', ['product_id' => $productId]);
     }
 
     /**
-     * Update product in search index.
+     * Update products by tag
      */
-    private function updateSearchIndex($product): void
+    private function updateProductsByTag(int $tagId): void
     {
-        // Implementation for updating product in search index
-
-        // Example implementation for Elasticsearch:
-        // $searchData = [
-        //     'title' => $product->title,
-        //     'description' => $product->description,
-        //     'sku' => $product->sku,
-        //     'category' => $product->category->name ?? '',
-        //     'brand' => $product->brand->name ?? '',
-        //     'price' => $product->price,
-        //     'status' => $product->status,
-        //     'is_active' => $product->is_active,
-        //     'is_featured' => $product->is_featured,
-        // ];
-        //
-        // Elasticsearch::update([
-        //     'index' => 'products',
-        //     'id' => $product->id,
-        //     'body' => ['doc' => $searchData]
-        // ]);
-    }
-
-    /**
-     * Remove product from search index.
-     */
-    private function removeFromSearchIndex($product): void
-    {
-        // Implementation for removing product from search index
-
-        // Example implementation for Elasticsearch:
-        // Elasticsearch::delete([
-        //     'index' => 'products',
-        //     'id' => $product->id
-        // ]);
-    }
-
-    /**
-     * Handle a job failure.
-     */
-    public function failed($event, \Throwable $exception): void
-    {
-        Log::error('Failed to update product search index', [
-            'product_id' => $event->product->id,
-            'error' => $exception->getMessage()
-        ]);
+        // Implementation for updating all products that use this tag
+        // This would typically involve updating Elasticsearch, Algolia, or similar
+        Log::info('Updating products search index by tag', ['tag_id' => $tagId]);
     }
 }

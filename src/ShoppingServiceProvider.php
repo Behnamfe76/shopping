@@ -232,6 +232,26 @@ class ShoppingServiceProvider extends ServiceProvider
                 $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductReviewRepositoryInterface::class)
             );
         });
+
+        // Register ProductTag Repository
+        $this->app->bind(
+            \Fereydooni\Shopping\app\Repositories\Interfaces\ProductTagRepositoryInterface::class,
+            \Fereydooni\Shopping\app\Repositories\ProductTagRepository::class
+        );
+
+        // Register ProductTag Service
+        $this->app->scoped('shopping.product-tag', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\ProductTagService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductTagRepositoryInterface::class)
+            );
+        });
+
+        // Register ProductTag Facade
+        $this->app->singleton('shopping.product-tag.facade', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\ProductTagService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductTagRepositoryInterface::class)
+            );
+        });
     }
 
     public function boot(): void
@@ -255,6 +275,9 @@ class ShoppingServiceProvider extends ServiceProvider
             __DIR__ . '/resources/views' => resource_path('views/vendor/shopping'),
         ], 'shopping-views');
 
+        // Register event service provider
+        $this->app->register(\Fereydooni\Shopping\app\Providers\EventServiceProvider::class);
+
         // Register policies
         $this->registerPolicies();
     }
@@ -276,5 +299,6 @@ class ShoppingServiceProvider extends ServiceProvider
         Gate::policy(\Fereydooni\Shopping\app\Models\Product::class, \Fereydooni\Shopping\app\Policies\ProductPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\ProductMeta::class, \Fereydooni\Shopping\app\Policies\ProductMetaPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\ProductReview::class, \Fereydooni\Shopping\app\Policies\ProductReviewPolicy::class);
+        Gate::policy(\Fereydooni\Shopping\app\Models\ProductTag::class, \Fereydooni\Shopping\app\Policies\ProductTagPolicy::class);
     }
 }
