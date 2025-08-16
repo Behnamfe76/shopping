@@ -13,6 +13,7 @@ use Fereydooni\Shopping\app\Http\Controllers\ProductAttributeController;
 use Fereydooni\Shopping\app\Http\Controllers\ProductAttributeValueController;
 use Fereydooni\Shopping\app\Http\Controllers\ProductDiscountController;
 use Fereydooni\Shopping\app\Http\Controllers\ProductMetaController;
+use Fereydooni\Shopping\app\Http\Controllers\ProductReviewController;
 
 Route::prefix('shopping')->name('shopping.')->group(function () {
     // Product routes
@@ -344,5 +345,64 @@ Route::prefix('shopping')->name('shopping.')->group(function () {
 
         // Analytics
         Route::get('/product-meta/analytics/{key}', [ProductMetaController::class, 'analytics'])->name('product-meta.analytics');
+    });
+
+    // ProductReview routes (with policy authorization)
+    Route::middleware(['auth'])->group(function () {
+        // Basic CRUD operations
+        Route::get('/product-reviews', [ProductReviewController::class, 'index'])->name('product-reviews.index');
+        Route::get('/product-reviews/create', [ProductReviewController::class, 'create'])->name('product-reviews.create');
+        Route::post('/product-reviews', [ProductReviewController::class, 'store'])->name('product-reviews.store');
+        Route::get('/product-reviews/{review}', [ProductReviewController::class, 'show'])->name('product-reviews.show');
+        Route::get('/product-reviews/{review}/edit', [ProductReviewController::class, 'edit'])->name('product-reviews.edit');
+        Route::put('/product-reviews/{review}', [ProductReviewController::class, 'update'])->name('product-reviews.update');
+        Route::delete('/product-reviews/{review}', [ProductReviewController::class, 'destroy'])->name('product-reviews.destroy');
+
+        // Status management
+        Route::post('/product-reviews/{review}/approve', [ProductReviewController::class, 'approve'])->name('product-reviews.approve');
+        Route::post('/product-reviews/{review}/reject', [ProductReviewController::class, 'reject'])->name('product-reviews.reject');
+        Route::post('/product-reviews/{review}/feature', [ProductReviewController::class, 'feature'])->name('product-reviews.feature');
+        Route::post('/product-reviews/{review}/unfeature', [ProductReviewController::class, 'unfeature'])->name('product-reviews.unfeature');
+        Route::post('/product-reviews/{review}/verify', [ProductReviewController::class, 'verify'])->name('product-reviews.verify');
+        Route::post('/product-reviews/{review}/unverify', [ProductReviewController::class, 'unverify'])->name('product-reviews.unverify');
+
+        // Vote management
+        Route::post('/product-reviews/{review}/vote', [ProductReviewController::class, 'vote'])->name('product-reviews.vote');
+        Route::post('/product-reviews/{review}/flag', [ProductReviewController::class, 'flag'])->name('product-reviews.flag');
+
+        // Search and filtering
+        Route::get('/product-reviews/search', [ProductReviewController::class, 'search'])->name('product-reviews.search');
+        Route::get('/product-reviews/approved', [ProductReviewController::class, 'approved'])->name('product-reviews.approved');
+        Route::get('/product-reviews/pending', [ProductReviewController::class, 'pending'])->name('product-reviews.pending');
+        Route::get('/product-reviews/rejected', [ProductReviewController::class, 'rejected'])->name('product-reviews.rejected');
+        Route::get('/product-reviews/featured', [ProductReviewController::class, 'featured'])->name('product-reviews.featured');
+        Route::get('/product-reviews/verified', [ProductReviewController::class, 'verified'])->name('product-reviews.verified');
+
+        // Relationship queries
+        Route::get('/product-reviews/by-product/{product}', [ProductReviewController::class, 'byProduct'])->name('product-reviews.by-product');
+        Route::get('/product-reviews/by-user/{user}', [ProductReviewController::class, 'byUser'])->name('product-reviews.by-user');
+        Route::get('/product-reviews/by-rating/{rating}', [ProductReviewController::class, 'byRating'])->name('product-reviews.by-rating');
+
+        // Time-based queries
+        Route::get('/product-reviews/recent', [ProductReviewController::class, 'recent'])->name('product-reviews.recent');
+        Route::get('/product-reviews/popular', [ProductReviewController::class, 'popular'])->name('product-reviews.popular');
+        Route::get('/product-reviews/helpful', [ProductReviewController::class, 'helpful'])->name('product-reviews.helpful');
+
+        // Sentiment-based queries
+        Route::get('/product-reviews/positive', [ProductReviewController::class, 'positive'])->name('product-reviews.positive');
+        Route::get('/product-reviews/negative', [ProductReviewController::class, 'negative'])->name('product-reviews.negative');
+        Route::get('/product-reviews/neutral', [ProductReviewController::class, 'neutral'])->name('product-reviews.neutral');
+
+        // Moderation
+        Route::get('/product-reviews/flagged', [ProductReviewController::class, 'flagged'])->name('product-reviews.flagged');
+        Route::get('/product-reviews/moderation-queue', [ProductReviewController::class, 'moderationQueue'])->name('product-reviews.moderation-queue');
+
+        // Analytics and statistics
+        Route::get('/product-reviews/stats/{product}', [ProductReviewController::class, 'stats'])->name('product-reviews.stats');
+        Route::get('/product-reviews/rating-distribution/{product}', [ProductReviewController::class, 'ratingDistribution'])->name('product-reviews.rating-distribution');
+        Route::get('/product-reviews/average-rating/{product}', [ProductReviewController::class, 'averageRating'])->name('product-reviews.average-rating');
+        Route::get('/product-reviews/analytics/{review}', [ProductReviewController::class, 'analytics'])->name('product-reviews.analytics');
+        Route::get('/product-reviews/analytics-by-product/{product}', [ProductReviewController::class, 'analyticsByProduct'])->name('product-reviews.analytics-by-product');
+        Route::get('/product-reviews/analytics-by-user/{user}', [ProductReviewController::class, 'analyticsByUser'])->name('product-reviews.analytics-by-user');
     });
 });

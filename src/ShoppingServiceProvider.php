@@ -212,6 +212,26 @@ class ShoppingServiceProvider extends ServiceProvider
                 $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductMetaRepositoryInterface::class)
             );
         });
+
+        // Register ProductReview Repository
+        $this->app->bind(
+            \Fereydooni\Shopping\app\Repositories\Interfaces\ProductReviewRepositoryInterface::class,
+            \Fereydooni\Shopping\app\Repositories\ProductReviewRepository::class
+        );
+
+        // Register ProductReview Service
+        $this->app->scoped('shopping.product-review', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\ProductReviewService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductReviewRepositoryInterface::class)
+            );
+        });
+
+        // Register ProductReview Facade
+        $this->app->singleton('shopping.product-review.facade', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\ProductReviewService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductReviewRepositoryInterface::class)
+            );
+        });
     }
 
     public function boot(): void
@@ -255,5 +275,6 @@ class ShoppingServiceProvider extends ServiceProvider
         Gate::policy(\Fereydooni\Shopping\app\Models\ProductDiscount::class, \Fereydooni\Shopping\app\Policies\ProductDiscountPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\Product::class, \Fereydooni\Shopping\app\Policies\ProductPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\ProductMeta::class, \Fereydooni\Shopping\app\Policies\ProductMetaPolicy::class);
+        Gate::policy(\Fereydooni\Shopping\app\Models\ProductReview::class, \Fereydooni\Shopping\app\Policies\ProductReviewPolicy::class);
     }
 }

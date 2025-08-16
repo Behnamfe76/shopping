@@ -11,6 +11,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductAttributeController a
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductAttributeValueController as ApiProductAttributeValueController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductDiscountController as ApiProductDiscountController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductMetaController as ApiProductMetaController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductReviewController as ApiProductReviewController;
 
 Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     // Address API routes
@@ -651,6 +652,82 @@ Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:
             Route::post('/toggle-public', [ApiProductMetaController::class, 'togglePublic'])->name('toggle-public');
             Route::post('/toggle-searchable', [ApiProductMetaController::class, 'toggleSearchable'])->name('toggle-searchable');
             Route::post('/toggle-filterable', [ApiProductMetaController::class, 'toggleFilterable'])->name('toggle-filterable');
+        });
+    });
+
+    // ProductReview API routes
+    Route::prefix('product-reviews')->name('product-reviews.')->group(function () {
+        // List product reviews
+        Route::get('/', [ApiProductReviewController::class, 'index'])->name('index');
+
+        // Get product review count
+        Route::get('/count', [ApiProductReviewController::class, 'getCount'])->name('count');
+
+        // Search product reviews
+        Route::get('/search', [ApiProductReviewController::class, 'search'])->name('search');
+
+        // Filter by status
+        Route::get('/approved', [ApiProductReviewController::class, 'approved'])->name('approved');
+        Route::get('/pending', [ApiProductReviewController::class, 'pending'])->name('pending');
+        Route::get('/rejected', [ApiProductReviewController::class, 'rejected'])->name('rejected');
+        Route::get('/featured', [ApiProductReviewController::class, 'featured'])->name('featured');
+        Route::get('/verified', [ApiProductReviewController::class, 'verified'])->name('verified');
+
+        // Filter by relationship
+        Route::get('/by-product/{product}', [ApiProductReviewController::class, 'byProduct'])->name('by-product');
+        Route::get('/by-user/{user}', [ApiProductReviewController::class, 'byUser'])->name('by-user');
+        Route::get('/by-rating/{rating}', [ApiProductReviewController::class, 'byRating'])->name('by-rating');
+
+        // Time-based queries
+        Route::get('/recent', [ApiProductReviewController::class, 'recent'])->name('recent');
+        Route::get('/popular', [ApiProductReviewController::class, 'popular'])->name('popular');
+        Route::get('/helpful', [ApiProductReviewController::class, 'helpful'])->name('helpful');
+
+        // Sentiment-based queries
+        Route::get('/positive', [ApiProductReviewController::class, 'positive'])->name('positive');
+        Route::get('/negative', [ApiProductReviewController::class, 'negative'])->name('negative');
+        Route::get('/neutral', [ApiProductReviewController::class, 'neutral'])->name('neutral');
+
+        // Moderation
+        Route::get('/flagged', [ApiProductReviewController::class, 'flagged'])->name('flagged');
+        Route::get('/moderation-queue', [ApiProductReviewController::class, 'moderationQueue'])->name('moderation-queue');
+
+        // Analytics and statistics
+        Route::get('/stats/{product}', [ApiProductReviewController::class, 'stats'])->name('stats');
+        Route::get('/rating-distribution/{product}', [ApiProductReviewController::class, 'ratingDistribution'])->name('rating-distribution');
+        Route::get('/average-rating/{product}', [ApiProductReviewController::class, 'averageRating'])->name('average-rating');
+        Route::get('/analytics/{review}', [ApiProductReviewController::class, 'analytics'])->name('analytics');
+        Route::get('/analytics-by-product/{product}', [ApiProductReviewController::class, 'analyticsByProduct'])->name('analytics-by-product');
+        Route::get('/analytics-by-user/{user}', [ApiProductReviewController::class, 'analyticsByUser'])->name('analytics-by-user');
+
+        // Create product review
+        Route::post('/', [ApiProductReviewController::class, 'store'])->name('store');
+
+        // ProductReview-specific routes
+        Route::prefix('{review}')->group(function () {
+            // Show product review
+            Route::get('/', [ApiProductReviewController::class, 'show'])->name('show');
+
+            // Update product review (full update)
+            Route::put('/', [ApiProductReviewController::class, 'update'])->name('update');
+
+            // Update product review (partial update)
+            Route::patch('/', [ApiProductReviewController::class, 'update'])->name('update.partial');
+
+            // Delete product review
+            Route::delete('/', [ApiProductReviewController::class, 'destroy'])->name('destroy');
+
+            // Status management
+            Route::post('/approve', [ApiProductReviewController::class, 'approve'])->name('approve');
+            Route::post('/reject', [ApiProductReviewController::class, 'reject'])->name('reject');
+            Route::post('/feature', [ApiProductReviewController::class, 'feature'])->name('feature');
+            Route::post('/unfeature', [ApiProductReviewController::class, 'unfeature'])->name('unfeature');
+            Route::post('/verify', [ApiProductReviewController::class, 'verify'])->name('verify');
+            Route::post('/unverify', [ApiProductReviewController::class, 'unverify'])->name('unverify');
+
+            // Vote management
+            Route::post('/vote', [ApiProductReviewController::class, 'vote'])->name('vote');
+            Route::post('/flag', [ApiProductReviewController::class, 'flag'])->name('flag');
         });
     });
 });
