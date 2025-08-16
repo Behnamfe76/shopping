@@ -9,6 +9,7 @@ use Fereydooni\Shopping\app\Http\Controllers\OrderItemController;
 use Fereydooni\Shopping\app\Http\Controllers\OrderStatusHistoryController;
 use Fereydooni\Shopping\app\Http\Controllers\CartController;
 use Fereydooni\Shopping\app\Http\Controllers\AddressController;
+use Fereydooni\Shopping\app\Http\Controllers\ProductAttributeController;
 
 Route::prefix('shopping')->name('shopping.')->group(function () {
     // Product routes
@@ -134,5 +135,43 @@ Route::prefix('shopping')->name('shopping.')->group(function () {
         Route::get('/order-status-history/timeline/{order}', [OrderStatusHistoryController::class, 'timeline'])->name('order-status-history.timeline');
         Route::get('/order-status-history/analytics', [OrderStatusHistoryController::class, 'analytics'])->name('order-status-history.analytics');
         Route::get('/order-status-history/reports', [OrderStatusHistoryController::class, 'reports'])->name('order-status-history.reports');
+    });
+
+    // ProductAttribute routes (with policy authorization)
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/product-attributes', [ProductAttributeController::class, 'index'])->name('product-attributes.index');
+        Route::get('/product-attributes/create', [ProductAttributeController::class, 'create'])->name('product-attributes.create');
+        Route::post('/product-attributes', [ProductAttributeController::class, 'store'])->name('product-attributes.store');
+        Route::get('/product-attributes/{attribute:slug}', [ProductAttributeController::class, 'show'])->name('product-attributes.show');
+        Route::get('/product-attributes/{attribute:slug}/edit', [ProductAttributeController::class, 'edit'])->name('product-attributes.edit');
+        Route::put('/product-attributes/{attribute:slug}', [ProductAttributeController::class, 'update'])->name('product-attributes.update');
+        Route::delete('/product-attributes/{attribute:slug}', [ProductAttributeController::class, 'destroy'])->name('product-attributes.destroy');
+
+        // Toggle operations
+        Route::post('/product-attributes/{attribute:slug}/toggle-active', [ProductAttributeController::class, 'toggleActive'])->name('product-attributes.toggle-active');
+        Route::post('/product-attributes/{attribute:slug}/toggle-required', [ProductAttributeController::class, 'toggleRequired'])->name('product-attributes.toggle-required');
+        Route::post('/product-attributes/{attribute:slug}/toggle-searchable', [ProductAttributeController::class, 'toggleSearchable'])->name('product-attributes.toggle-searchable');
+        Route::post('/product-attributes/{attribute:slug}/toggle-filterable', [ProductAttributeController::class, 'toggleFilterable'])->name('product-attributes.toggle-filterable');
+        Route::post('/product-attributes/{attribute:slug}/toggle-comparable', [ProductAttributeController::class, 'toggleComparable'])->name('product-attributes.toggle-comparable');
+        Route::post('/product-attributes/{attribute:slug}/toggle-visible', [ProductAttributeController::class, 'toggleVisible'])->name('product-attributes.toggle-visible');
+
+        // Search and filtering
+        Route::get('/product-attributes/search', [ProductAttributeController::class, 'search'])->name('product-attributes.search');
+        Route::get('/product-attributes/required', [ProductAttributeController::class, 'required'])->name('product-attributes.required');
+        Route::get('/product-attributes/searchable', [ProductAttributeController::class, 'searchable'])->name('product-attributes.searchable');
+        Route::get('/product-attributes/filterable', [ProductAttributeController::class, 'filterable'])->name('product-attributes.filterable');
+        Route::get('/product-attributes/comparable', [ProductAttributeController::class, 'comparable'])->name('product-attributes.comparable');
+        Route::get('/product-attributes/visible', [ProductAttributeController::class, 'visible'])->name('product-attributes.visible');
+        Route::get('/product-attributes/system', [ProductAttributeController::class, 'system'])->name('product-attributes.system');
+        Route::get('/product-attributes/custom', [ProductAttributeController::class, 'custom'])->name('product-attributes.custom');
+        Route::get('/product-attributes/by-type/{type}', [ProductAttributeController::class, 'byType'])->name('product-attributes.by-type');
+        Route::get('/product-attributes/by-group/{group}', [ProductAttributeController::class, 'byGroup'])->name('product-attributes.by-group');
+        Route::get('/product-attributes/by-input-type/{inputType}', [ProductAttributeController::class, 'byInputType'])->name('product-attributes.by-input-type');
+
+        // Attribute values
+        Route::get('/product-attributes/{attribute:slug}/values', [ProductAttributeController::class, 'getValues'])->name('product-attributes.values');
+        Route::post('/product-attributes/{attribute:slug}/values', [ProductAttributeController::class, 'addValue'])->name('product-attributes.add-value');
+        Route::put('/product-attributes/{attribute:slug}/values/{value}', [ProductAttributeController::class, 'updateValue'])->name('product-attributes.update-value');
+        Route::delete('/product-attributes/{attribute:slug}/values/{value}', [ProductAttributeController::class, 'deleteValue'])->name('product-attributes.delete-value');
     });
 });

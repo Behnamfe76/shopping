@@ -11,6 +11,11 @@ class ProductAttributeValue extends Model
     protected $fillable = [
         'attribute_id',
         'value',
+        'metadata',
+    ];
+
+    protected $casts = [
+        'metadata' => 'array',
     ];
 
     public function attribute(): BelongsTo
