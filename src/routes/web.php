@@ -5,6 +5,7 @@ use Fereydooni\Shopping\app\Http\Controllers\ProductController;
 use Fereydooni\Shopping\app\Http\Controllers\CategoryController;
 use Fereydooni\Shopping\app\Http\Controllers\BrandController;
 use Fereydooni\Shopping\app\Http\Controllers\OrderController;
+use Fereydooni\Shopping\app\Http\Controllers\OrderItemController;
 use Fereydooni\Shopping\app\Http\Controllers\CartController;
 use Fereydooni\Shopping\app\Http\Controllers\AddressController;
 
@@ -89,5 +90,32 @@ Route::prefix('shopping')->name('shopping.')->group(function () {
         Route::delete('/addresses/{address}', [AddressController::class, 'destroy'])->name('addresses.destroy');
         Route::post('/addresses/{address}/default', [AddressController::class, 'setDefault'])->name('addresses.set-default');
         Route::get('/addresses/search', [AddressController::class, 'search'])->name('addresses.search');
+    });
+
+    // OrderItem routes (with policy authorization)
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/order-items', [OrderItemController::class, 'index'])->name('order-items.index');
+        Route::get('/order-items/create', [OrderItemController::class, 'create'])->name('order-items.create');
+        Route::post('/order-items', [OrderItemController::class, 'store'])->name('order-items.store');
+        Route::get('/order-items/{orderItem}', [OrderItemController::class, 'show'])->name('order-items.show');
+        Route::get('/order-items/{orderItem}/edit', [OrderItemController::class, 'edit'])->name('order-items.edit');
+        Route::put('/order-items/{orderItem}', [OrderItemController::class, 'update'])->name('order-items.update');
+        Route::delete('/order-items/{orderItem}', [OrderItemController::class, 'destroy'])->name('order-items.destroy');
+
+        // Shipping operations
+        Route::post('/order-items/{orderItem}/mark-shipped', [OrderItemController::class, 'markShipped'])->name('order-items.mark-shipped');
+        Route::post('/order-items/{orderItem}/mark-returned', [OrderItemController::class, 'markReturned'])->name('order-items.mark-returned');
+        Route::post('/order-items/{orderItem}/process-refund', [OrderItemController::class, 'processRefund'])->name('order-items.process-refund');
+
+        // Search and filtering
+        Route::get('/order-items/search', [OrderItemController::class, 'search'])->name('order-items.search');
+        Route::get('/order-items/shipped', [OrderItemController::class, 'shipped'])->name('order-items.shipped');
+        Route::get('/order-items/unshipped', [OrderItemController::class, 'unshipped'])->name('order-items.unshipped');
+        Route::get('/order-items/top-selling', [OrderItemController::class, 'topSelling'])->name('order-items.top-selling');
+        Route::get('/order-items/low-stock', [OrderItemController::class, 'lowStock'])->name('order-items.low-stock');
+
+        // Order-specific routes
+        Route::get('/order-items/by-order/{order}', [OrderItemController::class, 'byOrder'])->name('order-items.by-order');
+        Route::get('/order-items/by-product/{product}', [OrderItemController::class, 'byProduct'])->name('order-items.by-product');
     });
 });

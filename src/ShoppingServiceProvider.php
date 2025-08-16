@@ -71,10 +71,29 @@ class ShoppingServiceProvider extends ServiceProvider
             );
         });
 
+        // Register OrderItem Repository
+        $this->app->bind(
+            \Fereydooni\Shopping\app\Repositories\Interfaces\OrderItemRepositoryInterface::class,
+            \Fereydooni\Shopping\app\Repositories\OrderItemRepository::class
+        );
+
+        // Register OrderItem Service
+        $this->app->scoped('shopping.order-item', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\OrderItemService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\OrderItemRepositoryInterface::class)
+            );
+        });
+
         // Register Facades
         $this->app->singleton('shopping.order.facade', function ($app) {
             return new \Fereydooni\Shopping\app\Services\OrderService(
                 $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\OrderRepositoryInterface::class)
+            );
+        });
+
+        $this->app->singleton('shopping.order-item.facade', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\OrderItemService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\OrderItemRepositoryInterface::class)
             );
         });
     }
@@ -113,5 +132,6 @@ class ShoppingServiceProvider extends ServiceProvider
         Gate::policy(\Fereydooni\Shopping\app\Models\Category::class, \Fereydooni\Shopping\app\Policies\CategoryPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\Brand::class, \Fereydooni\Shopping\app\Policies\BrandPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\Order::class, \Fereydooni\Shopping\app\Policies\OrderPolicy::class);
+        Gate::policy(\Fereydooni\Shopping\app\Models\OrderItem::class, \Fereydooni\Shopping\app\Policies\OrderItemPolicy::class);
     }
 }

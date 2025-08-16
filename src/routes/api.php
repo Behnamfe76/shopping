@@ -5,6 +5,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Api\V1\AddressController as ApiAddr
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CategoryController as ApiCategoryController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\BrandController as ApiBrandController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\OrderController as ApiOrderController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\OrderItemController as ApiOrderItemController;
 
 Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     // Address API routes
@@ -206,6 +207,64 @@ Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:
 
             // Process refund
             Route::post('/refund', [ApiOrderController::class, 'processRefund'])->name('refund');
+        });
+    });
+
+    // OrderItem API routes
+    Route::prefix('order-items')->name('order-items.')->group(function () {
+        // List order items
+        Route::get('/', [ApiOrderItemController::class, 'index'])->name('index');
+
+        // Get order item count
+        Route::get('/count', [ApiOrderItemController::class, 'getCount'])->name('count');
+
+        // Get total revenue
+        Route::get('/revenue', [ApiOrderItemController::class, 'getRevenue'])->name('revenue');
+
+        // Search order items
+        Route::get('/search', [ApiOrderItemController::class, 'search'])->name('search');
+
+        // Get items by status
+        Route::get('/shipped', [ApiOrderItemController::class, 'shipped'])->name('shipped');
+        Route::get('/unshipped', [ApiOrderItemController::class, 'unshipped'])->name('unshipped');
+
+        // Analytics
+        Route::get('/top-selling', [ApiOrderItemController::class, 'topSelling'])->name('top-selling');
+        Route::get('/low-stock', [ApiOrderItemController::class, 'lowStock'])->name('low-stock');
+
+        // Get items by order/product
+        Route::get('/by-order/{order}', [ApiOrderItemController::class, 'byOrder'])->name('by-order');
+        Route::get('/by-product/{product}', [ApiOrderItemController::class, 'byProduct'])->name('by-product');
+
+        // Inventory management
+        Route::get('/inventory/{product}', [ApiOrderItemController::class, 'getInventoryLevel'])->name('inventory.level');
+        Route::post('/inventory/reserve', [ApiOrderItemController::class, 'reserveInventory'])->name('inventory.reserve');
+        Route::post('/inventory/release', [ApiOrderItemController::class, 'releaseInventory'])->name('inventory.release');
+
+        // Create order item
+        Route::post('/', [ApiOrderItemController::class, 'store'])->name('store');
+
+        // OrderItem-specific routes
+        Route::prefix('{orderItem}')->group(function () {
+            // Show order item
+            Route::get('/', [ApiOrderItemController::class, 'show'])->name('show');
+
+            // Update order item (full update)
+            Route::put('/', [ApiOrderItemController::class, 'update'])->name('update');
+
+            // Update order item (partial update)
+            Route::patch('/', [ApiOrderItemController::class, 'update'])->name('update.partial');
+
+            // Delete order item
+            Route::delete('/', [ApiOrderItemController::class, 'destroy'])->name('destroy');
+
+            // Shipping operations
+            Route::post('/mark-shipped', [ApiOrderItemController::class, 'markShipped'])->name('mark-shipped');
+            Route::post('/mark-returned', [ApiOrderItemController::class, 'markReturned'])->name('mark-returned');
+            Route::post('/process-refund', [ApiOrderItemController::class, 'processRefund'])->name('process-refund');
+
+            // Get item status
+            Route::get('/status', [ApiOrderItemController::class, 'getStatus'])->name('status');
         });
     });
 });

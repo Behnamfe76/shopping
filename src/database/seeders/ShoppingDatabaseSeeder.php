@@ -12,6 +12,7 @@ class ShoppingDatabaseSeeder extends Seeder
             CategoryPermissionSeeder::class,
             AddressPermissionSeeder::class,
             OrderPermissionSeeder::class,
+            OrderItemPermissionSeeder::class,
             CategorySeeder::class,
             BrandSeeder::class,
             ProductAttributeSeeder::class,
