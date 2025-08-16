@@ -16,6 +16,7 @@ use Fereydooni\Shopping\app\Http\Controllers\ProductMetaController;
 use Fereydooni\Shopping\app\Http\Controllers\ProductReviewController;
 use Fereydooni\Shopping\app\Http\Controllers\ProductTagController;
 use Fereydooni\Shopping\app\Http\Controllers\ProductVariantController;
+use Fereydooni\Shopping\app\Http\Controllers\ShipmentController;
 
 Route::prefix('shopping')->name('shopping.')->group(function () {
     // Product routes
@@ -545,5 +546,66 @@ Route::prefix('shopping')->name('shopping.')->group(function () {
         Route::get('/product-variants/revenue/{variant}', [ProductVariantController::class, 'revenue'])->name('product-variants.revenue');
         Route::get('/product-variants/profit/{variant}', [ProductVariantController::class, 'profit'])->name('product-variants.profit');
         Route::get('/product-variants/margin/{variant}', [ProductVariantController::class, 'margin'])->name('product-variants.margin');
+    });
+
+    // Shipment routes (with policy authorization)
+    Route::middleware(['auth'])->group(function () {
+        // Basic CRUD operations
+        Route::get('/shipments', [ShipmentController::class, 'index'])->name('shipments.index');
+        Route::get('/shipments/create', [ShipmentController::class, 'create'])->name('shipments.create');
+        Route::post('/shipments', [ShipmentController::class, 'store'])->name('shipments.store');
+        Route::get('/shipments/{shipment}', [ShipmentController::class, 'show'])->name('shipments.show');
+        Route::get('/shipments/{shipment}/edit', [ShipmentController::class, 'edit'])->name('shipments.edit');
+        Route::put('/shipments/{shipment}', [ShipmentController::class, 'update'])->name('shipments.update');
+        Route::delete('/shipments/{shipment}', [ShipmentController::class, 'destroy'])->name('shipments.destroy');
+
+        // Status management
+        Route::post('/shipments/{shipment}/ship', [ShipmentController::class, 'ship'])->name('shipments.ship');
+        Route::post('/shipments/{shipment}/deliver', [ShipmentController::class, 'deliver'])->name('shipments.deliver');
+        Route::post('/shipments/{shipment}/return', [ShipmentController::class, 'return'])->name('shipments.return');
+        Route::post('/shipments/{shipment}/update-tracking', [ShipmentController::class, 'updateTracking'])->name('shipments.update-tracking');
+        Route::post('/shipments/{shipment}/update-status', [ShipmentController::class, 'updateStatus'])->name('shipments.update-status');
+
+        // Search and filtering
+        Route::get('/shipments/search', [ShipmentController::class, 'search'])->name('shipments.search');
+        Route::get('/shipments/pending', [ShipmentController::class, 'pending'])->name('shipments.pending');
+        Route::get('/shipments/in-transit', [ShipmentController::class, 'inTransit'])->name('shipments.in-transit');
+        Route::get('/shipments/delivered', [ShipmentController::class, 'delivered'])->name('shipments.delivered');
+        Route::get('/shipments/returned', [ShipmentController::class, 'returned'])->name('shipments.returned');
+        Route::get('/shipments/overdue', [ShipmentController::class, 'overdue'])->name('shipments.overdue');
+        Route::get('/shipments/delayed', [ShipmentController::class, 'delayed'])->name('shipments.delayed');
+        Route::get('/shipments/on-time', [ShipmentController::class, 'onTime'])->name('shipments.on-time');
+
+        // Relationship queries
+        Route::get('/shipments/by-order/{order}', [ShipmentController::class, 'byOrder'])->name('shipments.by-order');
+        Route::get('/shipments/by-carrier/{carrier}', [ShipmentController::class, 'byCarrier'])->name('shipments.by-carrier');
+        Route::get('/shipments/by-status/{status}', [ShipmentController::class, 'byStatus'])->name('shipments.by-status');
+        Route::get('/shipments/by-tracking/{tracking}', [ShipmentController::class, 'byTracking'])->name('shipments.by-tracking');
+
+        // List methods
+        Route::get('/shipments/carriers', [ShipmentController::class, 'getCarriers'])->name('shipments.carriers');
+        Route::get('/shipments/tracking-numbers', [ShipmentController::class, 'getTrackingNumbers'])->name('shipments.tracking-numbers');
+
+        // Analytics
+        Route::get('/shipments/analytics/{shipment}', [ShipmentController::class, 'analytics'])->name('shipments.analytics');
+        Route::get('/shipments/analytics-by-order/{order}', [ShipmentController::class, 'analyticsByOrder'])->name('shipments.analytics-by-order');
+        Route::get('/shipments/analytics-by-carrier/{carrier}', [ShipmentController::class, 'analyticsByCarrier'])->name('shipments.analytics-by-carrier');
+        Route::get('/shipments/delivery-performance', [ShipmentController::class, 'deliveryPerformance'])->name('shipments.delivery-performance');
+        Route::get('/shipments/shipping-costs', [ShipmentController::class, 'shippingCosts'])->name('shipments.shipping-costs');
+        Route::get('/shipments/delivery-times', [ShipmentController::class, 'deliveryTimes'])->name('shipments.delivery-times');
+        Route::get('/shipments/return-rates', [ShipmentController::class, 'returnRates'])->name('shipments.return-rates');
+        Route::get('/shipments/carrier-performance', [ShipmentController::class, 'carrierPerformance'])->name('shipments.carrier-performance');
+        Route::get('/shipments/trends', [ShipmentController::class, 'trends'])->name('shipments.trends');
+        Route::get('/shipments/forecast', [ShipmentController::class, 'forecast'])->name('shipments.forecast');
+
+        // Tracking and labels
+        Route::get('/shipments/tracking-info/{tracking}', [ShipmentController::class, 'trackingInfo'])->name('shipments.tracking-info');
+        Route::get('/shipments/shipping-label/{shipment}', [ShipmentController::class, 'shippingLabel'])->name('shipments.shipping-label');
+        Route::get('/shipments/return-label/{shipment}', [ShipmentController::class, 'returnLabel'])->name('shipments.return-label');
+
+        // Pickup operations
+        Route::post('/shipments/schedule-pickup/{shipment}', [ShipmentController::class, 'schedulePickup'])->name('shipments.schedule-pickup');
+        Route::post('/shipments/cancel-pickup/{shipment}', [ShipmentController::class, 'cancelPickup'])->name('shipments.cancel-pickup');
+        Route::get('/shipments/pickup-confirmation/{shipment}', [ShipmentController::class, 'pickupConfirmation'])->name('shipments.pickup-confirmation');
     });
 });

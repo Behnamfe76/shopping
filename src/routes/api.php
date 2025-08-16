@@ -14,6 +14,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductMetaController as Api
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductReviewController as ApiProductReviewController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductTagController as ApiProductTagController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductVariantController as ApiProductVariantController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ShipmentController as ApiShipmentController;
 
 Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     // Address API routes
@@ -904,6 +905,86 @@ Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:
             Route::get('/revenue', [ApiProductVariantController::class, 'revenue'])->name('revenue');
             Route::get('/profit', [ApiProductVariantController::class, 'profit'])->name('profit');
             Route::get('/margin', [ApiProductVariantController::class, 'margin'])->name('margin');
+        });
+    });
+
+    // Shipment API routes
+    Route::prefix('shipments')->name('shipments.')->group(function () {
+        // List shipments
+        Route::get('/', [ApiShipmentController::class, 'index'])->name('index');
+
+        // Get shipment count
+        Route::get('/count', [ApiShipmentController::class, 'getCount'])->name('count');
+
+        // Search shipments
+        Route::get('/search', [ApiShipmentController::class, 'search'])->name('search');
+
+        // Filter by status
+        Route::get('/pending', [ApiShipmentController::class, 'pending'])->name('pending');
+        Route::get('/in-transit', [ApiShipmentController::class, 'inTransit'])->name('in-transit');
+        Route::get('/delivered', [ApiShipmentController::class, 'delivered'])->name('delivered');
+        Route::get('/returned', [ApiShipmentController::class, 'returned'])->name('returned');
+        Route::get('/overdue', [ApiShipmentController::class, 'overdue'])->name('overdue');
+        Route::get('/delayed', [ApiShipmentController::class, 'delayed'])->name('delayed');
+        Route::get('/on-time', [ApiShipmentController::class, 'onTime'])->name('on-time');
+
+        // Filter by relationships
+        Route::get('/by-order/{order}', [ApiShipmentController::class, 'byOrder'])->name('by-order');
+        Route::get('/by-carrier/{carrier}', [ApiShipmentController::class, 'byCarrier'])->name('by-carrier');
+        Route::get('/by-status/{status}', [ApiShipmentController::class, 'byStatus'])->name('by-status');
+        Route::get('/by-tracking/{tracking}', [ApiShipmentController::class, 'byTracking'])->name('by-tracking');
+
+        // List methods
+        Route::get('/carriers', [ApiShipmentController::class, 'getCarriers'])->name('carriers');
+        Route::get('/tracking-numbers', [ApiShipmentController::class, 'getTrackingNumbers'])->name('tracking-numbers');
+
+        // Analytics
+        Route::get('/delivery-performance', [ApiShipmentController::class, 'deliveryPerformance'])->name('delivery-performance');
+        Route::get('/shipping-costs', [ApiShipmentController::class, 'shippingCosts'])->name('shipping-costs');
+        Route::get('/delivery-times', [ApiShipmentController::class, 'deliveryTimes'])->name('delivery-times');
+        Route::get('/return-rates', [ApiShipmentController::class, 'returnRates'])->name('return-rates');
+        Route::get('/carrier-performance', [ApiShipmentController::class, 'carrierPerformance'])->name('carrier-performance');
+        Route::get('/trends', [ApiShipmentController::class, 'trends'])->name('trends');
+        Route::get('/forecast', [ApiShipmentController::class, 'forecast'])->name('forecast');
+
+        // Tracking and labels
+        Route::get('/tracking-info/{tracking}', [ApiShipmentController::class, 'trackingInfo'])->name('tracking-info');
+        Route::get('/shipping-label/{shipment}', [ApiShipmentController::class, 'shippingLabel'])->name('shipping-label');
+        Route::get('/return-label/{shipment}', [ApiShipmentController::class, 'returnLabel'])->name('return-label');
+
+        // Pickup operations
+        Route::post('/schedule-pickup/{shipment}', [ApiShipmentController::class, 'schedulePickup'])->name('schedule-pickup');
+        Route::post('/cancel-pickup/{shipment}', [ApiShipmentController::class, 'cancelPickup'])->name('cancel-pickup');
+        Route::get('/pickup-confirmation/{shipment}', [ApiShipmentController::class, 'pickupConfirmation'])->name('pickup-confirmation');
+
+        // Create shipment
+        Route::post('/', [ApiShipmentController::class, 'store'])->name('store');
+
+        // Shipment-specific routes
+        Route::prefix('{shipment}')->group(function () {
+            // Show shipment
+            Route::get('/', [ApiShipmentController::class, 'show'])->name('show');
+
+            // Update shipment (full update)
+            Route::put('/', [ApiShipmentController::class, 'update'])->name('update');
+
+            // Update shipment (partial update)
+            Route::patch('/', [ApiShipmentController::class, 'update'])->name('update.partial');
+
+            // Delete shipment
+            Route::delete('/', [ApiShipmentController::class, 'destroy'])->name('destroy');
+
+            // Status management
+            Route::post('/ship', [ApiShipmentController::class, 'ship'])->name('ship');
+            Route::post('/deliver', [ApiShipmentController::class, 'deliver'])->name('deliver');
+            Route::post('/return', [ApiShipmentController::class, 'return'])->name('return');
+            Route::post('/update-tracking', [ApiShipmentController::class, 'updateTracking'])->name('update-tracking');
+            Route::post('/update-status', [ApiShipmentController::class, 'updateStatus'])->name('update-status');
+
+            // Analytics
+            Route::get('/analytics', [ApiShipmentController::class, 'analytics'])->name('analytics');
+            Route::get('/analytics-by-order', [ApiShipmentController::class, 'analyticsByOrder'])->name('analytics-by-order');
+            Route::get('/analytics-by-carrier', [ApiShipmentController::class, 'analyticsByCarrier'])->name('analytics-by-carrier');
         });
     });
 });
