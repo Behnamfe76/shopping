@@ -292,6 +292,26 @@ class ShoppingServiceProvider extends ServiceProvider
                 $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ShipmentRepositoryInterface::class)
             );
         });
+
+        // Register ShipmentItem Repository
+        $this->app->bind(
+            \Fereydooni\Shopping\app\Repositories\Interfaces\ShipmentItemRepositoryInterface::class,
+            \Fereydooni\Shopping\app\Repositories\ShipmentItemRepository::class
+        );
+
+        // Register ShipmentItem Service
+        $this->app->scoped('shopping.shipment-item', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\ShipmentItemService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ShipmentItemRepositoryInterface::class)
+            );
+        });
+
+        // Register ShipmentItem Facade
+        $this->app->singleton('shopping.shipment-item.facade', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\ShipmentItemService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ShipmentItemRepositoryInterface::class)
+            );
+        });
     }
 
     public function boot(): void
@@ -342,5 +362,6 @@ class ShoppingServiceProvider extends ServiceProvider
         Gate::policy(\Fereydooni\Shopping\app\Models\ProductTag::class, \Fereydooni\Shopping\app\Policies\ProductTagPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\ProductVariant::class, \Fereydooni\Shopping\app\Policies\ProductVariantPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\Shipment::class, \Fereydooni\Shopping\app\Policies\ShipmentPolicy::class);
+        Gate::policy(\Fereydooni\Shopping\app\Models\ShipmentItem::class, \Fereydooni\Shopping\app\Policies\ShipmentItemPolicy::class);
     }
 }

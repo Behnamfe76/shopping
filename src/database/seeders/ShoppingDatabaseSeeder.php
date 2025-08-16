@@ -15,6 +15,7 @@ class ShoppingDatabaseSeeder extends Seeder
             OrderItemPermissionSeeder::class,
             OrderStatusHistoryPermissionSeeder::class,
             ShipmentPermissionSeeder::class,
+            ShipmentItemPermissionSeeder::class,
             ProductAttributePermissionSeeder::class,
             ProductAttributeValuePermissionSeeder::class,
             ProductDiscountPermissionSeeder::class,

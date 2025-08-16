@@ -15,6 +15,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductReviewController as A
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductTagController as ApiProductTagController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductVariantController as ApiProductVariantController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ShipmentController as ApiShipmentController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ShipmentItemController as ApiShipmentItemController;
 
 Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     // Address API routes
@@ -985,6 +986,66 @@ Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:
             Route::get('/analytics', [ApiShipmentController::class, 'analytics'])->name('analytics');
             Route::get('/analytics-by-order', [ApiShipmentController::class, 'analyticsByOrder'])->name('analytics-by-order');
             Route::get('/analytics-by-carrier', [ApiShipmentController::class, 'analyticsByCarrier'])->name('analytics-by-carrier');
+
+            // Shipment Item API routes
+            Route::prefix('items')->name('items.')->group(function () {
+                // List shipment items
+                Route::get('/', [ApiShipmentItemController::class, 'index'])->name('index');
+
+                // Get shipment items count
+                Route::get('/count', [ApiShipmentItemController::class, 'getCount'])->name('count');
+
+                // Search shipment items
+                Route::get('/search', [ApiShipmentItemController::class, 'search'])->name('search');
+
+                // Get shipment items summary
+                Route::get('/summary', [ApiShipmentItemController::class, 'summary'])->name('summary');
+
+                // Calculate shipment weight and volume
+                Route::get('/weight', [ApiShipmentItemController::class, 'calculateWeight'])->name('weight');
+                Route::get('/volume', [ApiShipmentItemController::class, 'calculateVolume'])->name('volume');
+
+                // Create shipment item
+                Route::post('/', [ApiShipmentItemController::class, 'store'])->name('store');
+
+                // Bulk operations
+                Route::post('/bulk-create', [ApiShipmentItemController::class, 'bulkCreate'])->name('bulk-create');
+                Route::put('/bulk-update', [ApiShipmentItemController::class, 'bulkUpdate'])->name('bulk-update');
+                Route::delete('/bulk-delete', [ApiShipmentItemController::class, 'bulkDelete'])->name('bulk-delete');
+
+                // Filter by quantity range
+                Route::get('/by-quantity-range', [ApiShipmentItemController::class, 'byQuantityRange'])->name('by-quantity-range');
+
+                // Filter by shipping status
+                Route::get('/fully-shipped', [ApiShipmentItemController::class, 'fullyShipped'])->name('fully-shipped');
+                Route::get('/partially-shipped', [ApiShipmentItemController::class, 'partiallyShipped'])->name('partially-shipped');
+
+                // Filter by product and variant
+                Route::get('/by-product/{product}', [ApiShipmentItemController::class, 'byProduct'])->name('by-product');
+                Route::get('/by-variant/{variant}', [ApiShipmentItemController::class, 'byVariant'])->name('by-variant');
+
+                // Analytics
+                Route::get('/analytics', [ApiShipmentItemController::class, 'analytics'])->name('analytics');
+                Route::get('/top-shipped', [ApiShipmentItemController::class, 'topShipped'])->name('top-shipped');
+
+                // Shipment item-specific routes
+                Route::prefix('{item}')->group(function () {
+                    // Show shipment item
+                    Route::get('/', [ApiShipmentItemController::class, 'show'])->name('show');
+
+                    // Update shipment item (full update)
+                    Route::put('/', [ApiShipmentItemController::class, 'update'])->name('update');
+
+                    // Update shipment item (partial update)
+                    Route::patch('/', [ApiShipmentItemController::class, 'update'])->name('update.partial');
+
+                    // Delete shipment item
+                    Route::delete('/', [ApiShipmentItemController::class, 'destroy'])->name('destroy');
+
+                    // Get shipment item status
+                    Route::get('/status', [ApiShipmentItemController::class, 'getStatus'])->name('status');
+                });
+            });
         });
     });
 });

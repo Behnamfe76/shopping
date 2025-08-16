@@ -17,6 +17,7 @@ use Fereydooni\Shopping\app\Http\Controllers\ProductReviewController;
 use Fereydooni\Shopping\app\Http\Controllers\ProductTagController;
 use Fereydooni\Shopping\app\Http\Controllers\ProductVariantController;
 use Fereydooni\Shopping\app\Http\Controllers\ShipmentController;
+use Fereydooni\Shopping\app\Http\Controllers\ShipmentItemController;
 
 Route::prefix('shopping')->name('shopping.')->group(function () {
     // Product routes
@@ -607,5 +608,43 @@ Route::prefix('shopping')->name('shopping.')->group(function () {
         Route::post('/shipments/schedule-pickup/{shipment}', [ShipmentController::class, 'schedulePickup'])->name('shipments.schedule-pickup');
         Route::post('/shipments/cancel-pickup/{shipment}', [ShipmentController::class, 'cancelPickup'])->name('shipments.cancel-pickup');
         Route::get('/shipments/pickup-confirmation/{shipment}', [ShipmentController::class, 'pickupConfirmation'])->name('shipments.pickup-confirmation');
+
+        // Shipment Item routes (with policy authorization)
+        Route::prefix('shipments/{shipment}/items')->name('shipment-items.')->group(function () {
+            // Basic CRUD operations
+            Route::get('/', [ShipmentItemController::class, 'index'])->name('index');
+            Route::get('/create', [ShipmentItemController::class, 'create'])->name('create');
+            Route::post('/', [ShipmentItemController::class, 'store'])->name('store');
+            Route::get('/{item}', [ShipmentItemController::class, 'show'])->name('show');
+            Route::get('/{item}/edit', [ShipmentItemController::class, 'edit'])->name('edit');
+            Route::put('/{item}', [ShipmentItemController::class, 'update'])->name('update');
+            Route::delete('/{item}', [ShipmentItemController::class, 'destroy'])->name('destroy');
+
+            // Search and filtering
+            Route::get('/search', [ShipmentItemController::class, 'search'])->name('search');
+            Route::get('/summary', [ShipmentItemController::class, 'summary'])->name('summary');
+
+            // Quantity-based operations
+            Route::get('/by-quantity-range', [ShipmentItemController::class, 'byQuantityRange'])->name('by-quantity-range');
+            Route::get('/fully-shipped', [ShipmentItemController::class, 'fullyShipped'])->name('fully-shipped');
+            Route::get('/partially-shipped', [ShipmentItemController::class, 'partiallyShipped'])->name('partially-shipped');
+
+            // Product and variant filtering
+            Route::get('/by-product/{product}', [ShipmentItemController::class, 'byProduct'])->name('by-product');
+            Route::get('/by-variant/{variant}', [ShipmentItemController::class, 'byVariant'])->name('by-variant');
+
+            // Calculations
+            Route::get('/weight', [ShipmentItemController::class, 'calculateWeight'])->name('weight');
+            Route::get('/volume', [ShipmentItemController::class, 'calculateVolume'])->name('volume');
+
+            // Bulk operations
+            Route::post('/bulk-create', [ShipmentItemController::class, 'bulkCreate'])->name('bulk-create');
+            Route::put('/bulk-update', [ShipmentItemController::class, 'bulkUpdate'])->name('bulk-update');
+            Route::delete('/bulk-delete', [ShipmentItemController::class, 'bulkDelete'])->name('bulk-delete');
+
+            // Analytics
+            Route::get('/analytics', [ShipmentItemController::class, 'analytics'])->name('analytics');
+            Route::get('/top-shipped', [ShipmentItemController::class, 'topShipped'])->name('top-shipped');
+        });
     });
 });
