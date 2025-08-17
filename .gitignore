@@ -60,4 +60,4 @@ logs/
 # Local configuration
 config/local.php
 
-*-plan.json
+**/docs

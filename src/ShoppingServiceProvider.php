@@ -40,13 +40,7 @@ class ShoppingServiceProvider extends ServiceProvider
         // Register Category Service
         $this->app->scoped('shopping.category', function ($app) {
             return new \Fereydooni\Shopping\app\Services\CategoryService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CategoryRepositoryInterface::class),
-                $app->make(\Fereydooni\Shopping\app\Actions\Category\CreateCategoryAction::class),
-                $app->make(\Fereydooni\Shopping\app\Actions\Category\UpdateCategoryAction::class),
-                $app->make(\Fereydooni\Shopping\app\Actions\Category\DeleteCategoryAction::class),
-                $app->make(\Fereydooni\Shopping\app\Actions\Category\MoveCategoryAction::class),
-                $app->make(\Fereydooni\Shopping\app\Actions\Category\GetCategoryTreeAction::class),
-                $app->make(\Fereydooni\Shopping\app\Actions\Category\SearchCategoriesAction::class)
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CategoryRepositoryInterface::class)
             );
         });
 
