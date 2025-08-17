@@ -13,16 +13,16 @@ class ShoppingServiceProvider extends ServiceProvider
             __DIR__ . '/config/shopping.php', 'shopping'
         );
 
-        // Register Category Repository
-        $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\CategoryRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\CategoryRepository::class
-        );
-
         // Register Address Repository
         $this->app->bind(
             \Fereydooni\Shopping\app\Repositories\Interfaces\AddressRepositoryInterface::class,
             \Fereydooni\Shopping\app\Repositories\AddressRepository::class
+        );
+
+        // Register Category Repository
+        $this->app->bind(
+            \Fereydooni\Shopping\app\Repositories\Interfaces\CategoryRepositoryInterface::class,
+            \Fereydooni\Shopping\app\Repositories\CategoryRepository::class
         );
 
         // Register Brand Repository
