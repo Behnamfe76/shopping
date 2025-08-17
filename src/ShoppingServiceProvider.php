@@ -372,10 +372,19 @@ class ShoppingServiceProvider extends ServiceProvider
     {
         $this->loadMigrationsFrom(__DIR__ . '/database/migrations');
 
-        $this->loadRoutesFrom(__DIR__ . '/routes/web.php');
-        $this->loadRoutesFrom(__DIR__ . '/routes/api.php');
+        // Load routes conditionally based on configuration
+        $this->loadRoutesConditionally();
 
         $this->loadViewsFrom(__DIR__ . '/resources/views', 'shopping');
+
+        // Register console commands
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                \Fereydooni\Shopping\app\Console\Commands\InstallRoutesCommand::class,
+                \Fereydooni\Shopping\app\Console\Commands\UninstallRoutesCommand::class,
+                \Fereydooni\Shopping\app\Console\Commands\ListRoutesCommand::class,
+            ]);
+        }
 
         $this->publishes([
             __DIR__ . '/config/shopping.php' => config_path('shopping.php'),
@@ -394,6 +403,24 @@ class ShoppingServiceProvider extends ServiceProvider
 
         // Register policies
         $this->registerPolicies();
+    }
+
+    /**
+     * Load routes conditionally based on configuration.
+     */
+    protected function loadRoutesConditionally(): void
+    {
+        $config = config('shopping.routes', []);
+
+        // Load API routes if enabled
+        if ($config['api'] ?? true) {
+            $this->loadRoutesFrom(__DIR__ . '/routes/api.php');
+        }
+
+        // Load web routes if enabled
+        if ($config['web'] ?? false) {
+            $this->loadRoutesFrom(__DIR__ . '/routes/web.php');
+        }
     }
 
     /**

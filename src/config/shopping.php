@@ -134,4 +134,22 @@ return [
         'auto_renewal' => env('SHOPPING_AUTO_RENEWAL', true),
         'grace_period_days' => env('SHOPPING_GRACE_PERIOD_DAYS', 3),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Route Settings
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for route loading and installation.
+    |
+    */
+    'routes' => [
+        'api' => env('SHOPPING_LOAD_API_ROUTES', false),
+        'web' => env('SHOPPING_LOAD_WEB_ROUTES', false),
+        'prefix' => env('SHOPPING_ROUTE_PREFIX', 'shopping'),
+        'middleware' => [
+            'api' => ['auth:sanctum', 'throttle:60,1'],
+            'web' => ['web'],
+        ],
+    ],
 ];
