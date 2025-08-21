@@ -320,4 +320,97 @@ class AddressRepository implements AddressRepositoryInterface
             ],
         ];
     }
+
+    // Geographic Methods
+    public function getByCountry(int $userId, int $countryId): Collection
+    {
+        return $this->model->where('user_id', $userId)
+            ->where('country_id', $countryId)
+            ->get();
+    }
+
+    public function getByProvince(int $userId, int $provinceId): Collection
+    {
+        return $this->model->where('user_id', $userId)
+            ->where('province_id', $provinceId)
+            ->get();
+    }
+
+    public function getByCounty(int $userId, int $countyId): Collection
+    {
+        return $this->model->where('user_id', $userId)
+            ->where('county_id', $countyId)
+            ->get();
+    }
+
+    public function getByCity(int $userId, int $cityId): Collection
+    {
+        return $this->model->where('user_id', $userId)
+            ->where('city_id', $cityId)
+            ->get();
+    }
+
+    public function getByVillage(int $userId, int $villageId): Collection
+    {
+        return $this->model->where('user_id', $userId)
+            ->where('village_id', $villageId)
+            ->get();
+    }
+
+    public function getGeographicData(int $addressId): array
+    {
+        $address = $this->find($addressId);
+        if (!$address) {
+            return [];
+        }
+
+        return $address->getGeographicData();
+    }
+
+    public function getAddressesByGeographicHierarchy(int $countryId = null, int $provinceId = null, int $countyId = null, int $cityId = null): Collection
+    {
+        $query = $this->model->query();
+
+        if ($countryId) {
+            $query->where('country_id', $countryId);
+        }
+
+        if ($provinceId) {
+            $query->where('province_id', $provinceId);
+        }
+
+        if ($countyId) {
+            $query->where('county_id', $countyId);
+        }
+
+        if ($cityId) {
+            $query->where('city_id', $cityId);
+        }
+
+        return $query->get();
+    }
+
+    public function validateAddress(array $data): bool
+    {
+        // Basic validation
+        $requiredFields = ['user_id', 'first_name', 'last_name', 'address_line_1', 'postal_code', 'type'];
+        foreach ($requiredFields as $field) {
+            if (!isset($data[$field]) || empty($data[$field])) {
+                return false;
+            }
+        }
+
+        // Geographic validation using the trait
+        if (isset($data['country_id']) || isset($data['province_id']) || isset($data['county_id']) || isset($data['city_id']) || isset($data['village_id'])) {
+            $tempAddress = new Address();
+            $tempAddress->fill($data);
+            $geographicErrors = $tempAddress->validateGeographicRelationships();
+
+            if (!empty($geographicErrors)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

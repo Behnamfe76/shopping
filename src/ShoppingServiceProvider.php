@@ -51,6 +51,11 @@ class ShoppingServiceProvider extends ServiceProvider
             );
         });
 
+        // Register Geographic Data Service
+        $this->app->singleton('shopping.geographic', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\GeographicDataService();
+        });
+
         // Register Brand Service
         $this->app->scoped('shopping.brand', function ($app) {
             return new \Fereydooni\Shopping\app\Services\BrandService(

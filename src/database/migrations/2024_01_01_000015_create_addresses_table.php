@@ -12,13 +12,37 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->enum('type', ['shipping', 'billing']);
-            $table->string('full_name');
+            $table->string('first_name');
+            $table->string('last_name');
+            $table->string('company_name')->nullable();
+            $table->string('address_line_1');
+            $table->string('address_line_2')->nullable();
             $table->string('phone')->nullable();
-            $table->string('street');
-            $table->string('city');
-            $table->string('state')->nullable();
+            $table->string('email')->nullable();
             $table->string('postal_code');
-            $table->string('country');
+
+            // Geographic relationships
+            $table->unsignedBigInteger('country_id')->nullable();
+            $table->unsignedBigInteger('province_id')->nullable();
+            $table->unsignedBigInteger('county_id')->nullable();
+            $table->unsignedBigInteger('city_id')->nullable();
+            $table->unsignedBigInteger('village_id')->nullable();
+
+            // Legacy fields for backward compatibility
+            $table->string('full_name')->nullable();
+            $table->string('street')->nullable();
+            $table->string('city')->nullable();
+            $table->string('state')->nullable();
+            $table->string('country')->nullable();
+
+            $table->boolean('is_default')->default(false);
+            $table->timestamps();
+
+            // Indexes
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->index(['user_id', 'type']);
+            $table->index(['user_id', 'is_default']);
+            $table->index(['country_id', 'province_id', 'county_id', 'city_id']);
         });
     }
 
