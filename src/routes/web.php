@@ -9,6 +9,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerController as WebCustom
 use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerPreferenceController as WebCustomerPreferenceController;
 use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerNoteController as WebCustomerNoteController;
 use Fereydooni\Shopping\app\Http\Controllers\Web\LoyaltyTransactionController as WebLoyaltyTransactionController;
+use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerSegmentController as WebCustomerSegmentController;
 
 Route::prefix('shopping')->name('shopping.')->middleware(['web'])->group(function () {
     // Product routes
@@ -91,6 +92,54 @@ Route::prefix('shopping')->name('shopping.')->middleware(['web'])->group(functio
         Route::get('/communication', [WebCustomerController::class, 'communication'])->name('communication');
         Route::get('/loyalty', [WebCustomerController::class, 'loyalty'])->name('loyalty');
         Route::get('/segmentation', [WebCustomerController::class, 'segmentation'])->name('segmentation');
+    });
+
+    // Customer Segment management routes (authenticated)
+    Route::prefix('customer-segments')->name('customer-segments.')->middleware(['auth', 'permission:customer-segments.*'])->group(function () {
+        // Customer segment dashboard
+        Route::get('/dashboard', [WebCustomerSegmentController::class, 'dashboard'])->name('dashboard');
+
+        // Customer segment listing and search
+        Route::get('/', [WebCustomerSegmentController::class, 'index'])->name('index');
+
+        // Customer segment CRUD
+        Route::get('/create', [WebCustomerSegmentController::class, 'create'])->name('create');
+        Route::post('/', [WebCustomerSegmentController::class, 'store'])->name('store');
+        Route::get('/{customerSegment}', [WebCustomerSegmentController::class, 'show'])->name('show');
+        Route::get('/{customerSegment}/edit', [WebCustomerSegmentController::class, 'edit'])->name('edit');
+        Route::put('/{customerSegment}', [WebCustomerSegmentController::class, 'update'])->name('update');
+        Route::delete('/{customerSegment}', [WebCustomerSegmentController::class, 'destroy'])->name('destroy');
+
+        // Customer segment status management
+        Route::post('/{customerSegment}/activate', [WebCustomerSegmentController::class, 'activate'])->name('activate');
+        Route::post('/{customerSegment}/deactivate', [WebCustomerSegmentController::class, 'deactivate'])->name('deactivate');
+
+        // Customer segment criteria and calculation
+        Route::get('/{customerSegment}/criteria-builder', [WebCustomerSegmentController::class, 'criteriaBuilder'])->name('criteria-builder');
+        Route::put('/{customerSegment}/criteria', [WebCustomerSegmentController::class, 'updateCriteria'])->name('update-criteria');
+        Route::post('/{customerSegment}/calculate', [WebCustomerSegmentController::class, 'calculate'])->name('calculate');
+
+        // Customer segment analytics
+        Route::get('/analytics', [WebCustomerSegmentController::class, 'analytics'])->name('analytics');
+        Route::get('/compare', [WebCustomerSegmentController::class, 'compare'])->name('compare');
+
+        // Customer segment import/export
+        Route::get('/import-export', [WebCustomerSegmentController::class, 'importExport'])->name('import-export');
+        Route::post('/import', [WebCustomerSegmentController::class, 'import'])->name('import');
+        Route::get('/{customerSegment}/export', [WebCustomerSegmentController::class, 'export'])->name('export');
+
+        // Customer segment performance
+        Route::get('/{customerSegment}/performance', [WebCustomerSegmentController::class, 'performance'])->name('performance');
+
+        // Customer segment operations
+        Route::post('/{customerSegment}/duplicate', [WebCustomerSegmentController::class, 'duplicate'])->name('duplicate');
+        Route::get('/merge', [WebCustomerSegmentController::class, 'mergeForm'])->name('merge-form');
+        Route::post('/merge', [WebCustomerSegmentController::class, 'merge'])->name('merge');
+        Route::get('/{customerSegment}/split', [WebCustomerSegmentController::class, 'splitForm'])->name('split-form');
+        Route::post('/{customerSegment}/split', [WebCustomerSegmentController::class, 'split'])->name('split');
+
+        // Recalculate all segments
+        Route::post('/recalculate-all', [WebCustomerSegmentController::class, 'recalculateAll'])->name('recalculate-all');
     });
 
     // Customer Preference management routes (authenticated)

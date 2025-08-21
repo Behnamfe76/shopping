@@ -22,6 +22,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerController as ApiCus
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerPreferenceController as ApiCustomerPreferenceController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerNoteController as ApiCustomerNoteController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\LoyaltyTransactionController as ApiLoyaltyTransactionController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerSegmentController as ApiCustomerSegmentController;
 
 Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     // Address API routes
@@ -1223,6 +1224,98 @@ Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:
 
             // Customer preferences
             Route::put('/preferences', [ApiCustomerController::class, 'updatePreferences'])->name('update-preferences');
+        });
+    });
+
+    // Customer Segment API routes
+    Route::prefix('customer-segments')->name('customer-segments.')->middleware(['permission:customer-segments.*'])->group(function () {
+        // List customer segments
+        Route::get('/', [ApiCustomerSegmentController::class, 'index'])->name('index');
+
+        // Get segment statistics
+        Route::get('/statistics', [ApiCustomerSegmentController::class, 'statistics'])->name('statistics');
+
+        // Get segment recommendations
+        Route::get('/recommendations', [ApiCustomerSegmentController::class, 'recommendations'])->name('recommendations');
+
+        // Get segment insights
+        Route::get('/insights', [ApiCustomerSegmentController::class, 'insights'])->name('insights');
+
+        // Get segment trends forecast
+        Route::get('/trends-forecast', [ApiCustomerSegmentController::class, 'trendsForecast'])->name('trends-forecast');
+
+        // Compare segments
+        Route::get('/compare', [ApiCustomerSegmentController::class, 'compare'])->name('compare');
+
+        // Recalculate all segments
+        Route::post('/recalculate-all', [ApiCustomerSegmentController::class, 'recalculateAll'])->name('recalculate-all');
+
+        // Get segments needing recalculation
+        Route::get('/needing-recalculation', [ApiCustomerSegmentController::class, 'needingRecalculation'])->name('needing-recalculation');
+
+        // Merge segments
+        Route::post('/merge', [ApiCustomerSegmentController::class, 'merge'])->name('merge');
+
+        // Import segment
+        Route::post('/import', [ApiCustomerSegmentController::class, 'import'])->name('import');
+
+        // Create customer segment
+        Route::post('/', [ApiCustomerSegmentController::class, 'store'])->name('store');
+
+        // Customer segment-specific routes
+        Route::prefix('{customerSegment}')->group(function () {
+            // Show customer segment
+            Route::get('/', [ApiCustomerSegmentController::class, 'show'])->name('show');
+
+            // Update customer segment (full update)
+            Route::put('/', [ApiCustomerSegmentController::class, 'update'])->name('update');
+
+            // Update customer segment (partial update)
+            Route::patch('/', [ApiCustomerSegmentController::class, 'update'])->name('update.partial');
+
+            // Delete customer segment
+            Route::delete('/', [ApiCustomerSegmentController::class, 'destroy'])->name('destroy');
+
+            // Status management
+            Route::post('/activate', [ApiCustomerSegmentController::class, 'activate'])->name('activate');
+            Route::post('/deactivate', [ApiCustomerSegmentController::class, 'deactivate'])->name('deactivate');
+
+            // Segment type management
+            Route::post('/make-automatic', [ApiCustomerSegmentController::class, 'makeAutomatic'])->name('make-automatic');
+            Route::post('/make-manual', [ApiCustomerSegmentController::class, 'makeManual'])->name('make-manual');
+            Route::post('/make-dynamic', [ApiCustomerSegmentController::class, 'makeDynamic'])->name('make-dynamic');
+            Route::post('/make-static', [ApiCustomerSegmentController::class, 'makeStatic'])->name('make-static');
+
+            // Priority management
+            Route::post('/set-priority', [ApiCustomerSegmentController::class, 'setPriority'])->name('set-priority');
+
+            // Calculation
+            Route::post('/calculate', [ApiCustomerSegmentController::class, 'calculate'])->name('calculate');
+
+            // Customer management
+            Route::post('/add-customer', [ApiCustomerSegmentController::class, 'addCustomer'])->name('add-customer');
+            Route::post('/remove-customer', [ApiCustomerSegmentController::class, 'removeCustomer'])->name('remove-customer');
+            Route::get('/customers', [ApiCustomerSegmentController::class, 'customers'])->name('customers');
+
+            // Criteria and conditions
+            Route::put('/criteria', [ApiCustomerSegmentController::class, 'updateCriteria'])->name('update-criteria');
+            Route::put('/conditions', [ApiCustomerSegmentController::class, 'updateConditions'])->name('update-conditions');
+
+            // Analytics
+            Route::get('/analytics', [ApiCustomerSegmentController::class, 'analytics'])->name('analytics');
+            Route::get('/forecast', [ApiCustomerSegmentController::class, 'forecast'])->name('forecast');
+
+            // Export
+            Route::get('/export', [ApiCustomerSegmentController::class, 'export'])->name('export');
+
+            // Duplicate
+            Route::post('/duplicate', [ApiCustomerSegmentController::class, 'duplicate'])->name('duplicate');
+
+            // Split
+            Route::post('/split', [ApiCustomerSegmentController::class, 'split'])->name('split');
+
+            // Overlapping segments
+            Route::get('/overlapping', [ApiCustomerSegmentController::class, 'overlapping'])->name('overlapping');
         });
     });
 
