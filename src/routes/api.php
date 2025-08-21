@@ -21,6 +21,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Api\V1\UserSubscriptionController a
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerController as ApiCustomerController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerPreferenceController as ApiCustomerPreferenceController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerNoteController as ApiCustomerNoteController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\LoyaltyTransactionController as ApiLoyaltyTransactionController;
 
 Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     // Address API routes
@@ -1367,5 +1368,75 @@ Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:
 
         // Import customer notes
         Route::post('/import', [ApiCustomerNoteController::class, 'import'])->name('import');
+    });
+
+    // Loyalty Transaction API routes
+    Route::prefix('loyalty-transactions')->name('loyalty-transactions.')->middleware(['permission:loyalty-transactions.*'])->group(function () {
+        // List loyalty transactions
+        Route::get('/', [ApiLoyaltyTransactionController::class, 'index'])->name('index');
+
+        // Search loyalty transactions
+        Route::get('/search', [ApiLoyaltyTransactionController::class, 'search'])->name('search');
+
+        // Get recent transactions
+        Route::get('/recent', [ApiLoyaltyTransactionController::class, 'getRecent'])->name('recent');
+
+        // Get transaction statistics
+        Route::get('/statistics', [ApiLoyaltyTransactionController::class, 'getStatistics'])->name('statistics');
+
+        // Points management
+        Route::post('/add-points', [ApiLoyaltyTransactionController::class, 'addPoints'])->name('add-points');
+        Route::post('/deduct-points', [ApiLoyaltyTransactionController::class, 'deductPoints'])->name('deduct-points');
+
+        // Create loyalty transaction
+        Route::post('/', [ApiLoyaltyTransactionController::class, 'store'])->name('store');
+
+        // Loyalty transaction-specific routes
+        Route::prefix('{loyaltyTransaction}')->group(function () {
+            // Show loyalty transaction
+            Route::get('/', [ApiLoyaltyTransactionController::class, 'show'])->name('show');
+
+            // Update loyalty transaction (full update)
+            Route::put('/', [ApiLoyaltyTransactionController::class, 'update'])->name('update');
+
+            // Update loyalty transaction (partial update)
+            Route::patch('/', [ApiLoyaltyTransactionController::class, 'update'])->name('update.partial');
+
+            // Delete loyalty transaction
+            Route::delete('/', [ApiLoyaltyTransactionController::class, 'destroy'])->name('destroy');
+
+            // Reverse transaction
+            Route::post('/reverse', [ApiLoyaltyTransactionController::class, 'reverse'])->name('reverse');
+
+            // Get customer balance
+            Route::get('/balance', [ApiLoyaltyTransactionController::class, 'getBalance'])->name('balance');
+
+            // Get customer tier
+            Route::get('/tier', [ApiLoyaltyTransactionController::class, 'getTier'])->name('tier');
+
+            // Get transaction history
+            Route::get('/history', [ApiLoyaltyTransactionController::class, 'getHistory'])->name('history');
+
+            // Get transaction analytics
+            Route::get('/analytics', [ApiLoyaltyTransactionController::class, 'getAnalytics'])->name('analytics');
+        });
+
+        // Customer-specific loyalty routes
+        Route::prefix('customers/{customerId}')->group(function () {
+            // Get customer balance
+            Route::get('/balance', [ApiLoyaltyTransactionController::class, 'getBalance'])->name('customer.balance');
+
+            // Get customer tier
+            Route::get('/tier', [ApiLoyaltyTransactionController::class, 'getTier'])->name('customer.tier');
+
+            // Get customer transaction history
+            Route::get('/history', [ApiLoyaltyTransactionController::class, 'getHistory'])->name('customer.history');
+
+            // Get customer transaction analytics
+            Route::get('/analytics', [ApiLoyaltyTransactionController::class, 'getAnalytics'])->name('customer.analytics');
+
+            // Export customer history
+            Route::get('/export-history', [ApiLoyaltyTransactionController::class, 'exportHistory'])->name('customer.export-history');
+        });
     });
 });

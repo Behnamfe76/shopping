@@ -8,6 +8,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Web\CartController as WebCartContro
 use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerController as WebCustomerController;
 use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerPreferenceController as WebCustomerPreferenceController;
 use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerNoteController as WebCustomerNoteController;
+use Fereydooni\Shopping\app\Http\Controllers\Web\LoyaltyTransactionController as WebLoyaltyTransactionController;
 
 Route::prefix('shopping')->name('shopping.')->middleware(['web'])->group(function () {
     // Product routes
@@ -167,5 +168,46 @@ Route::prefix('shopping')->name('shopping.')->middleware(['web'])->group(functio
             Route::get('/notes/import', [WebCustomerNoteController::class, 'showImport'])->name('show-import');
             Route::post('/notes/import', [WebCustomerNoteController::class, 'import'])->name('import');
         });
+    });
+
+    // Loyalty Transaction management routes (authenticated)
+    Route::prefix('loyalty-transactions')->name('loyalty-transactions.')->middleware(['auth', 'permission:loyalty-transactions.*'])->group(function () {
+        // Loyalty transaction dashboard
+        Route::get('/dashboard', [WebLoyaltyTransactionController::class, 'dashboard'])->name('dashboard');
+
+        // Loyalty transaction CRUD
+        Route::get('/', [WebLoyaltyTransactionController::class, 'index'])->name('index');
+        Route::get('/create', [WebLoyaltyTransactionController::class, 'create'])->name('create');
+        Route::post('/', [WebLoyaltyTransactionController::class, 'store'])->name('store');
+        Route::get('/{loyaltyTransaction}', [WebLoyaltyTransactionController::class, 'show'])->name('show');
+        Route::get('/{loyaltyTransaction}/edit', [WebLoyaltyTransactionController::class, 'edit'])->name('edit');
+        Route::put('/{loyaltyTransaction}', [WebLoyaltyTransactionController::class, 'update'])->name('update');
+        Route::delete('/{loyaltyTransaction}', [WebLoyaltyTransactionController::class, 'destroy'])->name('destroy');
+
+        // Points management
+        Route::get('/points-management', [WebLoyaltyTransactionController::class, 'pointsManagement'])->name('points-management');
+        Route::post('/add-points', [WebLoyaltyTransactionController::class, 'addPoints'])->name('add-points');
+        Route::post('/deduct-points', [WebLoyaltyTransactionController::class, 'deductPoints'])->name('deduct-points');
+
+        // Transaction reversal
+        Route::get('/{loyaltyTransaction}/reverse', [WebLoyaltyTransactionController::class, 'showReverse'])->name('reverse.show');
+        Route::post('/{loyaltyTransaction}/reverse', [WebLoyaltyTransactionController::class, 'reverse'])->name('reverse');
+
+        // Analytics and reporting
+        Route::get('/analytics', [WebLoyaltyTransactionController::class, 'analytics'])->name('analytics');
+
+        // Import/Export
+        Route::get('/import-export', [WebLoyaltyTransactionController::class, 'importExport'])->name('import-export');
+        Route::post('/export-history', [WebLoyaltyTransactionController::class, 'exportHistory'])->name('export-history');
+        Route::post('/import-history', [WebLoyaltyTransactionController::class, 'importHistory'])->name('import-history');
+
+        // Tier management
+        Route::get('/tier-management', [WebLoyaltyTransactionController::class, 'tierManagement'])->name('tier-management');
+
+        // Expiration tracking
+        Route::get('/expiration-tracking', [WebLoyaltyTransactionController::class, 'expirationTracking'])->name('expiration-tracking');
+
+        // Search and filtering
+        Route::get('/search', [WebLoyaltyTransactionController::class, 'index'])->name('search');
     });
 });
