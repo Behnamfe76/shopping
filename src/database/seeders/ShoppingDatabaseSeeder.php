@@ -28,6 +28,7 @@ class ShoppingDatabaseSeeder extends Seeder
             UserSubscriptionPermissionSeeder::class,
             CustomerPermissionSeeder::class,
             CustomerPreferencePermissionSeeder::class,
+            CustomerWishlistPermissionSeeder::class,
             CategorySeeder::class,
             BrandSeeder::class,
             ProductAttributeSeeder::class,
@@ -35,6 +36,8 @@ class ShoppingDatabaseSeeder extends Seeder
             CustomerSeeder::class,
             DefaultCustomerPreferencesSeeder::class,
             CustomerPreferenceSeeder::class,
+            CustomerWishlistSeeder::class,
+            WishlistPrioritySeeder::class,
         ]);
     }
 }
