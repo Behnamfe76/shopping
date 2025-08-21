@@ -32,6 +32,19 @@ use Fereydooni\Shopping\app\Listeners\UpdateProductPricingCache;
 use Fereydooni\Shopping\app\Listeners\SendLowStockNotification;
 use Fereydooni\Shopping\app\Listeners\SendOutOfStockNotification;
 use Fereydooni\Shopping\app\Listeners\GenerateProductVariantReport;
+use Fereydooni\Shopping\app\Events\Customer\CustomerCreated;
+use Fereydooni\Shopping\app\Events\Customer\CustomerUpdated;
+use Fereydooni\Shopping\app\Events\Customer\CustomerDeleted;
+use Fereydooni\Shopping\app\Events\Customer\CustomerActivated;
+use Fereydooni\Shopping\app\Events\Customer\CustomerDeactivated;
+use Fereydooni\Shopping\app\Events\Customer\CustomerSuspended;
+use Fereydooni\Shopping\app\Events\Customer\LoyaltyPointsAdded;
+use Fereydooni\Shopping\app\Events\Customer\LoyaltyPointsDeducted;
+use Fereydooni\Shopping\app\Listeners\Customer\SendWelcomeEmail;
+use Fereydooni\Shopping\app\Listeners\Customer\UpdateCustomerAnalytics;
+use Fereydooni\Shopping\app\Listeners\Customer\NotifyCustomerStatusChange;
+use Fereydooni\Shopping\app\Listeners\Customer\UpdateLoyaltyProgram;
+use Fereydooni\Shopping\app\Listeners\Customer\LogCustomerActivity;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -41,6 +54,7 @@ class EventServiceProvider extends ServiceProvider
      * @var array<class-string, array<int, class-string>>
      */
     protected $listen = [
+        // Product Tag Events
         ProductTagCreated::class => [
             SendProductTagCreatedNotification::class,
             UpdateProductTagCache::class,
@@ -94,6 +108,8 @@ class EventServiceProvider extends ServiceProvider
             UpdateProductTagIndex::class,
             GenerateProductTagReport::class,
         ],
+
+        // Product Variant Events
         ProductVariantCreated::class => [
             SendProductVariantCreatedNotification::class,
             UpdateProductVariantCache::class,
@@ -138,6 +154,44 @@ class EventServiceProvider extends ServiceProvider
             SendOutOfStockNotification::class,
             UpdateProductInventoryCache::class,
             GenerateProductVariantReport::class,
+        ],
+
+        // Customer Events
+        CustomerCreated::class => [
+            SendWelcomeEmail::class,
+            UpdateCustomerAnalytics::class,
+            LogCustomerActivity::class,
+        ],
+        CustomerUpdated::class => [
+            UpdateCustomerAnalytics::class,
+            LogCustomerActivity::class,
+        ],
+        CustomerDeleted::class => [
+            UpdateCustomerAnalytics::class,
+            LogCustomerActivity::class,
+        ],
+        CustomerActivated::class => [
+            UpdateCustomerAnalytics::class,
+            NotifyCustomerStatusChange::class,
+            LogCustomerActivity::class,
+        ],
+        CustomerDeactivated::class => [
+            UpdateCustomerAnalytics::class,
+            NotifyCustomerStatusChange::class,
+            LogCustomerActivity::class,
+        ],
+        CustomerSuspended::class => [
+            UpdateCustomerAnalytics::class,
+            NotifyCustomerStatusChange::class,
+            LogCustomerActivity::class,
+        ],
+        LoyaltyPointsAdded::class => [
+            UpdateLoyaltyProgram::class,
+            LogCustomerActivity::class,
+        ],
+        LoyaltyPointsDeducted::class => [
+            UpdateLoyaltyProgram::class,
+            LogCustomerActivity::class,
         ],
     ];
 

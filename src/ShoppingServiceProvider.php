@@ -19,6 +19,12 @@ class ShoppingServiceProvider extends ServiceProvider
             \Fereydooni\Shopping\app\Repositories\AddressRepository::class
         );
 
+        // Register Customer Repository
+        $this->app->bind(
+            \Fereydooni\Shopping\app\Repositories\Interfaces\CustomerRepositoryInterface::class,
+            \Fereydooni\Shopping\app\Repositories\CustomerRepository::class
+        );
+
         // Register Category Repository
         $this->app->bind(
             \Fereydooni\Shopping\app\Repositories\Interfaces\CategoryRepositoryInterface::class,
@@ -48,6 +54,13 @@ class ShoppingServiceProvider extends ServiceProvider
         $this->app->scoped('shopping.address', function ($app) {
             return new \Fereydooni\Shopping\app\Services\AddressService(
                 $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\AddressRepositoryInterface::class)
+            );
+        });
+
+        // Register Customer Service
+        $this->app->scoped('shopping.customer', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\CustomerService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerRepositoryInterface::class)
             );
         });
 
@@ -169,6 +182,13 @@ class ShoppingServiceProvider extends ServiceProvider
         $this->app->singleton('product-discount-service', function ($app) {
             return new \Fereydooni\Shopping\app\Services\ProductDiscountService(
                 $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductDiscountRepositoryInterface::class)
+            );
+        });
+
+        // Register Customer Facade
+        $this->app->singleton('shopping.customer.facade', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\CustomerService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerRepositoryInterface::class)
             );
         });
 
@@ -434,6 +454,7 @@ class ShoppingServiceProvider extends ServiceProvider
     protected function registerPolicies(): void
     {
         Gate::policy(\Fereydooni\Shopping\app\Models\Address::class, \Fereydooni\Shopping\app\Policies\AddressPolicy::class);
+        Gate::policy(\Fereydooni\Shopping\app\Models\Customer::class, \Fereydooni\Shopping\app\Policies\CustomerPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\Category::class, \Fereydooni\Shopping\app\Policies\CategoryPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\Brand::class, \Fereydooni\Shopping\app\Policies\BrandPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\Order::class, \Fereydooni\Shopping\app\Policies\OrderPolicy::class);

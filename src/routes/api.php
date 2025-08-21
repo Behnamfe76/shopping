@@ -18,6 +18,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ShipmentController as ApiShi
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ShipmentItemController as ApiShipmentItemController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\TransactionController as ApiTransactionController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\UserSubscriptionController as ApiUserSubscriptionController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerController as ApiCustomerController;
 
 Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     // Address API routes
@@ -1165,6 +1166,60 @@ Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:
             Route::post('/renew', [ApiUserSubscriptionController::class, 'renew'])->name('renew');
             Route::post('/pause', [ApiUserSubscriptionController::class, 'pause'])->name('pause');
             Route::post('/resume', [ApiUserSubscriptionController::class, 'resume'])->name('resume');
+        });
+    });
+
+    // Customer API routes
+    Route::prefix('customers')->name('customers.')->group(function () {
+        // List customers
+        Route::get('/', [ApiCustomerController::class, 'index'])->name('index');
+
+        // Search customers
+        Route::get('/search', [ApiCustomerController::class, 'search'])->name('search');
+
+        // Get customer statistics
+        Route::get('/stats', [ApiCustomerController::class, 'stats'])->name('stats');
+
+        // Create customer
+        Route::post('/', [ApiCustomerController::class, 'store'])->name('store');
+
+        // Customer-specific routes
+        Route::prefix('{customer}')->group(function () {
+            // Show customer
+            Route::get('/', [ApiCustomerController::class, 'show'])->name('show');
+
+            // Update customer (full update)
+            Route::put('/', [ApiCustomerController::class, 'update'])->name('update');
+
+            // Update customer (partial update)
+            Route::patch('/', [ApiCustomerController::class, 'update'])->name('update.partial');
+
+            // Delete customer
+            Route::delete('/', [ApiCustomerController::class, 'destroy'])->name('destroy');
+
+            // Customer status management
+            Route::post('/activate', [ApiCustomerController::class, 'activate'])->name('activate');
+            Route::post('/deactivate', [ApiCustomerController::class, 'deactivate'])->name('deactivate');
+            Route::post('/suspend', [ApiCustomerController::class, 'suspend'])->name('suspend');
+
+            // Loyalty points management
+            Route::post('/loyalty-points', [ApiCustomerController::class, 'loyaltyPoints'])->name('loyalty-points');
+
+            // Customer relationships
+            Route::get('/orders', [ApiCustomerController::class, 'orders'])->name('orders');
+            Route::get('/addresses', [ApiCustomerController::class, 'addresses'])->name('addresses');
+            Route::get('/reviews', [ApiCustomerController::class, 'reviews'])->name('reviews');
+            Route::get('/wishlist', [ApiCustomerController::class, 'wishlist'])->name('wishlist');
+
+            // Customer analytics
+            Route::get('/analytics', [ApiCustomerController::class, 'analytics'])->name('analytics');
+
+            // Customer notes
+            Route::get('/notes', [ApiCustomerController::class, 'notes'])->name('notes');
+            Route::post('/notes', [ApiCustomerController::class, 'addNote'])->name('add-note');
+
+            // Customer preferences
+            Route::put('/preferences', [ApiCustomerController::class, 'updatePreferences'])->name('update-preferences');
         });
     });
 });
