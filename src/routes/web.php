@@ -10,6 +10,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerPreferenceController as
 use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerNoteController as WebCustomerNoteController;
 use Fereydooni\Shopping\app\Http\Controllers\Web\LoyaltyTransactionController as WebLoyaltyTransactionController;
 use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerSegmentController as WebCustomerSegmentController;
+use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerCommunicationController as WebCustomerCommunicationController;
 
 Route::prefix('shopping')->name('shopping.')->middleware(['web'])->group(function () {
     // Product routes
@@ -258,5 +259,39 @@ Route::prefix('shopping')->name('shopping.')->middleware(['web'])->group(functio
 
         // Search and filtering
         Route::get('/search', [WebLoyaltyTransactionController::class, 'index'])->name('search');
+    });
+
+    // Customer Communication management routes (authenticated)
+    Route::prefix('customer-communications')->name('customer-communications.')->middleware(['auth', 'permission:customer-communications.*'])->group(function () {
+        // Customer communication dashboard
+        Route::get('/dashboard', [WebCustomerCommunicationController::class, 'dashboard'])->name('dashboard');
+
+        // Customer communication CRUD
+        Route::get('/', [WebCustomerCommunicationController::class, 'index'])->name('index');
+        Route::get('/create', [WebCustomerCommunicationController::class, 'create'])->name('create');
+        Route::post('/', [WebCustomerCommunicationController::class, 'store'])->name('store');
+        Route::get('/{id}', [WebCustomerCommunicationController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [WebCustomerCommunicationController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [WebCustomerCommunicationController::class, 'update'])->name('update');
+        Route::delete('/{id}', [WebCustomerCommunicationController::class, 'destroy'])->name('destroy');
+
+        // Communication status management
+        Route::get('/{id}/schedule', [WebCustomerCommunicationController::class, 'schedule'])->name('schedule');
+        Route::post('/{id}/schedule', [WebCustomerCommunicationController::class, 'scheduleCommunication'])->name('schedule.store');
+        Route::post('/{id}/send', [WebCustomerCommunicationController::class, 'send'])->name('send');
+        Route::post('/{id}/cancel', [WebCustomerCommunicationController::class, 'cancel'])->name('cancel');
+
+        // Communication tracking and analytics
+        Route::get('/{id}/tracking', [WebCustomerCommunicationController::class, 'tracking'])->name('tracking');
+
+        // Communication management
+        Route::get('/templates', [WebCustomerCommunicationController::class, 'templates'])->name('templates');
+        Route::get('/campaigns', [WebCustomerCommunicationController::class, 'campaigns'])->name('campaigns');
+        Route::get('/import-export', [WebCustomerCommunicationController::class, 'importExport'])->name('import-export');
+        Route::get('/reporting', [WebCustomerCommunicationController::class, 'reporting'])->name('reporting');
+
+        // Attachment management
+        Route::post('/{id}/attachments', [WebCustomerCommunicationController::class, 'addAttachment'])->name('add-attachment');
+        Route::delete('/{id}/attachments/{mediaId}', [WebCustomerCommunicationController::class, 'removeAttachment'])->name('remove-attachment');
     });
 });

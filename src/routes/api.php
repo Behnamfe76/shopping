@@ -23,6 +23,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerPreferenceController
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerNoteController as ApiCustomerNoteController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\LoyaltyTransactionController as ApiLoyaltyTransactionController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerSegmentController as ApiCustomerSegmentController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerCommunicationController as ApiCustomerCommunicationController;
 
 Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     // Address API routes
@@ -1530,6 +1531,51 @@ Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:
 
             // Export customer history
             Route::get('/export-history', [ApiLoyaltyTransactionController::class, 'exportHistory'])->name('customer.export-history');
+        });
+    });
+
+    // Customer Communication API routes
+    Route::prefix('customer-communications')->name('customer-communications.')->middleware(['permission:customer-communications.*'])->group(function () {
+        // List customer communications
+        Route::get('/', [ApiCustomerCommunicationController::class, 'index'])->name('index');
+
+        // Create customer communication
+        Route::post('/', [ApiCustomerCommunicationController::class, 'store'])->name('store');
+
+        // Customer communication-specific routes
+        Route::prefix('{id}')->group(function () {
+            // Show customer communication
+            Route::get('/', [ApiCustomerCommunicationController::class, 'show'])->name('show');
+
+            // Update customer communication (full update)
+            Route::put('/', [ApiCustomerCommunicationController::class, 'update'])->name('update');
+
+            // Update customer communication (partial update)
+            Route::patch('/', [ApiCustomerCommunicationController::class, 'update'])->name('update.partial');
+
+            // Delete customer communication
+            Route::delete('/', [ApiCustomerCommunicationController::class, 'destroy'])->name('destroy');
+
+            // Communication status management
+            Route::post('/schedule', [ApiCustomerCommunicationController::class, 'schedule'])->name('schedule');
+            Route::post('/send', [ApiCustomerCommunicationController::class, 'send'])->name('send');
+            Route::post('/cancel', [ApiCustomerCommunicationController::class, 'cancel'])->name('cancel');
+            Route::post('/reschedule', [ApiCustomerCommunicationController::class, 'reschedule'])->name('reschedule');
+
+            // Communication tracking
+            Route::post('/mark-delivered', [ApiCustomerCommunicationController::class, 'markAsDelivered'])->name('mark-delivered');
+            Route::post('/mark-opened', [ApiCustomerCommunicationController::class, 'markAsOpened'])->name('mark-opened');
+            Route::post('/mark-clicked', [ApiCustomerCommunicationController::class, 'markAsClicked'])->name('mark-clicked');
+            Route::post('/mark-bounced', [ApiCustomerCommunicationController::class, 'markAsBounced'])->name('mark-bounced');
+            Route::post('/mark-unsubscribed', [ApiCustomerCommunicationController::class, 'markAsUnsubscribed'])->name('mark-unsubscribed');
+
+            // Analytics and tracking
+            Route::get('/analytics', [ApiCustomerCommunicationController::class, 'analytics'])->name('analytics');
+            Route::get('/tracking', [ApiCustomerCommunicationController::class, 'tracking'])->name('tracking');
+
+            // Attachment management
+            Route::post('/attachments', [ApiCustomerCommunicationController::class, 'addAttachment'])->name('add-attachment');
+            Route::delete('/attachments/{mediaId}', [ApiCustomerCommunicationController::class, 'removeAttachment'])->name('remove-attachment');
         });
     });
 });
