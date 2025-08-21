@@ -6,6 +6,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Web\CategoryController as WebCatego
 use Fereydooni\Shopping\app\Http\Controllers\Web\OrderController as WebOrderController;
 use Fereydooni\Shopping\app\Http\Controllers\Web\CartController as WebCartController;
 use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerController as WebCustomerController;
+use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerPreferenceController as WebCustomerPreferenceController;
 
 Route::prefix('shopping')->name('shopping.')->middleware(['web'])->group(function () {
     // Product routes
@@ -88,5 +89,41 @@ Route::prefix('shopping')->name('shopping.')->middleware(['web'])->group(functio
         Route::get('/communication', [WebCustomerController::class, 'communication'])->name('communication');
         Route::get('/loyalty', [WebCustomerController::class, 'loyalty'])->name('loyalty');
         Route::get('/segmentation', [WebCustomerController::class, 'segmentation'])->name('segmentation');
+    });
+
+    // Customer Preference management routes (authenticated)
+    Route::prefix('customer-preferences')->name('customer-preferences.')->middleware(['auth', 'permission:customer-preferences.*'])->group(function () {
+        // Customer preference dashboard
+        Route::get('/', [WebCustomerPreferenceController::class, 'index'])->name('index');
+
+        // Customer preference CRUD
+        Route::get('/create', [WebCustomerPreferenceController::class, 'create'])->name('create');
+        Route::post('/', [WebCustomerPreferenceController::class, 'store'])->name('store');
+        Route::get('/{preference}', [WebCustomerPreferenceController::class, 'show'])->name('show');
+        Route::get('/{preference}/edit', [WebCustomerPreferenceController::class, 'edit'])->name('edit');
+        Route::put('/{preference}', [WebCustomerPreferenceController::class, 'update'])->name('update');
+        Route::delete('/{preference}', [WebCustomerPreferenceController::class, 'destroy'])->name('destroy');
+
+        // Status management
+        Route::post('/{preference}/activate', [WebCustomerPreferenceController::class, 'activate'])->name('activate');
+        Route::post('/{preference}/deactivate', [WebCustomerPreferenceController::class, 'deactivate'])->name('deactivate');
+
+        // Preference management interface
+        Route::get('/list', [WebCustomerPreferenceController::class, 'list'])->name('list');
+        Route::get('/templates', [WebCustomerPreferenceController::class, 'templates'])->name('templates');
+        Route::get('/analytics', [WebCustomerPreferenceController::class, 'analytics'])->name('analytics');
+        Route::get('/settings', [WebCustomerPreferenceController::class, 'settings'])->name('settings');
+
+        // Customer-specific preference routes
+        Route::prefix('customers/{customer}')->group(function () {
+            Route::get('/manage', [WebCustomerPreferenceController::class, 'manage'])->name('manage');
+            Route::get('/import-export', [WebCustomerPreferenceController::class, 'importExport'])->name('import-export');
+            Route::post('/import', [WebCustomerPreferenceController::class, 'import'])->name('import');
+            Route::get('/export', [WebCustomerPreferenceController::class, 'export'])->name('export');
+            Route::post('/apply-template', [WebCustomerPreferenceController::class, 'applyTemplate'])->name('apply-template');
+            Route::get('/backup-restore', [WebCustomerPreferenceController::class, 'backupRestore'])->name('backup-restore');
+            Route::post('/restore', [WebCustomerPreferenceController::class, 'restore'])->name('restore');
+            Route::post('/initialize', [WebCustomerPreferenceController::class, 'initialize'])->name('initialize');
+        });
     });
 });

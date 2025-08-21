@@ -19,6 +19,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ShipmentItemController as Ap
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\TransactionController as ApiTransactionController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\UserSubscriptionController as ApiUserSubscriptionController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerController as ApiCustomerController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerPreferenceController as ApiCustomerPreferenceController;
 
 Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     // Address API routes
@@ -1220,6 +1221,85 @@ Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:
 
             // Customer preferences
             Route::put('/preferences', [ApiCustomerController::class, 'updatePreferences'])->name('update-preferences');
+        });
+    });
+
+    // Customer Preference API routes
+    Route::prefix('customer-preferences')->name('customer-preferences.')->middleware(['permission:customer-preferences.*'])->group(function () {
+        // List customer preferences
+        Route::get('/', [ApiCustomerPreferenceController::class, 'index'])->name('index');
+
+        // Search customer preferences
+        Route::get('/search', [ApiCustomerPreferenceController::class, 'search'])->name('search');
+
+        // Get preference statistics
+        Route::get('/stats', [ApiCustomerPreferenceController::class, 'stats'])->name('stats');
+
+        // Get preference templates
+        Route::get('/templates', [ApiCustomerPreferenceController::class, 'templates'])->name('templates');
+
+        // Create customer preference
+        Route::post('/', [ApiCustomerPreferenceController::class, 'store'])->name('store');
+
+        // Customer preference-specific routes
+        Route::prefix('{preference}')->group(function () {
+            // Show customer preference
+            Route::get('/', [ApiCustomerPreferenceController::class, 'show'])->name('show');
+
+            // Update customer preference (full update)
+            Route::put('/', [ApiCustomerPreferenceController::class, 'update'])->name('update');
+
+            // Update customer preference (partial update)
+            Route::patch('/', [ApiCustomerPreferenceController::class, 'update'])->name('update.partial');
+
+            // Delete customer preference
+            Route::delete('/', [ApiCustomerPreferenceController::class, 'destroy'])->name('destroy');
+
+            // Status management
+            Route::post('/activate', [ApiCustomerPreferenceController::class, 'activate'])->name('activate');
+            Route::post('/deactivate', [ApiCustomerPreferenceController::class, 'deactivate'])->name('deactivate');
+        });
+    });
+
+    // Customer-specific preference routes
+    Route::prefix('customers/{customer}/preferences')->name('customers.preferences.')->middleware(['permission:customer-preferences.*'])->group(function () {
+        // Get customer preferences
+        Route::get('/', [ApiCustomerPreferenceController::class, 'getCustomerPreferences'])->name('index');
+
+        // Set customer preference
+        Route::post('/', [ApiCustomerPreferenceController::class, 'setCustomerPreference'])->name('store');
+
+        // Reset all customer preferences
+        Route::post('/reset', [ApiCustomerPreferenceController::class, 'resetCustomerPreferences'])->name('reset');
+
+        // Import customer preferences
+        Route::post('/import', [ApiCustomerPreferenceController::class, 'importCustomerPreferences'])->name('import');
+
+        // Export customer preferences
+        Route::get('/export', [ApiCustomerPreferenceController::class, 'exportCustomerPreferences'])->name('export');
+
+        // Sync customer preferences
+        Route::post('/sync', [ApiCustomerPreferenceController::class, 'syncCustomerPreferences'])->name('sync');
+
+        // Get customer preference summary
+        Route::get('/summary', [ApiCustomerPreferenceController::class, 'summary'])->name('summary');
+
+        // Initialize customer preferences
+        Route::post('/initialize', [ApiCustomerPreferenceController::class, 'initialize'])->name('initialize');
+
+        // Apply preference template
+        Route::post('/apply-template', [ApiCustomerPreferenceController::class, 'applyTemplate'])->name('apply-template');
+
+        // Key-specific preference routes
+        Route::prefix('{key}')->group(function () {
+            // Get specific customer preference
+            Route::get('/', [ApiCustomerPreferenceController::class, 'getCustomerPreference'])->name('show');
+
+            // Update specific customer preference
+            Route::put('/', [ApiCustomerPreferenceController::class, 'updateCustomerPreference'])->name('update');
+
+            // Remove specific customer preference
+            Route::delete('/', [ApiCustomerPreferenceController::class, 'removeCustomerPreference'])->name('destroy');
         });
     });
 });

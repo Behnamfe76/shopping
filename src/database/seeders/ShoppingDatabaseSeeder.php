@@ -26,10 +26,15 @@ class ShoppingDatabaseSeeder extends Seeder
             ProductTagPermissionSeeder::class,
             ProductVariantPermissionSeeder::class,
             UserSubscriptionPermissionSeeder::class,
+            CustomerPermissionSeeder::class,
+            CustomerPreferencePermissionSeeder::class,
             CategorySeeder::class,
             BrandSeeder::class,
             ProductAttributeSeeder::class,
             ProductTagSeeder::class,
+            CustomerSeeder::class,
+            DefaultCustomerPreferencesSeeder::class,
+            CustomerPreferenceSeeder::class,
         ]);
     }
 }
