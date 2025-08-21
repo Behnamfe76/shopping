@@ -101,6 +101,11 @@ class Customer extends Model
         return $this->hasMany(ProductReview::class, 'user_id', 'user_id');
     }
 
+    public function notes(): HasMany
+    {
+        return $this->hasMany(CustomerNote::class);
+    }
+
     // Accessors
     public function getFullNameAttribute(): string
     {

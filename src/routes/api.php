@@ -20,6 +20,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Api\V1\TransactionController as Api
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\UserSubscriptionController as ApiUserSubscriptionController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerController as ApiCustomerController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerPreferenceController as ApiCustomerPreferenceController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerNoteController as ApiCustomerNoteController;
 
 Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     // Address API routes
@@ -1301,5 +1302,70 @@ Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:
             // Remove specific customer preference
             Route::delete('/', [ApiCustomerPreferenceController::class, 'removeCustomerPreference'])->name('destroy');
         });
+    });
+
+    // Customer Note API routes
+    Route::prefix('customer-notes')->name('customer-notes.')->middleware(['permission:customer-notes.*'])->group(function () {
+        // List customer notes
+        Route::get('/', [ApiCustomerNoteController::class, 'index'])->name('index');
+
+        // Search customer notes
+        Route::get('/search', [ApiCustomerNoteController::class, 'search'])->name('search');
+
+        // Get note statistics
+        Route::get('/stats', [ApiCustomerNoteController::class, 'stats'])->name('stats');
+
+        // Get note types
+        Route::get('/types', [ApiCustomerNoteController::class, 'types'])->name('types');
+
+        // Get note priorities
+        Route::get('/priorities', [ApiCustomerNoteController::class, 'priorities'])->name('priorities');
+
+        // Get note templates
+        Route::get('/templates', [ApiCustomerNoteController::class, 'templates'])->name('templates');
+
+        // Create customer note
+        Route::post('/', [ApiCustomerNoteController::class, 'store'])->name('store');
+
+        // Customer note-specific routes
+        Route::prefix('{customerNote}')->group(function () {
+            // Show customer note
+            Route::get('/', [ApiCustomerNoteController::class, 'show'])->name('show');
+
+            // Update customer note (full update)
+            Route::put('/', [ApiCustomerNoteController::class, 'update'])->name('update');
+
+            // Update customer note (partial update)
+            Route::patch('/', [ApiCustomerNoteController::class, 'update'])->name('update.partial');
+
+            // Delete customer note
+            Route::delete('/', [ApiCustomerNoteController::class, 'destroy'])->name('destroy');
+
+            // Status management
+            Route::post('/pin', [ApiCustomerNoteController::class, 'pin'])->name('pin');
+            Route::post('/unpin', [ApiCustomerNoteController::class, 'unpin'])->name('unpin');
+            Route::post('/make-private', [ApiCustomerNoteController::class, 'makePrivate'])->name('make-private');
+            Route::post('/make-public', [ApiCustomerNoteController::class, 'makePublic'])->name('make-public');
+
+            // Tag management
+            Route::post('/tags', [ApiCustomerNoteController::class, 'addTag'])->name('add-tag');
+            Route::delete('/tags/{tag}', [ApiCustomerNoteController::class, 'removeTag'])->name('remove-tag');
+
+            // Attachment management
+            Route::post('/attachments', [ApiCustomerNoteController::class, 'addAttachment'])->name('add-attachment');
+            Route::delete('/attachments/{mediaId}', [ApiCustomerNoteController::class, 'removeAttachment'])->name('remove-attachment');
+        });
+    });
+
+    // Customer-specific note routes
+    Route::prefix('customers/{customerId}/notes')->name('customers.notes.')->middleware(['permission:customer-notes.*'])->group(function () {
+        // Get customer notes
+        Route::get('/', [ApiCustomerNoteController::class, 'getCustomerNotes'])->name('index');
+
+        // Export customer notes
+        Route::get('/export', [ApiCustomerNoteController::class, 'export'])->name('export');
+
+        // Import customer notes
+        Route::post('/import', [ApiCustomerNoteController::class, 'import'])->name('import');
     });
 });

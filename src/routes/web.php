@@ -7,6 +7,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Web\OrderController as WebOrderCont
 use Fereydooni\Shopping\app\Http\Controllers\Web\CartController as WebCartController;
 use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerController as WebCustomerController;
 use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerPreferenceController as WebCustomerPreferenceController;
+use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerNoteController as WebCustomerNoteController;
 
 Route::prefix('shopping')->name('shopping.')->middleware(['web'])->group(function () {
     // Product routes
@@ -124,6 +125,47 @@ Route::prefix('shopping')->name('shopping.')->middleware(['web'])->group(functio
             Route::get('/backup-restore', [WebCustomerPreferenceController::class, 'backupRestore'])->name('backup-restore');
             Route::post('/restore', [WebCustomerPreferenceController::class, 'restore'])->name('restore');
             Route::post('/initialize', [WebCustomerPreferenceController::class, 'initialize'])->name('initialize');
+        });
+    });
+
+    // Customer Note management routes (authenticated)
+    Route::prefix('customer-notes')->name('customer-notes.')->middleware(['auth', 'permission:customer-notes.*'])->group(function () {
+        // Customer note dashboard
+        Route::get('/', [WebCustomerNoteController::class, 'index'])->name('index');
+
+        // Customer note CRUD
+        Route::get('/create', [WebCustomerNoteController::class, 'create'])->name('create');
+        Route::post('/', [WebCustomerNoteController::class, 'store'])->name('store');
+        Route::get('/{customerNote}', [WebCustomerNoteController::class, 'show'])->name('show');
+        Route::get('/{customerNote}/edit', [WebCustomerNoteController::class, 'edit'])->name('edit');
+        Route::put('/{customerNote}', [WebCustomerNoteController::class, 'update'])->name('update');
+        Route::delete('/{customerNote}', [WebCustomerNoteController::class, 'destroy'])->name('destroy');
+
+        // Status management
+        Route::post('/{customerNote}/pin', [WebCustomerNoteController::class, 'pin'])->name('pin');
+        Route::post('/{customerNote}/unpin', [WebCustomerNoteController::class, 'unpin'])->name('unpin');
+        Route::post('/{customerNote}/make-private', [WebCustomerNoteController::class, 'makePrivate'])->name('make-private');
+        Route::post('/{customerNote}/make-public', [WebCustomerNoteController::class, 'makePublic'])->name('make-public');
+
+        // Tag management
+        Route::post('/{customerNote}/tags', [WebCustomerNoteController::class, 'addTag'])->name('add-tag');
+        Route::delete('/{customerNote}/tags/{tag}', [WebCustomerNoteController::class, 'removeTag'])->name('remove-tag');
+
+        // Attachment management
+        Route::post('/{customerNote}/attachments', [WebCustomerNoteController::class, 'addAttachment'])->name('add-attachment');
+        Route::delete('/{customerNote}/attachments/{mediaId}', [WebCustomerNoteController::class, 'removeAttachment'])->name('remove-attachment');
+
+        // Search and analytics
+        Route::get('/search', [WebCustomerNoteController::class, 'search'])->name('search');
+        Route::get('/stats', [WebCustomerNoteController::class, 'stats'])->name('stats');
+        Route::get('/templates', [WebCustomerNoteController::class, 'templates'])->name('templates');
+
+        // Customer-specific note routes
+        Route::prefix('customers/{customerId}')->group(function () {
+            Route::get('/notes', [WebCustomerNoteController::class, 'getCustomerNotes'])->name('customer-notes');
+            Route::get('/notes/export', [WebCustomerNoteController::class, 'export'])->name('export');
+            Route::get('/notes/import', [WebCustomerNoteController::class, 'showImport'])->name('show-import');
+            Route::post('/notes/import', [WebCustomerNoteController::class, 'import'])->name('import');
         });
     });
 });
