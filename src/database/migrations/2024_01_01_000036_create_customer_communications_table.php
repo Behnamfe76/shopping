@@ -28,9 +28,9 @@ return new class extends Migration
             $table->timestamp('clicked_at')->nullable();
             $table->timestamp('bounced_at')->nullable();
             $table->timestamp('unsubscribed_at')->nullable();
-            $table->foreignId('campaign_id')->nullable()->constrained('campaigns')->onDelete('set null');
-            $table->foreignId('segment_id')->nullable()->constrained('customer_segments')->onDelete('set null');
-            $table->foreignId('template_id')->nullable()->constrained('communication_templates')->onDelete('set null');
+            $table->foreignId('campaign_id')->nullable();
+            $table->foreignId('segment_id')->nullable();
+            $table->foreignId('template_id')->nullable();
             $table->json('metadata')->nullable();
             $table->json('tracking_data')->nullable();
             $table->timestamps();
