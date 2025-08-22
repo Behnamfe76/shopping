@@ -24,6 +24,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerNoteController as Ap
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\LoyaltyTransactionController as ApiLoyaltyTransactionController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerSegmentController as ApiCustomerSegmentController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerCommunicationController as ApiCustomerCommunicationController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\EmployeeController as ApiEmployeeController;
 
 Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     // Address API routes
@@ -1577,5 +1578,99 @@ Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:
             Route::post('/attachments', [ApiCustomerCommunicationController::class, 'addAttachment'])->name('add-attachment');
             Route::delete('/attachments/{mediaId}', [ApiCustomerCommunicationController::class, 'removeAttachment'])->name('remove-attachment');
         });
+    });
+
+    // Employee API routes
+    Route::prefix('employees')->name('employees.')->middleware(['permission:employees.*'])->group(function () {
+        // List employees
+        Route::get('/', [ApiEmployeeController::class, 'index'])->name('index');
+
+        // Get employee count
+        Route::get('/count', [ApiEmployeeController::class, 'getCount'])->name('count');
+
+        // Search employees
+        Route::get('/search', [ApiEmployeeController::class, 'search'])->name('search');
+
+        // Get employee statistics
+        Route::get('/stats', [ApiEmployeeController::class, 'getStats'])->name('stats');
+
+        // Get employee analytics
+        Route::get('/analytics', [ApiEmployeeController::class, 'analytics'])->name('analytics');
+
+        // Create employee
+        Route::post('/', [ApiEmployeeController::class, 'store'])->name('store');
+
+        // Employee-specific routes
+        Route::prefix('{employee}')->group(function () {
+            // Show employee
+            Route::get('/', [ApiEmployeeController::class, 'show'])->name('show');
+
+            // Update employee (full update)
+            Route::put('/', [ApiEmployeeController::class, 'update'])->name('update');
+
+            // Update employee (partial update)
+            Route::patch('/', [ApiEmployeeController::class, 'update'])->name('update.partial');
+
+            // Delete employee
+            Route::delete('/', [ApiEmployeeController::class, 'destroy'])->name('destroy');
+
+            // Employee status management
+            Route::post('/activate', [ApiEmployeeController::class, 'activate'])->name('activate');
+            Route::post('/deactivate', [ApiEmployeeController::class, 'deactivate'])->name('deactivate');
+            Route::post('/terminate', [ApiEmployeeController::class, 'terminate'])->name('terminate');
+            Route::post('/rehire', [ApiEmployeeController::class, 'rehire'])->name('rehire');
+
+            // Employee position and department management
+            Route::put('/position', [ApiEmployeeController::class, 'updatePosition'])->name('update-position');
+            Route::put('/department', [ApiEmployeeController::class, 'updateDepartment'])->name('update-department');
+            Route::post('/manager', [ApiEmployeeController::class, 'assignManager'])->name('assign-manager');
+
+            // Employee salary management
+            Route::put('/salary', [ApiEmployeeController::class, 'updateSalary'])->name('update-salary');
+
+            // Employee performance management
+            Route::put('/performance', [ApiEmployeeController::class, 'updatePerformance'])->name('update-performance');
+
+            // Employee time-off management
+            Route::post('/time-off', [ApiEmployeeController::class, 'manageTimeOff'])->name('manage-time-off');
+            Route::get('/time-off', [ApiEmployeeController::class, 'getTimeOff'])->name('get-time-off');
+
+            // Employee hierarchy
+            Route::get('/subordinates', [ApiEmployeeController::class, 'getSubordinates'])->name('subordinates');
+            Route::get('/managers', [ApiEmployeeController::class, 'getManagers'])->name('managers');
+            Route::get('/hierarchy', [ApiEmployeeController::class, 'getHierarchy'])->name('hierarchy');
+
+            // Employee analytics
+            Route::get('/analytics', [ApiEmployeeController::class, 'getEmployeeAnalytics'])->name('employee-analytics');
+
+            // Employee notes
+            Route::post('/notes', [ApiEmployeeController::class, 'addNote'])->name('add-note');
+            Route::get('/notes', [ApiEmployeeController::class, 'getNotes'])->name('get-notes');
+
+            // Employee benefits
+            Route::put('/benefits', [ApiEmployeeController::class, 'updateBenefits'])->name('update-benefits');
+            Route::get('/benefits', [ApiEmployeeController::class, 'getBenefits'])->name('get-benefits');
+
+            // Employee skills and certifications
+            Route::put('/skills', [ApiEmployeeController::class, 'updateSkills'])->name('update-skills');
+            Route::get('/skills', [ApiEmployeeController::class, 'getSkills'])->name('get-skills');
+            Route::put('/certifications', [ApiEmployeeController::class, 'updateCertifications'])->name('update-certifications');
+            Route::get('/certifications', [ApiEmployeeController::class, 'getCertifications'])->name('get-certifications');
+        });
+
+        // Bulk operations
+        Route::post('/bulk-activate', [ApiEmployeeController::class, 'bulkActivate'])->name('bulk-activate');
+        Route::post('/bulk-deactivate', [ApiEmployeeController::class, 'bulkDeactivate'])->name('bulk-deactivate');
+        Route::post('/bulk-terminate', [ApiEmployeeController::class, 'bulkTerminate'])->name('bulk-terminate');
+
+        // Import/Export
+        Route::post('/import', [ApiEmployeeController::class, 'import'])->name('import');
+        Route::get('/export', [ApiEmployeeController::class, 'export'])->name('export');
+
+        // Reports
+        Route::get('/reports/performance', [ApiEmployeeController::class, 'performanceReport'])->name('reports.performance');
+        Route::get('/reports/turnover', [ApiEmployeeController::class, 'turnoverReport'])->name('reports.turnover');
+        Route::get('/reports/salary', [ApiEmployeeController::class, 'salaryReport'])->name('reports.salary');
+        Route::get('/reports/time-off', [ApiEmployeeController::class, 'timeOffReport'])->name('reports.time-off');
     });
 });

@@ -40,6 +40,8 @@ class ShoppingDatabaseSeeder extends Seeder
             CustomerWishlistSeeder::class,
             WishlistPrioritySeeder::class,
             CustomerCommunicationSeeder::class,
+            EmployeePermissionSeeder::class,
+            EmployeeSeeder::class,
         ]);
     }
 }

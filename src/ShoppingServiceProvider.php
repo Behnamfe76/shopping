@@ -10,7 +10,8 @@ class ShoppingServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/config/shopping.php', 'shopping'
+            __DIR__ . '/config/shopping.php',
+            'shopping'
         );
 
         // Register Address Repository
@@ -542,6 +543,10 @@ class ShoppingServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/resources/views' => resource_path('views/vendor/shopping'),
         ], 'shopping-views');
+
+        $this->publishes([
+            __DIR__ . '/database/seeders/' => database_path('seeders/shopping/'),
+        ], 'shopping-seeders');
 
         // Register event service provider
         $this->app->register(\Fereydooni\Shopping\app\Providers\EventServiceProvider::class);

@@ -22,37 +22,37 @@ class Category extends Model implements HasMedia
         'is_default',
     ];
 
-    protected $casts = [
-        'status' => \Fereydooni\Shopping\app\Enums\CategoryStatus::class,
-        'is_default' => 'boolean',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
+    // protected $casts = [
+    //     'status' => \Fereydooni\Shopping\app\Enums\CategoryStatus::class,
+    //     'is_default' => 'boolean',
+    //     'created_at' => 'datetime',
+    //     'updated_at' => 'datetime',
+    // ];
 
-    public function parent(): BelongsTo
-    {
-        return $this->belongsTo(Category::class, 'parent_id');
-    }
+    // public function parent(): BelongsTo
+    // {
+    //     return $this->belongsTo(Category::class, 'parent_id');
+    // }
 
-    public function children(): HasMany
-    {
-        return $this->hasMany(Category::class, 'parent_id');
-    }
+    // public function children(): HasMany
+    // {
+    //     return $this->hasMany(Category::class, 'parent_id');
+    // }
 
-    public function products(): HasMany
-    {
-        return $this->hasMany(Product::class);
-    }
+    // public function products(): HasMany
+    // {
+    //     return $this->hasMany(Product::class);
+    // }
 
-    public function allChildren(): HasMany
-    {
-        return $this->children()->with('allChildren');
-    }
+    // public function allChildren(): HasMany
+    // {
+    //     return $this->children()->with('allChildren');
+    // }
 
-    public function allParents()
-    {
-        return $this->parent()->with('allParents');
-    }
+    // public function allParents()
+    // {
+    //     return $this->parent()->with('allParents');
+    // }
 
 
 }

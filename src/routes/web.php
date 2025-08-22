@@ -11,6 +11,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerNoteController as WebCu
 use Fereydooni\Shopping\app\Http\Controllers\Web\LoyaltyTransactionController as WebLoyaltyTransactionController;
 use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerSegmentController as WebCustomerSegmentController;
 use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerCommunicationController as WebCustomerCommunicationController;
+use Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeController as WebEmployeeController;
 
 Route::prefix('shopping')->name('shopping.')->middleware(['web'])->group(function () {
     // Product routes
@@ -293,5 +294,52 @@ Route::prefix('shopping')->name('shopping.')->middleware(['web'])->group(functio
         // Attachment management
         Route::post('/{id}/attachments', [WebCustomerCommunicationController::class, 'addAttachment'])->name('add-attachment');
         Route::delete('/{id}/attachments/{mediaId}', [WebCustomerCommunicationController::class, 'removeAttachment'])->name('remove-attachment');
+    });
+
+    // Employee management routes (authenticated)
+    Route::prefix('employees')->name('employees.')->middleware(['auth', 'permission:employees.*'])->group(function () {
+        // Employee dashboard
+        Route::get('/dashboard', [WebEmployeeController::class, 'dashboard'])->name('dashboard');
+
+        // Employee CRUD
+        Route::get('/', [WebEmployeeController::class, 'index'])->name('index');
+        Route::get('/create', [WebEmployeeController::class, 'create'])->name('create');
+        Route::post('/', [WebEmployeeController::class, 'store'])->name('store');
+        Route::get('/{employee}', [WebEmployeeController::class, 'show'])->name('show');
+        Route::get('/{employee}/edit', [WebEmployeeController::class, 'edit'])->name('edit');
+        Route::put('/{employee}', [WebEmployeeController::class, 'update'])->name('update');
+        Route::delete('/{employee}', [WebEmployeeController::class, 'destroy'])->name('destroy');
+
+        // Employee status management
+        Route::post('/{employee}/activate', [WebEmployeeController::class, 'activate'])->name('activate');
+        Route::post('/{employee}/deactivate', [WebEmployeeController::class, 'deactivate'])->name('deactivate');
+        Route::post('/{employee}/terminate', [WebEmployeeController::class, 'terminate'])->name('terminate');
+        Route::post('/{employee}/rehire', [WebEmployeeController::class, 'rehire'])->name('rehire');
+
+        // Employee analytics and management
+        Route::get('/analytics', [WebEmployeeController::class, 'analytics'])->name('analytics');
+        Route::get('/import-export', [WebEmployeeController::class, 'importExport'])->name('import-export');
+        Route::post('/import', [WebEmployeeController::class, 'import'])->name('import');
+        Route::get('/export', [WebEmployeeController::class, 'export'])->name('export');
+
+        // Employee performance management
+        Route::get('/performance', [WebEmployeeController::class, 'performance'])->name('performance');
+
+        // Employee time-off management
+        Route::get('/time-off', [WebEmployeeController::class, 'timeOff'])->name('time-off');
+
+        // Employee benefits administration
+        Route::get('/benefits', [WebEmployeeController::class, 'benefits'])->name('benefits');
+
+        // Employee hierarchy visualization
+        Route::get('/hierarchy', [WebEmployeeController::class, 'hierarchy'])->name('hierarchy');
+
+        // Employee training management
+        Route::get('/training', [WebEmployeeController::class, 'training'])->name('training');
+
+        // AJAX endpoints
+        Route::get('/{employee}/data', [WebEmployeeController::class, 'getEmployeeData'])->name('get-data');
+        Route::get('/stats', [WebEmployeeController::class, 'getEmployeeStats'])->name('get-stats');
+        Route::get('/search', [WebEmployeeController::class, 'search'])->name('search');
     });
 });
