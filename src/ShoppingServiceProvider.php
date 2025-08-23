@@ -529,6 +529,8 @@ class ShoppingServiceProvider extends ServiceProvider
                 \Fereydooni\Shopping\app\Console\Commands\InstallRoutesCommand::class,
                 \Fereydooni\Shopping\app\Console\Commands\UninstallRoutesCommand::class,
                 \Fereydooni\Shopping\app\Console\Commands\ListRoutesCommand::class,
+                \Fereydooni\Shopping\app\Console\Commands\SeedCommand::class,
+                \Fereydooni\Shopping\app\Console\Commands\SeedRequiredDataCommand::class,
             ]);
         }
 
