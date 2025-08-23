@@ -19,18 +19,35 @@ class ProviderInvoice extends Model
         'invoice_date',
         'due_date',
         'total_amount',
+        'subtotal',
+        'tax_amount',
+        'discount_amount',
+        'shipping_amount',
         'currency',
         'status',
-        'notes',
         'payment_terms',
+        'payment_method',
         'reference_number',
+        'notes',
+        'attachments',
+        'sent_at',
+        'paid_at',
+        'overdue_notice_sent',
     ];
 
     protected $casts = [
         'invoice_date' => 'date',
         'due_date' => 'date',
         'total_amount' => 'decimal:2',
+        'subtotal' => 'decimal:2',
+        'tax_amount' => 'decimal:2',
+        'discount_amount' => 'decimal:2',
+        'shipping_amount' => 'decimal:2',
         'status' => 'string',
+        'attachments' => 'array',
+        'sent_at' => 'datetime',
+        'paid_at' => 'datetime',
+        'overdue_notice_sent' => 'datetime',
     ];
 
     protected $dates = [

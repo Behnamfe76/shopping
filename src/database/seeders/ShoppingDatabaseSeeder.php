@@ -49,6 +49,7 @@ class ShoppingDatabaseSeeder extends Seeder
             ProviderSpecializationSeeder::class,
             ProviderSeeder::class,
             ProviderNoteSeeder::class,
+            ProviderInvoiceSeeder::class,
         ]);
     }
 }
