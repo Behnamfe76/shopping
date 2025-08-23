@@ -25,6 +25,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Api\V1\LoyaltyTransactionController
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerSegmentController as ApiCustomerSegmentController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerCommunicationController as ApiCustomerCommunicationController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\EmployeeController as ApiEmployeeController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\EmployeeNoteController;
 
 Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     // Address API routes
@@ -1758,4 +1759,14 @@ Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:
             Route::get('/performance-reviews/statistics', [\Fereydooni\Shopping\app\Http\Controllers\Api\EmployeePerformanceReviewController::class, 'departmentStatistics'])->name('department-statistics');
         });
     });
+});
+
+// EmployeeNote API Routes
+Route::prefix('api')->group(function () {
+    Route::apiResource('employee-notes', EmployeeNoteController::class);
+    
+    Route::get('employees/{employee}/notes', [EmployeeNoteController::class, 'employeeNotes']);
+    Route::get('employee-notes/search', [EmployeeNoteController::class, 'search']);
+    Route::post('employee-notes/{employeeNote}/archive', [EmployeeNoteController::class, 'archive']);
+    Route::post('employee-notes/{employeeNote}/unarchive', [EmployeeNoteController::class, 'unarchive']);
 });
