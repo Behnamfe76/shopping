@@ -105,7 +105,7 @@ class EmployeePositionCreated implements ShouldBroadcast
     public function broadcastWhen(): bool
     {
         // Only broadcast if the position is active or hiring
-        return $this->position->is_active && 
+        return $this->position->is_active &&
                in_array($this->position->status->value, ['active', 'hiring']);
     }
 
