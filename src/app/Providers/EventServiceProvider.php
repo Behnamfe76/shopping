@@ -74,6 +74,34 @@ use Fereydooni\Shopping\app\Listeners\EmployeePosition\LogPositionActivity;
 use Fereydooni\Shopping\app\Listeners\EmployeePosition\UpdateEmployeePositionRecords;
 use Fereydooni\Shopping\app\Listeners\EmployeePosition\CreateJobPosting;
 
+// Provider Events
+use Fereydooni\Shopping\app\Events\Provider\ProviderCreated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderUpdated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderDeleted;
+use Fereydooni\Shopping\app\Events\Provider\ProviderStatusChanged;
+use Fereydooni\Shopping\app\Events\Provider\ProviderActivated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderDeactivated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderSuspended;
+use Fereydooni\Shopping\app\Events\Provider\ProviderRatingUpdated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderQualityRatingUpdated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderDeliveryRatingUpdated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderCommunicationRatingUpdated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderCreditLimitUpdated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderCommissionRateUpdated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderDiscountRateUpdated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderContractExtended;
+use Fereydooni\Shopping\app\Events\Provider\ProviderContractTerminated;
+
+// Provider Listeners
+use Fereydooni\Shopping\app\Listeners\Provider\SendWelcomeEmail;
+use Fereydooni\Shopping\app\Listeners\Provider\UpdateProviderAnalytics;
+use Fereydooni\Shopping\app\Listeners\Provider\NotifyProviderStatusChange;
+use Fereydooni\Shopping\app\Listeners\Provider\UpdateProviderScore;
+use Fereydooni\Shopping\app\Listeners\Provider\LogProviderActivity;
+use Fereydooni\Shopping\app\Listeners\Provider\SendContractExpirationReminder;
+use Fereydooni\Shopping\app\Listeners\Provider\UpdateProviderPerformanceMetrics;
+use Fereydooni\Shopping\app\Listeners\Provider\NotifyQualityIssues;
+
 class EventServiceProvider extends ServiceProvider
 {
     /**
@@ -289,6 +317,75 @@ class EventServiceProvider extends ServiceProvider
             UpdatePositionMetrics::class,
             LogPositionActivity::class,
             UpdateEmployeePositionRecords::class,
+        ],
+
+        // Provider Events
+        ProviderCreated::class => [
+            SendWelcomeEmail::class,
+            UpdateProviderAnalytics::class,
+            LogProviderActivity::class,
+        ],
+        ProviderUpdated::class => [
+            UpdateProviderAnalytics::class,
+            LogProviderActivity::class,
+        ],
+        ProviderDeleted::class => [
+            UpdateProviderAnalytics::class,
+            LogProviderActivity::class,
+        ],
+        ProviderStatusChanged::class => [
+            LogProviderActivity::class,
+        ],
+        ProviderActivated::class => [
+            NotifyProviderStatusChange::class,
+            LogProviderActivity::class,
+        ],
+        ProviderDeactivated::class => [
+            NotifyProviderStatusChange::class,
+            LogProviderActivity::class,
+        ],
+        ProviderSuspended::class => [
+            NotifyProviderStatusChange::class,
+            LogProviderActivity::class,
+        ],
+        ProviderRatingUpdated::class => [
+            UpdateProviderScore::class,
+            UpdateProviderPerformanceMetrics::class,
+            LogProviderActivity::class,
+        ],
+        ProviderQualityRatingUpdated::class => [
+            UpdateProviderScore::class,
+            UpdateProviderPerformanceMetrics::class,
+            NotifyQualityIssues::class,
+            LogProviderActivity::class,
+        ],
+        ProviderDeliveryRatingUpdated::class => [
+            UpdateProviderScore::class,
+            UpdateProviderPerformanceMetrics::class,
+            NotifyQualityIssues::class,
+            LogProviderActivity::class,
+        ],
+        ProviderCommunicationRatingUpdated::class => [
+            UpdateProviderScore::class,
+            UpdateProviderPerformanceMetrics::class,
+            LogProviderActivity::class,
+        ],
+        ProviderCreditLimitUpdated::class => [
+            LogProviderActivity::class,
+        ],
+        ProviderCommissionRateUpdated::class => [
+            LogProviderActivity::class,
+        ],
+        ProviderDiscountRateUpdated::class => [
+            LogProviderActivity::class,
+        ],
+        ProviderContractExtended::class => [
+            SendContractExpirationReminder::class,
+            LogProviderActivity::class,
+        ],
+        ProviderContractTerminated::class => [
+            SendContractExpirationReminder::class,
+            LogProviderActivity::class,
         ],
     ];
 

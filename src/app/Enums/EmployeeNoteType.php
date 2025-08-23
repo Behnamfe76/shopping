@@ -97,3 +97,4 @@ enum EmployeeNoteType: string
         return null;
     }
 }
+

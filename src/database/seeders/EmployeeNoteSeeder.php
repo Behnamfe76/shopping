@@ -113,3 +113,4 @@ class EmployeeNoteSeeder extends Seeder
         $this->command->info('EmployeeNote seeding completed successfully.');
     }
 }
+

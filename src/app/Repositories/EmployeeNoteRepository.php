@@ -446,3 +446,4 @@ class EmployeeNoteRepository implements EmployeeNoteRepositoryInterface
             ->map(fn($note) => EmployeeNoteDTO::fromModel($note));
     }
 }
+

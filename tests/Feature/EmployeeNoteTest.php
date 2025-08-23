@@ -302,3 +302,4 @@ class EmployeeNoteTest extends TestCase
                 ]);
     }
 }
+

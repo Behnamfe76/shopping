@@ -12,6 +12,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Web\LoyaltyTransactionController as
 use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerSegmentController as WebCustomerSegmentController;
 use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerCommunicationController as WebCustomerCommunicationController;
 use Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeController as WebEmployeeController;
+use Fereydooni\Shopping\app\Http\Controllers\Web\ProviderController as WebProviderController;
 
 Route::prefix('shopping')->name('shopping.')->middleware(['web'])->group(function () {
     // Product routes
@@ -387,6 +388,64 @@ Route::prefix('shopping')->name('shopping.')->middleware(['web'])->group(functio
 
         // Search functionality
         Route::get('/search', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeePerformanceReviewController::class, 'search'])->name('search');
+    });
+
+    // Provider management routes (authenticated)
+    Route::prefix('providers')->name('providers.')->middleware(['auth', 'permission:providers.*'])->group(function () {
+        // Provider dashboard
+        Route::get('/dashboard', [WebProviderController::class, 'dashboard'])->name('dashboard');
+
+        // Provider CRUD
+        Route::get('/', [WebProviderController::class, 'index'])->name('index');
+        Route::get('/create', [WebProviderController::class, 'create'])->name('create');
+        Route::post('/', [WebProviderController::class, 'store'])->name('store');
+        Route::get('/{provider}', [WebProviderController::class, 'show'])->name('show');
+        Route::get('/{provider}/edit', [WebProviderController::class, 'edit'])->name('edit');
+        Route::put('/{provider}', [WebProviderController::class, 'update'])->name('update');
+        Route::delete('/{provider}', [WebProviderController::class, 'destroy'])->name('destroy');
+
+        // Provider status management
+        Route::post('/{provider}/activate', [WebProviderController::class, 'activate'])->name('activate');
+        Route::post('/{provider}/deactivate', [WebProviderController::class, 'deactivate'])->name('deactivate');
+        Route::post('/{provider}/suspend', [WebProviderController::class, 'suspend'])->name('suspend');
+
+        // Provider analytics and management
+        Route::get('/analytics', [WebProviderController::class, 'analytics'])->name('analytics');
+        Route::get('/import-export', [WebProviderController::class, 'importExport'])->name('import-export');
+        Route::post('/import', [WebProviderController::class, 'import'])->name('import');
+        Route::get('/export', [WebProviderController::class, 'export'])->name('export');
+
+        // Provider performance management
+        Route::get('/performance', [WebProviderController::class, 'performance'])->name('performance');
+
+        // Provider contract management
+        Route::get('/contracts', [WebProviderController::class, 'contracts'])->name('contracts');
+
+        // Provider financial management
+        Route::get('/financials', [WebProviderController::class, 'financials'])->name('financials');
+
+        // Provider quality management
+        Route::get('/quality', [WebProviderController::class, 'quality'])->name('quality');
+
+        // Provider qualification management
+        Route::get('/qualifications', [WebProviderController::class, 'qualifications'])->name('qualifications');
+
+        // Provider directory
+        Route::get('/directory', [WebProviderController::class, 'directory'])->name('directory');
+
+        // Provider rating management
+        Route::post('/{provider}/rating', [WebProviderController::class, 'updateRating'])->name('update-rating');
+
+        // Provider credit limit management
+        Route::post('/{provider}/credit-limit', [WebProviderController::class, 'updateCreditLimit'])->name('update-credit-limit');
+
+        // Provider contract extension
+        Route::post('/{provider}/extend-contract', [WebProviderController::class, 'extendContract'])->name('extend-contract');
+
+        // AJAX endpoints
+        Route::get('/{provider}/data', [WebProviderController::class, 'getProviderData'])->name('get-data');
+        Route::get('/stats', [WebProviderController::class, 'getProviderStats'])->name('get-stats');
+        Route::get('/search', [WebProviderController::class, 'search'])->name('search');
     });
 
     // Employee-specific performance review routes

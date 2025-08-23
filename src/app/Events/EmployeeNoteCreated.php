@@ -14,3 +14,4 @@ class EmployeeNoteCreated
         public EmployeeNote $employeeNote
     ) {}
 }
+

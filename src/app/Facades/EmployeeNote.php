@@ -45,3 +45,4 @@ class EmployeeNote extends Facade
         return $instance->$name(...$arguments);
     }
 }
+

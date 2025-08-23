@@ -42,6 +42,13 @@ class ShoppingDatabaseSeeder extends Seeder
             CustomerCommunicationSeeder::class,
             EmployeePermissionSeeder::class,
             EmployeeSeeder::class,
+
+            // Provider seeders
+            ProviderPermissionSeeder::class,
+            ProviderTypeSeeder::class,
+            ProviderSpecializationSeeder::class,
+            ProviderSeeder::class,
+            ProviderNoteSeeder::class,
         ]);
     }
 }

@@ -25,6 +25,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Api\V1\LoyaltyTransactionController
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerSegmentController as ApiCustomerSegmentController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerCommunicationController as ApiCustomerCommunicationController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\EmployeeController as ApiEmployeeController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderController as ApiProviderController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\EmployeeNoteController;
 
 Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
@@ -1675,6 +1676,62 @@ Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:
         Route::get('/reports/time-off', [ApiEmployeeController::class, 'timeOffReport'])->name('reports.time-off');
     });
 
+    // Provider API routes
+    Route::prefix('providers')->name('providers.')->middleware(['permission:providers.*'])->group(function () {
+        // List providers
+        Route::get('/', [ApiProviderController::class, 'index'])->name('index');
+
+        // Create provider
+        Route::post('/', [ApiProviderController::class, 'store'])->name('store');
+
+        // Provider-specific routes
+        Route::prefix('{id}')->group(function () {
+            // Show provider
+            Route::get('/', [ApiProviderController::class, 'show'])->name('show');
+
+            // Update provider
+            Route::put('/', [ApiProviderController::class, 'update'])->name('update');
+
+            // Delete provider
+            Route::delete('/', [ApiProviderController::class, 'destroy'])->name('destroy');
+
+            // Provider status management
+            Route::post('/activate', [ApiProviderController::class, 'activate'])->name('activate');
+            Route::post('/deactivate', [ApiProviderController::class, 'deactivate'])->name('deactivate');
+            Route::post('/suspend', [ApiProviderController::class, 'suspend'])->name('suspend');
+
+            // Provider rating management
+            Route::put('/rating', [ApiProviderController::class, 'updateRating'])->name('update-rating');
+            Route::put('/quality-rating', [ApiProviderController::class, 'updateQualityRating'])->name('update-quality-rating');
+            Route::put('/delivery-rating', [ApiProviderController::class, 'updateDeliveryRating'])->name('update-delivery-rating');
+            Route::put('/communication-rating', [ApiProviderController::class, 'updateCommunicationRating'])->name('update-communication-rating');
+
+            // Provider financial management
+            Route::put('/credit-limit', [ApiProviderController::class, 'updateCreditLimit'])->name('update-credit-limit');
+            Route::put('/commission-rate', [ApiProviderController::class, 'updateCommissionRate'])->name('update-commission-rate');
+            Route::put('/discount-rate', [ApiProviderController::class, 'updateDiscountRate'])->name('update-discount-rate');
+
+            // Provider contract management
+            Route::put('/extend-contract', [ApiProviderController::class, 'extendContract'])->name('extend-contract');
+            Route::post('/terminate-contract', [ApiProviderController::class, 'terminateContract'])->name('terminate-contract');
+
+            // Provider data
+            Route::get('/orders', [ApiProviderController::class, 'getOrders'])->name('orders');
+            Route::get('/products', [ApiProviderController::class, 'getProducts'])->name('products');
+            Route::get('/analytics', [ApiProviderController::class, 'getAnalytics'])->name('analytics');
+            Route::get('/performance-metrics', [ApiProviderController::class, 'getPerformanceMetrics'])->name('performance-metrics');
+
+            // Provider notes
+            Route::post('/notes', [ApiProviderController::class, 'addNote'])->name('add-note');
+            Route::get('/notes', [ApiProviderController::class, 'getNotes'])->name('get-notes');
+
+            // Provider specializations and certifications
+            Route::put('/specializations', [ApiProviderController::class, 'updateSpecializations'])->name('update-specializations');
+            Route::put('/certifications', [ApiProviderController::class, 'updateCertifications'])->name('update-certifications');
+            Route::put('/insurance', [ApiProviderController::class, 'updateInsurance'])->name('update-insurance');
+        });
+    });
+
     // Employee Performance Review API routes
     Route::prefix('employee-performance-reviews')->name('employee-performance-reviews.')->middleware(['permission:employee-performance-reviews.*'])->group(function () {
         // List performance reviews
@@ -1764,7 +1821,7 @@ Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:
 // EmployeeNote API Routes
 Route::prefix('api')->group(function () {
     Route::apiResource('employee-notes', EmployeeNoteController::class);
-    
+
     Route::get('employees/{employee}/notes', [EmployeeNoteController::class, 'employeeNotes']);
     Route::get('employee-notes/search', [EmployeeNoteController::class, 'search']);
     Route::post('employee-notes/{employeeNote}/archive', [EmployeeNoteController::class, 'archive']);

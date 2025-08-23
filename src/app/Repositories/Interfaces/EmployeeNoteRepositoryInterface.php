@@ -93,3 +93,4 @@ interface EmployeeNoteRepositoryInterface
     public function searchNotesByEmployee(int $employeeId, string $query): Collection;
     public function searchNotesByEmployeeDTO(int $employeeId, string $query): Collection;
 }
+

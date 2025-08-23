@@ -92,3 +92,4 @@ enum EmployeeNotePriority: string
         return null;
     }
 }
+

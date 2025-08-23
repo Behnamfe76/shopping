@@ -162,3 +162,4 @@ class EmployeeNoteFactory extends Factory
         ]);
     }
 }
+

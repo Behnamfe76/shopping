@@ -151,3 +151,4 @@ class EmployeeNotePolicy
         return false; // Placeholder implementation
     }
 }
+

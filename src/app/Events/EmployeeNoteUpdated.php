@@ -15,3 +15,4 @@ class EmployeeNoteUpdated
         public array $changes
     ) {}
 }
+
