@@ -92,12 +92,31 @@ use Fereydooni\Shopping\app\Events\Provider\ProviderDiscountRateUpdated;
 use Fereydooni\Shopping\app\Events\Provider\ProviderContractExtended;
 use Fereydooni\Shopping\app\Events\Provider\ProviderContractTerminated;
 
+// ProviderLocation Events
+use Fereydooni\Shopping\app\Events\Provider\ProviderLocationCreated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderLocationUpdated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderLocationDeleted;
+use Fereydooni\Shopping\app\Events\Provider\PrimaryLocationChanged;
+use Fereydooni\Shopping\app\Events\Provider\LocationCoordinatesUpdated;
+use Fereydooni\Shopping\app\Events\Provider\LocationOperatingHoursUpdated;
+use Fereydooni\Shopping\app\Events\Provider\LocationGeocoded;
+
 // Provider Listeners
 use Fereydooni\Shopping\app\Listeners\Provider\SendWelcomeEmail;
 use Fereydooni\Shopping\app\Listeners\Provider\UpdateProviderAnalytics;
 use Fereydooni\Shopping\app\Listeners\Provider\NotifyProviderStatusChange;
 use Fereydooni\Shopping\app\Listeners\Provider\UpdateProviderScore;
 use Fereydooni\Shopping\app\Listeners\Provider\LogProviderActivity;
+
+// ProviderLocation Listeners
+use Fereydooni\Shopping\app\Listeners\SendLocationCreatedNotification;
+use Fereydooni\Shopping\app\Listeners\SendPrimaryLocationChangedNotification;
+use Fereydooni\Shopping\app\Listeners\UpdateLocationAnalytics;
+use Fereydooni\Shopping\app\Listeners\LogLocationActivity;
+use Fereydooni\Shopping\app\Listeners\UpdateProviderLocationCount;
+use Fereydooni\Shopping\app\Listeners\ProcessLocationGeocoding;
+use Fereydooni\Shopping\app\Listeners\UpdateLocationMaps;
+use Fereydooni\Shopping\app\Listeners\ValidateLocationData;
 use Fereydooni\Shopping\app\Listeners\Provider\SendContractExpirationReminder;
 use Fereydooni\Shopping\app\Listeners\Provider\UpdateProviderPerformanceMetrics;
 use Fereydooni\Shopping\app\Listeners\Provider\NotifyQualityIssues;
@@ -386,6 +405,52 @@ class EventServiceProvider extends ServiceProvider
         ProviderContractTerminated::class => [
             SendContractExpirationReminder::class,
             LogProviderActivity::class,
+        ],
+
+        // ProviderLocation Events
+        ProviderLocationCreated::class => [
+            SendLocationCreatedNotification::class,
+            UpdateLocationAnalytics::class,
+            LogLocationActivity::class,
+            UpdateProviderLocationCount::class,
+            ProcessLocationGeocoding::class,
+            UpdateLocationMaps::class,
+            ValidateLocationData::class,
+        ],
+        ProviderLocationUpdated::class => [
+            UpdateLocationAnalytics::class,
+            LogLocationActivity::class,
+            UpdateProviderLocationCount::class,
+            ProcessLocationGeocoding::class,
+            UpdateLocationMaps::class,
+            ValidateLocationData::class,
+        ],
+        ProviderLocationDeleted::class => [
+            UpdateLocationAnalytics::class,
+            LogLocationActivity::class,
+            UpdateProviderLocationCount::class,
+            UpdateLocationMaps::class,
+            ValidateLocationData::class,
+        ],
+        PrimaryLocationChanged::class => [
+            SendPrimaryLocationChangedNotification::class,
+            UpdateLocationAnalytics::class,
+            LogLocationActivity::class,
+            UpdateProviderLocationCount::class,
+        ],
+        LocationCoordinatesUpdated::class => [
+            UpdateLocationAnalytics::class,
+            LogLocationActivity::class,
+            UpdateLocationMaps::class,
+        ],
+        LocationOperatingHoursUpdated::class => [
+            UpdateLocationAnalytics::class,
+            LogLocationActivity::class,
+        ],
+        LocationGeocoded::class => [
+            UpdateLocationAnalytics::class,
+            LogLocationActivity::class,
+            UpdateLocationMaps::class,
         ],
     ];
 

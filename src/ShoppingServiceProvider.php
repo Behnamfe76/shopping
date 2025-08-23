@@ -98,6 +98,26 @@ class ShoppingServiceProvider extends ServiceProvider
             );
         });
 
+        // Register ProviderLocation Repository
+        $this->app->bind(
+            \Fereydooni\Shopping\app\Repositories\Interfaces\ProviderLocationRepositoryInterface::class,
+            \Fereydooni\Shopping\app\Repositories\ProviderLocationRepository::class
+        );
+
+        // Register ProviderLocation Service
+        $this->app->scoped('shopping.provider-location', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\ProviderLocationService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProviderLocationRepositoryInterface::class)
+            );
+        });
+
+        // Register ProviderLocation Facade
+        $this->app->singleton('shopping.provider-location.facade', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\ProviderLocationService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProviderLocationRepositoryInterface::class)
+            );
+        });
+
         // Register CustomerPreference Facade
         $this->app->singleton('shopping.customer-preference.facade', function ($app) {
             return new \Fereydooni\Shopping\app\Services\CustomerPreferenceService(
@@ -651,6 +671,7 @@ class ShoppingServiceProvider extends ServiceProvider
         Gate::policy(\Fereydooni\Shopping\app\Models\UserSubscription::class, \Fereydooni\Shopping\app\Policies\UserSubscriptionPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\EmployeeDepartment::class, \Fereydooni\Shopping\app\Policies\EmployeeDepartmentPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\EmployeePosition::class, \Fereydooni\Shopping\app\Policies\EmployeePositionPolicy::class);
+        Gate::policy(\Fereydooni\Shopping\app\Models\ProviderLocation::class, \Fereydooni\Shopping\app\Policies\ProviderLocationPolicy::class);
 
         // Register permissions
         $this->registerPermissions();
@@ -672,5 +693,8 @@ class ShoppingServiceProvider extends ServiceProvider
     {
         // Register EmployeePosition facade alias
         $this->app->alias('shopping.employee-position.facade', \Fereydooni\Shopping\app\Facades\EmployeePosition::class);
+
+        // Register ProviderLocation facade alias
+        $this->app->alias('shopping.provider-location.facade', \Fereydooni\Shopping\app\Facades\ProviderLocation::class);
     }
 }

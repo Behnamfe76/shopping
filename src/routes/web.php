@@ -13,6 +13,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerSegmentController as We
 use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerCommunicationController as WebCustomerCommunicationController;
 use Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeController as WebEmployeeController;
 use Fereydooni\Shopping\app\Http\Controllers\Web\ProviderController as WebProviderController;
+use Fereydooni\Shopping\app\Http\Controllers\Web\ProviderLocationController;
 
 Route::prefix('shopping')->name('shopping.')->middleware(['web'])->group(function () {
     // Product routes
@@ -511,4 +512,193 @@ Route::prefix('shopping')->name('shopping.')->middleware(['web'])->group(functio
         Route::post('/notes', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeNoteController::class, 'storeForEmployee'])->name('notes.store');
         Route::get('/notes/statistics', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeNoteController::class, 'employeeStatistics'])->name('notes.statistics');
     });
+});
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes for Provider Location Management
+|--------------------------------------------------------------------------
+|
+| These routes handle web-based provider location management operations.
+| They include CRUD operations, geocoding, search, analytics, and map functionality.
+|
+*/
+
+// Provider Location Management Routes
+Route::prefix('provider-locations')->name('provider-locations.')->middleware(['auth', 'verified'])->group(function () {
+
+    // Index/List Routes
+    Route::get('/', [ProviderLocationController::class, 'index'])->name('index');
+    Route::get('/list', [ProviderLocationController::class, 'index'])->name('list');
+    Route::get('/table', [ProviderLocationController::class, 'table'])->name('table');
+
+    // Create Routes
+    Route::get('/create', [ProviderLocationController::class, 'create'])->name('create');
+    Route::post('/', [ProviderLocationController::class, 'store'])->name('store');
+
+    // Show/View Routes
+    Route::get('/{providerLocation}', [ProviderLocationController::class, 'show'])->name('show');
+    Route::get('/{providerLocation}/view', [ProviderLocationController::class, 'show'])->name('view');
+    Route::get('/{providerLocation}/details', [ProviderLocationController::class, 'details'])->name('details');
+
+    // Edit/Update Routes
+    Route::get('/{providerLocation}/edit', [ProviderLocationController::class, 'edit'])->name('edit');
+    Route::put('/{providerLocation}', [ProviderLocationController::class, 'update'])->name('update');
+    Route::patch('/{providerLocation}', [ProviderLocationController::class, 'update'])->name('update');
+
+    // Delete Routes
+    Route::delete('/{providerLocation}', [ProviderLocationController::class, 'destroy'])->name('destroy');
+    Route::post('/{providerLocation}/delete', [ProviderLocationController::class, 'destroy'])->name('delete');
+
+    // Primary Location Management
+    Route::post('/{providerLocation}/set-primary', [ProviderLocationController::class, 'setPrimary'])->name('set-primary');
+    Route::post('/{providerLocation}/unset-primary', [ProviderLocationController::class, 'unsetPrimary'])->name('unset-primary');
+
+    // Status Management
+    Route::post('/{providerLocation}/activate', [ProviderLocationController::class, 'activate'])->name('activate');
+    Route::post('/{providerLocation}/deactivate', [ProviderLocationController::class, 'deactivate'])->name('deactivate');
+
+    // Coordinates Management
+    Route::get('/{providerLocation}/coordinates', [ProviderLocationController::class, 'coordinates'])->name('coordinates');
+    Route::put('/{providerLocation}/coordinates', [ProviderLocationController::class, 'updateCoordinates'])->name('update-coordinates');
+    Route::post('/{providerLocation}/geocode', [ProviderLocationController::class, 'geocode'])->name('geocode');
+
+    // Operating Hours Management
+    Route::get('/{providerLocation}/operating-hours', [ProviderLocationController::class, 'operatingHours'])->name('operating-hours');
+    Route::put('/{providerLocation}/operating-hours', [ProviderLocationController::class, 'updateOperatingHours'])->name('update-operating-hours');
+
+    // Search and Filter Routes
+    Route::get('/search', [ProviderLocationController::class, 'search'])->name('search');
+    Route::post('/search', [ProviderLocationController::class, 'search'])->name('search.post');
+    Route::get('/filter', [ProviderLocationController::class, 'filter'])->name('filter');
+    Route::post('/filter', [ProviderLocationController::class, 'filter'])->name('filter.post');
+
+    // Geocoding Routes
+    Route::get('/geocoding', [ProviderLocationController::class, 'geocoding'])->name('geocoding');
+    Route::post('/geocoding', [ProviderLocationController::class, 'geocoding'])->name('geocoding.post');
+    Route::get('/geocoding/batch', [ProviderLocationController::class, 'batchGeocoding'])->name('batch-geocoding');
+    Route::post('/geocoding/batch', [ProviderLocationController::class, 'batchGeocoding'])->name('batch-geocoding.post');
+
+    // Analytics Routes
+    Route::get('/analytics', [ProviderLocationController::class, 'analytics'])->name('analytics');
+    Route::get('/analytics/overview', [ProviderLocationController::class, 'analyticsOverview'])->name('analytics.overview');
+    Route::get('/analytics/geographic', [ProviderLocationController::class, 'geographicAnalytics'])->name('analytics.geographic');
+    Route::get('/analytics/types', [ProviderLocationController::class, 'typeAnalytics'])->name('analytics.types');
+    Route::get('/analytics/performance', [ProviderLocationController::class, 'performanceAnalytics'])->name('analytics.performance');
+
+    // Map Routes
+    Route::get('/map', [ProviderLocationController::class, 'map'])->name('map');
+    Route::get('/map/overview', [ProviderLocationController::class, 'mapOverview'])->name('map.overview');
+    Route::get('/map/clusters', [ProviderLocationController::class, 'mapClusters'])->name('map.clusters');
+    Route::get('/map/bounds', [ProviderLocationController::class, 'mapBounds'])->name('map.bounds');
+
+    // Export/Import Routes
+    Route::get('/export', [ProviderLocationController::class, 'export'])->name('export');
+    Route::post('/import', [ProviderLocationController::class, 'import'])->name('import');
+    Route::get('/import/template', [ProviderLocationController::class, 'importTemplate'])->name('import.template');
+
+    // Bulk Operations
+    Route::post('/bulk/activate', [ProviderLocationController::class, 'bulkActivate'])->name('bulk.activate');
+    Route::post('/bulk/deactivate', [ProviderLocationController::class, 'bulkDeactivate'])->name('bulk.deactivate');
+    Route::post('/bulk/delete', [ProviderLocationController::class, 'bulkDelete'])->name('bulk.delete');
+    Route::post('/bulk/geocode', [ProviderLocationController::class, 'bulkGeocode'])->name('bulk.geocode');
+
+    // Settings and Configuration
+    Route::get('/settings', [ProviderLocationController::class, 'settings'])->name('settings');
+    Route::post('/settings', [ProviderLocationController::class, 'updateSettings'])->name('settings.update');
+    Route::get('/settings/geocoding', [ProviderLocationController::class, 'geocodingSettings'])->name('settings.geocoding');
+    Route::post('/settings/geocoding', [ProviderLocationController::class, 'updateGeocodingSettings'])->name('settings.geocoding.update');
+
+    // Audit and History
+    Route::get('/{providerLocation}/history', [ProviderLocationController::class, 'history'])->name('history');
+    Route::get('/{providerLocation}/audit', [ProviderLocationController::class, 'audit'])->name('audit');
+    Route::get('/{providerLocation}/changes', [ProviderLocationController::class, 'changes'])->name('changes');
+
+    // Provider-Specific Routes
+    Route::prefix('provider/{provider}')->name('provider.')->group(function () {
+        Route::get('/', [ProviderLocationController::class, 'providerLocations'])->name('locations');
+        Route::get('/primary', [ProviderLocationController::class, 'providerPrimaryLocation'])->name('primary');
+        Route::get('/active', [ProviderLocationController::class, 'providerActiveLocations'])->name('active');
+        Route::get('/inactive', [ProviderLocationController::class, 'providerInactiveLocations'])->name('inactive');
+        Route::get('/by-type/{type}', [ProviderLocationController::class, 'providerLocationsByType'])->name('by-type');
+        Route::get('/by-country/{country}', [ProviderLocationController::class, 'providerLocationsByCountry'])->name('by-country');
+        Route::get('/by-state/{state}', [ProviderLocationController::class, 'providerLocationsByState'])->name('by-state');
+        Route::get('/by-city/{city}', [ProviderLocationController::class, 'providerLocationsByCity'])->name('by-city');
+    });
+
+    // Geographic Routes
+    Route::prefix('geographic')->name('geographic.')->group(function () {
+        Route::get('/countries', [ProviderLocationController::class, 'countries'])->name('countries');
+        Route::get('/states/{country}', [ProviderLocationController::class, 'states'])->name('states');
+        Route::get('/cities/{state}', [ProviderLocationController::class, 'cities'])->name('cities');
+        Route::get('/postal-codes/{city}', [ProviderLocationController::class, 'postalCodes'])->name('postal-codes');
+    });
+
+    // Location Type Routes
+    Route::prefix('types')->name('types.')->group(function () {
+        Route::get('/', [ProviderLocationController::class, 'locationTypes'])->name('index');
+        Route::get('/{type}', [ProviderLocationController::class, 'locationsByType'])->name('show');
+        Route::get('/{type}/analytics', [ProviderLocationController::class, 'typeAnalytics'])->name('analytics');
+    });
+
+    // Nearby and Proximity Routes
+    Route::prefix('nearby')->name('nearby.')->group(function () {
+        Route::get('/', [ProviderLocationController::class, 'nearby'])->name('index');
+        Route::get('/coordinates', [ProviderLocationController::class, 'nearbyByCoordinates'])->name('coordinates');
+        Route::get('/address', [ProviderLocationController::class, 'nearbyByAddress'])->name('address');
+        Route::get('/radius/{radius}', [ProviderLocationController::class, 'nearbyByRadius'])->name('radius');
+    });
+
+    // Time-based Routes
+    Route::prefix('time')->name('time.')->group(function () {
+        Route::get('/now-open', [ProviderLocationController::class, 'nowOpen'])->name('now-open');
+        Route::get('/open-now', [ProviderLocationController::class, 'openNow'])->name('open-now');
+        Route::get('/by-day/{day}', [ProviderLocationController::class, 'byDay'])->name('by-day');
+        Route::get('/by-time/{time}', [ProviderLocationController::class, 'byTime'])->name('by-time');
+    });
+
+    // Contact Information Routes
+    Route::prefix('contact')->name('contact.')->group(function () {
+        Route::get('/{providerLocation}/info', [ProviderLocationController::class, 'contactInfo'])->name('info');
+        Route::put('/{providerLocation}/info', [ProviderLocationController::class, 'updateContactInfo'])->name('update');
+        Route::get('/{providerLocation}/form', [ProviderLocationController::class, 'contactForm'])->name('form');
+        Route::post('/{providerLocation}/form', [ProviderLocationController::class, 'submitContactForm'])->name('submit');
+    });
+
+    // Validation and Verification Routes
+    Route::prefix('validation')->name('validation.')->group(function () {
+        Route::get('/{providerLocation}/verify', [ProviderLocationController::class, 'verifyLocation'])->name('verify');
+        Route::post('/{providerLocation}/verify', [ProviderLocationController::class, 'verifyLocation'])->name('verify.post');
+        Route::get('/{providerLocation}/validate', [ProviderLocationController::class, 'validateLocation'])->name('validate');
+        Route::post('/{providerLocation}/validate', [ProviderLocationController::class, 'validateLocation'])->name('validate.post');
+    });
+
+    // Reporting Routes
+    Route::prefix('reports')->name('reports.')->group(function () {
+        Route::get('/', [ProviderLocationController::class, 'reports'])->name('index');
+        Route::get('/summary', [ProviderLocationController::class, 'summaryReport'])->name('summary');
+        Route::get('/geographic', [ProviderLocationController::class, 'geographicReport'])->name('geographic');
+        Route::get('/performance', [ProviderLocationController::class, 'performanceReport'])->name('performance');
+        Route::get('/export/{type}', [ProviderLocationController::class, 'exportReport'])->name('export');
+    });
+});
+
+// Public Routes (no authentication required)
+Route::prefix('locations')->name('locations.')->group(function () {
+    Route::get('/', [ProviderLocationController::class, 'publicIndex'])->name('index');
+    Route::get('/{providerLocation}', [ProviderLocationController::class, 'publicShow'])->name('show');
+    Route::get('/search', [ProviderLocationController::class, 'publicSearch'])->name('search');
+    Route::get('/nearby', [ProviderLocationController::class, 'publicNearby'])->name('nearby');
+    Route::get('/map', [ProviderLocationController::class, 'publicMap'])->name('map');
+});
+
+// Admin Routes (admin middleware)
+Route::prefix('admin/provider-locations')->name('admin.provider-locations.')->middleware(['auth', 'admin'])->group(function () {
+    Route::get('/', [ProviderLocationController::class, 'adminIndex'])->name('index');
+    Route::get('/dashboard', [ProviderLocationController::class, 'adminDashboard'])->name('dashboard');
+    Route::get('/statistics', [ProviderLocationController::class, 'adminStatistics'])->name('statistics');
+    Route::get('/system', [ProviderLocationController::class, 'adminSystem'])->name('system');
+    Route::get('/approval', [ProviderLocationController::class, 'adminApproval'])->name('approval');
+    Route::post('/approve/{providerLocation}', [ProviderLocationController::class, 'adminApprove'])->name('approve');
+    Route::post('/reject/{providerLocation}', [ProviderLocationController::class, 'adminReject'])->name('reject');
 });

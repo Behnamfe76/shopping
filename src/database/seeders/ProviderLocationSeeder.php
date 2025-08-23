@@ -1,0 +1,457 @@
+<?php
+
+namespace Fereydooni\Shopping\Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+use Fereydooni\Shopping\App\Enums\LocationType;
+use Fereydooni\Shopping\App\Enums\Country;
+
+class ProviderLocationSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        // Sample location data
+        $locations = [
+            // Headquarters locations
+            [
+                'provider_id' => 1,
+                'location_name' => 'Global Headquarters',
+                'address' => '123 Business Plaza, Suite 1000',
+                'city' => 'New York',
+                'state' => 'NY',
+                'postal_code' => '10001',
+                'country' => Country::UNITED_STATES->value,
+                'phone' => '+1-212-555-0100',
+                'email' => 'hq@company.com',
+                'website' => 'https://company.com',
+                'is_primary' => true,
+                'is_active' => true,
+                'location_type' => LocationType::HEADQUARTERS->value,
+                'operating_hours' => [
+                    'monday' => ['09:00', '17:00'],
+                    'tuesday' => ['09:00', '17:00'],
+                    'wednesday' => ['09:00', '17:00'],
+                    'thursday' => ['09:00', '17:00'],
+                    'friday' => ['09:00', '17:00'],
+                    'saturday' => ['10:00', '14:00'],
+                    'sunday' => [],
+                ],
+                'timezone' => 'America/New_York',
+                'latitude' => 40.7589,
+                'longitude' => -73.9851,
+                'contact_person' => 'John Smith',
+                'contact_phone' => '+1-212-555-0101',
+                'contact_email' => 'john.smith@company.com',
+                'notes' => 'Main corporate headquarters with executive offices and boardroom.',
+            ],
+            [
+                'provider_id' => 1,
+                'location_name' => 'European Headquarters',
+                'address' => '456 Business Street',
+                'city' => 'London',
+                'state' => 'Greater London',
+                'postal_code' => 'SW1A 1AA',
+                'country' => Country::UNITED_KINGDOM->value,
+                'phone' => '+44-20-7946-0958',
+                'email' => 'eu-hq@company.com',
+                'website' => 'https://company.eu',
+                'is_primary' => false,
+                'is_active' => true,
+                'location_type' => LocationType::HEADQUARTERS->value,
+                'operating_hours' => [
+                    'monday' => ['08:00', '18:00'],
+                    'tuesday' => ['08:00', '18:00'],
+                    'wednesday' => ['08:00', '18:00'],
+                    'thursday' => ['08:00', '18:00'],
+                    'friday' => ['08:00', '18:00'],
+                    'saturday' => [],
+                    'sunday' => [],
+                ],
+                'timezone' => 'Europe/London',
+                'latitude' => 51.5074,
+                'longitude' => -0.1278,
+                'contact_person' => 'Emma Wilson',
+                'contact_phone' => '+44-20-7946-0959',
+                'contact_email' => 'emma.wilson@company.com',
+                'notes' => 'European regional headquarters serving EU markets.',
+            ],
+            // Warehouse locations
+            [
+                'provider_id' => 1,
+                'location_name' => 'East Coast Distribution Center',
+                'address' => '789 Industrial Boulevard',
+                'city' => 'Newark',
+                'state' => 'NJ',
+                'postal_code' => '07102',
+                'country' => Country::UNITED_STATES->value,
+                'phone' => '+1-973-555-0200',
+                'email' => 'warehouse-east@company.com',
+                'website' => null,
+                'is_primary' => false,
+                'is_active' => true,
+                'location_type' => LocationType::DISTRIBUTION_CENTER->value,
+                'operating_hours' => [
+                    'monday' => ['06:00', '22:00'],
+                    'tuesday' => ['06:00', '22:00'],
+                    'wednesday' => ['06:00', '22:00'],
+                    'thursday' => ['06:00', '22:00'],
+                    'friday' => ['06:00', '22:00'],
+                    'saturday' => ['06:00', '18:00'],
+                    'sunday' => ['06:00', '18:00'],
+                ],
+                'timezone' => 'America/New_York',
+                'latitude' => 40.7357,
+                'longitude' => -74.1724,
+                'contact_person' => 'Mike Johnson',
+                'contact_phone' => '+1-973-555-0201',
+                'contact_email' => 'mike.johnson@company.com',
+                'notes' => 'High-capacity distribution center serving the entire East Coast.',
+            ],
+            [
+                'provider_id' => 1,
+                'location_name' => 'West Coast Warehouse',
+                'address' => '321 Logistics Way',
+                'city' => 'Los Angeles',
+                'state' => 'CA',
+                'postal_code' => '90001',
+                'country' => Country::UNITED_STATES->value,
+                'phone' => '+1-213-555-0300',
+                'email' => 'warehouse-west@company.com',
+                'website' => null,
+                'is_primary' => false,
+                'is_active' => true,
+                'location_type' => LocationType::WAREHOUSE->value,
+                'operating_hours' => [
+                    'monday' => ['06:00', '22:00'],
+                    'tuesday' => ['06:00', '22:00'],
+                    'wednesday' => ['06:00', '22:00'],
+                    'thursday' => ['06:00', '22:00'],
+                    'friday' => ['06:00', '22:00'],
+                    'saturday' => ['06:00', '18:00'],
+                    'sunday' => ['06:00', '18:00'],
+                ],
+                'timezone' => 'America/Los_Angeles',
+                'latitude' => 34.0522,
+                'longitude' => -118.2437,
+                'contact_person' => 'Sarah Davis',
+                'contact_phone' => '+1-213-555-0301',
+                'contact_email' => 'sarah.davis@company.com',
+                'notes' => 'Strategic warehouse location for West Coast operations.',
+            ],
+            // Retail locations
+            [
+                'provider_id' => 1,
+                'location_name' => 'Downtown Store',
+                'address' => '555 Main Street',
+                'city' => 'New York',
+                'state' => 'NY',
+                'postal_code' => '10002',
+                'country' => Country::UNITED_STATES->value,
+                'phone' => '+1-212-555-0400',
+                'email' => 'store-downtown@company.com',
+                'website' => 'https://company.com/store-downtown',
+                'is_primary' => false,
+                'is_active' => true,
+                'location_type' => LocationType::STORE->value,
+                'operating_hours' => [
+                    'monday' => ['10:00', '21:00'],
+                    'tuesday' => ['10:00', '21:00'],
+                    'wednesday' => ['10:00', '21:00'],
+                    'thursday' => ['10:00', '21:00'],
+                    'friday' => ['10:00', '22:00'],
+                    'saturday' => ['10:00', '22:00'],
+                    'sunday' => ['11:00', '20:00'],
+                ],
+                'timezone' => 'America/New_York',
+                'latitude' => 40.7168,
+                'longitude' => -73.9861,
+                'contact_person' => 'Lisa Brown',
+                'contact_phone' => '+1-212-555-0401',
+                'contact_email' => 'lisa.brown@company.com',
+                'notes' => 'Flagship retail store in downtown Manhattan.',
+            ],
+            [
+                'provider_id' => 1,
+                'location_name' => 'Shopping Mall Outlet',
+                'address' => '777 Mall Drive',
+                'city' => 'Chicago',
+                'state' => 'IL',
+                'postal_code' => '60601',
+                'country' => Country::UNITED_STATES->value,
+                'phone' => '+1-312-555-0500',
+                'email' => 'store-chicago@company.com',
+                'website' => 'https://company.com/store-chicago',
+                'is_primary' => false,
+                'is_active' => true,
+                'location_type' => LocationType::RETAIL_OUTLET->value,
+                'operating_hours' => [
+                    'monday' => ['10:00', '21:00'],
+                    'tuesday' => ['10:00', '21:00'],
+                    'wednesday' => ['10:00', '21:00'],
+                    'thursday' => ['10:00', '21:00'],
+                    'friday' => ['10:00', '22:00'],
+                    'saturday' => ['10:00', '22:00'],
+                    'sunday' => ['11:00', '20:00'],
+                ],
+                'timezone' => 'America/Chicago',
+                'latitude' => 41.8781,
+                'longitude' => -87.6298,
+                'contact_person' => 'David Wilson',
+                'contact_phone' => '+1-312-555-0501',
+                'contact_email' => 'david.wilson@company.com',
+                'notes' => 'Premium outlet store in downtown Chicago shopping district.',
+            ],
+            // Office locations
+            [
+                'provider_id' => 1,
+                'location_name' => 'Regional Office',
+                'address' => '999 Corporate Center',
+                'city' => 'Atlanta',
+                'state' => 'GA',
+                'postal_code' => '30301',
+                'country' => Country::UNITED_STATES->value,
+                'phone' => '+1-404-555-0600',
+                'email' => 'office-atlanta@company.com',
+                'website' => 'https://company.com/office-atlanta',
+                'is_primary' => false,
+                'is_active' => true,
+                'location_type' => LocationType::OFFICE->value,
+                'operating_hours' => [
+                    'monday' => ['08:00', '18:00'],
+                    'tuesday' => ['08:00', '18:00'],
+                    'wednesday' => ['08:00', '18:00'],
+                    'thursday' => ['08:00', '18:00'],
+                    'friday' => ['08:00', '18:00'],
+                    'saturday' => [],
+                    'sunday' => [],
+                ],
+                'timezone' => 'America/New_York',
+                'latitude' => 33.7490,
+                'longitude' => -84.3880,
+                'contact_person' => 'Jennifer Lee',
+                'contact_phone' => '+1-404-555-0601',
+                'contact_email' => 'jennifer.lee@company.com',
+                'notes' => 'Southeast regional office serving Georgia, Florida, and surrounding states.',
+            ],
+            // Factory locations
+            [
+                'provider_id' => 1,
+                'location_name' => 'Manufacturing Plant',
+                'address' => '444 Industrial Park Road',
+                'city' => 'Detroit',
+                'state' => 'MI',
+                'postal_code' => '48201',
+                'country' => Country::UNITED_STATES->value,
+                'phone' => '+1-313-555-0700',
+                'email' => 'factory-detroit@company.com',
+                'website' => null,
+                'is_primary' => false,
+                'is_active' => true,
+                'location_type' => LocationType::FACTORY->value,
+                'operating_hours' => [
+                    'monday' => ['06:00', '22:00'],
+                    'tuesday' => ['06:00', '22:00'],
+                    'wednesday' => ['06:00', '22:00'],
+                    'thursday' => ['06:00', '22:00'],
+                    'friday' => ['06:00', '22:00'],
+                    'saturday' => ['06:00', '18:00'],
+                    'sunday' => ['06:00', '18:00'],
+                ],
+                'timezone' => 'America/Detroit',
+                'latitude' => 42.3314,
+                'longitude' => -83.0458,
+                'contact_person' => 'Robert Taylor',
+                'contact_phone' => '+1-313-555-0701',
+                'contact_email' => 'robert.taylor@company.com',
+                'notes' => 'Primary manufacturing facility for product assembly and quality control.',
+            ],
+            // Service center locations
+            [
+                'provider_id' => 1,
+                'location_name' => 'Customer Service Center',
+                'address' => '888 Support Street',
+                'city' => 'Dallas',
+                'state' => 'TX',
+                'postal_code' => '75201',
+                'country' => Country::UNITED_STATES->value,
+                'phone' => '+1-214-555-0800',
+                'email' => 'service-dallas@company.com',
+                'website' => 'https://company.com/service-dallas',
+                'is_primary' => false,
+                'is_active' => true,
+                'location_type' => LocationType::SERVICE_CENTER->value,
+                'operating_hours' => [
+                    'monday' => ['07:00', '23:00'],
+                    'tuesday' => ['07:00', '23:00'],
+                    'wednesday' => ['07:00', '23:00'],
+                    'thursday' => ['07:00', '23:00'],
+                    'friday' => ['07:00', '23:00'],
+                    'saturday' => ['08:00', '20:00'],
+                    'sunday' => ['08:00', '20:00'],
+                ],
+                'timezone' => 'America/Chicago',
+                'latitude' => 32.7767,
+                'longitude' => -96.7970,
+                'contact_person' => 'Amanda Garcia',
+                'contact_phone' => '+1-214-555-0801',
+                'contact_email' => 'amanda.garcia@company.com',
+                'notes' => '24/7 customer service center with technical support and repair services.',
+            ],
+            // International locations
+            [
+                'provider_id' => 1,
+                'location_name' => 'Asia Pacific Office',
+                'address' => '123 Business Tower',
+                'city' => 'Singapore',
+                'state' => 'Central Region',
+                'postal_code' => '018956',
+                'country' => Country::SINGAPORE->value,
+                'phone' => '+65-6123-4567',
+                'email' => 'office-singapore@company.com',
+                'website' => 'https://company.sg',
+                'is_primary' => false,
+                'is_active' => true,
+                'location_type' => LocationType::OFFICE->value,
+                'operating_hours' => [
+                    'monday' => ['08:00', '18:00'],
+                    'tuesday' => ['08:00', '18:00'],
+                    'wednesday' => ['08:00', '18:00'],
+                    'thursday' => ['08:00', '18:00'],
+                    'friday' => ['08:00', '18:00'],
+                    'saturday' => [],
+                    'sunday' => [],
+                ],
+                'timezone' => 'Asia/Singapore',
+                'latitude' => 1.3521,
+                'longitude' => 103.8198,
+                'contact_person' => 'Chen Wei',
+                'contact_phone' => '+65-6123-4568',
+                'contact_email' => 'chen.wei@company.com',
+                'notes' => 'Asia Pacific regional office serving Southeast Asian markets.',
+            ],
+            [
+                'provider_id' => 1,
+                'location_name' => 'European Distribution Hub',
+                'address' => '456 Logistics Park',
+                'city' => 'Rotterdam',
+                'state' => 'South Holland',
+                'postal_code' => '3000 AA',
+                'country' => Country::NETHERLANDS->value,
+                'phone' => '+31-10-123-4567',
+                'email' => 'warehouse-rotterdam@company.com',
+                'website' => null,
+                'is_primary' => false,
+                'is_active' => true,
+                'location_type' => LocationType::DISTRIBUTION_CENTER->value,
+                'operating_hours' => [
+                    'monday' => ['06:00', '22:00'],
+                    'tuesday' => ['06:00', '22:00'],
+                    'wednesday' => ['06:00', '22:00'],
+                    'thursday' => ['06:00', '22:00'],
+                    'friday' => ['06:00', '22:00'],
+                    'saturday' => ['06:00', '18:00'],
+                    'sunday' => ['06:00', '18:00'],
+                ],
+                'timezone' => 'Europe/Amsterdam',
+                'latitude' => 51.9225,
+                'longitude' => 4.4792,
+                'contact_person' => 'Hans van der Berg',
+                'contact_phone' => '+31-10-123-4568',
+                'contact_email' => 'hans.vanderberg@company.com',
+                'notes' => 'Strategic European distribution hub serving EU markets with efficient port access.',
+            ],
+        ];
+
+        // Insert the locations
+        foreach ($locations as $location) {
+            DB::table('provider_locations')->insert($location);
+        }
+
+        // Create additional sample data for multiple providers
+        $this->createAdditionalProviderLocations();
+    }
+
+    /**
+     * Create additional sample locations for multiple providers
+     */
+    private function createAdditionalProviderLocations(): void
+    {
+        $providers = [2, 3, 4, 5]; // Additional provider IDs
+
+        foreach ($providers as $providerId) {
+            // Create a primary location for each provider
+            $primaryLocation = [
+                'provider_id' => $providerId,
+                'location_name' => "Provider {$providerId} Headquarters",
+                'address' => "{$providerId}00 Business Center Drive",
+                'city' => 'New York',
+                'state' => 'NY',
+                'postal_code' => '1000' . $providerId,
+                'country' => Country::UNITED_STATES->value,
+                'phone' => "+1-212-555-{$providerId}000",
+                'email' => "hq-provider{$providerId}@company.com",
+                'website' => "https://provider{$providerId}.company.com",
+                'is_primary' => true,
+                'is_active' => true,
+                'location_type' => LocationType::HEADQUARTERS->value,
+                'operating_hours' => [
+                    'monday' => ['09:00', '17:00'],
+                    'tuesday' => ['09:00', '17:00'],
+                    'wednesday' => ['09:00', '17:00'],
+                    'thursday' => ['09:00', '17:00'],
+                    'friday' => ['09:00', '17:00'],
+                    'saturday' => [],
+                    'sunday' => [],
+                ],
+                'timezone' => 'America/New_York',
+                'latitude' => 40.7589 + ($providerId * 0.001),
+                'longitude' => -73.9851 + ($providerId * 0.001),
+                'contact_person' => "Provider {$providerId} Manager",
+                'contact_phone' => "+1-212-555-{$providerId}001",
+                'contact_email' => "manager.provider{$providerId}@company.com",
+                'notes' => "Primary location for Provider {$providerId} operations.",
+            ];
+
+            DB::table('provider_locations')->insert($primaryLocation);
+
+            // Create additional locations for each provider
+            $additionalLocations = [
+                [
+                    'location_name' => "Provider {$providerId} Store",
+                    'location_type' => LocationType::STORE->value,
+                    'city' => 'Los Angeles',
+                    'state' => 'CA',
+                    'postal_code' => '9000' . $providerId,
+                    'phone' => "+1-213-555-{$providerId}000",
+                    'latitude' => 34.0522 + ($providerId * 0.001),
+                    'longitude' => -118.2437 + ($providerId * 0.001),
+                ],
+                [
+                    'location_name' => "Provider {$providerId} Warehouse",
+                    'location_type' => LocationType::WAREHOUSE->value,
+                    'city' => 'Chicago',
+                    'state' => 'IL',
+                    'postal_code' => '6060' . $providerId,
+                    'phone' => "+1-312-555-{$providerId}000",
+                    'latitude' => 41.8781 + ($providerId * 0.001),
+                    'longitude' => -87.6298 + ($providerId * 0.001),
+                ],
+            ];
+
+            foreach ($additionalLocations as $location) {
+                $locationData = array_merge($primaryLocation, $location, [
+                    'provider_id' => $providerId,
+                    'is_primary' => false,
+                    'id' => null, // Remove ID to allow auto-increment
+                ]);
+
+                unset($locationData['id']);
+                DB::table('provider_locations')->insert($locationData);
+            }
+        }
+    }
+};
