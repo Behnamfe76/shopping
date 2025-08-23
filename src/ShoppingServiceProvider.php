@@ -512,6 +512,26 @@ class ShoppingServiceProvider extends ServiceProvider
                 $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\TransactionRepositoryInterface::class)
             );
         });
+
+        // Register EmployeeDepartment Repository
+        $this->app->bind(
+            \Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeDepartmentRepositoryInterface::class,
+            \Fereydooni\Shopping\app\Repositories\EmployeeDepartmentRepository::class
+        );
+
+        // Register EmployeeDepartment Service
+        $this->app->scoped('shopping.employee-department', function ($app) {
+            return new \Fereydooni\Shopping\app\Repositories\EmployeeDepartmentRepository(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeDepartmentRepositoryInterface::class)
+            );
+        });
+
+        // Register EmployeeDepartment Facade
+        $this->app->singleton('shopping.employee-department.facade', function ($app) {
+            return new \Fereydooni\Shopping\app\Repositories\EmployeeDepartmentRepository(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeDepartmentRepositoryInterface::class)
+            );
+        });
     }
 
     public function boot(): void
@@ -606,5 +626,6 @@ class ShoppingServiceProvider extends ServiceProvider
         Gate::policy(\Fereydooni\Shopping\app\Models\Transaction::class, \Fereydooni\Shopping\app\Policies\TransactionPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\Subscription::class, \Fereydooni\Shopping\app\Policies\SubscriptionPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\UserSubscription::class, \Fereydooni\Shopping\app\Policies\UserSubscriptionPolicy::class);
+        Gate::policy(\Fereydooni\Shopping\app\Models\EmployeeDepartment::class, \Fereydooni\Shopping\app\Policies\EmployeeDepartmentPolicy::class);
     }
 }

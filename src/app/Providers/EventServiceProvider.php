@@ -46,6 +46,20 @@ use Fereydooni\Shopping\app\Listeners\Customer\NotifyCustomerStatusChange;
 use Fereydooni\Shopping\app\Listeners\Customer\UpdateLoyaltyProgram;
 use Fereydooni\Shopping\app\Listeners\Customer\LogCustomerActivity;
 
+// EmployeeDepartment Events
+use Fereydooni\Shopping\app\Events\EmployeeDepartment\EmployeeDepartmentCreated;
+use Fereydooni\Shopping\app\Events\EmployeeDepartment\EmployeeDepartmentUpdated;
+use Fereydooni\Shopping\app\Events\EmployeeDepartment\EmployeeDepartmentManagerAssigned;
+use Fereydooni\Shopping\app\Events\EmployeeDepartment\EmployeeDepartmentMoved;
+use Fereydooni\Shopping\app\Events\EmployeeDepartment\EmployeeDepartmentArchived;
+
+// EmployeeDepartment Listeners
+use Fereydooni\Shopping\app\Listeners\EmployeeDepartment\SendDepartmentNotification;
+use Fereydooni\Shopping\app\Listeners\EmployeeDepartment\UpdateDepartmentHierarchy;
+use Fereydooni\Shopping\app\Listeners\EmployeeDepartment\LogDepartmentActivity;
+use Fereydooni\Shopping\app\Listeners\EmployeeDepartment\UpdateEmployeeDepartmentRecords;
+use Fereydooni\Shopping\app\Listeners\EmployeeDepartment\UpdateDepartmentMetrics;
+
 class EventServiceProvider extends ServiceProvider
 {
     /**
@@ -192,6 +206,43 @@ class EventServiceProvider extends ServiceProvider
         LoyaltyPointsDeducted::class => [
             UpdateLoyaltyProgram::class,
             LogCustomerActivity::class,
+        ],
+
+        // EmployeeDepartment Events
+        EmployeeDepartmentCreated::class => [
+            SendDepartmentNotification::class,
+            UpdateDepartmentHierarchy::class,
+            LogDepartmentActivity::class,
+            UpdateEmployeeDepartmentRecords::class,
+            UpdateDepartmentMetrics::class,
+        ],
+        EmployeeDepartmentUpdated::class => [
+            SendDepartmentNotification::class,
+            UpdateDepartmentHierarchy::class,
+            LogDepartmentActivity::class,
+            UpdateEmployeeDepartmentRecords::class,
+            UpdateDepartmentMetrics::class,
+        ],
+        EmployeeDepartmentManagerAssigned::class => [
+            SendDepartmentNotification::class,
+            UpdateDepartmentHierarchy::class,
+            LogDepartmentActivity::class,
+            UpdateEmployeeDepartmentRecords::class,
+            UpdateDepartmentMetrics::class,
+        ],
+        EmployeeDepartmentMoved::class => [
+            SendDepartmentNotification::class,
+            UpdateDepartmentHierarchy::class,
+            LogDepartmentActivity::class,
+            UpdateEmployeeDepartmentRecords::class,
+            UpdateDepartmentMetrics::class,
+        ],
+        EmployeeDepartmentArchived::class => [
+            SendDepartmentNotification::class,
+            UpdateDepartmentHierarchy::class,
+            LogDepartmentActivity::class,
+            UpdateEmployeeDepartmentRecords::class,
+            UpdateDepartmentMetrics::class,
         ],
     ];
 
