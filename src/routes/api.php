@@ -1673,4 +1673,89 @@ Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:
         Route::get('/reports/salary', [ApiEmployeeController::class, 'salaryReport'])->name('reports.salary');
         Route::get('/reports/time-off', [ApiEmployeeController::class, 'timeOffReport'])->name('reports.time-off');
     });
+
+    // Employee Performance Review API routes
+    Route::prefix('employee-performance-reviews')->name('employee-performance-reviews.')->middleware(['permission:employee-performance-reviews.*'])->group(function () {
+        // List performance reviews
+        Route::get('/', [\Fereydooni\Shopping\app\Http\Controllers\Api\EmployeePerformanceReviewController::class, 'index'])->name('index');
+
+        // Create performance review
+        Route::post('/', [\Fereydooni\Shopping\app\Http\Controllers\Api\EmployeePerformanceReviewController::class, 'store'])->name('store');
+
+        // Search performance reviews
+        Route::get('/search', [\Fereydooni\Shopping\app\Http\Controllers\Api\EmployeePerformanceReviewController::class, 'search'])->name('search');
+
+        // Get pending approval reviews
+        Route::get('/pending-approval', [\Fereydooni\Shopping\app\Http\Controllers\Api\EmployeePerformanceReviewController::class, 'pendingApproval'])->name('pending-approval');
+
+        // Get overdue reviews
+        Route::get('/overdue', [\Fereydooni\Shopping\app\Http\Controllers\Api\EmployeePerformanceReviewController::class, 'overdue'])->name('overdue');
+
+        // Get upcoming reviews
+        Route::get('/upcoming', [\Fereydooni\Shopping\app\Http\Controllers\Api\EmployeePerformanceReviewController::class, 'upcoming'])->name('upcoming');
+
+        // Get review statistics
+        Route::get('/statistics', [\Fereydooni\Shopping\app\Http\Controllers\Api\EmployeePerformanceReviewController::class, 'statistics'])->name('statistics');
+
+        // Generate performance reports
+        Route::get('/reports', [\Fereydooni\Shopping\app\Http\Controllers\Api\EmployeePerformanceReviewController::class, 'reports'])->name('reports');
+
+        // Export performance reviews
+        Route::post('/export', [\Fereydooni\Shopping\app\Http\Controllers\Api\EmployeePerformanceReviewController::class, 'export'])->name('export');
+
+        // Import performance reviews
+        Route::post('/import', [\Fereydooni\Shopping\app\Http\Controllers\Api\EmployeePerformanceReviewController::class, 'import'])->name('import');
+
+        // Bulk operations
+        Route::post('/bulk-approve', [\Fereydooni\Shopping\app\Http\Controllers\Api\EmployeePerformanceReviewController::class, 'bulkApprove'])->name('bulk-approve');
+        Route::post('/bulk-reject', [\Fereydooni\Shopping\app\Http\Controllers\Api\EmployeePerformanceReviewController::class, 'bulkReject'])->name('bulk-reject');
+
+        // Send review reminders
+        Route::post('/send-reminders', [\Fereydooni\Shopping\app\Http\Controllers\Api\EmployeePerformanceReviewController::class, 'sendReminders'])->name('send-reminders');
+
+        // Performance review-specific routes
+        Route::prefix('{review}')->group(function () {
+            // Show performance review
+            Route::get('/', [\Fereydooni\Shopping\app\Http\Controllers\Api\EmployeePerformanceReviewController::class, 'show'])->name('show');
+
+            // Update performance review
+            Route::put('/', [\Fereydooni\Shopping\app\Http\Controllers\Api\EmployeePerformanceReviewController::class, 'update'])->name('update');
+
+            // Delete performance review
+            Route::delete('/', [\Fereydooni\Shopping\app\Http\Controllers\Api\EmployeePerformanceReviewController::class, 'destroy'])->name('destroy');
+
+            // Submit review for approval
+            Route::post('/submit', [\Fereydooni\Shopping\app\Http\Controllers\Api\EmployeePerformanceReviewController::class, 'submit'])->name('submit');
+
+            // Approve review
+            Route::post('/approve', [\Fereydooni\Shopping\app\Http\Controllers\Api\EmployeePerformanceReviewController::class, 'approve'])->name('approve');
+
+            // Reject review
+            Route::post('/reject', [\Fereydooni\Shopping\app\Http\Controllers\Api\EmployeePerformanceReviewController::class, 'reject'])->name('reject');
+
+            // Assign reviewer
+            Route::post('/assign-reviewer', [\Fereydooni\Shopping\app\Http\Controllers\Api\EmployeePerformanceReviewController::class, 'assignReviewer'])->name('assign-reviewer');
+
+            // Schedule review
+            Route::post('/schedule', [\Fereydooni\Shopping\app\Http\Controllers\Api\EmployeePerformanceReviewController::class, 'schedule'])->name('schedule');
+        });
+
+        // Employee-specific performance review routes
+        Route::prefix('employees/{employee}')->group(function () {
+            // Get employee performance reviews
+            Route::get('/performance-reviews', [\Fereydooni\Shopping\app\Http\Controllers\Api\EmployeePerformanceReviewController::class, 'employeeReviews'])->name('employee-reviews');
+
+            // Create performance review for employee
+            Route::post('/performance-reviews', [\Fereydooni\Shopping\app\Http\Controllers\Api\EmployeePerformanceReviewController::class, 'storeForEmployee'])->name('store-for-employee');
+
+            // Get employee review statistics
+            Route::get('/performance-reviews/statistics', [\Fereydooni\Shopping\app\Http\Controllers\Api\EmployeePerformanceReviewController::class, 'employeeStatistics'])->name('employee-statistics');
+        });
+
+        // Department-specific performance review routes
+        Route::prefix('departments/{department}')->group(function () {
+            // Get department review statistics
+            Route::get('/performance-reviews/statistics', [\Fereydooni\Shopping\app\Http\Controllers\Api\EmployeePerformanceReviewController::class, 'departmentStatistics'])->name('department-statistics');
+        });
+    });
 });
