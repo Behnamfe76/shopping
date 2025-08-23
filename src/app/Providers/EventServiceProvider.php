@@ -89,8 +89,13 @@ use Fereydooni\Shopping\app\Events\Provider\ProviderCommunicationRatingUpdated;
 use Fereydooni\Shopping\app\Events\Provider\ProviderCreditLimitUpdated;
 use Fereydooni\Shopping\app\Events\Provider\ProviderCommissionRateUpdated;
 use Fereydooni\Shopping\app\Events\Provider\ProviderDiscountRateUpdated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderContractCreated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderContractUpdated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderContractSigned;
+use Fereydooni\Shopping\app\Events\Provider\ProviderContractRenewed;
 use Fereydooni\Shopping\app\Events\Provider\ProviderContractExtended;
 use Fereydooni\Shopping\app\Events\Provider\ProviderContractTerminated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderContractExpiring;
 
 // ProviderLocation Events
 use Fereydooni\Shopping\app\Events\Provider\ProviderLocationCreated;
@@ -120,6 +125,13 @@ use Fereydooni\Shopping\app\Listeners\ValidateLocationData;
 use Fereydooni\Shopping\app\Listeners\Provider\SendContractExpirationReminder;
 use Fereydooni\Shopping\app\Listeners\Provider\UpdateProviderPerformanceMetrics;
 use Fereydooni\Shopping\app\Listeners\Provider\NotifyQualityIssues;
+
+// ProviderContract Listeners
+use Fereydooni\Shopping\app\Listeners\ProviderContract\SendProviderContractNotification;
+use Fereydooni\Shopping\app\Listeners\ProviderContract\UpdateProviderContractRecord;
+use Fereydooni\Shopping\app\Listeners\ProviderContract\LogProviderContractActivity;
+use Fereydooni\Shopping\app\Listeners\ProviderContract\UpdateProviderContractMetrics;
+use Fereydooni\Shopping\app\Listeners\ProviderContract\ProcessContractRenewal;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -398,6 +410,29 @@ class EventServiceProvider extends ServiceProvider
         ProviderDiscountRateUpdated::class => [
             LogProviderActivity::class,
         ],
+        ProviderContractCreated::class => [
+            SendProviderContractNotification::class,
+            UpdateProviderContractRecord::class,
+            LogProviderContractActivity::class,
+            UpdateProviderContractMetrics::class,
+        ],
+        ProviderContractUpdated::class => [
+            SendProviderContractNotification::class,
+            LogProviderContractActivity::class,
+        ],
+        ProviderContractSigned::class => [
+            SendProviderContractNotification::class,
+            UpdateProviderContractRecord::class,
+            LogProviderContractActivity::class,
+            UpdateProviderContractMetrics::class,
+        ],
+        ProviderContractRenewed::class => [
+            SendProviderContractNotification::class,
+            UpdateProviderContractRecord::class,
+            LogProviderContractActivity::class,
+            UpdateProviderContractMetrics::class,
+            ProcessContractRenewal::class,
+        ],
         ProviderContractExtended::class => [
             SendContractExpirationReminder::class,
             LogProviderActivity::class,
@@ -405,6 +440,12 @@ class EventServiceProvider extends ServiceProvider
         ProviderContractTerminated::class => [
             SendContractExpirationReminder::class,
             LogProviderActivity::class,
+        ],
+        ProviderContractExpiring::class => [
+            SendProviderContractNotification::class,
+            LogProviderContractActivity::class,
+            UpdateProviderContractMetrics::class,
+            ProcessContractRenewal::class,
         ],
 
         // ProviderLocation Events
