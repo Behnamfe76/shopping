@@ -532,6 +532,26 @@ class ShoppingServiceProvider extends ServiceProvider
                 $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeDepartmentRepositoryInterface::class)
             );
         });
+
+        // Register EmployeePosition Repository
+        $this->app->bind(
+            \Fereydooni\Shopping\app\Repositories\Interfaces\EmployeePositionRepositoryInterface::class,
+            \Fereydooni\Shopping\app\Repositories\EmployeePositionRepository::class
+        );
+
+        // Register EmployeePosition Service
+        $this->app->scoped('shopping.employee-position', function ($app) {
+            return new \Fereydooni\Shopping\app\Repositories\EmployeePositionRepository(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\EmployeePositionRepositoryInterface::class)
+            );
+        });
+
+        // Register EmployeePosition Facade
+        $this->app->singleton('shopping.employee-position.facade', function ($app) {
+            return new \Fereydooni\Shopping\app\Repositories\EmployeePositionRepository(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\EmployeePositionRepositoryInterface::class)
+            );
+        });
     }
 
     public function boot(): void
@@ -575,6 +595,9 @@ class ShoppingServiceProvider extends ServiceProvider
 
         // Register policies
         $this->registerPolicies();
+
+        // Register facade aliases
+        $this->registerFacadeAliases();
     }
 
     /**
@@ -627,5 +650,27 @@ class ShoppingServiceProvider extends ServiceProvider
         Gate::policy(\Fereydooni\Shopping\app\Models\Subscription::class, \Fereydooni\Shopping\app\Policies\SubscriptionPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\UserSubscription::class, \Fereydooni\Shopping\app\Policies\UserSubscriptionPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\EmployeeDepartment::class, \Fereydooni\Shopping\app\Policies\EmployeeDepartmentPolicy::class);
+        Gate::policy(\Fereydooni\Shopping\app\Models\EmployeePosition::class, \Fereydooni\Shopping\app\Policies\EmployeePositionPolicy::class);
+
+        // Register permissions
+        $this->registerPermissions();
+    }
+
+    /**
+     * Register the application's permissions.
+     */
+    protected function registerPermissions(): void
+    {
+        // Register EmployeePosition permissions
+        \Fereydooni\Shopping\app\Permissions\EmployeePositionPermissions::register();
+    }
+
+    /**
+     * Register the application's facade aliases.
+     */
+    protected function registerFacadeAliases(): void
+    {
+        // Register EmployeePosition facade alias
+        $this->app->alias('shopping.employee-position.facade', \Fereydooni\Shopping\app\Facades\EmployeePosition::class);
     }
 }

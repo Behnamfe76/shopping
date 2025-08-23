@@ -60,6 +60,20 @@ use Fereydooni\Shopping\app\Listeners\EmployeeDepartment\LogDepartmentActivity;
 use Fereydooni\Shopping\app\Listeners\EmployeeDepartment\UpdateEmployeeDepartmentRecords;
 use Fereydooni\Shopping\app\Listeners\EmployeeDepartment\UpdateDepartmentMetrics;
 
+// EmployeePosition Events
+use Fereydooni\Shopping\app\Events\EmployeePosition\EmployeePositionCreated;
+use Fereydooni\Shopping\app\Events\EmployeePosition\EmployeePositionUpdated;
+use Fereydooni\Shopping\app\Events\EmployeePosition\EmployeePositionSalaryUpdated;
+use Fereydooni\Shopping\app\Events\EmployeePosition\EmployeePositionSetHiring;
+use Fereydooni\Shopping\app\Events\EmployeePosition\EmployeePositionArchived;
+
+// EmployeePosition Listeners
+use Fereydooni\Shopping\app\Listeners\EmployeePosition\SendPositionNotification;
+use Fereydooni\Shopping\app\Listeners\EmployeePosition\UpdatePositionMetrics;
+use Fereydooni\Shopping\app\Listeners\EmployeePosition\LogPositionActivity;
+use Fereydooni\Shopping\app\Listeners\EmployeePosition\UpdateEmployeePositionRecords;
+use Fereydooni\Shopping\app\Listeners\EmployeePosition\CreateJobPosting;
+
 class EventServiceProvider extends ServiceProvider
 {
     /**
@@ -243,6 +257,38 @@ class EventServiceProvider extends ServiceProvider
             LogDepartmentActivity::class,
             UpdateEmployeeDepartmentRecords::class,
             UpdateDepartmentMetrics::class,
+        ],
+
+        // EmployeePosition Events
+        EmployeePositionCreated::class => [
+            SendPositionNotification::class,
+            UpdatePositionMetrics::class,
+            LogPositionActivity::class,
+            UpdateEmployeePositionRecords::class,
+        ],
+        EmployeePositionUpdated::class => [
+            SendPositionNotification::class,
+            UpdatePositionMetrics::class,
+            LogPositionActivity::class,
+            UpdateEmployeePositionRecords::class,
+        ],
+        EmployeePositionSalaryUpdated::class => [
+            SendPositionNotification::class,
+            UpdatePositionMetrics::class,
+            LogPositionActivity::class,
+            UpdateEmployeePositionRecords::class,
+        ],
+        EmployeePositionSetHiring::class => [
+            SendPositionNotification::class,
+            UpdatePositionMetrics::class,
+            LogPositionActivity::class,
+            CreateJobPosting::class,
+        ],
+        EmployeePositionArchived::class => [
+            SendPositionNotification::class,
+            UpdatePositionMetrics::class,
+            LogPositionActivity::class,
+            UpdateEmployeePositionRecords::class,
         ],
     ];
 
