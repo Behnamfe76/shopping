@@ -28,6 +28,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Api\V1\EmployeeController as ApiEmp
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderController as ApiProviderController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\EmployeeNoteController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderLocationController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderInsuranceController;
 use App\Http\Controllers\Api\V1\ProviderPerformanceController;
 
 Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
@@ -1731,6 +1732,77 @@ Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:
             Route::put('/specializations', [ApiProviderController::class, 'updateSpecializations'])->name('update-specializations');
             Route::put('/certifications', [ApiProviderController::class, 'updateCertifications'])->name('update-certifications');
             Route::put('/insurance', [ApiProviderController::class, 'updateInsurance'])->name('update-insurance');
+        });
+    });
+
+    // Provider Insurance API routes
+    Route::prefix('provider-insurance')->name('provider-insurance.')->middleware(['permission:provider-insurance.*'])->group(function () {
+        // List provider insurance
+        Route::get('/', [ProviderInsuranceController::class, 'index'])->name('index');
+
+        // Get provider insurance count
+        Route::get('/count', [ProviderInsuranceController::class, 'getCount'])->name('count');
+
+        // Search provider insurance
+        Route::get('/search', [ProviderInsuranceController::class, 'search'])->name('search');
+
+        // Get insurance statistics
+        Route::get('/stats', [ProviderInsuranceController::class, 'getStats'])->name('stats');
+
+        // Get insurance analytics
+        Route::get('/analytics', [ProviderInsuranceController::class, 'getAnalytics'])->name('analytics');
+
+        // Create provider insurance
+        Route::post('/', [ProviderInsuranceController::class, 'store'])->name('store');
+
+        // Bulk operations
+        Route::post('/bulk-verify', [ProviderInsuranceController::class, 'bulkVerify'])->name('bulk-verify');
+        Route::post('/bulk-reject', [ProviderInsuranceController::class, 'bulkReject'])->name('bulk-reject');
+        Route::post('/bulk-activate', [ProviderInsuranceController::class, 'bulkActivate'])->name('bulk-activate');
+        Route::post('/bulk-deactivate', [ProviderInsuranceController::class, 'bulkDeactivate'])->name('bulk-deactivate');
+
+        // Provider insurance-specific routes
+        Route::prefix('{providerInsurance}')->group(function () {
+            // Show provider insurance
+            Route::get('/', [ProviderInsuranceController::class, 'show'])->name('show');
+
+            // Update provider insurance (full update)
+            Route::put('/', [ProviderInsuranceController::class, 'update'])->name('update');
+
+            // Update provider insurance (partial update)
+            Route::patch('/', [ProviderInsuranceController::class, 'update'])->name('update.partial');
+
+            // Delete provider insurance
+            Route::delete('/', [ProviderInsuranceController::class, 'destroy'])->name('destroy');
+
+            // Status management
+            Route::post('/activate', [ProviderInsuranceController::class, 'activate'])->name('activate');
+            Route::post('/deactivate', [ProviderInsuranceController::class, 'deactivate'])->name('deactivate');
+            Route::post('/expire', [ProviderInsuranceController::class, 'expire'])->name('expire');
+            Route::post('/cancel', [ProviderInsuranceController::class, 'cancel'])->name('cancel');
+            Route::post('/suspend', [ProviderInsuranceController::class, 'suspend'])->name('suspend');
+
+            // Verification management
+            Route::post('/verify', [ProviderInsuranceController::class, 'verify'])->name('verify');
+            Route::post('/reject', [ProviderInsuranceController::class, 'reject'])->name('reject');
+            Route::post('/unverify', [ProviderInsuranceController::class, 'unverify'])->name('unverify');
+
+            // Renewal management
+            Route::post('/renew', [ProviderInsuranceController::class, 'renew'])->name('renew');
+
+            // Document management
+            Route::post('/documents/upload', [ProviderInsuranceController::class, 'uploadDocument'])->name('documents.upload');
+            Route::delete('/documents/{document}', [ProviderInsuranceController::class, 'removeDocument'])->name('documents.remove');
+        });
+
+        // Provider-specific insurance routes
+        Route::prefix('providers/{provider}')->group(function () {
+            Route::get('/', [ProviderInsuranceController::class, 'byProvider'])->name('by-provider');
+            Route::get('/active', [ProviderInsuranceController::class, 'providerActiveInsurance'])->name('active');
+            Route::get('/expired', [ProviderInsuranceController::class, 'providerExpiredInsurance'])->name('expired');
+            Route::get('/expiring-soon', [ProviderInsuranceController::class, 'providerExpiringSoonInsurance'])->name('expiring-soon');
+            Route::get('/pending-verification', [ProviderInsuranceController::class, 'providerPendingVerificationInsurance'])->name('pending-verification');
+            Route::get('/compliance', [ProviderInsuranceController::class, 'providerCompliance'])->name('compliance');
         });
     });
 

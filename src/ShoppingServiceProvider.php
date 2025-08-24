@@ -118,6 +118,26 @@ class ShoppingServiceProvider extends ServiceProvider
             );
         });
 
+        // Register ProviderInsurance Repository
+        $this->app->bind(
+            \Fereydooni\Shopping\app\Repositories\Interfaces\ProviderInsuranceRepositoryInterface::class,
+            \Fereydooni\Shopping\app\Repositories\ProviderInsuranceRepository::class
+        );
+
+        // Register ProviderInsurance Service
+        $this->app->scoped('shopping.provider-insurance', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\ProviderInsuranceService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProviderInsuranceRepositoryInterface::class)
+            );
+        });
+
+        // Register ProviderInsurance Facade
+        $this->app->singleton('shopping.provider-insurance.facade', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\ProviderInsuranceService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProviderInsuranceRepositoryInterface::class)
+            );
+        });
+
         // Register CustomerPreference Facade
         $this->app->singleton('shopping.customer-preference.facade', function ($app) {
             return new \Fereydooni\Shopping\app\Services\CustomerPreferenceService(
@@ -672,6 +692,7 @@ class ShoppingServiceProvider extends ServiceProvider
         Gate::policy(\Fereydooni\Shopping\app\Models\EmployeeDepartment::class, \Fereydooni\Shopping\app\Policies\EmployeeDepartmentPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\EmployeePosition::class, \Fereydooni\Shopping\app\Policies\EmployeePositionPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\ProviderLocation::class, \Fereydooni\Shopping\app\Policies\ProviderLocationPolicy::class);
+        Gate::policy(\Fereydooni\Shopping\app\Models\ProviderInsurance::class, \Fereydooni\Shopping\app\Policies\ProviderInsurancePolicy::class);
 
         // Register permissions
         $this->registerPermissions();
@@ -696,5 +717,8 @@ class ShoppingServiceProvider extends ServiceProvider
 
         // Register ProviderLocation facade alias
         $this->app->alias('shopping.provider-location.facade', \Fereydooni\Shopping\app\Facades\ProviderLocation::class);
+
+        // Register ProviderInsurance facade alias
+        $this->app->alias('shopping.provider-insurance.facade', \Fereydooni\Shopping\app\Facades\ProviderInsurance::class);
     }
 }

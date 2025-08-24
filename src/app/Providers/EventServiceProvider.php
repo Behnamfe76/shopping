@@ -97,6 +97,24 @@ use Fereydooni\Shopping\app\Events\Provider\ProviderContractExtended;
 use Fereydooni\Shopping\app\Events\Provider\ProviderContractTerminated;
 use Fereydooni\Shopping\app\Events\Provider\ProviderContractExpiring;
 
+// ProviderInsurance Events
+use Fereydooni\Shopping\app\Events\ProviderInsuranceCreated;
+use Fereydooni\Shopping\app\Events\ProviderInsuranceUpdated;
+use Fereydooni\Shopping\app\Events\ProviderInsuranceDeleted;
+use Fereydooni\Shopping\app\Events\ProviderInsuranceVerified;
+use Fereydooni\Shopping\app\Events\ProviderInsuranceExpired;
+use Fereydooni\Shopping\app\Events\ProviderInsuranceRenewed;
+use Fereydooni\Shopping\app\Events\ProviderInsuranceDocumentUploaded;
+
+// ProviderInsurance Listeners
+use Fereydooni\Shopping\app\Listeners\SendInsuranceVerificationNotification;
+use Fereydooni\Shopping\app\Listeners\SendInsuranceExpirationNotification;
+use Fereydooni\Shopping\app\Listeners\SendInsuranceRenewalReminder;
+use Fereydooni\Shopping\app\Listeners\UpdateProviderComplianceStatus;
+use Fereydooni\Shopping\app\Listeners\LogInsuranceActivity;
+use Fereydooni\Shopping\app\Listeners\ProcessInsuranceDocument;
+use Fereydooni\Shopping\app\Listeners\UpdateInsuranceAnalytics;
+
 // ProviderLocation Events
 use Fereydooni\Shopping\app\Events\Provider\ProviderLocationCreated;
 use Fereydooni\Shopping\app\Events\Provider\ProviderLocationUpdated;
@@ -492,6 +510,42 @@ class EventServiceProvider extends ServiceProvider
             UpdateLocationAnalytics::class,
             LogLocationActivity::class,
             UpdateLocationMaps::class,
+        ],
+
+        // ProviderInsurance Events
+        ProviderInsuranceCreated::class => [
+            LogInsuranceActivity::class,
+            UpdateInsuranceAnalytics::class,
+        ],
+        ProviderInsuranceUpdated::class => [
+            LogInsuranceActivity::class,
+            UpdateInsuranceAnalytics::class,
+        ],
+        ProviderInsuranceDeleted::class => [
+            LogInsuranceActivity::class,
+            UpdateInsuranceAnalytics::class,
+        ],
+        ProviderInsuranceVerified::class => [
+            SendInsuranceVerificationNotification::class,
+            UpdateProviderComplianceStatus::class,
+            LogInsuranceActivity::class,
+            UpdateInsuranceAnalytics::class,
+        ],
+        ProviderInsuranceExpired::class => [
+            SendInsuranceExpirationNotification::class,
+            SendInsuranceRenewalReminder::class,
+            UpdateProviderComplianceStatus::class,
+            LogInsuranceActivity::class,
+            UpdateInsuranceAnalytics::class,
+        ],
+        ProviderInsuranceRenewed::class => [
+            LogInsuranceActivity::class,
+            UpdateInsuranceAnalytics::class,
+        ],
+        ProviderInsuranceDocumentUploaded::class => [
+            ProcessInsuranceDocument::class,
+            LogInsuranceActivity::class,
+            UpdateInsuranceAnalytics::class,
         ],
     ];
 
