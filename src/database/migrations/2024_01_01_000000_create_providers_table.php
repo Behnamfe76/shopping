@@ -64,6 +64,56 @@ return new class extends Migration
             $table->string('termination_reason')->nullable();
             $table->timestamps();
             $table->softDeletes();
+
+            // Basic search indexes
+            $table->index('company_name');
+            $table->index('contact_person');
+            $table->index('email');
+            $table->index('phone');
+            $table->index('tax_id');
+            $table->index('business_license');
+
+            // Status and type indexes
+            $table->index('status');
+            $table->index('provider_type');
+
+            // Location indexes
+            $table->index('city');
+            $table->index('state');
+            $table->index('country');
+            $table->index(['city', 'state', 'country']);
+
+            // Rating and performance indexes
+            $table->index('rating');
+            $table->index('quality_rating');
+            $table->index('delivery_rating');
+            $table->index('communication_rating');
+            $table->index('total_orders');
+            $table->index('total_spent');
+            $table->index('average_order_value');
+
+            // Financial indexes
+            $table->index('credit_limit');
+            $table->index('current_balance');
+            $table->index('commission_rate');
+            $table->index('discount_rate');
+
+            // Contract indexes
+            $table->index('contract_start_date');
+            $table->index('contract_end_date');
+
+            // Date indexes
+            $table->index('last_order_date');
+            $table->index('first_order_date');
+            $table->index('created_at');
+            $table->index('updated_at');
+
+            // Composite indexes for common queries
+            $table->index(['status', 'provider_type']);
+            $table->index(['status', 'rating']);
+            $table->index(['provider_type', 'rating']);
+            $table->index(['city', 'status']);
+            $table->index(['rating', 'total_orders']);
         });
     }
 
