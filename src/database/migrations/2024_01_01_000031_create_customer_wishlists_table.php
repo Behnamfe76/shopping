@@ -53,6 +53,11 @@ return new class extends Migration
             $table->index(['added_at']);
             $table->index(['created_at']);
             $table->index(['updated_at']);
+
+            // Additional indexes from redundant migrations
+            $table->index('price_when_added');
+            $table->index('current_price');
+            $table->index('notification_sent_at');
         });
     }
 

@@ -29,6 +29,12 @@ return new class extends Migration
             $table->index(['customer_id', 'is_active'], 'customer_preference_active_index');
             $table->index(['preference_key', 'is_active'], 'preference_key_active_index');
             $table->index(['preference_type', 'is_active'], 'preference_type_active_index');
+
+            // Additional indexes from redundant migrations
+            $table->index(['created_at'], 'customer_preference_created_at_index');
+            $table->index(['updated_at'], 'customer_preference_updated_at_index');
+            $table->index(['customer_id', 'preference_key', 'is_active'], 'customer_preference_composite_index');
+            $table->index(['preference_key', 'preference_type'], 'preference_key_type_index');
         });
     }
 
