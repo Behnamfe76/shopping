@@ -14,6 +14,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerCommunicationController
 use Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeController as WebEmployeeController;
 use Fereydooni\Shopping\app\Http\Controllers\Web\ProviderController as WebProviderController;
 use Fereydooni\Shopping\app\Http\Controllers\Web\ProviderLocationController;
+use App\Http\Controllers\ProviderPerformanceController;
 
 Route::prefix('shopping')->name('shopping.')->middleware(['web'])->group(function () {
     // Product routes
@@ -701,4 +702,335 @@ Route::prefix('admin/provider-locations')->name('admin.provider-locations.')->mi
     Route::get('/approval', [ProviderLocationController::class, 'adminApproval'])->name('approval');
     Route::post('/approve/{providerLocation}', [ProviderLocationController::class, 'adminApprove'])->name('approve');
     Route::post('/reject/{providerLocation}', [ProviderLocationController::class, 'adminReject'])->name('reject');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Provider Performance Web Routes
+|--------------------------------------------------------------------------
+|
+| Here are the web routes for provider performance management.
+| These routes are protected by authentication and authorization middleware.
+|
+*/
+
+Route::middleware(['auth', 'verified'])->group(function () {
+
+    // Provider Performance Routes
+    Route::prefix('provider-performance')->name('provider-performance.')->group(function () {
+
+        // Index - List all provider performances
+        Route::get('/', [ProviderPerformanceController::class, 'index'])
+            ->name('index')
+            ->middleware('can:viewAny,App\Models\ProviderPerformance');
+
+        // Create - Show create form
+        Route::get('/create', [ProviderPerformanceController::class, 'create'])
+            ->name('create')
+            ->middleware('can:create,App\Models\ProviderPerformance');
+
+        // Store - Save new provider performance
+        Route::post('/', [ProviderPerformanceController::class, 'store'])
+            ->name('store')
+            ->middleware('can:create,App\Models\ProviderPerformance');
+
+        // Show - Display specific provider performance
+        Route::get('/{providerPerformance}', [ProviderPerformanceController::class, 'show'])
+            ->name('show')
+            ->middleware('can:view,providerPerformance');
+
+        // Edit - Show edit form
+        Route::get('/{providerPerformance}/edit', [ProviderPerformanceController::class, 'edit'])
+            ->name('edit')
+            ->middleware('can:update,providerPerformance');
+
+        // Update - Save changes to provider performance
+        Route::put('/{providerPerformance}', [ProviderPerformanceController::class, 'update'])
+            ->name('update')
+            ->middleware('can:update,providerPerformance');
+
+        // Delete - Remove provider performance
+        Route::delete('/{providerPerformance}', [ProviderPerformanceController::class, 'destroy'])
+            ->name('destroy')
+            ->middleware('can:delete,providerPerformance');
+
+        // Verify - Mark performance as verified
+        Route::post('/{providerPerformance}/verify', [ProviderPerformanceController::class, 'verify'])
+            ->name('verify')
+            ->middleware('can:verify,providerPerformance');
+
+        // Unverify - Mark performance as unverified
+        Route::post('/{providerPerformance}/unverify', [ProviderPerformanceController::class, 'unverify'])
+            ->name('unverify')
+            ->middleware('can:verify,providerPerformance');
+
+        // Recalculate - Recalculate performance score and grade
+        Route::post('/{providerPerformance}/recalculate', [ProviderPerformanceController::class, 'recalculate'])
+            ->name('recalculate')
+            ->middleware('can:calculate,providerPerformance');
+
+        // Analytics - Performance analytics dashboard
+        Route::get('/analytics/dashboard', [ProviderPerformanceController::class, 'analytics'])
+            ->name('analytics')
+            ->middleware('can:viewAnalytics,App\Models\ProviderPerformance');
+
+        // Reports - Performance reports
+        Route::get('/reports', [ProviderPerformanceController::class, 'reports'])
+            ->name('reports')
+            ->middleware('can:viewReports,App\Models\ProviderPerformance');
+
+        // Top Performers - Display top performing providers
+        Route::get('/top-performers', [ProviderPerformanceController::class, 'topPerformers'])
+            ->name('top-performers')
+            ->middleware('can:view,App\Models\ProviderPerformance');
+
+        // Alerts - Performance alerts and notifications
+        Route::get('/alerts', [ProviderPerformanceController::class, 'alerts'])
+            ->name('alerts')
+            ->middleware('can:viewAlerts,App\Models\ProviderPerformance');
+
+        // Export - Export performance data
+        Route::post('/export', [ProviderPerformanceController::class, 'export'])
+            ->name('export')
+            ->middleware('can:export,App\Models\ProviderPerformance');
+
+        // Bulk Operations
+        Route::prefix('bulk')->name('bulk.')->middleware('can:bulkOperations,App\Models\ProviderPerformance')->group(function () {
+
+            // Bulk delete
+            Route::delete('/delete', [ProviderPerformanceController::class, 'bulkDelete'])
+                ->name('delete');
+
+            // Bulk verify
+            Route::post('/verify', [ProviderPerformanceController::class, 'bulkVerify'])
+                ->name('verify');
+
+            // Bulk unverify
+            Route::post('/unverify', [ProviderPerformanceController::class, 'bulkUnverify'])
+                ->name('unverify');
+
+            // Bulk recalculate
+            Route::post('/recalculate', [ProviderPerformanceController::class, 'bulkRecalculate'])
+                ->name('recalculate');
+
+            // Bulk export
+            Route::post('/export', [ProviderPerformanceController::class, 'bulkExport'])
+                ->name('export');
+        });
+
+        // Provider-specific routes
+        Route::prefix('provider/{provider}')->name('provider.')->group(function () {
+
+            // Provider performance history
+            Route::get('/history', [ProviderPerformanceController::class, 'providerHistory'])
+                ->name('history')
+                ->middleware('can:viewHistory,App\Models\ProviderPerformance');
+
+            // Provider performance trends
+            Route::get('/trends', [ProviderPerformanceController::class, 'providerTrends'])
+                ->name('trends')
+                ->middleware('can:viewTrends,App\Models\ProviderPerformance');
+
+            // Provider performance comparison
+            Route::get('/comparison', [ProviderPerformanceController::class, 'providerComparison'])
+                ->name('comparison')
+                ->middleware('can:viewComparisons,App\Models\ProviderPerformance');
+
+            // Provider performance forecast
+            Route::get('/forecast', [ProviderPerformanceController::class, 'providerForecast'])
+                ->name('forecast')
+                ->middleware('can:viewForecasts,App\Models\ProviderPerformance');
+
+            // Provider performance insights
+            Route::get('/insights', [ProviderPerformanceController::class, 'providerInsights'])
+                ->name('insights')
+                ->middleware('can:viewInsights,App\Models\ProviderPerformance');
+        });
+
+        // Period-specific routes
+        Route::prefix('period/{periodType}')->name('period.')->group(function () {
+
+            // Period performance summary
+            Route::get('/summary', [ProviderPerformanceController::class, 'periodSummary'])
+                ->name('summary')
+                ->middleware('can:view,App\Models\ProviderPerformance');
+
+            // Period performance comparison
+            Route::get('/comparison', [ProviderPerformanceController::class, 'periodComparison'])
+                ->name('comparison')
+                ->middleware('can:viewComparisons,App\Models\ProviderPerformance');
+
+            // Period performance trends
+            Route::get('/trends', [ProviderPerformanceController::class, 'periodTrends'])
+                ->name('trends')
+                ->middleware('can:viewTrends,App\Models\ProviderPerformance');
+        });
+
+        // Grade-specific routes
+        Route::prefix('grade/{grade}')->name('grade.')->group(function () {
+
+            // Grade performance summary
+            Route::get('/summary', [ProviderPerformanceController::class, 'gradeSummary'])
+                ->name('summary')
+                ->middleware('can:view,App\Models\ProviderPerformance');
+
+            // Grade performance analysis
+            Route::get('/analysis', [ProviderPerformanceController::class, 'gradeAnalysis'])
+                ->name('analysis')
+                ->middleware('can:viewAnalytics,App\Models\ProviderPerformance');
+
+            // Grade performance improvement
+            Route::get('/improvement', [ProviderPerformanceController::class, 'gradeImprovement'])
+                ->name('improvement')
+                ->middleware('can:viewInsights,App\Models\ProviderPerformance');
+        });
+
+        // Settings and Configuration
+        Route::prefix('settings')->name('settings.')->middleware('can:manageSettings,App\Models\ProviderPerformance')->group(function () {
+
+            // General settings
+            Route::get('/', [ProviderPerformanceController::class, 'settings'])
+                ->name('index');
+
+            // Thresholds management
+            Route::get('/thresholds', [ProviderPerformanceController::class, 'thresholds'])
+                ->name('thresholds')
+                ->middleware('can:manageThresholds,App\Models\ProviderPerformance');
+
+            // Benchmarks management
+            Route::get('/benchmarks', [ProviderPerformanceController::class, 'benchmarks'])
+                ->name('benchmarks')
+                ->middleware('can:manageBenchmarks,App\Models\ProviderPerformance');
+
+            // Workflows management
+            Route::get('/workflows', [ProviderPerformanceController::class, 'workflows'])
+                ->name('workflows')
+                ->middleware('can:manageWorkflows,App\Models\ProviderPerformance');
+
+            // Notifications management
+            Route::get('/notifications', [ProviderPerformanceController::class, 'notifications'])
+                ->name('notifications')
+                ->middleware('can:manageNotifications,App\Models\ProviderPerformance');
+        });
+
+        // Audit and Logs
+        Route::prefix('audit')->name('audit.')->middleware('can:viewAuditLogs,App\Models\ProviderPerformance')->group(function () {
+
+            // Audit logs
+            Route::get('/logs', [ProviderPerformanceController::class, 'auditLogs'])
+                ->name('logs');
+
+            // Change history
+            Route::get('/changes', [ProviderPerformanceController::class, 'changeHistory'])
+                ->name('changes');
+
+            // Activity timeline
+            Route::get('/timeline', [ProviderPerformanceController::class, 'activityTimeline'])
+                ->name('timeline');
+        });
+
+        // Dashboard
+        Route::get('/dashboard', [ProviderPerformanceController::class, 'dashboard'])
+            ->name('dashboard')
+            ->middleware('can:viewDashboard,App\Models\ProviderPerformance');
+
+        // Search
+        Route::get('/search', [ProviderPerformanceController::class, 'search'])
+            ->name('search')
+            ->middleware('can:search,App\Models\ProviderPerformance');
+
+        // Import
+        Route::get('/import', [ProviderPerformanceController::class, 'importForm'])
+            ->name('import.form')
+            ->middleware('can:import,App\Models\ProviderPerformance');
+
+        Route::post('/import', [ProviderPerformanceController::class, 'import'])
+            ->name('import')
+            ->middleware('can:import,App\Models\ProviderPerformance');
+
+        // Recommendations
+        Route::get('/recommendations', [ProviderPerformanceController::class, 'recommendations'])
+            ->name('recommendations')
+            ->middleware('can:generateRecommendations,App\Models\ProviderPerformance');
+
+        // Performance Calendar
+        Route::get('/calendar', [ProviderPerformanceController::class, 'calendar'])
+            ->name('calendar')
+            ->middleware('can:view,App\Models\ProviderPerformance');
+
+        // Performance Heatmap
+        Route::get('/heatmap', [ProviderPerformanceController::class, 'heatmap'])
+            ->name('heatmap')
+            ->middleware('can:viewAnalytics,App\Models\ProviderPerformance');
+
+        // Performance Distribution
+        Route::get('/distribution', [ProviderPerformanceController::class, 'distribution'])
+            ->name('distribution')
+            ->middleware('can:viewAnalytics,App\Models\ProviderPerformance');
+
+        // Performance Benchmarks
+        Route::get('/benchmarks', [ProviderPerformanceController::class, 'benchmarks'])
+            ->name('benchmarks')
+            ->middleware('can:viewComparisons,App\Models\ProviderPerformance');
+
+        // Performance Alerts Management
+        Route::prefix('alerts')->name('alerts.')->middleware('can:manageAlerts,App\Models\ProviderPerformance')->group(function () {
+
+            // Alerts configuration
+            Route::get('/config', [ProviderPerformanceController::class, 'alertsConfig'])
+                ->name('config');
+
+            // Alerts rules
+            Route::get('/rules', [ProviderPerformanceController::class, 'alertsRules'])
+                ->name('rules');
+
+            // Alerts history
+            Route::get('/history', [ProviderPerformanceController::class, 'alertsHistory'])
+                ->name('history');
+        });
+
+        // Performance Workflows
+        Route::prefix('workflows')->name('workflows.')->middleware('can:manageWorkflows,App\Models\ProviderPerformance')->group(function () {
+
+            // Workflow definitions
+            Route::get('/definitions', [ProviderPerformanceController::class, 'workflowDefinitions'])
+                ->name('definitions');
+
+            // Workflow instances
+            Route::get('/instances', [ProviderPerformanceController::class, 'workflowInstances'])
+                ->name('instances');
+
+            // Workflow templates
+            Route::get('/templates', [ProviderPerformanceController::class, 'workflowTemplates'])
+                ->name('templates');
+        });
+
+        // Performance Approvals
+        Route::prefix('approvals')->name('approvals.')->middleware('can:approveChanges,App\Models\ProviderPerformance')->group(function () {
+
+            // Pending approvals
+            Route::get('/pending', [ProviderPerformanceController::class, 'pendingApprovals'])
+                ->name('pending');
+
+            // Approval history
+            Route::get('/history', [ProviderPerformanceController::class, 'approvalHistory'])
+                ->name('history');
+
+            // Approval workflow
+            Route::get('/workflow', [ProviderPerformanceController::class, 'approvalWorkflow'])
+                ->name('workflow');
+        });
+    });
+});
+
+// Guest routes (if any)
+Route::middleware('guest')->group(function () {
+
+    // Public performance reports (if applicable)
+    Route::get('/public/provider-performance/reports/{token}', [ProviderPerformanceController::class, 'publicReport'])
+        ->name('public.provider-performance.report');
+
+    // Public performance dashboard (if applicable)
+    Route::get('/public/provider-performance/dashboard/{token}', [ProviderPerformanceController::class, 'publicDashboard'])
+        ->name('public.provider-performance.dashboard');
 });

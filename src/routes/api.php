@@ -28,6 +28,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Api\V1\EmployeeController as ApiEmp
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderController as ApiProviderController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\EmployeeNoteController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderLocationController;
+use App\Http\Controllers\Api\V1\ProviderPerformanceController;
 
 Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
     // Address API routes
@@ -1984,9 +1985,66 @@ Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:
             Route::get('/system/info', [ProviderLocationController::class, 'systemInfo'])->name('system.info');
         });
     });
-});
+        });
 
-// EmployeeNote API Routes
+    // Provider Performance API routes
+    Route::prefix('provider-performances')->name('provider-performances.')->group(function () {
+        // List provider performances
+        Route::get('/', [ProviderPerformanceController::class, 'index'])->name('index');
+
+        // Search provider performances
+        Route::get('/search', [ProviderPerformanceController::class, 'search'])->name('search');
+
+        // Create provider performance
+        Route::post('/', [ProviderPerformanceController::class, 'store'])->name('store');
+
+        // Get performance analytics
+        Route::get('/analytics', [ProviderPerformanceController::class, 'analytics'])->name('analytics');
+
+        // Generate performance report
+        Route::post('/reports', [ProviderPerformanceController::class, 'generateReport'])->name('reports');
+
+        // Get top performers
+        Route::get('/top-performers', [ProviderPerformanceController::class, 'topPerformers'])->name('top-performers');
+
+        // Get performance trends
+        Route::get('/trends', [ProviderPerformanceController::class, 'trends'])->name('trends');
+
+        // Get performance alerts
+        Route::get('/alerts', [ProviderPerformanceController::class, 'alerts'])->name('alerts');
+
+        // Get performances by provider
+        Route::get('/provider/{providerId}', [ProviderPerformanceController::class, 'byProvider'])->name('by-provider');
+
+        // Get performances by grade
+        Route::get('/grade/{grade}', [ProviderPerformanceController::class, 'byGrade'])->name('by-grade');
+
+        // Get performances by period
+        Route::get('/period', [ProviderPerformanceController::class, 'byPeriod'])->name('by-period');
+
+        // Provider performance-specific routes
+        Route::prefix('{providerPerformance}')->group(function () {
+            // Show provider performance
+            Route::get('/', [ProviderPerformanceController::class, 'show'])->name('show');
+
+            // Update provider performance
+            Route::put('/', [ProviderPerformanceController::class, 'update'])->name('update');
+
+            // Delete provider performance
+            Route::delete('/', [ProviderPerformanceController::class, 'destroy'])->name('destroy');
+
+            // Verify performance
+            Route::post('/verify', [ProviderPerformanceController::class, 'verify'])->name('verify');
+
+            // Unverify performance
+            Route::post('/unverify', [ProviderPerformanceController::class, 'unverify'])->name('unverify');
+
+            // Calculate performance
+            Route::post('/calculate', [ProviderPerformanceController::class, 'calculate'])->name('calculate');
+        });
+    });
+
+    // EmployeeNote API Routes
 Route::prefix('api')->group(function () {
     Route::apiResource('employee-notes', EmployeeNoteController::class);
 
