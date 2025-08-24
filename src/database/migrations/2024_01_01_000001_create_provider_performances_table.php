@@ -84,25 +84,6 @@ return new class extends Migration
 
             // Unique constraint to prevent duplicate performance records
             $table->unique(['provider_id', 'period_start', 'period_end', 'period_type'], 'unique_provider_period');
-
-            // Check constraints for data integrity
-            $table->check('total_orders >= 0', 'check_total_orders_positive');
-            $table->check('total_revenue >= 0', 'check_total_revenue_positive');
-            $table->check('average_order_value >= 0', 'check_avg_order_value_positive');
-            $table->check('on_time_delivery_rate >= 0 AND on_time_delivery_rate <= 100', 'check_delivery_rate_range');
-            $table->check('return_rate >= 0 AND return_rate <= 100', 'check_return_rate_range');
-            $table->check('defect_rate >= 0 AND defect_rate <= 100', 'check_defect_rate_range');
-            $table->check('customer_satisfaction_score >= 1 AND customer_satisfaction_score <= 10', 'check_satisfaction_range');
-            $table->check('response_time_avg >= 0', 'check_response_time_positive');
-            $table->check('quality_rating >= 1 AND quality_rating <= 10', 'check_quality_range');
-            $table->check('delivery_rating >= 1 AND delivery_rating <= 10', 'check_delivery_range');
-            $table->check('communication_rating >= 1 AND communication_rating <= 10', 'check_communication_range');
-            $table->check('cost_efficiency_score >= 0 AND cost_efficiency_score <= 100', 'check_cost_efficiency_range');
-            $table->check('inventory_turnover_rate >= 0', 'check_inventory_turnover_positive');
-            $table->check('lead_time_avg >= 0', 'check_lead_time_positive');
-            $table->check('fill_rate >= 0 AND fill_rate <= 100', 'check_fill_rate_range');
-            $table->check('accuracy_rate >= 0 AND accuracy_rate <= 100', 'check_accuracy_rate_range');
-            $table->check('performance_score >= 0 AND performance_score <= 100', 'check_performance_score_range');
         });
 
         // Add foreign key for verified_by after users table exists

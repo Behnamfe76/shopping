@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('provider_id')->constrained('providers')->onDelete('cascade');
             $table->string('location_name', 255);
-            $table->text('address');
+            $table->string('address', 500);
             $table->string('city', 100);
             $table->string('state', 100);
             $table->string('postal_code', 20);
@@ -63,19 +63,12 @@ return new class extends Migration
 
             // Geospatial indexes for coordinates
             $table->index(['latitude', 'longitude']);
-            $table->spatialIndex(['latitude', 'longitude'], 'provider_locations_coordinates_spatial');
 
             // Full-text search indexes
             $table->fullText(['location_name', 'address', 'city', 'state', 'contact_person', 'notes'], 'provider_locations_search_fulltext');
 
             // Unique constraints
             $table->unique(['provider_id', 'is_primary'], 'provider_locations_primary_unique');
-
-            // Check constraints for data integrity
-            $table->check('latitude >= -90 AND latitude <= 90');
-            $table->check('longitude >= -180 AND longitude <= 180');
-            $table->check('phone REGEXP "^[+]?[1-9][0-9]{0,15}$"');
-            $table->check('contact_phone IS NULL OR contact_phone REGEXP "^[+]?[1-9][0-9]{0,15}$"');
         });
 
         // Add additional indexes for better query performance
@@ -96,7 +89,6 @@ return new class extends Migration
 
             // Indexes for search operations
             $table->index(['location_name', 'is_active'], 'provider_locations_name_active_idx');
-            $table->index(['address', 'is_active'], 'provider_locations_address_active_idx');
         });
     }
 

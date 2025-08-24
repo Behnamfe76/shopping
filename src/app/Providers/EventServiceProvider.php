@@ -40,7 +40,6 @@ use Fereydooni\Shopping\app\Events\Customer\CustomerDeactivated;
 use Fereydooni\Shopping\app\Events\Customer\CustomerSuspended;
 use Fereydooni\Shopping\app\Events\Customer\LoyaltyPointsAdded;
 use Fereydooni\Shopping\app\Events\Customer\LoyaltyPointsDeducted;
-use Fereydooni\Shopping\app\Listeners\Customer\SendWelcomeEmail;
 use Fereydooni\Shopping\app\Listeners\Customer\UpdateCustomerAnalytics;
 use Fereydooni\Shopping\app\Listeners\Customer\NotifyCustomerStatusChange;
 use Fereydooni\Shopping\app\Listeners\Customer\UpdateLoyaltyProgram;
