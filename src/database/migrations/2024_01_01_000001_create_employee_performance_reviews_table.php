@@ -48,7 +48,7 @@ return new class extends Migration
             $table->index(['status', 'review_date']);
             $table->index(['overall_rating']);
             $table->index(['performance_score']);
-            $table->index(['review_period_start', 'review_period_end']);
+            $table->index(['review_period_start', 'review_period_end'], 'epr_period_index');
             $table->index(['next_review_date']);
             $table->index(['is_approved', 'approved_at']);
         });

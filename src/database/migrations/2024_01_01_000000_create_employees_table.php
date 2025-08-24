@@ -102,6 +102,26 @@ return new class extends Migration
             $table->index(['performance_rating']);
             $table->index(['email']);
             $table->index(['employee_number']);
+
+            // Additional indexes for better query performance
+            $table->index('user_id');
+            $table->index('phone');
+            $table->index('termination_date');
+            $table->index('last_review_date');
+            $table->index('next_review_date');
+            $table->index('created_at');
+            $table->index('updated_at');
+
+            // Composite indexes for common queries
+            $table->index(['status', 'department']);
+            $table->index(['status', 'employment_type']);
+            $table->index(['department', 'position']);
+            $table->index(['hire_date', 'status']);
+            $table->index(['performance_rating', 'status']);
+            $table->index(['manager_id', 'status']);
+
+            // Full-text search indexes
+            $table->fullText(['first_name', 'last_name', 'email']);
         });
     }
 

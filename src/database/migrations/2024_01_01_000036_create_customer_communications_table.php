@@ -28,13 +28,49 @@ return new class extends Migration
             $table->timestamp('clicked_at')->nullable();
             $table->timestamp('bounced_at')->nullable();
             $table->timestamp('unsubscribed_at')->nullable();
-            $table->foreignId('campaign_id')->nullable();
-            $table->foreignId('segment_id')->nullable();
-            $table->foreignId('template_id')->nullable();
+            $table->foreignId('campaign_id')->nullable()->constrained('campaigns')->onDelete('set null');
+            $table->foreignId('segment_id')->nullable()->constrained('customer_segments')->onDelete('set null');
+            $table->foreignId('template_id')->nullable()->constrained('communication_templates')->onDelete('set null');
             $table->json('metadata')->nullable();
             $table->json('tracking_data')->nullable();
             $table->timestamps();
             $table->softDeletes();
+
+            // Customer and user indexes
+            $table->index('customer_id');
+            $table->index('user_id');
+
+            // Communication type and status indexes
+            $table->index('communication_type');
+            $table->index('status');
+            $table->index('priority');
+            $table->index('channel');
+
+            // Date and time indexes
+            $table->index('scheduled_at');
+            $table->index('sent_at');
+            $table->index('delivered_at');
+            $table->index('opened_at');
+            $table->index('clicked_at');
+            $table->index('bounced_at');
+            $table->index('unsubscribed_at');
+            $table->index('created_at');
+            $table->index('updated_at');
+
+            // Campaign and segment indexes
+            $table->index('campaign_id');
+            $table->index('segment_id');
+            $table->index('template_id');
+
+            // Composite indexes for common queries
+            $table->index(['customer_id', 'status']);
+            $table->index(['customer_id', 'communication_type']);
+            $table->index(['customer_id', 'created_at']);
+            $table->index(['status', 'scheduled_at']);
+            $table->index(['campaign_id', 'status']);
+            $table->index(['segment_id', 'status']);
+            $table->index(['communication_type', 'status']);
+            $table->index(['priority', 'status']);
         });
     }
 

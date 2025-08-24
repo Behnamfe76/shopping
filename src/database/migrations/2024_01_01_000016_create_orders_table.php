@@ -20,6 +20,17 @@ return new class extends Migration
             $table->foreignId('shipping_address_id')->constrained('addresses')->onDelete('cascade');
             $table->foreignId('billing_address_id')->constrained('addresses')->onDelete('cascade');
             $table->timestamp('placed_at')->nullable();
+            $table->text('notes')->nullable();
+            $table->string('tracking_number')->nullable();
+            $table->timestamp('estimated_delivery')->nullable();
+            $table->timestamp('actual_delivery')->nullable();
+            $table->decimal('tax_amount', 10, 2)->default(0);
+            $table->string('currency', 3)->default('USD');
+            $table->decimal('exchange_rate', 10, 6)->default(1.000000);
+            $table->string('coupon_code')->nullable();
+            $table->decimal('coupon_discount', 10, 2)->default(0);
+            $table->decimal('subtotal', 10, 2)->default(0);
+            $table->decimal('grand_total', 10, 2)->default(0);
             $table->timestamps();
         });
     }

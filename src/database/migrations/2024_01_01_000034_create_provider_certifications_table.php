@@ -102,7 +102,7 @@ return new class extends Migration
             $table->index(['verification_status', 'verified_at']);
 
             // Full-text search index
-            $table->fullText(['certification_name', 'certification_number', 'issuing_organization', 'description']);
+            $table->fullText(['certification_name', 'certification_number', 'issuing_organization', 'description'], 'provider_certs_fulltext_idx');
         });
     }
 
