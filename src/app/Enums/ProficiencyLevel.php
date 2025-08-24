@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Enums;
+namespace Fereydooni\Shopping\App\Enums;
 
 enum ProficiencyLevel: string
 {
