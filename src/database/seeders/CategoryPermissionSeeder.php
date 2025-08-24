@@ -67,7 +67,7 @@ class CategoryPermissionSeeder extends Seeder
     {
         // Super Admin Role - All permissions
         $superAdmin = Role::firstOrCreate(['name' => 'super-admin', 'guard_name' => 'web']);
-        $superAdmin->givePermissionTo(Permission::all());
+        $superAdmin->givePermissionTo(Permission::where('guard_name', 'web')->get());
 
         // Category Manager Role - Full category management
         $categoryManager = Role::firstOrCreate(['name' => 'category-manager', 'guard_name' => 'web']);

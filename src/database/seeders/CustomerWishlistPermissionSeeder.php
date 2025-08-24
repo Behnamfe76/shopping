@@ -43,7 +43,7 @@ class CustomerWishlistPermissionSeeder extends Seeder
                 'name' => $permission,
                 'guard_name' => 'web',
             ], [
-                'description' => $description,
+                // 'description' => $description,
             ]);
         }
 

@@ -56,7 +56,7 @@ class CustomerPreferencePermissionSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission]);
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
         }
 
         // Create roles and assign permissions
@@ -71,11 +71,11 @@ class CustomerPreferencePermissionSeeder extends Seeder
     private function createRolesAndAssignPermissions(): void
     {
         // Admin role - all permissions
-        $adminRole = Role::firstOrCreate(['name' => 'admin']);
-        $adminRole->givePermissionTo(Permission::all());
+        $adminRole = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+        $adminRole->givePermissionTo(Permission::where('guard_name', 'web')->get());
 
         // Customer preference manager role
-        $preferenceManagerRole = Role::firstOrCreate(['name' => 'customer-preference-manager']);
+        $preferenceManagerRole = Role::firstOrCreate(['name' => 'customer-preference-manager', 'guard_name' => 'web']);
         $preferenceManagerRole->givePermissionTo([
             'customer-preferences.viewAny',
             'customer-preferences.view',
@@ -101,7 +101,7 @@ class CustomerPreferencePermissionSeeder extends Seeder
         ]);
 
         // Customer service role
-        $customerServiceRole = Role::firstOrCreate(['name' => 'customer-service']);
+        $customerServiceRole = Role::firstOrCreate(['name' => 'customer-service', 'guard_name' => 'web']);
         $customerServiceRole->givePermissionTo([
             'customer-preferences.viewAny',
             'customer-preferences.view',
@@ -114,7 +114,7 @@ class CustomerPreferencePermissionSeeder extends Seeder
         ]);
 
         // Customer role - limited permissions
-        $customerRole = Role::firstOrCreate(['name' => 'customer']);
+        $customerRole = Role::firstOrCreate(['name' => 'customer', 'guard_name' => 'web']);
         $customerRole->givePermissionTo([
             'customer-preferences.view',
             'customer-preferences.setPreference',
@@ -124,7 +124,7 @@ class CustomerPreferencePermissionSeeder extends Seeder
         ]);
 
         // Analytics role
-        $analyticsRole = Role::firstOrCreate(['name' => 'analytics']);
+        $analyticsRole = Role::firstOrCreate(['name' => 'analytics', 'guard_name' => 'web']);
         $analyticsRole->givePermissionTo([
             'customer-preferences.viewAny',
             'customer-preferences.view',

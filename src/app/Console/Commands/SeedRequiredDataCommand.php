@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use Fereydooni\Shopping\app\Models\User;
 use Fereydooni\Shopping\app\Models\Employee;
 use Fereydooni\Shopping\app\Enums\EmployeeStatus;
 use Fereydooni\Shopping\app\Enums\EmploymentType;
@@ -16,6 +15,14 @@ use Fereydooni\Shopping\app\Enums\Gender;
 
 class SeedRequiredDataCommand extends Command
 {
+    private string $userModel;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->userModel = config('shopping.user_model', 'App\\Models\\User');
+    }
+
     /**
      * The name and signature of the console command.
      *
@@ -182,7 +189,7 @@ class SeedRequiredDataCommand extends Command
         // Super Admin gets all permissions
         $superAdmin = Role::where('name', 'super-admin')->first();
         if ($superAdmin) {
-            $superAdmin->givePermissionTo(Permission::all());
+            $superAdmin->givePermissionTo(Permission::where('guard_name', 'web')->get());
             $this->info('Assigned all permissions to super-admin');
         }
 
@@ -192,7 +199,7 @@ class SeedRequiredDataCommand extends Command
             $adminPermissions = Permission::whereNotIn('name', [
                 'manage-system-settings',
                 'manage-roles-permissions',
-            ])->get();
+            ])->where('guard_name', 'web')->get();
             $admin->givePermissionTo($adminPermissions);
             $this->info('Assigned admin permissions');
         }
@@ -317,7 +324,7 @@ class SeedRequiredDataCommand extends Command
 
         $employees = [
             [
-                'user_id' => User::where('email', 'superadmin@shopping.com')->first()->id,
+                'user_id' => $this->userModel::where('email', 'superadmin@shopping.com')->first()->id,
                 'employee_number' => 'EMP001',
                 'first_name' => 'Super',
                 'last_name' => 'Admin',
@@ -353,7 +360,7 @@ class SeedRequiredDataCommand extends Command
                 'notes' => 'Super administrator with full system access.',
             ],
             [
-                'user_id' => User::where('email', 'admin@shopping.com')->first()->id,
+                'user_id' => $this->userModel::where('email', 'admin@shopping.com')->first()->id,
                 'employee_number' => 'EMP002',
                 'first_name' => 'Admin',
                 'last_name' => 'User',
@@ -389,7 +396,7 @@ class SeedRequiredDataCommand extends Command
                 'notes' => 'Experienced system administrator with strong technical skills.',
             ],
             [
-                'user_id' => User::where('email', 'manager@shopping.com')->first()->id,
+                'user_id' => $this->userModel::where('email', 'manager@shopping.com')->first()->id,
                 'employee_number' => 'EMP003',
                 'first_name' => 'Manager',
                 'last_name' => 'User',
@@ -425,7 +432,7 @@ class SeedRequiredDataCommand extends Command
                 'notes' => 'Experienced operations manager with strong leadership skills.',
             ],
             [
-                'user_id' => User::where('email', 'employee@shopping.com')->first()->id,
+                'user_id' => $this->userModel::where('email', 'employee@shopping.com')->first()->id,
                 'employee_number' => 'EMP004',
                 'first_name' => 'Employee',
                 'last_name' => 'User',

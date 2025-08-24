@@ -85,7 +85,7 @@ class AddressPermissionSeeder extends Seeder
     {
         // Super Admin - Full access to everything
         $superAdmin = Role::firstOrCreate(['name' => 'super-admin', 'guard_name' => 'web']);
-        $superAdmin->givePermissionTo(Permission::all());
+        $superAdmin->givePermissionTo(Permission::where('guard_name', 'web')->get());
 
         // Address Manager - Full address management for all users
         $addressManager = Role::firstOrCreate(['name' => 'address-manager', 'guard_name' => 'web']);

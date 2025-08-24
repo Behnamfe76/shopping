@@ -55,7 +55,7 @@ class EmployeePermissionSeeder extends Seeder
                 'name' => $permission,
                 'guard_name' => 'web',
             ], [
-                'description' => $description,
+                // 'description' => $description,
             ]);
         }
 
