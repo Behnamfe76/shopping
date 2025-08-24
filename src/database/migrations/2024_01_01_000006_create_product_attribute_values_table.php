@@ -12,6 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('attribute_id')->constrained('product_attributes')->onDelete('cascade');
             $table->string('value');
+            $table->json('metadata')->nullable();
         });
     }
 
