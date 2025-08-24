@@ -547,6 +547,32 @@ class EventServiceProvider extends ServiceProvider
             LogInsuranceActivity::class,
             UpdateInsuranceAnalytics::class,
         ],
+
+        // ProviderNote Events
+        \Fereydooni\Shopping\app\Events\ProviderNote\ProviderNoteCreated::class => [
+            \Fereydooni\Shopping\app\Listeners\ProviderNote\SendProviderNoteNotification::class,
+            \Fereydooni\Shopping\app\Listeners\ProviderNote\LogProviderNoteActivity::class,
+            \Fereydooni\Shopping\app\Listeners\ProviderNote\UpdateProviderNoteRecord::class,
+            \Fereydooni\Shopping\app\Listeners\ProviderNote\UpdateProviderNoteMetrics::class,
+        ],
+        \Fereydooni\Shopping\app\Events\ProviderNote\ProviderNoteUpdated::class => [
+            \Fereydooni\Shopping\app\Listeners\ProviderNote\SendProviderNoteNotification::class,
+            \Fereydooni\Shopping\app\Listeners\ProviderNote\LogProviderNoteActivity::class,
+            \Fereydooni\Shopping\app\Listeners\ProviderNote\UpdateProviderNoteRecord::class,
+            \Fereydooni\Shopping\app\Listeners\ProviderNote\UpdateProviderNoteMetrics::class,
+        ],
+        \Fereydooni\Shopping\app\Events\ProviderNote\ProviderNoteArchived::class => [
+            \Fereydooni\Shopping\app\Listeners\ProviderNote\SendProviderNoteNotification::class,
+            \Fereydooni\Shopping\app\Listeners\ProviderNote\LogProviderNoteActivity::class,
+            \Fereydooni\Shopping\app\Listeners\ProviderNote\UpdateProviderNoteRecord::class,
+            \Fereydooni\Shopping\app\Listeners\ProviderNote\UpdateProviderNoteMetrics::class,
+        ],
+        \Fereydooni\Shopping\app\Events\ProviderNote\ProviderNoteDeleted::class => [
+            \Fereydooni\Shopping\app\Listeners\ProviderNote\SendProviderNoteNotification::class,
+            \Fereydooni\Shopping\app\Listeners\ProviderNote\LogProviderNoteActivity::class,
+            \Fereydooni\Shopping\app\Listeners\ProviderNote\UpdateProviderNoteRecord::class,
+            \Fereydooni\Shopping\app\Listeners\ProviderNote\UpdateProviderNoteMetrics::class,
+        ],
     ];
 
     /**

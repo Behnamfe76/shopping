@@ -19,10 +19,14 @@ class ProviderNote extends Model
     protected $fillable = [
         'provider_id',
         'user_id',
-        'note',
-        'type',
-        'is_public',
+        'title',
+        'content',
+        'note_type',
+        'priority',
+        'is_private',
         'is_archived',
+        'tags',
+        'attachments',
         'created_at',
         'updated_at',
     ];
@@ -33,8 +37,10 @@ class ProviderNote extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'is_public' => 'boolean',
+        'is_private' => 'boolean',
         'is_archived' => 'boolean',
+        'tags' => 'array',
+        'attachments' => 'array',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
@@ -61,7 +67,7 @@ class ProviderNote extends Model
      */
     public function scopePublic($query)
     {
-        return $query->where('is_public', true);
+        return $query->where('is_private', false);
     }
 
     /**
@@ -69,7 +75,7 @@ class ProviderNote extends Model
      */
     public function scopePrivate($query)
     {
-        return $query->where('is_public', false);
+        return $query->where('is_private', true);
     }
 
     /**
@@ -93,6 +99,30 @@ class ProviderNote extends Model
      */
     public function scopeOfType($query, string $type)
     {
-        return $query->where('type', $type);
+        return $query->where('note_type', $type);
+    }
+
+    /**
+     * Scope a query to filter by priority.
+     */
+    public function scopeOfPriority($query, string $priority)
+    {
+        return $query->where('priority', $priority);
+    }
+
+    /**
+     * Scope a query to filter by tags.
+     */
+    public function scopeWithTags($query, array $tags)
+    {
+        return $query->whereJsonContains('tags', $tags);
+    }
+
+    /**
+     * Scope a query to filter by date range.
+     */
+    public function scopeInDateRange($query, string $startDate, string $endDate)
+    {
+        return $query->whereBetween('created_at', [$startDate, $endDate]);
     }
 }
