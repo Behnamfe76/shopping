@@ -1,61 +1,53 @@
 <?php
 
-namespace Fereydooni\Shopping\app\Enums;
+namespace App\Enums;
 
 enum CommunicationType: string
 {
     case EMAIL = 'email';
+    case PHONE = 'phone';
+    case CHAT = 'chat';
     case SMS = 'sms';
-    case PUSH_NOTIFICATION = 'push_notification';
-    case IN_APP = 'in_app';
-    case LETTER = 'letter';
-    case PHONE_CALL = 'phone_call';
+    case VIDEO_CALL = 'video_call';
+    case IN_PERSON = 'in_person';
+    case SUPPORT_TICKET = 'support_ticket';
+    case COMPLAINT = 'complaint';
+    case INQUIRY = 'inquiry';
+    case ORDER_UPDATE = 'order_update';
+    case PAYMENT_NOTIFICATION = 'payment_notification';
+    case QUALITY_ISSUE = 'quality_issue';
+    case DELIVERY_UPDATE = 'delivery_update';
+    case CONTRACT_DISCUSSION = 'contract_discussion';
+    case GENERAL = 'general';
+
+    public static function values(): array
+    {
+        return array_column(self::cases(), 'value');
+    }
+
+    public static function labels(): array
+    {
+        return [
+            self::EMAIL->value => 'Email',
+            self::PHONE->value => 'Phone',
+            self::CHAT->value => 'Chat',
+            self::SMS->value => 'SMS',
+            self::VIDEO_CALL->value => 'Video Call',
+            self::IN_PERSON->value => 'In Person',
+            self::SUPPORT_TICKET->value => 'Support Ticket',
+            self::COMPLAINT->value => 'Complaint',
+            self::INQUIRY->value => 'Inquiry',
+            self::ORDER_UPDATE->value => 'Order Update',
+            self::PAYMENT_NOTIFICATION->value => 'Payment Notification',
+            self::QUALITY_ISSUE->value => 'Quality Issue',
+            self::DELIVERY_UPDATE->value => 'Delivery Update',
+            self::CONTRACT_DISCUSSION->value => 'Contract Discussion',
+            self::GENERAL->value => 'General',
+        ];
+    }
 
     public function label(): string
     {
-        return match($this) {
-            self::EMAIL => 'Email',
-            self::SMS => 'SMS',
-            self::PUSH_NOTIFICATION => 'Push Notification',
-            self::IN_APP => 'In-App Message',
-            self::LETTER => 'Letter',
-            self::PHONE_CALL => 'Phone Call',
-        };
-    }
-
-    public function description(): string
-    {
-        return match($this) {
-            self::EMAIL => 'Electronic mail communication',
-            self::SMS => 'Short message service',
-            self::PUSH_NOTIFICATION => 'Mobile push notification',
-            self::IN_APP => 'In-application message',
-            self::LETTER => 'Physical letter',
-            self::PHONE_CALL => 'Voice call',
-        };
-    }
-
-    public function isDigital(): bool
-    {
-        return in_array($this, [self::EMAIL, self::SMS, self::PUSH_NOTIFICATION, self::IN_APP]);
-    }
-
-    public function isPhysical(): bool
-    {
-        return in_array($this, [self::LETTER, self::PHONE_CALL]);
-    }
-
-    public function requiresTemplate(): bool
-    {
-        return in_array($this, [self::EMAIL, self::SMS, self::PUSH_NOTIFICATION, self::IN_APP]);
-    }
-
-    public static function toArray(): array
-    {
-        return array_map(fn($case) => [
-            'value' => $case->value,
-            'label' => $case->label(),
-            'description' => $case->description(),
-        ], self::cases());
+        return self::labels()[$this->value] ?? $this->value;
     }
 }

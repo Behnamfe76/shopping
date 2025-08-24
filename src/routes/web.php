@@ -16,6 +16,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Web\ProviderController as WebProvid
 use Fereydooni\Shopping\app\Http\Controllers\Web\ProviderLocationController;
 use Fereydooni\Shopping\app\Http\Controllers\Web\ProviderInsuranceController;
 use App\Http\Controllers\ProviderPerformanceController;
+use App\Http\Controllers\ProviderCommunicationController;
 
 Route::prefix('shopping')->name('shopping.')->middleware(['web'])->group(function () {
     // Product routes
@@ -1110,3 +1111,188 @@ Route::middleware('guest')->group(function () {
     Route::get('/public/provider-performance/dashboard/{token}', [ProviderPerformanceController::class, 'publicDashboard'])
         ->name('public.provider-performance.dashboard');
 });
+
+/*
+|--------------------------------------------------------------------------
+| Provider Communication Web Routes
+|--------------------------------------------------------------------------
+|
+| Here are the web routes for managing provider communications.
+| These routes are protected by authentication and authorization middleware.
+|
+*/
+
+Route::middleware(['auth', 'verified'])->group(function () {
+
+    // Provider Communication Routes
+    Route::prefix('provider-communications')->name('provider-communications.')->group(function () {
+
+        // Index - List all communications
+        Route::get('/', [ProviderCommunicationController::class, 'index'])
+            ->name('index')
+            ->middleware('can:viewAny,App\Models\ProviderCommunication');
+
+        // Create - Show create form
+        Route::get('/create', [ProviderCommunicationController::class, 'create'])
+            ->name('create')
+            ->middleware('can:create,App\Models\ProviderCommunication');
+
+        // Store - Save new communication
+        Route::post('/', [ProviderCommunicationController::class, 'store'])
+            ->name('store')
+            ->middleware('can:create,App\Models\ProviderCommunication');
+
+        // Show - Display specific communication
+        Route::get('/{providerCommunication}', [ProviderCommunicationController::class, 'show'])
+            ->name('show')
+            ->middleware('can:view,providerCommunication');
+
+        // Edit - Show edit form
+        Route::get('/{providerCommunication}/edit', [ProviderCommunicationController::class, 'edit'])
+            ->name('edit')
+            ->middleware('can:update,providerCommunication');
+
+        // Update - Save changes
+        Route::put('/{providerCommunication}', [ProviderCommunicationController::class, 'update'])
+            ->name('update')
+            ->middleware('can:update,providerCommunication');
+
+        // Delete - Remove communication
+        Route::delete('/{providerCommunication}', [ProviderCommunicationController::class, 'destroy'])
+            ->name('destroy')
+            ->middleware('can:delete,providerCommunication');
+
+        // Send - Send new communication
+        Route::post('/send', [ProviderCommunicationController::class, 'send'])
+            ->name('send')
+            ->middleware('can:create,App\Models\ProviderCommunication');
+
+        // Reply - Reply to existing communication
+        Route::post('/{providerCommunication}/reply', [ProviderCommunicationController::class, 'reply'])
+            ->name('reply')
+            ->middleware('can:create,App\Models\ProviderCommunication');
+
+        // Mark as read
+        Route::patch('/{providerCommunication}/mark-read', [ProviderCommunicationController::class, 'markAsRead'])
+            ->name('mark-read')
+            ->middleware('can:update,providerCommunication');
+
+        // Search
+        Route::get('/search', [ProviderCommunicationController::class, 'search'])
+            ->name('search')
+            ->middleware('can:search,App\Models\ProviderCommunication');
+
+        // By provider
+        Route::get('/provider/{providerId}', [ProviderCommunicationController::class, 'byProvider'])
+            ->name('by-provider')
+            ->middleware('can:viewByProvider,App\Models\ProviderCommunication,providerId');
+
+        // By user
+        Route::get('/user/{userId}', [ProviderCommunicationController::class, 'byUser'])
+            ->name('by-user')
+            ->middleware('can:viewByUser,App\Models\ProviderCommunication,userId');
+
+        // Conversation
+        Route::get('/conversation/{providerId}/{userId}', [ProviderCommunicationController::class, 'conversation'])
+            ->name('conversation')
+            ->middleware('can:viewConversation,App\Models\ProviderCommunication,providerId,userId');
+
+        // Thread
+        Route::get('/thread/{threadId}', [ProviderCommunicationController::class, 'thread'])
+            ->name('thread')
+            ->middleware('can:viewThread,App\Models\ProviderCommunication,threadId');
+
+        // Archive
+        Route::patch('/{providerCommunication}/archive', [ProviderCommunicationController::class, 'archive'])
+            ->name('archive')
+            ->middleware('can:archive,providerCommunication');
+
+        // Unarchive
+        Route::patch('/{providerCommunication}/unarchive', [ProviderCommunicationController::class, 'unarchive'])
+            ->name('unarchive')
+            ->middleware('can:archive,providerCommunication');
+
+        // Set urgent
+        Route::patch('/{providerCommunication}/urgent', [ProviderCommunicationController::class, 'setUrgent'])
+            ->name('urgent')
+            ->middleware('can:setUrgent,providerCommunication');
+
+        // Unset urgent
+        Route::patch('/{providerCommunication}/unurgent', [ProviderCommunicationController::class, 'unsetUrgent'])
+            ->name('unurgent')
+            ->middleware('can:setUrgent,providerCommunication');
+    });
+
+    // Dashboard routes for quick access
+    Route::prefix('dashboard')->name('dashboard.')->group(function () {
+
+        // Recent communications
+        Route::get('/recent-communications', function () {
+            return view('dashboard.recent-communications');
+        })->name('recent-communications');
+
+        // Urgent communications
+        Route::get('/urgent-communications', function () {
+            return view('dashboard.urgent-communications');
+        })->name('urgent-communications');
+
+        // Unread communications
+        Route::get('/unread-communications', function () {
+            return view('dashboard.unread-communications');
+        })->name('unread-communications');
+
+        // Communication analytics
+        Route::get('/communication-analytics', function () {
+            return view('dashboard.communication-analytics');
+        })->name('communication-analytics')
+        ->middleware('can:viewAnalytics,App\Models\ProviderCommunication');
+    });
+
+    // Provider-specific routes
+    Route::prefix('providers/{provider}')->name('providers.')->group(function () {
+
+        // Provider communications
+        Route::get('/communications', function ($provider) {
+            return view('providers.communications', compact('provider'));
+        })->name('communications')
+        ->middleware('can:viewByProvider,App\Models\ProviderCommunication,provider->id');
+
+        // Provider communication history
+        Route::get('/communications/history', function ($provider) {
+            return view('providers.communication-history', compact('provider'));
+        })->name('communication-history')
+        ->middleware('can:viewByProvider,App\Models\ProviderCommunication,provider->id');
+
+        // Provider communication analytics
+        Route::get('/communications/analytics', function ($provider) {
+            return view('providers.communication-analytics', compact('provider'));
+        })->name('communication-analytics')
+        ->middleware('can:viewAnalytics,App\Models\ProviderCommunication');
+    });
+
+    // User-specific routes
+    Route::prefix('users/{user}')->name('users.')->group(function () {
+
+        // User communications
+        Route::get('/communications', function ($user) {
+            return view('users.communications', compact('user'));
+        })->name('communications')
+        ->middleware('can:viewByUser,App\Models\ProviderCommunication,user->id');
+
+        // User communication history
+        Route::get('/communications/history', function ($user) {
+            return view('users.communication-history', compact('user'));
+        })->name('communication-history')
+        ->middleware('can:viewByUser,App\Models\ProviderCommunication,user->id');
+    });
+});
+
+// Public routes (if any)
+Route::get('/communications/public', function () {
+    return view('communications.public');
+})->name('communications.public');
+
+// Health check route
+Route::get('/health', function () {
+    return response()->json(['status' => 'healthy', 'service' => 'provider-communications']);
+})->name('health');

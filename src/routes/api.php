@@ -2116,6 +2116,81 @@ Route::prefix('api/v1')->name('api.v1.')->middleware(['auth:sanctum', 'throttle:
         });
     });
 
+    // Provider Communication API Routes
+    Route::prefix('provider-communications')->name('provider-communications.')->group(function () {
+        // List provider communications
+        Route::get('/', [\Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderCommunicationController::class, 'index'])->name('index');
+
+        // Search communications
+        Route::get('/search', [\Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderCommunicationController::class, 'search'])->name('search');
+
+        // Create communication
+        Route::post('/', [\Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderCommunicationController::class, 'store'])->name('store');
+
+        // Send communication
+        Route::post('/send', [\Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderCommunicationController::class, 'send'])->name('send');
+
+        // Get analytics
+        Route::get('/analytics', [\Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderCommunicationController::class, 'analytics'])->name('analytics');
+
+        // Get statistics
+        Route::get('/statistics', [\Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderCommunicationController::class, 'statistics'])->name('statistics');
+
+        // Get communications by provider
+        Route::get('/provider/{providerId}', [\Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderCommunicationController::class, 'byProvider'])->name('by-provider');
+
+        // Get communications by type
+        Route::get('/type/{type}', [\Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderCommunicationController::class, 'byType'])->name('by-type');
+
+        // Get urgent communications
+        Route::get('/urgent', [\Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderCommunicationController::class, 'urgent'])->name('urgent');
+
+        // Get unread communications
+        Route::get('/unread', [\Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderCommunicationController::class, 'unread'])->name('unread');
+
+        // Get unreplied communications
+        Route::get('/unreplied', [\Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderCommunicationController::class, 'unreplied'])->name('unreplied');
+
+        // Get thread
+        Route::get('/thread/{threadId}', [\Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderCommunicationController::class, 'thread'])->name('thread');
+
+        // Get conversation
+        Route::get('/conversation/{providerId}', [\Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderCommunicationController::class, 'conversation'])->name('conversation');
+
+        // Provider communication-specific routes
+        Route::prefix('{providerCommunication}')->group(function () {
+            // Show communication
+            Route::get('/', [\Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderCommunicationController::class, 'show'])->name('show');
+
+            // Update communication
+            Route::put('/', [\Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderCommunicationController::class, 'update'])->name('update');
+
+            // Delete communication
+            Route::delete('/', [\Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderCommunicationController::class, 'destroy'])->name('destroy');
+
+            // Reply to communication
+            Route::post('/reply', [\Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderCommunicationController::class, 'reply'])->name('reply');
+
+            // Mark as read
+            Route::patch('/mark-read', [\Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderCommunicationController::class, 'markAsRead'])->name('mark-read');
+
+            // Mark as replied
+            Route::patch('/mark-replied', [\Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderCommunicationController::class, 'markAsReplied'])->name('mark-replied');
+
+            // Archive communication
+            Route::patch('/archive', [\Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderCommunicationController::class, 'archive'])->name('archive');
+
+            // Unarchive communication
+            Route::patch('/unarchive', [\Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderCommunicationController::class, 'unarchive'])->name('unarchive');
+
+            // Set urgent
+            Route::patch('/urgent', [\Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderCommunicationController::class, 'setUrgent'])->name('urgent');
+
+            // Unset urgent
+            Route::patch('/unurgent', [\Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderCommunicationController::class, 'unsetUrgent'])->name('unurgent');
+        });
+    });
+
     // EmployeeNote API Routes
 Route::prefix('api')->group(function () {
     Route::apiResource('employee-notes', EmployeeNoteController::class);
