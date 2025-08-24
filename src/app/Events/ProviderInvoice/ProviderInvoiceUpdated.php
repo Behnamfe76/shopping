@@ -22,3 +22,4 @@ class ProviderInvoiceUpdated
         $this->changes = $changes;
     }
 }
+

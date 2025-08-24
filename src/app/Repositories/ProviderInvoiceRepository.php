@@ -757,3 +757,4 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
             ->toArray();
     }
 }
+

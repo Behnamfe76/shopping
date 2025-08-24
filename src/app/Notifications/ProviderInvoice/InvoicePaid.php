@@ -81,3 +81,4 @@ class InvoicePaid extends Notification implements ShouldQueue
         return $this->toArray($notifiable);
     }
 }
+

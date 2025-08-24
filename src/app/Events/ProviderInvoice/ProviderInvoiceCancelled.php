@@ -24,3 +24,4 @@ class ProviderInvoiceCancelled
         $this->cancelledAt = $cancelledAt ?? now()->toISOString();
     }
 }
+

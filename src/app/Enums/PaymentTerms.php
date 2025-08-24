@@ -84,3 +84,4 @@ enum PaymentTerms: string
         return "Payment due within {$this->days()} days";
     }
 }
+

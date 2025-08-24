@@ -109,3 +109,4 @@ class UpdateProviderInvoiceRecord implements ShouldQueue
         ]);
     }
 }
+

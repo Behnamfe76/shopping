@@ -420,3 +420,4 @@ class ProviderInvoice extends Facade
         return app(ProviderInvoiceRepositoryInterface::class)->extendDueDate($invoice, $newDueDate);
     }
 }
+

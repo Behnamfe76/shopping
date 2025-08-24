@@ -81,3 +81,4 @@ class InvoiceSent extends Notification implements ShouldQueue
         return $this->toArray($notifiable);
     }
 }
+

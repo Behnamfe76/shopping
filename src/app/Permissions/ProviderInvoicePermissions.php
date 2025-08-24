@@ -297,3 +297,4 @@ class ProviderInvoicePermissions
         return $user->can('provider-invoice.view');
     }
 }
+

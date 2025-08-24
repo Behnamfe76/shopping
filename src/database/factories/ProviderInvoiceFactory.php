@@ -243,3 +243,4 @@ class ProviderInvoiceFactory extends Factory
         ]);
     }
 }
+

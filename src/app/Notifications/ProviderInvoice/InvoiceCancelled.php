@@ -79,3 +79,4 @@ class InvoiceCancelled extends Notification implements ShouldQueue
         return $this->toArray($notifiable);
     }
 }
+

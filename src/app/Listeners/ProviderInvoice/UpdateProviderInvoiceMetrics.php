@@ -159,3 +159,4 @@ class UpdateProviderInvoiceMetrics implements ShouldQueue
         }
     }
 }
+

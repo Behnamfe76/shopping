@@ -22,3 +22,4 @@ class ProviderInvoiceSent
         $this->sentAt = $sentAt ?? now()->toISOString();
     }
 }
+

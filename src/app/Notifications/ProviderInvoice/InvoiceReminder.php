@@ -132,3 +132,4 @@ class InvoiceReminder extends Notification implements ShouldQueue
         return 'This is a friendly reminder about an upcoming provider invoice.';
     }
 }
+

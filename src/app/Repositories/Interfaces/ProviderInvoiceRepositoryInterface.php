@@ -105,3 +105,4 @@ interface ProviderInvoiceRepositoryInterface
     public function isInvoiceNumberUnique(string $invoiceNumber): bool;
     public function calculateInvoiceTotals(int $invoiceId): array;
 }
+

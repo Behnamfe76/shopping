@@ -24,3 +24,4 @@ class ProviderInvoicePaid
         $this->paymentMethod = $paymentMethod;
     }
 }
+

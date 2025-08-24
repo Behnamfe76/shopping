@@ -125,3 +125,4 @@ class SendProviderInvoiceNotification implements ShouldQueue
         // $provider->notify(new InvoiceCancelled($invoice));
     }
 }
+

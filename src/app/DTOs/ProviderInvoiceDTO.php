@@ -308,3 +308,4 @@ class ProviderInvoiceDTO extends Data
         return InvoiceStatus::from($this->status)->color();
     }
 }
+

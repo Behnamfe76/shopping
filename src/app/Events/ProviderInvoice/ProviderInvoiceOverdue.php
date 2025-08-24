@@ -24,3 +24,4 @@ class ProviderInvoiceOverdue
         $this->overdueAt = $overdueAt ?? now()->toISOString();
     }
 }
+

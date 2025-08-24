@@ -113,3 +113,4 @@ class LogProviderInvoiceActivity implements ShouldQueue
         Log::info('Provider invoice cancelled', $activityData);
     }
 }
+

@@ -20,3 +20,4 @@ class ProviderInvoiceCreated
         $this->invoice = $invoice;
     }
 }
+

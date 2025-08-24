@@ -84,3 +84,4 @@ class InvoiceOverdue extends Notification implements ShouldQueue
         return $this->toArray($notifiable);
     }
 }
+
