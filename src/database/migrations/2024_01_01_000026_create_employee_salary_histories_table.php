@@ -102,9 +102,9 @@ return new class extends Migration
             $table->index(['effective_date', 'status']);
 
             // Composite indexes for common queries
-            $table->index(['employee_id', 'change_type', 'effective_date']);
-            $table->index(['change_type', 'status', 'effective_date']);
-            $table->index(['employee_id', 'status', 'effective_date']);
+            $table->index(['employee_id', 'change_type', 'effective_date'], 'emp_sal_hist_emp_chg_eff_date_idx');
+            $table->index(['change_type', 'status', 'effective_date'], 'emp_sal_hist_chg_sts_eff_idx');
+            $table->index(['employee_id', 'status', 'effective_date'], 'emp_sal_hist_emp_sts_eff_idx');
 
             // Full-text search index
             $table->fullText(['reason', 'notes']);
