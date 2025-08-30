@@ -668,7 +668,7 @@ class ShoppingServiceProvider extends ServiceProvider
         $config = config('shopping.routes', []);
 
         // Load API routes if enabled
-        if ($config['api'] ?? true) {
+        if ($config['api'] ?? false) {
             $this->loadRoutesFrom(__DIR__ . '/routes/api.php');
         }
 
