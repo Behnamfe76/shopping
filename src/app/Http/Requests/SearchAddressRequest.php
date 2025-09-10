@@ -26,7 +26,7 @@ class SearchAddressRequest extends FormRequest
             'pagination' => 'nullable|in:regular,simple,cursor',
             'per_page' => 'nullable|integer|min:1|max:100',
             'page' => 'nullable|integer|min:1',
-            'cursor' => 'nullable|string',
+            'cursorPaginate' => 'nullable|string',
         ];
     }
 

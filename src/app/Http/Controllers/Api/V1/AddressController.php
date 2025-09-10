@@ -31,8 +31,8 @@ class AddressController extends \App\Http\Controllers\Controller
             $type = $request->get('type');
 
             $addresses = match($paginationType) {
-                'simple' => AddressFacade::simplePaginateByUser(auth()->id(), $perPage),
-                'cursor' => AddressFacade::cursorPaginateByUser(auth()->id(), $perPage),
+                'simplePaginate' => AddressFacade::simplePaginateByUser(auth()->id(), $perPage),
+                'cursorPaginate' => AddressFacade::cursorPaginateByUser(auth()->id(), $perPage),
                 default => AddressFacade::paginateByUser(auth()->id(), $perPage),
             };
 

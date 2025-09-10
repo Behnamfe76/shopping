@@ -32,8 +32,8 @@ class CategoryController extends Controller
         $parentId = $request->get('parent_id');
 
         $categories = match($paginationType) {
-            'simple' => CategoryFacade::simplePaginate($perPage),
-            'cursor' => CategoryFacade::cursorPaginate($perPage),
+            'simplePaginate' => CategoryFacade::simplePaginate($perPage),
+            'cursorPaginate' => CategoryFacade::cursorPaginate($perPage),
             default => CategoryFacade::paginate($perPage),
         };
 

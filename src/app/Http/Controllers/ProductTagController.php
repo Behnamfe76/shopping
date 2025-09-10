@@ -31,8 +31,8 @@ class ProductTagController extends Controller
         $featured = $request->get('featured');
 
         $tags = match($paginationType) {
-            'simple' => ProductTagFacade::simplePaginate($perPage),
-            'cursor' => ProductTagFacade::cursorPaginate($perPage),
+            'simplePaginate' => ProductTagFacade::simplePaginate($perPage),
+            'cursorPaginate' => ProductTagFacade::cursorPaginate($perPage),
             default => ProductTagFacade::paginate($perPage),
         };
 

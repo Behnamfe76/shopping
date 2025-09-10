@@ -34,8 +34,8 @@ class ProductController extends \App\Http\Controllers\Controller
             $paginationType = $request->get('pagination', 'regular');
 
             $products = match($paginationType) {
-                'simple' => ProductFacade::simplePaginate($perPage),
-                'cursor' => ProductFacade::cursorPaginate($perPage),
+                'simplePaginate' => ProductFacade::simplePaginate($perPage),
+                'cursorPaginate' => ProductFacade::cursorPaginate($perPage),
                 default => ProductFacade::paginate($perPage),
             };
 
