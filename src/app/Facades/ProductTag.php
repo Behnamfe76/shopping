@@ -3,20 +3,18 @@
 namespace Fereydooni\Shopping\app\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Fereydooni\Shopping\app\Services\ProductTagService;
-use Fereydooni\Shopping\app\Models\ProductTag;
+use Fereydooni\Shopping\app\Models\ProductTagModel;
 use Fereydooni\Shopping\app\DTOs\ProductTagDTO;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
  * @method static Collection all()
- * @method static LengthAwarePaginator paginate(int $perPage = 15)
- * @method static ProductTag|null find(int $id)
+ * @method static ProductTagModel|null find(int $id)
  * @method static ProductTagDTO|null findDTO(int $id)
- * @method static ProductTag|null findBySlug(string $slug)
+ * @method static ProductTagModel|null findBySlug(string $slug)
  * @method static ProductTagDTO|null findBySlugDTO(string $slug)
- * @method static ProductTag|null findByName(string $name)
+ * @method static ProductTagModel|null findByName(string $name)
  * @method static ProductTagDTO|null findByNameDTO(string $name)
  * @method static Collection findActive()
  * @method static Collection findActiveDTO()
@@ -32,14 +30,14 @@ use Illuminate\Pagination\LengthAwarePaginator;
  * @method static Collection findByColorDTO(string $color)
  * @method static Collection findByIcon(string $icon)
  * @method static Collection findByIconDTO(string $icon)
- * @method static ProductTag create(array $data)
+ * @method static ProductTagModel create(array $data)
  * @method static ProductTagDTO createAndReturnDTO(array $data)
- * @method static bool update(ProductTag $tag, array $data)
- * @method static bool delete(ProductTag $tag)
- * @method static bool toggleActive(ProductTag $tag)
- * @method static bool toggleFeatured(ProductTag $tag)
- * @method static bool incrementUsage(ProductTag $tag)
- * @method static bool decrementUsage(ProductTag $tag)
+ * @method static bool update(ProductTagModel $tag, array $data)
+ * @method static bool delete(ProductTagModel $tag)
+ * @method static bool toggleActive(ProductTagModel $tag)
+ * @method static bool toggleFeatured(ProductTagModel $tag)
+ * @method static bool incrementUsage(ProductTagModel $tag)
+ * @method static bool decrementUsage(ProductTagModel $tag)
  * @method static int getTagCount()
  * @method static int getActiveTagCount()
  * @method static int getFeaturedTagCount()

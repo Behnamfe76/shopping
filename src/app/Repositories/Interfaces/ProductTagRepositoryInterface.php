@@ -3,7 +3,6 @@
 namespace Fereydooni\Shopping\app\Repositories\Interfaces;
 
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Fereydooni\Shopping\app\Models\ProductTag;
 use Fereydooni\Shopping\app\DTOs\ProductTagDTO;
 
@@ -11,7 +10,6 @@ interface ProductTagRepositoryInterface
 {
     // Basic CRUD operations
     public function all(): Collection;
-    public function paginate(int $perPage = 15): LengthAwarePaginator;
     public function find(int $id): ?ProductTag;
     public function findDTO(int $id): ?ProductTagDTO;
     public function findBySlug(string $slug): ?ProductTag;

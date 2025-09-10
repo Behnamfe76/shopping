@@ -2,24 +2,22 @@
 
 namespace Fereydooni\Shopping\app\Repositories;
 
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Fereydooni\Shopping\app\Models\ProductTag;
-use Fereydooni\Shopping\app\DTOs\ProductTagDTO;
-use Fereydooni\Shopping\app\Repositories\Interfaces\ProductTagRepositoryInterface;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Collection;
+use Fereydooni\Shopping\app\Models\ProductTag;
+use Fereydooni\Shopping\app\DTOs\ProductTagDTO;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Fereydooni\Shopping\app\Traits\AppliesQueryParameters;
+use Fereydooni\Shopping\app\Repositories\Interfaces\ProductTagRepositoryInterface;
 
 class ProductTagRepository implements ProductTagRepositoryInterface
 {
+    protected array $searchableFields = ['name', 'description', 'slug'];
+
     public function all(): Collection
     {
         return ProductTag::orderBy('sort_order')->get();
-    }
-
-    public function paginate(int $perPage = 15): LengthAwarePaginator
-    {
-        return ProductTag::orderBy('sort_order')->paginate($perPage);
     }
 
     public function find(int $id): ?ProductTag

@@ -4,47 +4,49 @@ namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Gate;
 use Fereydooni\Shopping\app\Models\ProductTag;
 use Fereydooni\Shopping\app\DTOs\ProductTagDTO;
-use Fereydooni\Shopping\app\Facades\ProductTag as ProductTagFacade;
-use Fereydooni\Shopping\app\Http\Requests\StoreProductTagRequest;
-use Fereydooni\Shopping\app\Http\Requests\UpdateProductTagRequest;
-use Fereydooni\Shopping\app\Http\Requests\ToggleProductTagStatusRequest;
-use Fereydooni\Shopping\app\Http\Requests\SearchProductTagRequest;
-use Fereydooni\Shopping\app\Http\Requests\BulkProductTagRequest;
-use Fereydooni\Shopping\app\Http\Requests\ImportProductTagRequest;
 use Fereydooni\Shopping\app\Http\Resources\ProductTagResource;
+use Fereydooni\Shopping\app\Http\Requests\BulkProductTagRequest;
 use Fereydooni\Shopping\app\Http\Resources\ProductTagCollection;
-use Fereydooni\Shopping\app\Http\Resources\ProductTagSearchResource;
+use Fereydooni\Shopping\app\Http\Requests\StoreProductTagRequest;
+use Fereydooni\Shopping\app\Http\Requests\ImportProductTagRequest;
+use Fereydooni\Shopping\app\Http\Requests\SearchProductTagRequest;
+use Fereydooni\Shopping\app\Http\Requests\UpdateProductTagRequest;
 use Fereydooni\Shopping\app\Http\Resources\ProductTagBulkResource;
+use Fereydooni\Shopping\app\Facades\ProductTag as ProductTagFacade;
+use Fereydooni\Shopping\app\Http\Resources\ProductTagSearchResource;
 use Fereydooni\Shopping\app\Http\Resources\ProductTagAnalyticsResource;
+use Fereydooni\Shopping\app\Http\Requests\ToggleProductTagStatusRequest;
 
-class ProductTagController extends \App\Http\Controllers\Controller
+class ProductTagController extends Controller
 {
     /**
      * Display a listing of product tags.
      */
     public function index(Request $request): JsonResponse
     {
-        $this->authorize('viewAny', ProductTag::class);
-
+        Gate::authorize('viewAny', ProductTag::class);
+        
         try {
-            $perPage = $request->get('per_page', 15);
+            $perPage = $request->get('per_page', 5);
             $paginationType = $request->get('pagination', 'regular');
-            $status = $request->get('status');
-            $featured = $request->get('featured');
 
             $tags = match($paginationType) {
-                'simple' => ProductTagFacade::simplePaginate($perPage),
-                'cursor' => ProductTagFacade::cursorPaginate($perPage),
+                'simplePaginate' => ProductTagFacade::simplePaginate($perPage),
+                'cursorPaginate' => ProductTagFacade::cursorPaginate($perPage, $request->get('id')),
                 default => ProductTagFacade::paginate($perPage),
             };
 
-            return (new ProductTagCollection($tags))->response();
-        } catch (\Exception $e) {
+            return response()->json($tags);
+            // return (new ProductTagCollection($tags))->response();
+        } catch (\Throwable $tr) {
+            dd($tr->getMessage());
             return response()->json([
                 'error' => 'Failed to retrieve product tags',
-                'message' => $e->getMessage(),
+                'message' => $tr->getMessage(),
             ], 500);
         }
     }
@@ -122,11 +124,13 @@ class ProductTagController extends \App\Http\Controllers\Controller
     /**
      * Remove the specified product tag from storage.
      */
-    public function destroy(ProductTag $tag): JsonResponse
+    public function destroy(int $tag): JsonResponse
     {
-        $this->authorize('delete', $tag);
+        $tag = ProductTag::findOrFail($tag);
+        Gate::authorize('delete', $tag);
 
         try {
+
             $result = ProductTagFacade::delete($tag);
 
             if (!$result) {
@@ -141,6 +145,55 @@ class ProductTagController extends \App\Http\Controllers\Controller
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Failed to delete product tag',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Remove all product tags from storage.
+     */
+    public function destroyAll(): JsonResponse
+    {
+
+        Gate::authorize('deleteAll', ProductTag::class);
+
+        try {
+            ProductTagFacade::deleteAll();
+
+            return response()->json([
+                'message' => 'All product tags deleted successfully',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to delete all product tags',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Remove a selection of product tags from storage.
+     */
+    public function destroySome(Request $request): JsonResponse
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'required|integer|exists:product_tags,id',
+        ]);
+        $ids = $request->input('ids');
+
+        Gate::authorize('deleteSome', ProductTag::class);
+
+        try {
+            ProductTagFacade::deleteSome($ids);
+
+            return response()->json([
+                'message' => 'Selected product tags deleted successfully',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to delete selected product tags',
                 'message' => $e->getMessage(),
             ], 500);
         }

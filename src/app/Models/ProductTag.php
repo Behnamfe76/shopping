@@ -11,6 +11,9 @@ use Fereydooni\Shopping\app\Events\ProductTagDeleted;
 
 class ProductTag extends Model
 {
+
+    protected $table = "product_tags";
+    
     protected $fillable = [
         'name',
         'slug',

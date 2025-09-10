@@ -60,15 +60,15 @@ class ProductTagResource extends JsonResource
             }),
 
             // Links
-            'links' => [
-                'self' => route('shopping.product-tags.show', $this->slug),
-                'edit' => route('shopping.product-tags.edit', $this->slug),
-                'delete' => route('shopping.product-tags.destroy', $this->slug),
-                'toggle_active' => route('shopping.product-tags.toggle-active', $this->slug),
-                'toggle_featured' => route('shopping.product-tags.toggle-featured', $this->slug),
-                'related' => route('shopping.product-tags.related', $this->slug),
-                'analytics' => route('shopping.product-tags.analytics', $this->slug),
-            ],
+            // 'links' => [
+            //     'self' => route('shopping.product-tags.show', $this->slug),
+            //     'edit' => route('shopping.product-tags.edit', $this->slug),
+            //     'delete' => route('shopping.product-tags.destroy', $this->slug),
+            //     'toggle_active' => route('shopping.product-tags.toggle-active', $this->slug),
+            //     'toggle_featured' => route('shopping.product-tags.toggle-featured', $this->slug),
+            //     'related' => route('shopping.product-tags.related', $this->slug),
+            //     'analytics' => route('shopping.product-tags.analytics', $this->slug),
+            // ],
         ];
     }
 }

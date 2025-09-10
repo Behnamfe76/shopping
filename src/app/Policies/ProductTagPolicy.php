@@ -14,7 +14,7 @@ class ProductTagPolicy
      */
     public function viewAny($user): bool
     {
-        return $user->can('product-tag.view.any') || $user->can('product-tag.view.own');
+        return $user->hasAnyPermission(['product-tag.view.any', 'product-tag.view.own']);
     }
 
     /**
@@ -70,19 +70,23 @@ class ProductTagPolicy
      */
     public function delete($user, ProductTag $tag): bool
     {
-        // Check if user can delete any product tags
-        if ($user->can('product-tag.delete.any')) {
-            return true;
-        }
+        return $user->hasAnyPermission(['product-tag.delete.own', 'product-tag.delete.any', 'product-tag.delete.own']);
+    }
 
-        // Check if user can delete own product tags
-        if ($user->can('product-tag.delete.own')) {
-            // For product tags, ownership might be based on store/tenant
-            // This is a simplified check - adjust based on your business logic
-            return true;
-        }
+    /**
+     * Determine whether the user can delete some product tag.
+     */
+    public function deleteSome($user): bool
+    {
+        return $user->hasPermissionTo('product-tag.delete.some');
+    }
 
-        return false;
+    /**
+     * Determine whether the user can delete all product tag.
+     */
+    public function deleteAll($user): bool
+    {
+        return $user->hasPermissionTo('product-tag.delete.all');
     }
 
     /**

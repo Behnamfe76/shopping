@@ -5,6 +5,7 @@ namespace Fereydooni\Shopping\app\Services;
 use Fereydooni\Shopping\app\Models\ProductTag;
 use Fereydooni\Shopping\app\Repositories\Interfaces\ProductTagRepositoryInterface;
 use Fereydooni\Shopping\app\DTOs\ProductTagDTO;
+use Fereydooni\Shopping\app\Traits\AppliesQueryParameters;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
 use Fereydooni\Shopping\app\Traits\HasStatusToggle;
 use Fereydooni\Shopping\app\Traits\HasSlugGeneration;
@@ -12,12 +13,19 @@ use Fereydooni\Shopping\app\Traits\HasSearchOperations;
 use Fereydooni\Shopping\app\Traits\HasBulkOperations;
 use Fereydooni\Shopping\app\Traits\HasAnalyticsOperations;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Str;
 
 class ProductTagService
 {
-    use HasCrudOperations, HasStatusToggle, HasSlugGeneration, HasSearchOperations, HasBulkOperations, HasAnalyticsOperations;
+    use AppliesQueryParameters;
+    use HasCrudOperations, HasSearchOperations {
+        HasSearchOperations::getSearchableFields insteadOf HasCrudOperations;
+    }
+    use HasStatusToggle;
+    use HasSlugGeneration;
+    use HasBulkOperations;
+    use HasAnalyticsOperations;
+
+    public array $searchableFields = ['name', 'slug', 'description'];
 
     public function __construct(
         protected ProductTagRepositoryInterface $repository
@@ -30,11 +38,6 @@ class ProductTagService
     public function all(): Collection
     {
         return $this->repository->all();
-    }
-
-    public function paginate(int $perPage = 15): LengthAwarePaginator
-    {
-        return $this->repository->paginate($perPage);
     }
 
     public function find(int $id): ?ProductTag
@@ -94,11 +97,6 @@ class ProductTagService
     {
         $this->validateData($data, $tag->id);
         return $this->repository->update($tag, $data);
-    }
-
-    public function delete(ProductTag $tag): bool
-    {
-        return $this->repository->delete($tag);
     }
 
     // Status-based queries
@@ -346,11 +344,6 @@ class ProductTagService
     public function bulkUpdate(array $tagData): bool
     {
         return $this->repository->bulkUpdate($tagData);
-    }
-
-    public function bulkDelete(array $tagIds): bool
-    {
-        return $this->repository->bulkDelete($tagIds);
     }
 
     // Import/Export

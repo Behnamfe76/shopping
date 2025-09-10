@@ -29,6 +29,8 @@ class ProductTagPermissionSeeder extends Seeder
 
             // Delete permissions
             'product-tag.delete',
+            'product-tag.delete.some',
+            'product-tag.delete.all',
             'product-tag.delete.any',
             'product-tag.delete.own',
 
