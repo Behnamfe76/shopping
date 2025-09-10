@@ -56,7 +56,7 @@ class AddressCollection extends ResourceCollection
                 'type' => 'cursor',
                 'per_page' => $this->resource->perPage(),
                 'has_more_pages' => $this->resource->hasMorePages(),
-                'cursor' => [
+                'cursorPaginate' => [
                     'prev' => $this->resource->previousCursor(),
                     'next' => $this->resource->nextCursor(),
                 ],

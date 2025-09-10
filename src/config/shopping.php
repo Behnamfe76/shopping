@@ -73,4 +73,15 @@ return [
         'address_search' => env('SHOPPING_FEATURE_ADDRESS_SEARCH', true),
         'address_validation' => env('SHOPPING_FEATURE_ADDRESS_VALIDATION', true),
     ],
+
+    // booting routes
+    'routes' => [
+        'api' => false,
+        'web' => false
+    ],
+
+    // Define guards here for roles and permissions
+    'auth_guards' => [
+        'web', 'api'
+    ]
 ];

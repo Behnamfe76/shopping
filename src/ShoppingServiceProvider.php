@@ -725,7 +725,7 @@ class ShoppingServiceProvider extends ServiceProvider
     protected function registerPermissions(): void
     {
         // Register EmployeePosition permissions
-        \Fereydooni\Shopping\app\Permissions\EmployeePositionPermissions::register();
+        // \Fereydooni\Shopping\app\Permissions\EmployeePositionPermissions::register();
     }
 
     /**
