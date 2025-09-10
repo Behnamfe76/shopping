@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 
 trait HasCrudOperations
 {
-    protected Model $model;
+    protected string $model;
     protected string $dtoClass;
 
     // Basic CRUD operations
@@ -23,17 +23,35 @@ trait HasCrudOperations
 
     public function paginate(int $perPage = 15): LengthAwarePaginator
     {
-        return $this->model::paginate($perPage);
+        $query = $this->model::query();
+
+        $query = $this->applySorting($query);
+        $query = $this->applyFilters($query);
+        $query = $this->applySearch($query);
+        
+        return $query->paginate($perPage);
     }
 
     public function simplePaginate(int $perPage = 15): Paginator
     {
-        return $this->model::simplePaginate($perPage);
+        $query = $this->model::query();
+
+        $query = $this->applySorting($query);
+        $query = $this->applyFilters($query);
+        $query = $this->applySearch($query);
+
+        return $query->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor): CursorPaginator
     {
-        return $this->model::cursorPaginate($perPage, ['*'], 'id', $cursor);
+        $query = $this->model::query();
+
+        $query = $this->applySorting($query);
+        $query = $this->applyFilters($query);
+        $query = $this->applySearch($query);
+
+        return $query->cursorPaginate($perPage, ['*'], 'id', $cursor);
     }
 
     public function find(int $id): ?Model
@@ -103,9 +121,21 @@ trait HasCrudOperations
         });
     }
 
-    public function bulkDelete(array $ids): bool
+    public function deleteSome(array $ids): bool
     {
         return $this->model::whereIn('id', $ids)->delete() > 0;
+    }
+
+    public function deleteAll(): bool
+    {
+        $deletedCount = 0;
+        $this->model::cursor()->each(function ($model) use (&$deletedCount) {
+            if ($model->delete()) {
+                $deletedCount++;
+            }
+        });
+
+        return $deletedCount > 0;
     }
 
     // Search functionality
@@ -147,19 +177,23 @@ trait HasCrudOperations
     protected function updateUniqueRules(array $rules, int $excludeId): array
     {
         foreach ($rules as $field => $fieldRules) {
-            $rules[$field] = array_map(function ($rule) use ($excludeId) {
+
+            $rules[$field] = array_map(function ($rule) use ($excludeId, $field) {
                 if (is_string($rule) && str_starts_with($rule, 'unique:')) {
                     $parts = explode(',', $rule);
                     if (count($parts) >= 2) {
                         $table = $parts[1];
-                        return "unique:{$table},{$parts[2] ?? $field},{$excludeId}";
+                        return "unique:{$table}," . ($parts[2] ?? $field) . ",{$excludeId}";
                     }
                 }
                 return $rule;
             }, $fieldRules);
+
         }
+
         return $rules;
     }
+
 
     protected function getSearchableFields(): array
     {
