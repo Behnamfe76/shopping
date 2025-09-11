@@ -29,9 +29,9 @@ class ProductTagController extends Controller
     public function index(Request $request): JsonResponse
     {
         Gate::authorize('viewAny', ProductTag::class);
-        
+
         try {
-            $perPage = $request->get('per_page', 5);
+            $perPage = $request->get('per_page', 15);
             $paginationType = $request->get('pagination', 'regular');
 
             $tags = match($paginationType) {
@@ -43,13 +43,34 @@ class ProductTagController extends Controller
             return response()->json($tags);
             // return (new ProductTagCollection($tags))->response();
         } catch (\Throwable $tr) {
-            dd($tr->getMessage());
             return response()->json([
                 'error' => 'Failed to retrieve product tags',
                 'message' => $tr->getMessage(),
             ], 500);
         }
     }
+
+
+    /**
+     * Getting the model lens dynamically.
+     */
+    public function lens(Request $request): JsonResponse
+    {
+        Gate::authorize('viewLenses', ProductTag::class);
+
+        try {
+            return response()->json(
+                ProductTagFacade::lens()
+            );
+        } catch (\Throwable $tr) {
+            return response()->json([
+                'error' => 'Failed to retrieve product tag\'s lens data',
+                'message' => $tr->getMessage(),
+            ], 500);
+        }
+    }
+
+
 
     /**
      * Store a newly created product tag in storage.

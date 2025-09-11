@@ -44,6 +44,9 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
         Route::delete('/destroy-all', [ApiProductTagController::class, 'destroyAll'])->name('destroyAll');
         Route::delete('/{tag}', [ApiProductTagController::class, 'destroy'])->where('tag', '[0-9]+')->name('destroy');
 
+        // Get product tag count
+        Route::get('/lens', [ApiProductTagController::class, 'lens'])->name('lens');
+
         // // Get product tag count
         // Route::get('/count', [ApiProductTagController::class, 'getCount'])->name('count');
 

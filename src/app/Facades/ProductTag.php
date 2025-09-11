@@ -10,6 +10,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
  * @method static Collection all()
+ * @method static lens()
  * @method static ProductTagModel|null find(int $id)
  * @method static ProductTagDTO|null findDTO(int $id)
  * @method static ProductTagModel|null findBySlug(string $slug)

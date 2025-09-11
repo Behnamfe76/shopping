@@ -8,12 +8,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Fereydooni\Shopping\app\Events\ProductTagCreated;
 use Fereydooni\Shopping\app\Events\ProductTagUpdated;
 use Fereydooni\Shopping\app\Events\ProductTagDeleted;
+use Fereydooni\Shopping\app\Enums\ProductStatus;
 
 class ProductTag extends Model
 {
 
     protected $table = "product_tags";
-    
+
     protected $fillable = [
         'name',
         'slug',
@@ -39,7 +40,24 @@ class ProductTag extends Model
 
     public function products(): BelongsToMany
     {
-        return $this->belongsToMany(Product::class, 'product_tag_product');
+        return $this->belongsToMany(
+            Product::class,
+            'product_tag_product',
+            'tag_id',
+            'product_id',
+            'id',
+            'id'
+        );
+    }
+
+    public function activeProducts(): BelongsToMany
+    {
+        return $this->products()->where('status', ProductStatus::ACTIVE);
+    }
+
+    public function inactiveProducts(): BelongsToMany
+    {
+        return $this->products()->where('status', ProductStatus::INACTIVE);
     }
 
     /**

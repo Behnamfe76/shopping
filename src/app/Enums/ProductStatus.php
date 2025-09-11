@@ -7,6 +7,8 @@ enum ProductStatus: string
     case DRAFT = 'draft';
     case PUBLISHED = 'published';
     case ARCHIVED = 'archived';
+    case ACTIVE = 'active';
+    case INACTIVE = 'inactive';
 
     public function label(): string
     {
@@ -14,6 +16,8 @@ enum ProductStatus: string
             self::DRAFT => 'Draft',
             self::PUBLISHED => 'Published',
             self::ARCHIVED => 'Archived',
+            self::ACTIVE => 'Active',
+            self::INACTIVE => 'Inactive',
         };
     }
 }

@@ -2,17 +2,18 @@
 
 namespace Fereydooni\Shopping\app\Services;
 
+use Fereydooni\Shopping\app\Traits\HasLens;
+use Illuminate\Database\Eloquent\Collection;
 use Fereydooni\Shopping\app\Models\ProductTag;
-use Fereydooni\Shopping\app\Repositories\Interfaces\ProductTagRepositoryInterface;
 use Fereydooni\Shopping\app\DTOs\ProductTagDTO;
-use Fereydooni\Shopping\app\Traits\AppliesQueryParameters;
-use Fereydooni\Shopping\app\Traits\HasCrudOperations;
 use Fereydooni\Shopping\app\Traits\HasStatusToggle;
+use Fereydooni\Shopping\app\Traits\HasBulkOperations;
+use Fereydooni\Shopping\app\Traits\HasCrudOperations;
 use Fereydooni\Shopping\app\Traits\HasSlugGeneration;
 use Fereydooni\Shopping\app\Traits\HasSearchOperations;
-use Fereydooni\Shopping\app\Traits\HasBulkOperations;
+use Fereydooni\Shopping\app\Traits\AppliesQueryParameters;
 use Fereydooni\Shopping\app\Traits\HasAnalyticsOperations;
-use Illuminate\Database\Eloquent\Collection;
+use Fereydooni\Shopping\app\Repositories\Interfaces\ProductTagRepositoryInterface;
 
 class ProductTagService
 {
@@ -24,6 +25,7 @@ class ProductTagService
     use HasSlugGeneration;
     use HasBulkOperations;
     use HasAnalyticsOperations;
+    use HasLens;
 
     public array $searchableFields = ['name', 'slug', 'description'];
 

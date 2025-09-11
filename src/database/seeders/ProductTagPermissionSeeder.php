@@ -14,6 +14,7 @@ class ProductTagPermissionSeeder extends Seeder
         $permissions = [
             // View permissions
             'product-tag.view',
+            'product-tag.view.lenses',
             'product-tag.view.any',
             'product-tag.view.own',
 

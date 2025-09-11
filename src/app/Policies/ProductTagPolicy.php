@@ -18,6 +18,14 @@ class ProductTagPolicy
     }
 
     /**
+     * Determine whether the user can view product tag lenses.
+     */
+    public function viewLenses($user): bool
+    {
+        return $user->hasPermissionTo('product-tag.view.lenses');
+    }
+
+    /**
      * Determine whether the user can view the product tag.
      */
     public function view($user, ProductTag $tag): bool
