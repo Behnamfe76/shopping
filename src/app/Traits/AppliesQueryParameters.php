@@ -10,23 +10,31 @@ trait AppliesQueryParameters
     protected function applyFilters(Builder $query): Builder
     {
         if (request()->has('filters')) {
+            $booleanFields = ['is_active', 'is_published', 'is_featured'];
+
             foreach (request()->get('filters') as $key => $value) {
                 if ($value !== null && $value !== '') {
-                    $query->where($key, $value);
+                    if (in_array($key, $booleanFields)) {
+                        $booleanValue = filter_var($value, FILTER_VALIDATE_BOOLEAN);
+                        $booleanLiteral = $booleanValue ? 'TRUE' : 'FALSE';
+                        $quotedColumn = $query->getGrammar()->wrap($key);
+                        $query->whereRaw("{$quotedColumn} IS {$booleanLiteral}");
+                    } else {
+                        $query->where($key, $value);
+                    }
                 }
             }
         }
-
+        
         return $query;
     }
-
     protected function applySearch(Builder $query): Builder
     {
         $searchableFields = $this->searchableFields ?? [];
         $searchOptions = request()->get('search_options', []);
         $search_fields = $searchOptions['search_fields'] ?? [];
 
-        if(is_array($search_fields) && count($search_fields)){
+        if (is_array($search_fields) && count($search_fields)) {
             $searchableFields = $search_fields;
         }
 

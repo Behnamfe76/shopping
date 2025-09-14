@@ -11,8 +11,7 @@ class ToggleProductTagStatusRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('toggleActive', $this->route('tag')) ||
-               $this->user()->can('toggleFeatured', $this->route('tag'));
+        return true;
     }
 
     /**

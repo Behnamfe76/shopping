@@ -52,7 +52,7 @@ trait HasLens
         $query = $this->applyFilters($query);
         $query = $this->applySorting($query);
 
-        $perPage = $request->input('per_page', 15);
+        $perPage = min((int) $request->get('per_page', 15), 100);
         $paginationType = $request->input('pagination', 'paginate');
 
         return match ($paginationType) {

@@ -31,7 +31,7 @@ class ProductTagController extends Controller
         Gate::authorize('viewAny', ProductTag::class);
 
         try {
-            $perPage = $request->get('per_page', 15);
+            $perPage = min((int) $request->get('per_page', 15), 100);
             $paginationType = $request->get('pagination', 'regular');
 
             $tags = match($paginationType) {
@@ -49,7 +49,6 @@ class ProductTagController extends Controller
             ], 500);
         }
     }
-
 
     /**
      * Getting the model lens dynamically.
@@ -69,8 +68,6 @@ class ProductTagController extends Controller
             ], 500);
         }
     }
-
-
 
     /**
      * Store a newly created product tag in storage.
@@ -223,11 +220,12 @@ class ProductTagController extends Controller
     /**
      * Toggle the active status of the specified product tag.
      */
-    public function toggleActive(ToggleProductTagStatusRequest $request, ProductTag $tag): JsonResponse
+    public function toggleActive(ToggleProductTagStatusRequest $request, int $tag): JsonResponse
     {
-        $this->authorize('toggleActive', $tag);
+        Gate::authorize('toggleActive', ProductTag::class);
 
         try {
+            $tag = ProductTag::findOrFail($tag);
             $result = ProductTagFacade::toggleActive($tag);
             $tag->refresh();
 
@@ -247,9 +245,10 @@ class ProductTagController extends Controller
     /**
      * Toggle the featured status of the specified product tag.
      */
-    public function toggleFeatured(ToggleProductTagStatusRequest $request, ProductTag $tag): JsonResponse
+    public function toggleFeatured(ToggleProductTagStatusRequest $request, int $tag): JsonResponse
     {
-        $this->authorize('toggleFeatured', $tag);
+        $tag = ProductTag::findOrFail($tag);
+        Gate::authorize('toggleFeatured', $tag);
 
         try {
             $result = ProductTagFacade::toggleFeatured($tag);
@@ -549,8 +548,8 @@ class ProductTagController extends Controller
      */
     public function bulkUpdate(BulkProductTagRequest $request): JsonResponse
     {
-        $this->authorize('bulkManage', ProductTag::class);
-
+        Gate::authorize('bulkManage', ProductTag::class);
+        
         try {
             $result = ProductTagFacade::bulkUpdate($request->validated()['tags']);
 
@@ -561,28 +560,6 @@ class ProductTagController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Failed to update product tags',
-                'message' => $e->getMessage(),
-            ], 500);
-        }
-    }
-
-    /**
-     * Bulk delete product tags.
-     */
-    public function bulkDelete(BulkProductTagRequest $request): JsonResponse
-    {
-        $this->authorize('bulkManage', ProductTag::class);
-
-        try {
-            $result = ProductTagFacade::bulkDelete($request->validated()['tag_ids']);
-
-            return response()->json([
-                'success' => $result,
-                'message' => $result ? 'Product tags deleted successfully.' : 'Failed to delete product tags.'
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Failed to delete product tags',
                 'message' => $e->getMessage(),
             ], 500);
         }

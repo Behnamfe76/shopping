@@ -21,8 +21,9 @@ class BulkProductTagRequest extends FormRequest
     {
         return [
             'tags' => ['sometimes', 'required', 'array', 'min:1', 'max:100'],
-            'tags.*.name' => ['required', 'string', 'max:255'],
-            'tags.*.slug' => ['required', 'string', 'max:255'],
+            'tags.*.id' => ['required', 'integer', 'exists:product_tags,id'],
+            'tags.*.name' => ['nullable', 'string', 'max:255'],
+            'tags.*.slug' => ['nullable', 'string', 'max:255'],
             'tags.*.description' => ['nullable', 'string', 'max:1000'],
             'tags.*.color' => ['nullable', 'string', 'max:7', 'regex:/^#[0-9A-F]{6}$/i'],
             'tags.*.icon' => ['nullable', 'string', 'max:50'],
@@ -30,8 +31,6 @@ class BulkProductTagRequest extends FormRequest
             'tags.*.is_featured' => ['boolean'],
             'tags.*.sort_order' => ['integer', 'min:0'],
             'tags.*.usage_count' => ['integer', 'min:0'],
-            'tag_ids' => ['sometimes', 'required', 'array', 'min:1', 'max:100'],
-            'tag_ids.*' => ['integer', 'exists:product_tags,id'],
         ];
     }
 
@@ -54,12 +53,6 @@ class BulkProductTagRequest extends FormRequest
             'tags.*.icon.max' => 'Icon name cannot exceed 50 characters.',
             'tags.*.sort_order.min' => 'Sort order must be a positive number.',
             'tags.*.usage_count.min' => 'Usage count must be a positive number.',
-            'tag_ids.required' => 'Tag IDs are required.',
-            'tag_ids.array' => 'Tag IDs must be an array.',
-            'tag_ids.min' => 'At least one tag ID is required.',
-            'tag_ids.max' => 'Cannot process more than 100 tags at once.',
-            'tag_ids.*.integer' => 'Tag ID must be an integer.',
-            'tag_ids.*.exists' => 'Selected tag does not exist.',
         ];
     }
 
@@ -71,6 +64,7 @@ class BulkProductTagRequest extends FormRequest
         return [
             'tags' => 'tags',
             'tags.*.name' => 'tag name',
+            'tags.*.id' => 'tag id',
             'tags.*.slug' => 'tag slug',
             'tags.*.description' => 'tag description',
             'tags.*.color' => 'tag color',
@@ -79,8 +73,6 @@ class BulkProductTagRequest extends FormRequest
             'tags.*.is_featured' => 'featured status',
             'tags.*.sort_order' => 'sort order',
             'tags.*.usage_count' => 'usage count',
-            'tag_ids' => 'tag IDs',
-            'tag_ids.*' => 'tag ID',
         ];
     }
 }

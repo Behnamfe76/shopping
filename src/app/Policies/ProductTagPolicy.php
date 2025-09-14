@@ -100,7 +100,7 @@ class ProductTagPolicy
     /**
      * Determine whether the user can toggle the product tag active status.
      */
-    public function toggleActive($user, ProductTag $tag): bool
+    public function toggleActive($user): bool
     {
         // Check if user can toggle active status for any product tags
         if ($user->can('product-tag.toggle.active.any')) {
