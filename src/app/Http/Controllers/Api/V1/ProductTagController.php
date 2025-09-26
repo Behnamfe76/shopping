@@ -40,7 +40,7 @@ class ProductTagController extends Controller
                 default => ProductTagFacade::paginate($perPage),
             };
 
-            return response()->json($tags);
+            return ProductTagResource::collection($tags)->response()->setStatusCode(200);
             // return (new ProductTagCollection($tags))->response();
         } catch (\Throwable $tr) {
             return response()->json([
@@ -74,12 +74,15 @@ class ProductTagController extends Controller
      */
     public function store(StoreProductTagRequest $request): JsonResponse
     {
-        $this->authorize('create', ProductTag::class);
+        Gate::authorize('create', ProductTag::class);
 
         try {
             $tagDTO = ProductTagFacade::createAndReturnDTO($request->validated());
-
-            return (new ProductTagResource($tagDTO))->response()->setStatusCode(201);
+            
+            return response()->json([
+                'data' => $tagDTO,
+                'message' => 'Product tag created successfully',
+            ], 201);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Failed to create product tag',

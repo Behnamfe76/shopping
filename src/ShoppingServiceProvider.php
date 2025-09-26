@@ -14,424 +14,424 @@ class ShoppingServiceProvider extends ServiceProvider
             'shopping'
         );
 
-        // Register Address Repository
-        $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\AddressRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\AddressRepository::class
-        );
+        // // Register Address Repository
+        // $this->app->bind(
+        //     \Fereydooni\Shopping\app\Repositories\Interfaces\AddressRepositoryInterface::class,
+        //     \Fereydooni\Shopping\app\Repositories\AddressRepository::class
+        // );
 
-        // Register Customer Repository
-        $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\CustomerRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\CustomerRepository::class
-        );
+        // // Register Customer Repository
+        // $this->app->bind(
+        //     \Fereydooni\Shopping\app\Repositories\Interfaces\CustomerRepositoryInterface::class,
+        //     \Fereydooni\Shopping\app\Repositories\CustomerRepository::class
+        // );
 
-        // Register Category Repository
-        $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\CategoryRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\CategoryRepository::class
-        );
+        // // Register Category Repository
+        // $this->app->bind(
+        //     \Fereydooni\Shopping\app\Repositories\Interfaces\CategoryRepositoryInterface::class,
+        //     \Fereydooni\Shopping\app\Repositories\CategoryRepository::class
+        // );
 
-        // Register Brand Repository
-        $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\BrandRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\BrandRepository::class
-        );
+        // // Register Brand Repository
+        // $this->app->bind(
+        //     \Fereydooni\Shopping\app\Repositories\Interfaces\BrandRepositoryInterface::class,
+        //     \Fereydooni\Shopping\app\Repositories\BrandRepository::class
+        // );
 
-        // Register Order Repository
-        $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\OrderRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\OrderRepository::class
-        );
+        // // Register Order Repository
+        // $this->app->bind(
+        //     \Fereydooni\Shopping\app\Repositories\Interfaces\OrderRepositoryInterface::class,
+        //     \Fereydooni\Shopping\app\Repositories\OrderRepository::class
+        // );
 
-        // Register Category Service
-        $this->app->scoped('shopping.category', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\CategoryService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CategoryRepositoryInterface::class)
-            );
-        });
+        // // Register Category Service
+        // $this->app->scoped('shopping.category', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\CategoryService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CategoryRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register Address Service
-        $this->app->scoped('shopping.address', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\AddressService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\AddressRepositoryInterface::class)
-            );
-        });
+        // // Register Address Service
+        // $this->app->scoped('shopping.address', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\AddressService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\AddressRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register Customer Service
-        $this->app->scoped('shopping.customer', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\CustomerService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerRepositoryInterface::class)
-            );
-        });
+        // // Register Customer Service
+        // $this->app->scoped('shopping.customer', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\CustomerService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register CustomerSegment Repository
-        $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\CustomerSegmentRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\CustomerSegmentRepository::class
-        );
+        // // Register CustomerSegment Repository
+        // $this->app->bind(
+        //     \Fereydooni\Shopping\app\Repositories\Interfaces\CustomerSegmentRepositoryInterface::class,
+        //     \Fereydooni\Shopping\app\Repositories\CustomerSegmentRepository::class
+        // );
 
-        // Register CustomerSegment Service
-        $this->app->scoped('shopping.customer-segment', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\CustomerSegmentService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerSegmentRepositoryInterface::class)
-            );
-        });
+        // // Register CustomerSegment Service
+        // $this->app->scoped('shopping.customer-segment', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\CustomerSegmentService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerSegmentRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register CustomerSegment Facade
-        $this->app->singleton('shopping.customer-segment.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\CustomerSegmentService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerSegmentRepositoryInterface::class)
-            );
-        });
+        // // Register CustomerSegment Facade
+        // $this->app->singleton('shopping.customer-segment.facade', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\CustomerSegmentService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerSegmentRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register CustomerPreference Repository
-        $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\CustomerPreferenceRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\CustomerPreferenceRepository::class
-        );
+        // // Register CustomerPreference Repository
+        // $this->app->bind(
+        //     \Fereydooni\Shopping\app\Repositories\Interfaces\CustomerPreferenceRepositoryInterface::class,
+        //     \Fereydooni\Shopping\app\Repositories\CustomerPreferenceRepository::class
+        // );
 
-        // Register CustomerPreference Service
-        $this->app->scoped('shopping.customer-preference', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\CustomerPreferenceService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerPreferenceRepositoryInterface::class)
-            );
-        });
+        // // Register CustomerPreference Service
+        // $this->app->scoped('shopping.customer-preference', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\CustomerPreferenceService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerPreferenceRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register ProviderCommunication Repository
-        $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\ProviderCommunicationRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\ProviderCommunicationRepository::class
-        );
+        // // Register ProviderCommunication Repository
+        // $this->app->bind(
+        //     \Fereydooni\Shopping\app\Repositories\Interfaces\ProviderCommunicationRepositoryInterface::class,
+        //     \Fereydooni\Shopping\app\Repositories\ProviderCommunicationRepository::class
+        // );
 
-        // Register ProviderCommunication Service
-        $this->app->scoped('shopping.provider-communication', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\ProviderCommunicationService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProviderCommunicationRepositoryInterface::class)
-            );
-        });
+        // // Register ProviderCommunication Service
+        // $this->app->scoped('shopping.provider-communication', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\ProviderCommunicationService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProviderCommunicationRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register ProviderCommunication Facade
-        $this->app->singleton('shopping.provider-communication.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\ProviderCommunicationService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProviderCommunicationRepositoryInterface::class)
-            );
-        });
+        // // Register ProviderCommunication Facade
+        // $this->app->singleton('shopping.provider-communication.facade', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\ProviderCommunicationService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProviderCommunicationRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register ProviderLocation Repository
-        $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\ProviderLocationRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\ProviderLocationRepository::class
-        );
+        // // Register ProviderLocation Repository
+        // $this->app->bind(
+        //     \Fereydooni\Shopping\app\Repositories\Interfaces\ProviderLocationRepositoryInterface::class,
+        //     \Fereydooni\Shopping\app\Repositories\ProviderLocationRepository::class
+        // );
 
-        // Register ProviderLocation Service
-        $this->app->scoped('shopping.provider-location', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\ProviderLocationService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProviderLocationRepositoryInterface::class)
-            );
-        });
+        // // Register ProviderLocation Service
+        // $this->app->scoped('shopping.provider-location', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\ProviderLocationService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProviderLocationRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register ProviderLocation Facade
-        $this->app->singleton('shopping.provider-location.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\ProviderLocationService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProviderLocationRepositoryInterface::class)
-            );
-        });
+        // // Register ProviderLocation Facade
+        // $this->app->singleton('shopping.provider-location.facade', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\ProviderLocationService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProviderLocationRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register ProviderInsurance Repository
-        $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\ProviderInsuranceRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\ProviderInsuranceRepository::class
-        );
+        // // Register ProviderInsurance Repository
+        // $this->app->bind(
+        //     \Fereydooni\Shopping\app\Repositories\Interfaces\ProviderInsuranceRepositoryInterface::class,
+        //     \Fereydooni\Shopping\app\Repositories\ProviderInsuranceRepository::class
+        // );
 
-        // Register ProviderInsurance Service
-        $this->app->scoped('shopping.provider-insurance', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\ProviderInsuranceService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProviderInsuranceRepositoryInterface::class)
-            );
-        });
+        // // Register ProviderInsurance Service
+        // $this->app->scoped('shopping.provider-insurance', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\ProviderInsuranceService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProviderInsuranceRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register ProviderInsurance Facade
-        $this->app->singleton('shopping.provider-insurance.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\ProviderInsuranceService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProviderInsuranceRepositoryInterface::class)
-            );
-        });
+        // // Register ProviderInsurance Facade
+        // $this->app->singleton('shopping.provider-insurance.facade', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\ProviderInsuranceService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProviderInsuranceRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register CustomerPreference Facade
-        $this->app->singleton('shopping.customer-preference.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\CustomerPreferenceService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerPreferenceRepositoryInterface::class)
-            );
-        });
+        // // Register CustomerPreference Facade
+        // $this->app->singleton('shopping.customer-preference.facade', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\CustomerPreferenceService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerPreferenceRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register CustomerWishlist Repository
-        $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\CustomerWishlistRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\CustomerWishlistRepository::class
-        );
+        // // Register CustomerWishlist Repository
+        // $this->app->bind(
+        //     \Fereydooni\Shopping\app\Repositories\Interfaces\CustomerWishlistRepositoryInterface::class,
+        //     \Fereydooni\Shopping\app\Repositories\CustomerWishlistRepository::class
+        // );
 
-        // Register CustomerWishlist Service
-        $this->app->scoped('shopping.customer-wishlist', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\CustomerWishlistService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerWishlistRepositoryInterface::class)
-            );
-        });
+        // // Register CustomerWishlist Service
+        // $this->app->scoped('shopping.customer-wishlist', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\CustomerWishlistService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerWishlistRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register CustomerWishlist Facade
-        $this->app->singleton('shopping.customer-wishlist.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\CustomerWishlistService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerWishlistRepositoryInterface::class)
-            );
-        });
+        // // Register CustomerWishlist Facade
+        // $this->app->singleton('shopping.customer-wishlist.facade', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\CustomerWishlistService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerWishlistRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register CustomerNote Repository
-        $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\CustomerNoteRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\CustomerNoteRepository::class
-        );
+        // // Register CustomerNote Repository
+        // $this->app->bind(
+        //     \Fereydooni\Shopping\app\Repositories\Interfaces\CustomerNoteRepositoryInterface::class,
+        //     \Fereydooni\Shopping\app\Repositories\CustomerNoteRepository::class
+        // );
 
-        // Register CustomerNote Service
-        $this->app->scoped('shopping.customer-note', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\CustomerNoteService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerNoteRepositoryInterface::class)
-            );
-        });
+        // // Register CustomerNote Service
+        // $this->app->scoped('shopping.customer-note', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\CustomerNoteService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerNoteRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register CustomerNote Facade
-        $this->app->singleton('shopping.customer-note.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\CustomerNoteService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerNoteRepositoryInterface::class)
-            );
-        });
+        // // Register CustomerNote Facade
+        // $this->app->singleton('shopping.customer-note.facade', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\CustomerNoteService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerNoteRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register CustomerCommunication Repository
-        $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\CustomerCommunicationRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\CustomerCommunicationRepository::class
-        );
+        // // Register CustomerCommunication Repository
+        // $this->app->bind(
+        //     \Fereydooni\Shopping\app\Repositories\Interfaces\CustomerCommunicationRepositoryInterface::class,
+        //     \Fereydooni\Shopping\app\Repositories\CustomerCommunicationRepository::class
+        // );
 
-        // Register CustomerCommunication Service
-        $this->app->scoped('shopping.customer-communication', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\CustomerCommunicationService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerCommunicationRepositoryInterface::class)
-            );
-        });
+        // // Register CustomerCommunication Service
+        // $this->app->scoped('shopping.customer-communication', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\CustomerCommunicationService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerCommunicationRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register CustomerCommunication Facade
-        $this->app->singleton('shopping.customer-communication.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\CustomerCommunicationService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerCommunicationRepositoryInterface::class)
-            );
-        });
+        // // Register CustomerCommunication Facade
+        // $this->app->singleton('shopping.customer-communication.facade', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\CustomerCommunicationService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerCommunicationRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register LoyaltyTransaction Repository
-        $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\LoyaltyTransactionRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\LoyaltyTransactionRepository::class
-        );
+        // // Register LoyaltyTransaction Repository
+        // $this->app->bind(
+        //     \Fereydooni\Shopping\app\Repositories\Interfaces\LoyaltyTransactionRepositoryInterface::class,
+        //     \Fereydooni\Shopping\app\Repositories\LoyaltyTransactionRepository::class
+        // );
 
-        // Register LoyaltyTransaction Service
-        $this->app->scoped('shopping.loyalty-transaction', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\LoyaltyTransactionService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\LoyaltyTransactionRepositoryInterface::class)
-            );
-        });
+        // // Register LoyaltyTransaction Service
+        // $this->app->scoped('shopping.loyalty-transaction', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\LoyaltyTransactionService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\LoyaltyTransactionRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register LoyaltyTransaction Facade
-        $this->app->singleton('shopping.loyalty-transaction.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\LoyaltyTransactionService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\LoyaltyTransactionRepositoryInterface::class)
-            );
-        });
+        // // Register LoyaltyTransaction Facade
+        // $this->app->singleton('shopping.loyalty-transaction.facade', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\LoyaltyTransactionService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\LoyaltyTransactionRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register Geographic Data Service
-        $this->app->singleton('shopping.geographic', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\GeographicDataService();
-        });
+        // // Register Geographic Data Service
+        // $this->app->singleton('shopping.geographic', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\GeographicDataService();
+        // });
 
-        // Register Brand Service
-        $this->app->scoped('shopping.brand', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\BrandService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\BrandRepositoryInterface::class)
-            );
-        });
+        // // Register Brand Service
+        // $this->app->scoped('shopping.brand', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\BrandService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\BrandRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register Order Service
-        $this->app->scoped('shopping.order', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\OrderService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\OrderRepositoryInterface::class)
-            );
-        });
+        // // Register Order Service
+        // $this->app->scoped('shopping.order', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\OrderService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\OrderRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register OrderItem Repository
-        $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\OrderItemRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\OrderItemRepository::class
-        );
+        // // Register OrderItem Repository
+        // $this->app->bind(
+        //     \Fereydooni\Shopping\app\Repositories\Interfaces\OrderItemRepositoryInterface::class,
+        //     \Fereydooni\Shopping\app\Repositories\OrderItemRepository::class
+        // );
 
-        // Register OrderItem Service
-        $this->app->scoped('shopping.order-item', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\OrderItemService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\OrderItemRepositoryInterface::class)
-            );
-        });
+        // // Register OrderItem Service
+        // $this->app->scoped('shopping.order-item', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\OrderItemService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\OrderItemRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register OrderStatusHistory Repository
-        $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\OrderStatusHistoryRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\OrderStatusHistoryRepository::class
-        );
+        // // Register OrderStatusHistory Repository
+        // $this->app->bind(
+        //     \Fereydooni\Shopping\app\Repositories\Interfaces\OrderStatusHistoryRepositoryInterface::class,
+        //     \Fereydooni\Shopping\app\Repositories\OrderStatusHistoryRepository::class
+        // );
 
-        // Register OrderStatusHistory Service
-        $this->app->scoped('shopping.order-status-history', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\OrderStatusHistoryService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\OrderStatusHistoryRepositoryInterface::class)
-            );
-        });
+        // // Register OrderStatusHistory Service
+        // $this->app->scoped('shopping.order-status-history', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\OrderStatusHistoryService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\OrderStatusHistoryRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register ProductAttribute Repository
-        $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\ProductAttributeRepository::class
-        );
+        // // Register ProductAttribute Repository
+        // $this->app->bind(
+        //     \Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeRepositoryInterface::class,
+        //     \Fereydooni\Shopping\app\Repositories\ProductAttributeRepository::class
+        // );
 
-        // Register ProductAttribute Service
-        $this->app->scoped('shopping.product-attribute', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\ProductAttributeService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeRepositoryInterface::class)
-            );
-        });
+        // // Register ProductAttribute Service
+        // $this->app->scoped('shopping.product-attribute', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\ProductAttributeService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register ProductAttributeValue Repository
-        $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeValueRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\ProductAttributeValueRepository::class
-        );
+        // // Register ProductAttributeValue Repository
+        // $this->app->bind(
+        //     \Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeValueRepositoryInterface::class,
+        //     \Fereydooni\Shopping\app\Repositories\ProductAttributeValueRepository::class
+        // );
 
-        // Register ProductAttributeValue Service
-        $this->app->scoped('shopping.product-attribute-value', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\ProductAttributeValueService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeValueRepositoryInterface::class)
-            );
-        });
+        // // Register ProductAttributeValue Service
+        // $this->app->scoped('shopping.product-attribute-value', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\ProductAttributeValueService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeValueRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register ProductDiscount Repository
-        $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\ProductDiscountRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\ProductDiscountRepository::class
-        );
+        // // Register ProductDiscount Repository
+        // $this->app->bind(
+        //     \Fereydooni\Shopping\app\Repositories\Interfaces\ProductDiscountRepositoryInterface::class,
+        //     \Fereydooni\Shopping\app\Repositories\ProductDiscountRepository::class
+        // );
 
-        // Register ProductDiscount Service
-        $this->app->scoped('shopping.product-discount', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\ProductDiscountService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductDiscountRepositoryInterface::class)
-            );
-        });
+        // // Register ProductDiscount Service
+        // $this->app->scoped('shopping.product-discount', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\ProductDiscountService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductDiscountRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register Facades
-        $this->app->singleton('shopping.order.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\OrderService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\OrderRepositoryInterface::class)
-            );
-        });
+        // // Register Facades
+        // $this->app->singleton('shopping.order.facade', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\OrderService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\OrderRepositoryInterface::class)
+        //     );
+        // });
 
-        $this->app->singleton('shopping.order-item.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\OrderItemService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\OrderItemRepositoryInterface::class)
-            );
-        });
+        // $this->app->singleton('shopping.order-item.facade', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\OrderItemService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\OrderItemRepositoryInterface::class)
+        //     );
+        // });
 
-        $this->app->singleton('shopping.order-status-history.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\OrderStatusHistoryService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\OrderStatusHistoryRepositoryInterface::class)
-            );
-        });
+        // $this->app->singleton('shopping.order-status-history.facade', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\OrderStatusHistoryService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\OrderStatusHistoryRepositoryInterface::class)
+        //     );
+        // });
 
-        $this->app->singleton('shopping.product-attribute.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\ProductAttributeService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeRepositoryInterface::class)
-            );
-        });
+        // $this->app->singleton('shopping.product-attribute.facade', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\ProductAttributeService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeRepositoryInterface::class)
+        //     );
+        // });
 
-        $this->app->singleton('shopping.product-attribute-value.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\ProductAttributeValueService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeValueRepositoryInterface::class)
-            );
-        });
+        // $this->app->singleton('shopping.product-attribute-value.facade', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\ProductAttributeValueService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeValueRepositoryInterface::class)
+        //     );
+        // });
 
-        $this->app->singleton('product-discount-service', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\ProductDiscountService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductDiscountRepositoryInterface::class)
-            );
-        });
+        // $this->app->singleton('product-discount-service', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\ProductDiscountService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductDiscountRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register Customer Facade
-        $this->app->singleton('shopping.customer.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\CustomerService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerRepositoryInterface::class)
-            );
-        });
+        // // Register Customer Facade
+        // $this->app->singleton('shopping.customer.facade', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\CustomerService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register Product Repository
-        $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\ProductRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\ProductRepository::class
-        );
+        // // Register Product Repository
+        // $this->app->bind(
+        //     \Fereydooni\Shopping\app\Repositories\Interfaces\ProductRepositoryInterface::class,
+        //     \Fereydooni\Shopping\app\Repositories\ProductRepository::class
+        // );
 
-        // Register Product Service
-        $this->app->scoped('shopping.product', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\ProductService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductRepositoryInterface::class)
-            );
-        });
+        // // Register Product Service
+        // $this->app->scoped('shopping.product', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\ProductService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register Product Facade
-        $this->app->singleton('shopping.product.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\ProductService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductRepositoryInterface::class)
-            );
-        });
+        // // Register Product Facade
+        // $this->app->singleton('shopping.product.facade', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\ProductService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register ProductMeta Repository
-        $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\ProductMetaRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\ProductMetaRepository::class
-        );
+        // // Register ProductMeta Repository
+        // $this->app->bind(
+        //     \Fereydooni\Shopping\app\Repositories\Interfaces\ProductMetaRepositoryInterface::class,
+        //     \Fereydooni\Shopping\app\Repositories\ProductMetaRepository::class
+        // );
 
-        // Register ProductMeta Service
-        $this->app->scoped('shopping.product-meta', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\ProductMetaService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductMetaRepositoryInterface::class)
-            );
-        });
+        // // Register ProductMeta Service
+        // $this->app->scoped('shopping.product-meta', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\ProductMetaService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductMetaRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register ProductMeta Facade
-        $this->app->singleton('shopping.product-meta.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\ProductMetaService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductMetaRepositoryInterface::class)
-            );
-        });
+        // // Register ProductMeta Facade
+        // $this->app->singleton('shopping.product-meta.facade', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\ProductMetaService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductMetaRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register ProductReview Repository
-        $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\ProductReviewRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\ProductReviewRepository::class
-        );
+        // // Register ProductReview Repository
+        // $this->app->bind(
+        //     \Fereydooni\Shopping\app\Repositories\Interfaces\ProductReviewRepositoryInterface::class,
+        //     \Fereydooni\Shopping\app\Repositories\ProductReviewRepository::class
+        // );
 
-        // Register ProductReview Service
-        $this->app->scoped('shopping.product-review', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\ProductReviewService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductReviewRepositoryInterface::class)
-            );
-        });
+        // // Register ProductReview Service
+        // $this->app->scoped('shopping.product-review', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\ProductReviewService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductReviewRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register ProductReview Facade
-        $this->app->singleton('shopping.product-review.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\ProductReviewService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductReviewRepositoryInterface::class)
-            );
-        });
+        // // Register ProductReview Facade
+        // $this->app->singleton('shopping.product-review.facade', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\ProductReviewService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductReviewRepositoryInterface::class)
+        //     );
+        // });
 
         // Register ProductTag Repository
         $this->app->bind(
@@ -453,165 +453,165 @@ class ShoppingServiceProvider extends ServiceProvider
             );
         });
 
-        // Register ProductVariant Repository
-        $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\ProductVariantRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\ProductVariantRepository::class
-        );
+        // // Register ProductVariant Repository
+        // $this->app->bind(
+        //     \Fereydooni\Shopping\app\Repositories\Interfaces\ProductVariantRepositoryInterface::class,
+        //     \Fereydooni\Shopping\app\Repositories\ProductVariantRepository::class
+        // );
 
-        // Register ProductVariant Service
-        $this->app->scoped('shopping.product-variant', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\ProductVariantService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductVariantRepositoryInterface::class)
-            );
-        });
+        // // Register ProductVariant Service
+        // $this->app->scoped('shopping.product-variant', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\ProductVariantService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductVariantRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register ProductVariant Facade
-        $this->app->singleton('shopping.product-variant.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\ProductVariantService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductVariantRepositoryInterface::class)
-            );
-        });
+        // // Register ProductVariant Facade
+        // $this->app->singleton('shopping.product-variant.facade', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\ProductVariantService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductVariantRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register Shipment Repository
-        $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\ShipmentRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\ShipmentRepository::class
-        );
+        // // Register Shipment Repository
+        // $this->app->bind(
+        //     \Fereydooni\Shopping\app\Repositories\Interfaces\ShipmentRepositoryInterface::class,
+        //     \Fereydooni\Shopping\app\Repositories\ShipmentRepository::class
+        // );
 
-        // Register Shipment Service
-        $this->app->scoped('shopping.shipment', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\ShipmentService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ShipmentRepositoryInterface::class)
-            );
-        });
+        // // Register Shipment Service
+        // $this->app->scoped('shopping.shipment', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\ShipmentService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ShipmentRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register Shipment Facade
-        $this->app->singleton('shopping.shipment.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\ShipmentService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ShipmentRepositoryInterface::class)
-            );
-        });
+        // // Register Shipment Facade
+        // $this->app->singleton('shopping.shipment.facade', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\ShipmentService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ShipmentRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register ShipmentItem Repository
-        $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\ShipmentItemRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\ShipmentItemRepository::class
-        );
+        // // Register ShipmentItem Repository
+        // $this->app->bind(
+        //     \Fereydooni\Shopping\app\Repositories\Interfaces\ShipmentItemRepositoryInterface::class,
+        //     \Fereydooni\Shopping\app\Repositories\ShipmentItemRepository::class
+        // );
 
-        // Register ShipmentItem Service
-        $this->app->scoped('shopping.shipment-item', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\ShipmentItemService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ShipmentItemRepositoryInterface::class)
-            );
-        });
+        // // Register ShipmentItem Service
+        // $this->app->scoped('shopping.shipment-item', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\ShipmentItemService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ShipmentItemRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register ShipmentItem Facade
-        $this->app->singleton('shopping.shipment-item.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\ShipmentItemService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ShipmentItemRepositoryInterface::class)
-            );
-        });
+        // // Register ShipmentItem Facade
+        // $this->app->singleton('shopping.shipment-item.facade', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\ShipmentItemService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ShipmentItemRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register Subscription Repository
-        $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\SubscriptionRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\SubscriptionRepository::class
-        );
+        // // Register Subscription Repository
+        // $this->app->bind(
+        //     \Fereydooni\Shopping\app\Repositories\Interfaces\SubscriptionRepositoryInterface::class,
+        //     \Fereydooni\Shopping\app\Repositories\SubscriptionRepository::class
+        // );
 
-        // Register Subscription Service
-        $this->app->scoped('shopping.subscription', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\SubscriptionService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\SubscriptionRepositoryInterface::class)
-            );
-        });
+        // // Register Subscription Service
+        // $this->app->scoped('shopping.subscription', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\SubscriptionService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\SubscriptionRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register Subscription Facade
-        $this->app->singleton('shopping.subscription.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\SubscriptionService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\SubscriptionRepositoryInterface::class)
-            );
-        });
+        // // Register Subscription Facade
+        // $this->app->singleton('shopping.subscription.facade', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\SubscriptionService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\SubscriptionRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register UserSubscription Repository
-        $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\UserSubscriptionRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\UserSubscriptionRepository::class
-        );
+        // // Register UserSubscription Repository
+        // $this->app->bind(
+        //     \Fereydooni\Shopping\app\Repositories\Interfaces\UserSubscriptionRepositoryInterface::class,
+        //     \Fereydooni\Shopping\app\Repositories\UserSubscriptionRepository::class
+        // );
 
-        // Register UserSubscription Service
-        $this->app->scoped('shopping.user-subscription', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\UserSubscriptionService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\UserSubscriptionRepositoryInterface::class)
-            );
-        });
+        // // Register UserSubscription Service
+        // $this->app->scoped('shopping.user-subscription', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\UserSubscriptionService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\UserSubscriptionRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register UserSubscription Facade
-        $this->app->singleton('shopping.user-subscription.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\UserSubscriptionService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\UserSubscriptionRepositoryInterface::class)
-            );
-        });
+        // // Register UserSubscription Facade
+        // $this->app->singleton('shopping.user-subscription.facade', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\UserSubscriptionService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\UserSubscriptionRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register Transaction Repository
-        $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\TransactionRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\TransactionRepository::class
-        );
+        // // Register Transaction Repository
+        // $this->app->bind(
+        //     \Fereydooni\Shopping\app\Repositories\Interfaces\TransactionRepositoryInterface::class,
+        //     \Fereydooni\Shopping\app\Repositories\TransactionRepository::class
+        // );
 
-        // Register Transaction Service
-        $this->app->scoped('shopping.transaction', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\TransactionService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\TransactionRepositoryInterface::class)
-            );
-        });
+        // // Register Transaction Service
+        // $this->app->scoped('shopping.transaction', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\TransactionService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\TransactionRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register Transaction Facade
-        $this->app->singleton('shopping.transaction.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\TransactionService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\TransactionRepositoryInterface::class)
-            );
-        });
+        // // Register Transaction Facade
+        // $this->app->singleton('shopping.transaction.facade', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\TransactionService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\TransactionRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register EmployeeDepartment Repository
-        $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeDepartmentRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\EmployeeDepartmentRepository::class
-        );
+        // // Register EmployeeDepartment Repository
+        // $this->app->bind(
+        //     \Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeDepartmentRepositoryInterface::class,
+        //     \Fereydooni\Shopping\app\Repositories\EmployeeDepartmentRepository::class
+        // );
 
-        // Register EmployeeDepartment Service
-        $this->app->scoped('shopping.employee-department', function ($app) {
-            return new \Fereydooni\Shopping\app\Repositories\EmployeeDepartmentRepository(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeDepartmentRepositoryInterface::class)
-            );
-        });
+        // // Register EmployeeDepartment Service
+        // $this->app->scoped('shopping.employee-department', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Repositories\EmployeeDepartmentRepository(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeDepartmentRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register EmployeeDepartment Facade
-        $this->app->singleton('shopping.employee-department.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Repositories\EmployeeDepartmentRepository(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeDepartmentRepositoryInterface::class)
-            );
-        });
+        // // Register EmployeeDepartment Facade
+        // $this->app->singleton('shopping.employee-department.facade', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Repositories\EmployeeDepartmentRepository(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeDepartmentRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register EmployeePosition Repository
-        $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\EmployeePositionRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\EmployeePositionRepository::class
-        );
+        // // Register EmployeePosition Repository
+        // $this->app->bind(
+        //     \Fereydooni\Shopping\app\Repositories\Interfaces\EmployeePositionRepositoryInterface::class,
+        //     \Fereydooni\Shopping\app\Repositories\EmployeePositionRepository::class
+        // );
 
-        // Register EmployeePosition Service
-        $this->app->scoped('shopping.employee-position', function ($app) {
-            return new \Fereydooni\Shopping\app\Repositories\EmployeePositionRepository(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\EmployeePositionRepositoryInterface::class)
-            );
-        });
+        // // Register EmployeePosition Service
+        // $this->app->scoped('shopping.employee-position', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Repositories\EmployeePositionRepository(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\EmployeePositionRepositoryInterface::class)
+        //     );
+        // });
 
-        // Register EmployeePosition Facade
-        $this->app->singleton('shopping.employee-position.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Repositories\EmployeePositionRepository(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\EmployeePositionRepositoryInterface::class)
-            );
-        });
+        // // Register EmployeePosition Facade
+        // $this->app->singleton('shopping.employee-position.facade', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Repositories\EmployeePositionRepository(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\EmployeePositionRepositoryInterface::class)
+        //     );
+        // });
     }
 
     public function boot(): void
@@ -620,8 +620,6 @@ class ShoppingServiceProvider extends ServiceProvider
 
         // Load routes conditionally based on configuration
         $this->loadRoutesConditionally();
-
-        $this->loadViewsFrom(__DIR__ . '/resources/views', 'shopping');
 
         // Register console commands
         if ($this->app->runningInConsole()) {
@@ -643,10 +641,6 @@ class ShoppingServiceProvider extends ServiceProvider
         ], 'shopping-migrations');
 
         $this->publishes([
-            __DIR__ . '/resources/views' => resource_path('views/vendor/shopping'),
-        ], 'shopping-views');
-
-        $this->publishes([
             __DIR__ . '/database/seeders/' => database_path('seeders/shopping/'),
         ], 'shopping-seeders');
 
@@ -657,7 +651,7 @@ class ShoppingServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         // Register facade aliases
-        $this->registerFacadeAliases();
+        // $this->registerFacadeAliases();
     }
 
     /**

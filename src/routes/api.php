@@ -104,8 +104,8 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
         // Route::get('/forecast/{tag}', [ApiProductTagController::class, 'forecast'])->name('forecast');
         // Route::get('/performance/{tag}', [ApiProductTagController::class, 'performance'])->name('performance');
 
-        // // Create product tag
-        // Route::post('/', [ApiProductTagController::class, 'store'])->name('store');
+        // Create product tag
+        Route::post('/', [ApiProductTagController::class, 'store'])->name('store');
 
         // // ProductTag-specific routes
         Route::prefix('{tag:id}')->group(function () {

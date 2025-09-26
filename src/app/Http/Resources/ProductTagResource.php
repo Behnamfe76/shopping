@@ -3,8 +3,9 @@
 namespace Fereydooni\Shopping\app\Http\Resources;
 
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Carbon;
 use Fereydooni\Shopping\app\Models\ProductTag;
+use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductTagResource extends JsonResource
 {
@@ -27,8 +28,8 @@ class ProductTagResource extends JsonResource
             'usage_count' => $this->usage_count,
             'created_by' => $this->created_by,
             'updated_by' => $this->updated_by,
-            'created_at' => $this->created_at?->toISOString(),
-            'updated_at' => $this->updated_at?->toISOString(),
+            'created_at' => $this->created_at instanceof Carbon ? $this->created_at->toISOString() : $this->created_at,
+            'updated_at '=> $this->updated_at instanceof Carbon ? $this->updated_at->toISOString() : $this->updated_at,
 
             // Conditional fields
             'status_label' => $this->when($this->is_active, 'Active', 'Inactive'),

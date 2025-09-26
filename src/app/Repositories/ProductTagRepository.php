@@ -130,7 +130,9 @@ class ProductTagRepository implements ProductTagRepositoryInterface
 
     public function createAndReturnDTO(array $data): ProductTagDTO
     {
+        $data['created_by'] = request()->user()->id;
         $tag = $this->create($data);
+        
         return ProductTagDTO::fromModel($tag);
     }
 

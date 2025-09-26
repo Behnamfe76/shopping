@@ -29,9 +29,6 @@ class StoreProductTagRequest extends FormRequest
             'is_active' => ['boolean'],
             'is_featured' => ['boolean'],
             'sort_order' => ['integer', 'min:0'],
-            'usage_count' => ['integer', 'min:0'],
-            'created_by' => ['nullable', 'integer', 'exists:users,id'],
-            'updated_by' => ['nullable', 'integer', 'exists:users,id'],
         ];
     }
 
@@ -51,9 +48,6 @@ class StoreProductTagRequest extends FormRequest
             'color.regex' => 'Color must be a valid hex color code (e.g., #FF0000).',
             'icon.max' => 'Icon name cannot exceed 50 characters.',
             'sort_order.min' => 'Sort order must be a positive number.',
-            'usage_count.min' => 'Usage count must be a positive number.',
-            'created_by.exists' => 'Selected creator does not exist.',
-            'updated_by.exists' => 'Selected updater does not exist.',
         ];
     }
 
@@ -71,9 +65,6 @@ class StoreProductTagRequest extends FormRequest
             'is_active' => 'active status',
             'is_featured' => 'featured status',
             'sort_order' => 'sort order',
-            'usage_count' => 'usage count',
-            'created_by' => 'creator',
-            'updated_by' => 'updater',
         ];
     }
 }

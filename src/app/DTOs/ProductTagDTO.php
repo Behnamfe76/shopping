@@ -15,7 +15,7 @@ class ProductTagDTO
     public bool $is_active;
     public bool $is_featured;
     public int $sort_order;
-    public int $usage_count;
+    public ?int $usage_count;
     public ?int $created_by;
     public ?int $updated_by;
     public ?int $id;
@@ -31,7 +31,7 @@ class ProductTagDTO
         bool $is_active = true,
         bool $is_featured = false,
         int $sort_order = 0,
-        int $usage_count = 0,
+        ?int $usage_count = 0,
         ?int $created_by = null,
         ?int $updated_by = null,
         ?int $id = null,
@@ -57,6 +57,7 @@ class ProductTagDTO
     public static function fromModel(ProductTag $tag): self
     {
         return new self(
+            id: $tag->id,
             name: $tag->name,
             slug: $tag->slug,
             description: $tag->description,
@@ -68,7 +69,6 @@ class ProductTagDTO
             usage_count: $tag->usage_count,
             created_by: $tag->created_by,
             updated_by: $tag->updated_by,
-            id: $tag->id,
             created_at: $tag->created_at?->toISOString(),
             updated_at: $tag->updated_at?->toISOString()
         );
@@ -85,9 +85,6 @@ class ProductTagDTO
             'is_active' => ['boolean'],
             'is_featured' => ['boolean'],
             'sort_order' => ['integer', 'min:0'],
-            'usage_count' => ['integer', 'min:0'],
-            'created_by' => ['nullable', 'integer'],
-            'updated_by' => ['nullable', 'integer'],
         ];
     }
 
@@ -103,7 +100,6 @@ class ProductTagDTO
             'color.regex' => 'Color must be a valid hex color code (e.g., #FF0000).',
             'icon.max' => 'Icon name cannot exceed 50 characters.',
             'sort_order.min' => 'Sort order must be a positive number.',
-            'usage_count.min' => 'Usage count must be a positive number.',
         ];
     }
 
