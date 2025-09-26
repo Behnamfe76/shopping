@@ -64,11 +64,13 @@ class ProductTagPolicy
         }
 
         // Check if user can update own product tags
-        if ($user->can('product-tag.update.own')) {
+        if ($user->can('product-tag.update.own') && $tag->created_by === $user->id) {
             // For product tags, ownership might be based on store/tenant
             // This is a simplified check - adjust based on your business logic
             return true;
         }
+
+        dd($user);
 
         return false;
     }

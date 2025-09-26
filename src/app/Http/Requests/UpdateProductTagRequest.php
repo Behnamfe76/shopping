@@ -12,7 +12,7 @@ class UpdateProductTagRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('update', $this->route('tag'));
+        return true;
     }
 
     /**
@@ -20,16 +20,14 @@ class UpdateProductTagRequest extends FormRequest
      */
     public function rules(): array
     {
-        $tag = $this->route('tag');
-
         return [
             'name' => [
                 'sometimes', 'required', 'string', 'max:255',
-                Rule::unique('product_tags', 'name')->ignore($tag->id)
+                Rule::unique('product_tags', 'name')->ignore($this->tag)
             ],
             'slug' => [
                 'sometimes', 'required', 'string', 'max:255',
-                Rule::unique('product_tags', 'slug')->ignore($tag->id)
+                Rule::unique('product_tags', 'slug')->ignore($this->tag)
             ],
             'description' => ['sometimes', 'nullable', 'string', 'max:1000'],
             'color' => ['sometimes', 'nullable', 'string', 'max:7', 'regex:/^#[0-9A-F]{6}$/i'],
@@ -37,7 +35,6 @@ class UpdateProductTagRequest extends FormRequest
             'is_active' => ['sometimes', 'boolean'],
             'is_featured' => ['sometimes', 'boolean'],
             'sort_order' => ['sometimes', 'integer', 'min:0'],
-            'usage_count' => ['sometimes', 'integer', 'min:0'],
             'updated_by' => ['sometimes', 'nullable', 'integer', 'exists:users,id'],
         ];
     }
@@ -58,7 +55,6 @@ class UpdateProductTagRequest extends FormRequest
             'color.regex' => 'Color must be a valid hex color code (e.g., #FF0000).',
             'icon.max' => 'Icon name cannot exceed 50 characters.',
             'sort_order.min' => 'Sort order must be a positive number.',
-            'usage_count.min' => 'Usage count must be a positive number.',
             'updated_by.exists' => 'Selected updater does not exist.',
         ];
     }

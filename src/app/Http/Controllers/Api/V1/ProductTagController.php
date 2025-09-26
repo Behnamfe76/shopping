@@ -115,21 +115,22 @@ class ProductTagController extends Controller
     /**
      * Update the specified product tag in storage.
      */
-    public function update(UpdateProductTagRequest $request, ProductTag $tag): JsonResponse
+    public function update(UpdateProductTagRequest $request, int $tag): JsonResponse
     {
-        $this->authorize('update', $tag);
+        $tag = ProductTag::findOrFail($tag);
+
+        Gate::authorize('update', $tag);
 
         try {
             $result = ProductTagFacade::update($tag, $request->validated());
-
-            if (!$result) {
+            
+            if (!$result) { 
                 return response()->json([
                     'error' => 'Failed to update product tag',
                 ], 500);
             }
 
-            $tagDTO = ProductTagFacade::findDTO($tag->id);
-            return (new ProductTagResource($tagDTO))->response();
+            return (new ProductTagResource($tag))->response();
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Failed to update product tag',

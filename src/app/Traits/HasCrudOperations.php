@@ -160,17 +160,16 @@ trait HasCrudOperations
     protected function validateData(array $data, ?int $excludeId = null): array
     {
         $rules = $this->dtoClass::rules();
-
+        
         if ($excludeId) {
             $rules = $this->updateUniqueRules($rules, $excludeId);
         }
 
         $validator = Validator::make($data, $rules, $this->dtoClass::messages());
-
+        
         if ($validator->fails()) {
             throw new \Illuminate\Validation\ValidationException($validator);
         }
-
         return $validator->validated();
     }
 
@@ -180,10 +179,16 @@ trait HasCrudOperations
 
             $rules[$field] = array_map(function ($rule) use ($excludeId, $field) {
                 if (is_string($rule) && str_starts_with($rule, 'unique:')) {
-                    $parts = explode(',', $rule);
-                    if (count($parts) >= 2) {
-                        $table = $parts[1];
-                        return "unique:{$table}," . ($parts[2] ?? $field) . ",{$excludeId}";
+                    // Parse the unique rule properly
+                    // Format: unique:table,column,except,idColumn
+                    $ruleParts = explode(':', $rule, 2);
+                    if (count($ruleParts) === 2) {
+                        $parameters = explode(',', $ruleParts[1]);
+                        $table = $parameters[0]; // First parameter is the table
+                        $column = $parameters[1] ?? $field; // Second parameter is the column, default to field name
+                        $idColumn = $parameters[3] ?? 'id'; // Fourth parameter is the ID column, default to 'id'
+                        
+                        return "unique:{$table},{$column},{$excludeId},{$idColumn}";
                     }
                 }
                 return $rule;

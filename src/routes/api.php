@@ -112,13 +112,13 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
             // Show product tag
             Route::get('/', [ApiProductTagController::class, 'show'])->name('show');
 
-            //     // Update product tag (full update)
-            //     Route::put('/', [ApiProductTagController::class, 'update'])->name('update');
+            // Update product tag (full update)
+            Route::put('/', [ApiProductTagController::class, 'update'])->name('update');
 
-            //     // Update product tag (partial update)
-            //     Route::patch('/', [ApiProductTagController::class, 'update'])->name('update.partial');
+            // Update product tag (partial update)
+            Route::patch('/', [ApiProductTagController::class, 'update'])->name('update.partial');
 
-            //     // Status management
+            // Status management
             Route::put('/toggle-active', [ApiProductTagController::class, 'toggleActive'])->name('toggle-active');
             Route::put('/toggle-featured', [ApiProductTagController::class, 'toggleFeatured'])->name('toggle-featured');
         });
