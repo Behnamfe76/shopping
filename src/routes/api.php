@@ -108,7 +108,7 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
         Route::post('/', [ApiProductTagController::class, 'store'])->name('store');
 
         // // ProductTag-specific routes
-        Route::prefix('{tag:id}')->group(function () {
+        Route::prefix('{tag}')->group(function () {
             // Show product tag
             Route::get('/', [ApiProductTagController::class, 'show'])->name('show');
 
@@ -119,8 +119,8 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
             //     Route::patch('/', [ApiProductTagController::class, 'update'])->name('update.partial');
 
             //     // Status management
-                Route::put('/toggle-active', [ApiProductTagController::class, 'toggleActive'])->name('toggle-active');
-                Route::put('/toggle-featured', [ApiProductTagController::class, 'toggleFeatured'])->name('toggle-featured');
+            Route::put('/toggle-active', [ApiProductTagController::class, 'toggleActive'])->name('toggle-active');
+            Route::put('/toggle-featured', [ApiProductTagController::class, 'toggleFeatured'])->name('toggle-featured');
         });
     });
     // // Address API routes

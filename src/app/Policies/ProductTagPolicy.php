@@ -36,7 +36,7 @@ class ProductTagPolicy
         }
 
         // Check if user can view own product tags
-        if ($user->can('product-tag.view.own')) {
+        if ($user->can('product-tag.view.own') && $tag->created_by === $user->id) {
             // For product tags, ownership might be based on store/tenant
             // This is a simplified check - adjust based on your business logic
             return true;

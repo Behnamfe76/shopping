@@ -94,20 +94,16 @@ class ProductTagController extends Controller
     /**
      * Display the specified product tag.
      */
-    public function show(ProductTag $tag): JsonResponse
+    public function show(int $tag): JsonResponse
     {
-        $this->authorize('view', $tag);
+        $tag = ProductTag::findOrFail($tag);
+
+        Gate::authorize('view', $tag);
 
         try {
-            $tagDTO = ProductTagFacade::findDTO($tag->id);
+            
 
-            if (!$tagDTO) {
-                return response()->json([
-                    'error' => 'Product tag not found',
-                ], 404);
-            }
-
-            return (new ProductTagResource($tagDTO))->response();
+            return (new ProductTagResource($tag))->response();
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Failed to retrieve product tag',
