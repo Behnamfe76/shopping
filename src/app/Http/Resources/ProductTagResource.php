@@ -29,7 +29,7 @@ class ProductTagResource extends JsonResource
             'created_by' => $this->created_by,
             'updated_by' => $this->updated_by,
             'created_at' => $this->created_at instanceof Carbon ? $this->created_at->toISOString() : $this->created_at,
-            'updated_at '=> $this->updated_at instanceof Carbon ? $this->updated_at->toISOString() : $this->updated_at,
+            'updated_at'=> $this->updated_at instanceof Carbon ? $this->updated_at->toISOString() : $this->updated_at,
 
             // Conditional fields
             'status_label' => $this->when($this->is_active, 'Active', 'Inactive'),
