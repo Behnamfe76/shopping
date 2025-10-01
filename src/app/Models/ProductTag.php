@@ -2,17 +2,19 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
+use Laravel\Scout\Searchable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Builder;
-use Fereydooni\Shopping\app\Events\ProductTagCreated;
-use Fereydooni\Shopping\app\Events\ProductTagUpdated;
-use Fereydooni\Shopping\app\Events\ProductTagDeleted;
 use Fereydooni\Shopping\app\Enums\ProductStatus;
+use Fereydooni\Shopping\app\Events\ProductTagCreated;
+use Fereydooni\Shopping\app\Events\ProductTagDeleted;
+use Fereydooni\Shopping\app\Events\ProductTagUpdated;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class ProductTag extends Model
 {
 
+    use Searchable;
     protected $table = "product_tags";
 
     protected $fillable = [
@@ -37,6 +39,120 @@ class ProductTag extends Model
         'created_by' => 'integer',
         'updated_by' => 'integer',
     ];
+
+    public static function toScoutModelSettings(): array
+    {
+        return [
+            self::class => [
+                'collection-schema' => self::getTypesenseCollectionSchema(),
+                'search-parameters' => [
+                    'query_by' => implode(',', self::searchableFields())
+                ]
+            ]
+        ];
+    }
+
+    public static function searchableFields(): array
+    {
+        return ['name', 'description', 'slug'];
+    }
+
+    /**
+     * Get the indexable data array for the model.
+     */
+    public function toSearchableArray(): array
+    {
+        return [
+            'id' => (string) $this->id,
+            'name' => $this->name,
+            'slug' => $this->slug,
+            'description' => $this->description ?? '',
+            'color' => $this->color ?? '',
+            'icon' => $this->icon ?? '',
+            'is_active' => $this->is_active,
+            'is_featured' => $this->is_featured,
+            'sort_order' => $this->sort_order,
+            'usage_count' => $this->usage_count,
+            'created_at' => $this->created_at?->timestamp,
+        ];
+    }
+
+    /**
+     * Define the Typesense collection schema.
+     */
+    public static function getTypesenseCollectionSchema(): array
+    {
+        return [
+            'fields' => [
+                [
+                    'name' => 'id',
+                    'type' => 'string',
+                    'facet' => false,
+                ],
+                [
+                    'name' => 'name',
+                    'type' => 'string',
+                    'facet' => true,
+                ],
+                [
+                    'name' => 'slug',
+                    'type' => 'string',
+                    'facet' => false,
+                ],
+                [
+                    'name' => 'description',
+                    'type' => 'string',
+                    'facet' => false,
+                ],
+                [
+                    'name' => 'color',
+                    'type' => 'string',
+                    'facet' => true,
+                ],
+                [
+                    'name' => 'icon',
+                    'type' => 'string',
+                    'facet' => false,
+                ],
+                [
+                    'name' => 'is_active',
+                    'type' => 'bool',
+                    'facet' => true,
+                ],
+                [
+                    'name' => 'is_featured',
+                    'type' => 'bool',
+                    'facet' => true,
+                ],
+                [
+                    'name' => 'sort_order',
+                    'type' => 'int32',
+                    'facet' => false,
+                ],
+                [
+                    'name' => 'usage_count',
+                    'type' => 'int32',
+                    'facet' => false,
+                ],
+                [
+                    'name' => 'created_at',
+                    'type' => 'int64',
+                    'facet' => false,
+                ],
+                [
+                    "name" => "embedding",
+                    "type" => "float[]",
+                    "embed" => [
+                        "from" => self::searchableFields(),
+                        "model_config" => [
+                            "model_name" => "ts/all-MiniLM-L12-v2"
+                        ]
+                    ]
+                ]
+            ],
+            'default_sorting_field' => 'created_at',
+        ];
+    }
 
     public function products(): BelongsToMany
     {
@@ -99,7 +215,7 @@ class ProductTag extends Model
     {
         return $query->where(function ($q) use ($search) {
             $q->where('name', 'like', "%{$search}%")
-              ->orWhere('description', 'like', "%{$search}%");
+                ->orWhere('description', 'like', "%{$search}%");
         });
     }
 
