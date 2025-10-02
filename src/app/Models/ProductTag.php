@@ -10,9 +10,8 @@ use Fereydooni\Shopping\app\Events\ProductTagCreated;
 use Fereydooni\Shopping\app\Events\ProductTagDeleted;
 use Fereydooni\Shopping\app\Events\ProductTagUpdated;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use App\Contracts\GlobalSearchableModel;
 
-class ProductTag extends Model implements GlobalSearchableModel
+class ProductTag extends Model
 {
 
     use Searchable;
@@ -277,53 +276,5 @@ class ProductTag extends Model implements GlobalSearchableModel
         static::updated(function ($productTag) {
             event(new ProductTagUpdated($productTag, $productTag->getChanges()));
         });
-    }
-
-    /**
-     * Get the display name for this model type.
-     */
-    public static function getModelDisplayName(): string
-    {
-        return 'Product Tags';
-    }
-
-    /**
-     * Get the icon for this model type.
-     */
-    public static function getModelIcon(): string
-    {
-        return '🏷️';
-    }
-
-    /**
-     * Get the admin route for this model.
-     */
-    public function getAdminRoute(): string
-    {
-        return route('shopping.admin.tags.show', $this->id);
-    }
-
-    /**
-     * Get the search result title.
-     */
-    public function getSearchResultTitle(): string
-    {
-        return $this->name;
-    }
-
-    /**
-     * Get the search result description.
-     */
-    public function getSearchResultDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    /**
-     * Get the search result URL.
-     */
-    public function getSearchResultUrl(): string
-    {
-        return $this->getAdminRoute();
     }
 }
