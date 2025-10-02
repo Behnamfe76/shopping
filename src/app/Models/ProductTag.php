@@ -64,6 +64,7 @@ class ProductTag extends Model
     {
         return [
             'id' => (string) $this->id,
+            'id_numeric' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
             'description' => $this->description ?? '',
@@ -87,6 +88,11 @@ class ProductTag extends Model
                 [
                     'name' => 'id',
                     'type' => 'string',
+                    'facet' => false,
+                ],
+                [
+                    'name' => 'id_numeric',
+                    'type' => 'int64',
                     'facet' => false,
                 ],
                 [

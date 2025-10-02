@@ -43,10 +43,11 @@ class ProductTagController extends Controller
             return ProductTagResource::collection($tags)->response()->setStatusCode(200);
             // return (new ProductTagCollection($tags))->response();
         } catch (\Throwable $tr) {
+
             return response()->json([
                 'error' => 'Failed to retrieve product tags',
                 'message' => $tr->getMessage(),
-            ], 500);
+            ], $tr->getCode() ?: 500);
         }
     }
 
@@ -78,7 +79,7 @@ class ProductTagController extends Controller
 
         try {
             $tagDTO = ProductTagFacade::createAndReturnDTO($request->validated());
-            
+
             return response()->json([
                 'data' => $tagDTO,
                 'message' => 'Product tag created successfully',
@@ -101,7 +102,7 @@ class ProductTagController extends Controller
         Gate::authorize('view', $tag);
 
         try {
-            
+
 
             return (new ProductTagResource($tag))->response();
         } catch (\Exception $e) {
@@ -123,8 +124,8 @@ class ProductTagController extends Controller
 
         try {
             $result = ProductTagFacade::update($tag, $request->validated());
-            
-            if (!$result) { 
+
+            if (!$result) {
                 return response()->json([
                     'error' => 'Failed to update product tag',
                 ], 500);
@@ -549,7 +550,7 @@ class ProductTagController extends Controller
     public function bulkUpdate(BulkProductTagRequest $request): JsonResponse
     {
         Gate::authorize('bulkManage', ProductTag::class);
-        
+
         try {
             $result = ProductTagFacade::bulkUpdate($request->validated()['tags']);
 

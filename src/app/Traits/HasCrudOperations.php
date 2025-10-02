@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
+use Fereydooni\Shopping\app\Managers\QueryManager;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
@@ -14,6 +15,7 @@ trait HasCrudOperations
 {
     protected string $model;
     protected string $dtoClass;
+    protected ?QueryManager $queryManager = null;
 
     // Basic CRUD operations
     public function all(): Collection
@@ -21,37 +23,31 @@ trait HasCrudOperations
         return $this->model::all();
     }
 
-    public function paginate(int $perPage = 15): LengthAwarePaginator
+    public function paginate(int $perPage = 15, ?string $driver = null): LengthAwarePaginator
     {
-        $query = $this->model::query();
-
-        $query = $this->applySorting($query);
-        $query = $this->applyFilters($query);
-        $query = $this->applySearch($query);
+        $queryManager = $this->getQueryManager();
+        $filters = $this->getFiltersFromRequest();
+        $searchOptions = $this->getSearchOptionsFromRequest();
         
-        return $query->paginate($perPage);
+        return $queryManager->paginate($this->model, $filters, $searchOptions, $perPage, $driver);
     }
 
-    public function simplePaginate(int $perPage = 15): Paginator
+    public function simplePaginate(int $perPage = 15, ?string $driver = null): Paginator
     {
-        $query = $this->model::query();
+        $queryManager = $this->getQueryManager();
+        $filters = $this->getFiltersFromRequest();
+        $searchOptions = $this->getSearchOptionsFromRequest();
 
-        $query = $this->applySorting($query);
-        $query = $this->applyFilters($query);
-        $query = $this->applySearch($query);
-
-        return $query->simplePaginate($perPage);
+        return $queryManager->simplePaginate($this->model, $filters, $searchOptions, $perPage, $driver);
     }
 
-    public function cursorPaginate(int $perPage = 15, ?string $cursor): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null, ?string $driver = null): CursorPaginator
     {
-        $query = $this->model::query();
+        $queryManager = $this->getQueryManager();
+        $filters = $this->getFiltersFromRequest();
+        $searchOptions = $this->getSearchOptionsFromRequest();
 
-        $query = $this->applySorting($query);
-        $query = $this->applyFilters($query);
-        $query = $this->applySearch($query);
-
-        return $query->cursorPaginate($perPage, ['*'], 'id', $cursor);
+        return $queryManager->cursorPaginate($this->model, $filters, $searchOptions, $perPage, $cursor, $driver);
     }
 
     public function find(int $id): ?Model
@@ -139,15 +135,12 @@ trait HasCrudOperations
     }
 
     // Search functionality
-    public function search(string $query, array $fields = []): Collection
+    public function search(string $query, array $fields = [], ?string $driver = null): Collection
     {
-        $searchFields = $fields ?: $this->getSearchableFields();
+        $queryManager = $this->getQueryManager();
+        $filters = $this->getFiltersFromRequest();
 
-        return $this->model::where(function ($q) use ($query, $searchFields) {
-            foreach ($searchFields as $field) {
-                $q->orWhere($field, 'LIKE', "%{$query}%");
-            }
-        })->get();
+        return $queryManager->search($this->model, $query, $fields, $filters, $driver);
     }
 
     public function searchDTO(string $query, array $fields = []): Collection
@@ -160,13 +153,13 @@ trait HasCrudOperations
     protected function validateData(array $data, ?int $excludeId = null): array
     {
         $rules = $this->dtoClass::rules();
-        
+
         if ($excludeId) {
             $rules = $this->updateUniqueRules($rules, $excludeId);
         }
 
         $validator = Validator::make($data, $rules, $this->dtoClass::messages());
-        
+
         if ($validator->fails()) {
             throw new \Illuminate\Validation\ValidationException($validator);
         }
@@ -187,7 +180,7 @@ trait HasCrudOperations
                         $table = $parameters[0]; // First parameter is the table
                         $column = $parameters[1] ?? $field; // Second parameter is the column, default to field name
                         $idColumn = $parameters[3] ?? 'id'; // Fourth parameter is the ID column, default to 'id'
-                        
+
                         return "unique:{$table},{$column},{$excludeId},{$idColumn}";
                     }
                 }
@@ -197,12 +190,6 @@ trait HasCrudOperations
         }
 
         return $rules;
-    }
-
-
-    protected function getSearchableFields(): array
-    {
-        return ['title', 'name', 'description', 'slug'];
     }
 
     // Soft delete support
@@ -225,5 +212,35 @@ trait HasCrudOperations
     public function forceDelete(Model $model): bool
     {
         return $model->forceDelete();
+    }
+
+    // Helper methods for query management
+    protected function getQueryManager(): QueryManager
+    {
+        if ($this->queryManager === null) {
+            $this->queryManager = app(QueryManager::class);
+        }
+
+        return $this->queryManager;
+    }
+
+    protected function getFiltersFromRequest(): array
+    {
+        return request()->get('filters', []);
+    }
+
+    protected function getSearchOptionsFromRequest(): array
+    {
+
+        return [
+            'search' => request()->input('search', ''),
+            'search_fields' => request()->input('search_options.search_fields', []),
+            'match_type' => request()->input('search_options.match_type', 'partial'),
+            'case_sensitive' => request()->input('search_options.case_sensitive', false),
+            'word_matching' => request()->input('search_options.word_matching', false),
+            'multiple_terms_logic' => request()->input('search_options.multiple_terms_logic', 'or'),
+            'sort_field' => request()->input('sort_by', 'id'),
+            'sort_direction' => request()->input('sort_direction', 'asc'),
+        ];
     }
 }

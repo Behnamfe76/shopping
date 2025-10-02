@@ -17,7 +17,6 @@ use Fereydooni\Shopping\app\Repositories\Interfaces\ProductTagRepositoryInterfac
 
 class ProductTagService
 {
-    use AppliesQueryParameters;
     use HasCrudOperations, HasSearchOperations {
         HasSearchOperations::getSearchableFields insteadOf HasCrudOperations;
     }

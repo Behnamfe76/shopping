@@ -14,6 +14,9 @@ class ShoppingServiceProvider extends ServiceProvider
             'shopping'
         );
 
+        // Register QueryManager as singleton
+        $this->app->singleton(\Fereydooni\Shopping\app\Managers\QueryManager::class);
+
         // // Register Address Repository
         // $this->app->bind(
         //     \Fereydooni\Shopping\app\Repositories\Interfaces\AddressRepositoryInterface::class,

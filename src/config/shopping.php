@@ -46,6 +46,9 @@ return [
         'max_per_page' => env('SHOPPING_MAX_PER_PAGE', 100),
     ],
 
+    // Query method configuration
+    'query_method' => env('QUERY_METHOD', 'database'), // database, typesense
+
     // Cache configuration
     'cache' => [
         'enabled' => env('SHOPPING_CACHE_ENABLED', true),
