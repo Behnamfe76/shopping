@@ -183,7 +183,7 @@ class TypesenseQueryDriver implements QueryDriverInterface
                 $options['infix'] = 'fallback';
                 break;
         }
-
+        
         // ==================== TYPO TOLERANCE ====================
         if (isset($config['typo_tolerance'])) {
             $options['num_typos'] = min(2, max(0, $config['typo_tolerance']));
