@@ -619,6 +619,8 @@ class ShoppingServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        $this->loadTranslationsFrom(__DIR__ . '/lang');
+
         $this->loadMigrationsFrom(__DIR__ . '/database/migrations');
 
         // Load routes conditionally based on configuration

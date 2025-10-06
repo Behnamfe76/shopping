@@ -32,9 +32,11 @@ class ProductTagResource extends JsonResource
             'updated_at'=> $this->updated_at instanceof Carbon ? $this->updated_at->toISOString() : $this->updated_at,
 
             // Conditional fields
-            'status_label' => $this->when($this->is_active, 'Active', 'Inactive'),
-            'featured_label' => $this->when($this->is_featured, 'Featured', 'Not Featured'),
-            'usage_label' => $this->when($this->usage_count > 0, "Used {$this->usage_count} times", 'Not used'),
+            'status_label' => $this->when($this->is_active, __('general.active'), __('general.in-active')),
+            'featured_label' => $this->when($this->is_featured, __('general.featured'), __('general.not-featured')),
+            'usage_label' => $this->when($this->usage_count > 0, __('general.usage-counter', [
+                'value' => $this->usage_count
+            ]), __('general.not-used')),
 
             // Relationships
             'products' => $this->whenLoaded('products', function () {

@@ -4,6 +4,7 @@ namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Gate;
 use Fereydooni\Shopping\app\Models\ProductTag;
@@ -29,7 +30,7 @@ class ProductTagController extends Controller
     public function index(Request $request): JsonResponse
     {
         Gate::authorize('viewAny', ProductTag::class);
-
+        Log::info('locale='.app()->getLocale().' | dir='.__DIR__);
         try {
             $perPage = min((int) $request->get('per_page', 15), 100);
             $paginationType = $request->get('pagination', 'regular');

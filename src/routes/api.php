@@ -33,7 +33,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Api\V1\OrderStatusHistoryController
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerCommunicationController as ApiCustomerCommunicationController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductAttributeValueController as ApiProductAttributeValueController;
 
-Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sanctum', 'throttle:60,1'])->group(function () {
+Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sanctum', 'throttle:60,1', 'setlocale'])->group(function () {
     // ProductTag API routes
     Route::prefix('product-tags')->name('product-tags.')->group(function () {
         // List product tags
