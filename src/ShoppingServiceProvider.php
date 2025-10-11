@@ -29,11 +29,26 @@ class ShoppingServiceProvider extends ServiceProvider
         //     \Fereydooni\Shopping\app\Repositories\CustomerRepository::class
         // );
 
-        // // Register Category Repository
-        // $this->app->bind(
-        //     \Fereydooni\Shopping\app\Repositories\Interfaces\CategoryRepositoryInterface::class,
-        //     \Fereydooni\Shopping\app\Repositories\CategoryRepository::class
-        // );
+        // Register Category Repository
+        $this->app->bind(
+            \Fereydooni\Shopping\app\Repositories\Interfaces\CategoryRepositoryInterface::class,
+            \Fereydooni\Shopping\app\Repositories\CategoryRepository::class
+        );
+
+        // Register Category Service
+        $this->app->scoped('shopping.category', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\CategoryService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CategoryRepositoryInterface::class)
+            );
+        });
+
+        // Register ProductTag Facade
+        $this->app->singleton('shopping.category.facade', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\CategoryService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CategoryRepositoryInterface::class)
+            );
+        });
+
 
         // // Register Brand Repository
         // $this->app->bind(
@@ -47,12 +62,6 @@ class ShoppingServiceProvider extends ServiceProvider
         //     \Fereydooni\Shopping\app\Repositories\OrderRepository::class
         // );
 
-        // // Register Category Service
-        // $this->app->scoped('shopping.category', function ($app) {
-        //     return new \Fereydooni\Shopping\app\Services\CategoryService(
-        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CategoryRepositoryInterface::class)
-        //     );
-        // });
 
         // // Register Address Service
         // $this->app->scoped('shopping.address', function ($app) {
@@ -684,7 +693,7 @@ class ShoppingServiceProvider extends ServiceProvider
     {
         Gate::policy(\Fereydooni\Shopping\app\Models\Address::class, \Fereydooni\Shopping\app\Policies\AddressPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\Customer::class, \Fereydooni\Shopping\app\Policies\CustomerPolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\CustomerSegment::class, \Fereydooni\Shopping\app\Policies\CustomerSegmentPolicy::class);
+        // Gate::policy(\Fereydooni\Shopping\app\Models\CustomerSegment::class, \Fereydooni\Shopping\app\Policies\CustomerSegmentPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\CustomerPreference::class, \Fereydooni\Shopping\app\Policies\CustomerPreferencePolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\CustomerWishlist::class, \Fereydooni\Shopping\app\Policies\CustomerWishlistPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\CustomerNote::class, \Fereydooni\Shopping\app\Policies\CustomerNotePolicy::class);
@@ -703,7 +712,7 @@ class ShoppingServiceProvider extends ServiceProvider
         Gate::policy(\Fereydooni\Shopping\app\Models\ProductReview::class, \Fereydooni\Shopping\app\Policies\ProductReviewPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\ProductTag::class, \Fereydooni\Shopping\app\Policies\ProductTagPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\ProductVariant::class, \Fereydooni\Shopping\app\Policies\ProductVariantPolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\Shipment::class, \Fereydooni\Shopping\app\Policies\ShipmentPolicy::class);
+        // Gate::policy(\Fereydooni\Shopping\app\Models\Shipment::class, \Fereydooni\Shopping\app\Policies\ShipmentPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\ShipmentItem::class, \Fereydooni\Shopping\app\Policies\ShipmentItemPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\Transaction::class, \Fereydooni\Shopping\app\Policies\TransactionPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\Subscription::class, \Fereydooni\Shopping\app\Policies\SubscriptionPolicy::class);
@@ -712,7 +721,7 @@ class ShoppingServiceProvider extends ServiceProvider
         Gate::policy(\Fereydooni\Shopping\app\Models\EmployeePosition::class, \Fereydooni\Shopping\app\Policies\EmployeePositionPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\ProviderLocation::class, \Fereydooni\Shopping\app\Policies\ProviderLocationPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\ProviderInsurance::class, \Fereydooni\Shopping\app\Policies\ProviderInsurancePolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\ProviderCommunication::class, \Fereydooni\Shopping\app\Policies\ProviderCommunicationPolicy::class);
+        // Gate::policy(\Fereydooni\Shopping\app\Models\ProviderCommunication::class, \Fereydooni\Shopping\app\Policies\ProviderCommunicationPolicy::class);
 
         // Register permissions
         $this->registerPermissions();

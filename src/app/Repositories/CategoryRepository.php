@@ -2,23 +2,45 @@
 
 namespace Fereydooni\Shopping\app\Repositories;
 
-use Fereydooni\Shopping\app\Models\Category;
-use Fereydooni\Shopping\app\Repositories\Interfaces\CategoryRepositoryInterface;
-use Fereydooni\Shopping\app\DTOs\CategoryDTO;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Pagination\CursorPaginator;
+use Fereydooni\Shopping\app\Models\Category;
+use Illuminate\Database\Eloquent\Collection;
+use Fereydooni\Shopping\app\DTOs\CategoryDTO;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Fereydooni\Shopping\app\Repositories\Interfaces\CategoryRepositoryInterface;
 
 class CategoryRepository implements CategoryRepositoryInterface
 {
-    public function __construct(protected Category $model)
-    {
-    }
+    public function __construct(protected Category $model) {}
 
     public function all(): Collection
     {
-        return $this->model->all();
+        $select = '*';
+        $columns = request()->get('columns', []);
+        if (!empty($columns)) {
+            $select = $columns;
+        }
+        return $this->model
+            ->select($select)
+            ->limit(250)
+            ->get();
+    }
+
+    public function cursorAll(int $perPage = 15, ?string $cursor = null): CursorPaginator
+    {
+        $select = '*';
+        $columns = request()->get('columns', []);
+        if (!empty($columns)) {
+            $select = $columns;
+        }
+
+        return $this->model
+            ->query()->when(request()->input('search'), function ($query, $input) {
+                return $query->whereLike('name', "%$input%");
+            })
+            ->select($select)
+            ->cursorPaginate($perPage, [$columns], 'id', $cursor);
     }
 
     public function paginate(int $perPage = 15): LengthAwarePaginator
@@ -205,5 +227,31 @@ class CategoryRepository implements CategoryRepositoryInterface
         }
 
         return false;
+    }
+
+    public function getDescendants(int $categoryId): \Illuminate\Support\Collection
+    {
+        $descendants = collect();
+        $children = $this->model->where('parent_id', $categoryId)->get();
+
+        foreach ($children as $child) {
+            $descendants->push($child);
+            $descendants = $descendants->merge($this->getDescendants($child->id));
+        }
+
+        return $descendants;
+    }
+
+    public function getAncestors(int $categoryId): \Illuminate\Support\Collection
+    {
+        $ancestors = collect();
+        $category = $this->model->find($categoryId);
+
+        while ($category && $category->parent) {
+            $ancestors->prepend($category->parent);
+            $category = $category->parent;
+        }
+
+        return $ancestors;
     }
 }

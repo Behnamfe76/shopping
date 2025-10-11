@@ -29,6 +29,7 @@ class StoreProductTagRequest extends FormRequest
             'is_active' => ['boolean'],
             'is_featured' => ['boolean'],
             'sort_order' => ['integer', 'min:0'],
+            'usage_count' => ['integer', 'min:0'],
         ];
     }
 
@@ -66,5 +67,11 @@ class StoreProductTagRequest extends FormRequest
             'is_featured' => 'featured status',
             'sort_order' => 'sort order',
         ];
+    }
+
+    public function prepareForValidation(){
+        $this->merge([
+            'usage_count' => 0
+        ]);
     }
 }

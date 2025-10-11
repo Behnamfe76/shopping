@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Fereydooni\Shopping\app\Models\ProductTag;
+use Illuminate\Routing\Middleware\SubstituteBindings;
 use App\Http\Controllers\Api\V1\ProviderPerformanceController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\EmployeeNoteController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderLocationController;
@@ -33,7 +34,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Api\V1\OrderStatusHistoryController
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerCommunicationController as ApiCustomerCommunicationController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductAttributeValueController as ApiProductAttributeValueController;
 
-Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sanctum', 'throttle:60,1', 'setlocale'])->group(function () {
+Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sanctum', 'throttle:60,1', 'setlocale', SubstituteBindings::class])->group(function () {
     // ProductTag API routes
     Route::prefix('product-tags')->name('product-tags.')->group(function () {
         // List product tags
@@ -123,6 +124,72 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
             Route::put('/toggle-featured', [ApiProductTagController::class, 'toggleFeatured'])->name('toggle-featured');
         });
     });
+
+    // Category API routes
+    Route::prefix('categories')->name('categories.')->group(function () {
+        // List categories
+        Route::get('/', [ApiCategoryController::class, 'index'])->name('index');
+
+        Route::get('/cursor-all', [ApiCategoryController::class, 'cursorAll'])->name('cursor-all');
+
+        Route::get('/statuses/cursor-all', [ApiCategoryController::class, 'statuses'])->name('statuses');
+
+        Route::delete('/destroy-some', [ApiCategoryController::class, 'destroySome'])->name('destroySome');
+        Route::delete('/destroy-all', [ApiCategoryController::class, 'destroyAll'])->name('destroyAll');
+
+        // // Get category count
+        // Route::get('/count', [ApiCategoryController::class, 'getCount'])->name('count');
+
+        // // Get root categories
+        // Route::get('/root', [ApiCategoryController::class, 'getRoot'])->name('root');
+
+        // // Get category tree
+        // Route::get('/tree', [ApiCategoryController::class, 'tree'])->name('tree');
+
+        // // Search categories
+        // Route::get('/search', [ApiCategoryController::class, 'search'])->name('search');
+
+        // // Get category statistics
+        // Route::get('/stats', [ApiCategoryController::class, 'getStats'])->name('stats');
+
+        // // Create category
+        Route::post('/', [ApiCategoryController::class, 'store'])->name('store');
+
+        // // Reorder categories
+        // Route::post('/reorder', [ApiCategoryController::class, 'reorder'])->name('reorder');
+
+        // Category-specific routes
+        Route::prefix('{category}')->group(function () {
+            // Show category
+            Route::get('/', [ApiCategoryController::class, 'show'])->name('show');
+
+            // Update category (full update)
+            Route::put('/', [ApiCategoryController::class, 'update'])->name('update');
+
+            // // Update category (partial update)
+            // Route::patch('/', [ApiCategoryController::class, 'update'])->name('update.partial');
+
+            // Delete category
+            Route::delete('/', [ApiCategoryController::class, 'destroy'])->name('destroy');
+
+            // // Set as default
+            // Route::post('/default', [ApiCategoryController::class, 'setDefault'])->name('set-default');
+
+            // // Move category
+            // Route::post('/move', [ApiCategoryController::class, 'move'])->name('move');
+
+            // // Get category children
+            // Route::get('/children', [ApiCategoryController::class, 'getChildren'])->name('children');
+
+            // // Get category ancestors
+            // Route::get('/ancestors', [ApiCategoryController::class, 'getAncestors'])->name('ancestors');
+
+            // // Get category descendants
+            // Route::get('/descendants', [ApiCategoryController::class, 'getDescendants'])->name('descendants');
+        });
+    });
+
+
     // // Address API routes
     // Route::prefix('addresses')->name('addresses.')->group(function () {
     //     // List addresses
@@ -159,62 +226,7 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
     //     });
     // });
 
-    // // Category API routes
-    // Route::prefix('categories')->name('categories.')->group(function () {
-    //     // List categories
-    //     Route::get('/', [ApiCategoryController::class, 'index'])->name('index');
 
-    //     // Get category count
-    //     Route::get('/count', [ApiCategoryController::class, 'getCount'])->name('count');
-
-    //     // Get root categories
-    //     Route::get('/root', [ApiCategoryController::class, 'getRoot'])->name('root');
-
-    //     // Get category tree
-    //     Route::get('/tree', [ApiCategoryController::class, 'tree'])->name('tree');
-
-    //     // Search categories
-    //     Route::get('/search', [ApiCategoryController::class, 'search'])->name('search');
-
-    //     // Get category statistics
-    //     Route::get('/stats', [ApiCategoryController::class, 'getStats'])->name('stats');
-
-    //     // Create category
-    //     Route::post('/', [ApiCategoryController::class, 'store'])->name('store');
-
-    //     // Reorder categories
-    //     Route::post('/reorder', [ApiCategoryController::class, 'reorder'])->name('reorder');
-
-    //     // Category-specific routes
-    //     Route::prefix('{category:slug}')->group(function () {
-    //         // Show category
-    //         Route::get('/', [ApiCategoryController::class, 'show'])->name('show');
-
-    //         // Update category (full update)
-    //         Route::put('/', [ApiCategoryController::class, 'update'])->name('update');
-
-    //         // Update category (partial update)
-    //         Route::patch('/', [ApiCategoryController::class, 'update'])->name('update.partial');
-
-    //         // Delete category
-    //         Route::delete('/', [ApiCategoryController::class, 'destroy'])->name('destroy');
-
-    //         // Set as default
-    //         Route::post('/default', [ApiCategoryController::class, 'setDefault'])->name('set-default');
-
-    //         // Move category
-    //         Route::post('/move', [ApiCategoryController::class, 'move'])->name('move');
-
-    //         // Get category children
-    //         Route::get('/children', [ApiCategoryController::class, 'getChildren'])->name('children');
-
-    //         // Get category ancestors
-    //         Route::get('/ancestors', [ApiCategoryController::class, 'getAncestors'])->name('ancestors');
-
-    //         // Get category descendants
-    //         Route::get('/descendants', [ApiCategoryController::class, 'getDescendants'])->name('descendants');
-    //     });
-    // });
 
     // // Brand API routes
     // Route::prefix('brands')->name('brands.')->group(function () {

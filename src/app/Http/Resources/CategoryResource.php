@@ -20,13 +20,26 @@ class CategoryResource extends JsonResource
             'id' => $category->id,
             'name' => $category->name,
             'slug' => $category->slug,
+            'parent_id' => $category->parent_id,
             'description' => $category->description,
-            'status' => $category->status->value,
+            'status' => __('categories.statuses.' . $category->status->value),
             'status_label' => $category->status->label(),
             'sort_order' => $category->sort_order,
             'is_default' => $category->is_default,
             'created_at' => $category->created_at?->toISOString(),
             'updated_at' => $category->updated_at?->toISOString(),
+            'media' => $this->whenLoaded('media', function () {
+                return $this->media->map(function ($mediaItem) {
+                    return [
+                        'id' => $mediaItem->id,
+                        'file_name' => $mediaItem->file_name,
+                        'url' => $mediaItem->getUrl(),
+                        // 'thumbnail_url' => $mediaItem->getUrl('thumb'),
+                        // 'preview_url' => $mediaItem->getUrl('preview'),
+                        // 'created_at' => $mediaItem->created_at?->toISOString(),
+                    ];
+                });
+            }),
         ];
 
         // Include parent information if available
@@ -35,6 +48,10 @@ class CategoryResource extends JsonResource
                 'id' => $category->parent->id,
                 'name' => $category->parent->name,
                 'slug' => $category->parent->slug,
+            ];
+        }else{
+            $data['parent'] = [
+                'name' => __('resources/categories.messages.no_parent'),
             ];
         }
 
@@ -58,109 +75,13 @@ class CategoryResource extends JsonResource
             $data['path'] = $category->path;
         }
 
-        // Include media if available
-        if ($category->media !== null) {
-            $data['media'] = $category->media;
-        }
-
         // Include hierarchical information if requested
         if ($request->boolean('include_hierarchy')) {
             $data['children'] = $category->children;
             $data['ancestors'] = $this->getAncestors($category);
         }
 
-        // Include actions if user is authenticated
-        if ($request->user()) {
-            $data['actions'] = $this->getAvailableActions($request, $category);
-        }
-
         return $data;
-    }
-
-    /**
-     * Get available actions for the category.
-     */
-    private function getAvailableActions(Request $request, CategoryDTO $category): array
-    {
-        $actions = [];
-
-        if ($request->user()) {
-            $user = $request->user();
-
-            // Update action
-            if ($user->can('update', $this->resource)) {
-                $actions['update'] = [
-                    'method' => 'PUT',
-                    'url' => route('api.v1.categories.update', $category->slug),
-                    'label' => 'Update Category',
-                ];
-            }
-
-            // Delete action
-            if ($user->can('delete', $this->resource)) {
-                $actions['delete'] = [
-                    'method' => 'DELETE',
-                    'url' => route('api.v1.categories.destroy', $category->slug),
-                    'label' => 'Delete Category',
-                ];
-            }
-
-            // Set as default action
-            if (!$category->is_default && $user->can('setDefault', $this->resource)) {
-                $actions['set_default'] = [
-                    'method' => 'POST',
-                    'url' => route('api.v1.categories.set-default', $category->slug),
-                    'label' => 'Set as Default',
-                ];
-            }
-
-            // Move action
-            if ($user->can('move', $this->resource)) {
-                $actions['move'] = [
-                    'method' => 'POST',
-                    'url' => route('api.v1.categories.move', $category->slug),
-                    'label' => 'Move Category',
-                ];
-            }
-
-            // Manage media action
-            if ($user->can('manageMedia', $this->resource)) {
-                $actions['manage_media'] = [
-                    'method' => 'POST',
-                    'url' => route('api.v1.categories.media', $category->slug),
-                    'label' => 'Manage Media',
-                ];
-            }
-
-            // View children action
-            if ($user->can('view', $this->resource)) {
-                $actions['view_children'] = [
-                    'method' => 'GET',
-                    'url' => route('api.v1.categories.children', $category->slug),
-                    'label' => 'View Children',
-                ];
-            }
-
-            // View ancestors action
-            if ($user->can('view', $this->resource)) {
-                $actions['view_ancestors'] = [
-                    'method' => 'GET',
-                    'url' => route('api.v1.categories.ancestors', $category->slug),
-                    'label' => 'View Ancestors',
-                ];
-            }
-
-            // View descendants action
-            if ($user->can('view', $this->resource)) {
-                $actions['view_descendants'] = [
-                    'method' => 'GET',
-                    'url' => route('api.v1.categories.descendants', $category->slug),
-                    'label' => 'View Descendants',
-                ];
-            }
-        }
-
-        return $actions;
     }
 
     /**

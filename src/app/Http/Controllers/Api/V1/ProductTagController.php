@@ -30,7 +30,7 @@ class ProductTagController extends Controller
     public function index(Request $request): JsonResponse
     {
         Gate::authorize('viewAny', ProductTag::class);
-        Log::info('locale='.app()->getLocale().' | dir='.__DIR__);
+
         try {
             $perPage = min((int) $request->get('per_page', 15), 100);
             $paginationType = $request->get('pagination', 'regular');

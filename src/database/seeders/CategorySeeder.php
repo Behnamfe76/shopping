@@ -82,13 +82,15 @@ class CategorySeeder extends Seeder
         foreach ($categories as $categoryData) {
             $children = $categoryData['children'] ?? [];
             unset($categoryData['children']);
-            
-            $category = Category::create($categoryData);
-            
+
+            $category = Category::firstOrCreate($categoryData);
+
             foreach ($children as $childData) {
                 $childData['parent_id'] = $category->id;
-                Category::create($childData);
+                Category::firstOrCreate($childData);
             }
         }
+
+        Category::with('parent')->get()->searchable();
     }
 }

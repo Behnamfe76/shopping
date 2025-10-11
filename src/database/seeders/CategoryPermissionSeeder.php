@@ -30,6 +30,8 @@ class CategoryPermissionSeeder extends Seeder
             'category.delete',
             'category.delete.any',
             'category.delete.own',
+            'category.delete.some',
+            'category.delete.all',
 
             // Move permissions
             'category.move',

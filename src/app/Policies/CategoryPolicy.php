@@ -15,7 +15,7 @@ class CategoryPolicy
      */
     public function viewAny($user): bool
     {
-        return $user->can('category.view.any') || $user->can('category.view.own');
+        return $user->hasAnyPermission('category.view.any', 'category.view.own');
     }
 
     /**
@@ -84,6 +84,22 @@ class CategoryPolicy
         }
 
         return false;
+    }
+
+    /**
+     * Determine whether the user can delete some product tag.
+     */
+    public function deleteSome($user): bool
+    {
+        return $user->hasPermissionTo('category.delete.some');
+    }
+
+    /**
+     * Determine whether the user can delete all product tag.
+     */
+    public function deleteAll($user): bool
+    {
+        return $user->hasPermissionTo('category.delete.all');
     }
 
     /**

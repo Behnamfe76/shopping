@@ -13,6 +13,7 @@ use Illuminate\Pagination\Paginator;
 
 /**
  * @method static Collection all()
+ * @method static CursorPaginator cursorAll()
  * @method static CategoryModel|null find(int $id)
  * @method static CategoryDTO|null findDTO(int $id)
  * @method static CategoryModel create(array $data)

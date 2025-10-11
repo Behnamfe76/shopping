@@ -4,20 +4,21 @@ namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
 use Fereydooni\Shopping\app\Models\Category;
 use Fereydooni\Shopping\app\DTOs\CategoryDTO;
 use Fereydooni\Shopping\app\Enums\CategoryStatus;
+use Fereydooni\Shopping\app\Http\Resources\CategoryResource;
+use Fereydooni\Shopping\app\Http\Requests\MoveCategoryRequest;
+use Fereydooni\Shopping\app\Http\Resources\CategoryCollection;
 use Fereydooni\Shopping\app\Facades\Category as CategoryFacade;
 use Fereydooni\Shopping\app\Http\Requests\StoreCategoryRequest;
-use Fereydooni\Shopping\app\Http\Requests\UpdateCategoryRequest;
-use Fereydooni\Shopping\app\Http\Requests\SetDefaultCategoryRequest;
 use Fereydooni\Shopping\app\Http\Requests\SearchCategoryRequest;
-use Fereydooni\Shopping\app\Http\Requests\ReorderCategoryRequest;
-use Fereydooni\Shopping\app\Http\Requests\MoveCategoryRequest;
-use Fereydooni\Shopping\app\Http\Resources\CategoryResource;
-use Fereydooni\Shopping\app\Http\Resources\CategoryCollection;
-use Fereydooni\Shopping\app\Http\Resources\CategorySearchResource;
+use Fereydooni\Shopping\app\Http\Requests\UpdateCategoryRequest;
 use Fereydooni\Shopping\app\Http\Resources\CategoryTreeResource;
+use Fereydooni\Shopping\app\Http\Requests\ReorderCategoryRequest;
+use Fereydooni\Shopping\app\Http\Resources\CategorySearchResource;
+use Fereydooni\Shopping\app\Http\Requests\SetDefaultCategoryRequest;
 
 class CategoryController extends \App\Http\Controllers\Controller
 {
@@ -26,21 +27,64 @@ class CategoryController extends \App\Http\Controllers\Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $this->authorize('viewAny', Category::class);
+        Gate::authorize('viewAny', Category::class);
 
         try {
-            $perPage = $request->get('per_page', 15);
+            $perPage = min((int) $request->get('per_page', 15), 100);
             $paginationType = $request->get('pagination', 'regular');
-            $status = $request->get('status');
-            $parentId = $request->get('parent_id');
 
-            $categories = match($paginationType) {
+            $categories = match ($paginationType) {
                 'simplePaginate' => CategoryFacade::simplePaginate($perPage),
                 'cursorPaginate' => CategoryFacade::cursorPaginate($perPage),
                 default => CategoryFacade::paginate($perPage),
             };
 
-            return (new CategoryCollection($categories))->response();
+            return CategoryResource::collection($categories)->response()->setStatusCode(200);
+            // return (new CategoryCollection($categories))->response();
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to retrieve categories',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Display a listing of categories.
+     */
+    public function statuses(): JsonResponse
+    {
+        Gate::authorize('viewAny', Category::class);
+
+        try {
+            return response()->json([
+                'data' => array_map(fn($status) => [
+                    'id' => $status->value,
+                    'name' => __('categories.statuses.' . $status->value),
+                ], CategoryStatus::cases()),
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to retrieve categories',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Display a all of categories.
+     */
+    public function cursorAll(): JsonResponse
+    {
+        Gate::authorize('viewAny', Category::class);
+
+        try {
+            return response()->json(
+                CategoryFacade::cursorAll(),
+                200
+            );
+
+            // return (new CategoryCollection($categories))->response();
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Failed to retrieve categories',
@@ -54,12 +98,12 @@ class CategoryController extends \App\Http\Controllers\Controller
      */
     public function store(StoreCategoryRequest $request): JsonResponse
     {
-        $this->authorize('create', Category::class);
+        Gate::authorize('create', Category::class);
 
         try {
-            $categoryDTO = CategoryFacade::createDTO($request->validated());
+            $category = CategoryFacade::create($request->validated());
 
-            return (new CategoryResource($categoryDTO))->response()->setStatusCode(201);
+            return (new CategoryResource($category))->response()->setStatusCode(201);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Failed to create category',
@@ -73,18 +117,10 @@ class CategoryController extends \App\Http\Controllers\Controller
      */
     public function show(Category $category): JsonResponse
     {
-        $this->authorize('view', $category);
+        Gate::authorize('view', $category);
 
         try {
-            $categoryDTO = CategoryFacade::findDTO($category->id);
-
-            if (!$categoryDTO) {
-                return response()->json([
-                    'error' => 'Category not found',
-                ], 404);
-            }
-
-            return (new CategoryResource($categoryDTO))->response();
+            return (new CategoryResource($category))->response();
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Failed to retrieve category',
@@ -98,18 +134,12 @@ class CategoryController extends \App\Http\Controllers\Controller
      */
     public function update(UpdateCategoryRequest $request, Category $category): JsonResponse
     {
-        $this->authorize('update', $category);
+        Gate::authorize('update', $category);
 
         try {
-            $categoryDTO = CategoryFacade::updateDTO($category, $request->validated());
+            CategoryFacade::update($category, $request->validated());
 
-            if (!$categoryDTO) {
-                return response()->json([
-                    'error' => 'Failed to update category',
-                ], 500);
-            }
-
-            return (new CategoryResource($categoryDTO))->response();
+            return (new CategoryResource($category))->response();
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Failed to update category',
@@ -123,16 +153,10 @@ class CategoryController extends \App\Http\Controllers\Controller
      */
     public function destroy(Category $category): JsonResponse
     {
-        $this->authorize('delete', $category);
+        Gate::authorize('delete', $category);
 
         try {
-            $deleted = CategoryFacade::delete($category);
-
-            if (!$deleted) {
-                return response()->json([
-                    'error' => 'Failed to delete category',
-                ], 500);
-            }
+            CategoryFacade::delete($category);
 
             return response()->json([
                 'message' => 'Category deleted successfully',
@@ -144,6 +168,58 @@ class CategoryController extends \App\Http\Controllers\Controller
             ], 500);
         }
     }
+
+    /**
+     * Remove all product tags from storage.
+     */
+    public function destroyAll(): JsonResponse
+    {
+
+        Gate::authorize('deleteAll', Category::class);
+
+        try {
+            CategoryFacade::deleteAll();
+
+            return response()->json([
+                'message' => 'All categories deleted successfully',
+            ]);
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+            return response()->json([
+                'error' => 'Failed to delete all categories',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Remove a selection of product tags from storage.
+     */
+    public function destroySome(Request $request): JsonResponse
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'required|integer|exists:categories,id',
+        ]);
+        $ids = $request->input('ids');
+
+        Gate::authorize('deleteSome', Category::class);
+
+        try {
+            CategoryFacade::deleteSome($ids);
+
+            return response()->json([
+                'message' => 'Selected categories deleted successfully',
+            ]);
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+            return response()->json([
+                'error' => 'Failed to delete selected categories',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
 
     /**
      * Set the category as default.

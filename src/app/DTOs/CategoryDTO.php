@@ -3,10 +3,8 @@
 namespace Fereydooni\Shopping\app\DTOs;
 
 use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\MapName;
-use Spatie\LaravelData\Attributes\WithTransformer;
-use Spatie\LaravelData\Transformers\DateTimeTransformer;
 use Illuminate\Support\Carbon;
+use Fereydooni\Shopping\app\Models\Category;
 use Fereydooni\Shopping\app\Enums\CategoryStatus;
 
 class CategoryDTO extends Data
@@ -31,7 +29,7 @@ class CategoryDTO extends Data
     ) {
     }
 
-    public static function fromModel($category): static
+    public static function fromModel(Category $category): static
     {
         return new static(
             id: $category->id,

@@ -11,7 +11,6 @@ use Fereydooni\Shopping\app\Traits\HasBulkOperations;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
 use Fereydooni\Shopping\app\Traits\HasSlugGeneration;
 use Fereydooni\Shopping\app\Traits\HasSearchOperations;
-use Fereydooni\Shopping\app\Traits\AppliesQueryParameters;
 use Fereydooni\Shopping\app\Traits\HasAnalyticsOperations;
 use Fereydooni\Shopping\app\Repositories\Interfaces\ProductTagRepositoryInterface;
 

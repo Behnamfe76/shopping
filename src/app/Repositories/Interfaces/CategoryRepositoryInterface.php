@@ -29,7 +29,12 @@ interface CategoryRepositoryInterface
     /**
      * Get cursor paginated categories
      */
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator;
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator;
+
+    /**
+     * Get cursor paginated categories
+     */
+    public function cursorAll(int $perPage = 15, ?string $cursor = null): CursorPaginator;
 
     /**
      * Find category by ID
@@ -145,4 +150,14 @@ interface CategoryRepositoryInterface
      * Get categories by depth level
      */
     public function getByDepth(int $depth): Collection;
+
+    /**
+     * Get acategory's descendants
+     */
+    public function getDescendants(int $categoryId): \Illuminate\Support\Collection;
+
+    /**
+     * Get acategory's ansestors
+     */
+    public function getAncestors(int $categoryId): \Illuminate\Support\Collection;
 }

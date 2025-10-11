@@ -2,22 +2,21 @@
 
 namespace Fereydooni\Shopping\app\Services;
 
+use Illuminate\Support\Str;
+use Illuminate\Pagination\CursorPaginator;
 use Fereydooni\Shopping\app\Models\Category;
-use Fereydooni\Shopping\app\Repositories\Interfaces\CategoryRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
 use Fereydooni\Shopping\app\DTOs\CategoryDTO;
 use Fereydooni\Shopping\app\Enums\CategoryStatus;
-use Fereydooni\Shopping\app\Traits\HasCrudOperations;
 use Fereydooni\Shopping\app\Traits\HasDefaultItem;
+use Fereydooni\Shopping\app\Traits\HasCrudOperations;
 use Fereydooni\Shopping\app\Traits\HasSearchOperations;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\CursorPaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Str;
+use Fereydooni\Shopping\app\Repositories\Interfaces\CategoryRepositoryInterface;
 
 class CategoryService
 {
-    use HasCrudOperations, HasDefaultItem, HasSearchOperations;
+    use HasCrudOperations;
+    use HasDefaultItem;
 
     public function __construct(
         protected CategoryRepositoryInterface $repository
@@ -26,25 +25,12 @@ class CategoryService
         $this->dtoClass = CategoryDTO::class;
     }
 
+    public array $searchableFields = ['name', 'slug', 'description'];
+
     // Basic CRUD Operations (inherited from HasCrudOperations)
-    public function all(): Collection
+    public function cursorAll(): CursorPaginator
     {
-        return $this->repository->all();
-    }
-
-    public function paginate(int $perPage = 15): LengthAwarePaginator
-    {
-        return $this->repository->paginate($perPage);
-    }
-
-    public function simplePaginate(int $perPage = 15): Paginator
-    {
-        return $this->repository->simplePaginate($perPage);
-    }
-
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
-    {
-        return $this->repository->cursorPaginate($perPage, $cursor);
+        return $this->repository->cursorAll(10, request()->get('cursor'));
     }
 
     public function find(int $id): ?Category
@@ -75,9 +61,6 @@ class CategoryService
             $data['slug'] = $this->generateSlug($data['name']);
         }
 
-        // Handle default category logic
-        $this->handleDefaultItemLogic($data);
-
         $this->validateData($data);
         return $this->repository->create($data);
     }
@@ -89,9 +72,6 @@ class CategoryService
         if (!isset($data['slug']) && isset($data['name'])) {
             $data['slug'] = $this->generateSlug($data['name']);
         }
-
-        // Handle default category logic
-        $this->handleDefaultItemLogic($data);
 
         $this->validateData($data);
         return $this->repository->createAndReturnDTO($data);
@@ -105,9 +85,6 @@ class CategoryService
             $data['slug'] = $this->generateSlug($data['name'], $category->id);
         }
 
-        // Handle default category logic
-        $this->handleDefaultItemLogicUpdate($category, $data);
-
         $this->validateData($data, $category);
         return $this->repository->update($category, $data);
     }
@@ -119,9 +96,6 @@ class CategoryService
         if (isset($data['name']) && !isset($data['slug'])) {
             $data['slug'] = $this->generateSlug($data['name'], $category->id);
         }
-
-        // Handle default category logic
-        $this->handleDefaultItemLogicUpdate($category, $data);
 
         $this->validateData($data, $category);
         return $this->repository->updateAndReturnDTO($category, $data);
@@ -157,7 +131,7 @@ class CategoryService
         return $this->repository->getChildrenDTO($parentId);
     }
 
-    public function getAncestors(int $categoryId): Collection
+    public function getAncestors(int $categoryId): \Illuminate\Support\Collection
     {
         return $this->repository->getAncestors($categoryId);
     }
@@ -167,7 +141,7 @@ class CategoryService
         return $this->repository->getAncestorsDTO($categoryId);
     }
 
-    public function getDescendants(int $categoryId): Collection
+    public function getDescendants(int $categoryId): \Illuminate\Support\Collection
     {
         return $this->repository->getDescendants($categoryId);
     }
