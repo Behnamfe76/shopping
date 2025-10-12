@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('meta_title')->nullable();
             $table->text('meta_description')->nullable();
             $table->text('meta_keywords')->nullable();
+            $table->enum('status', ['pending', 'active', 'inactive', 'suspended'])->default('pending');
             $table->boolean('is_active')->default(true);
             $table->boolean('is_featured')->default(false);
             $table->integer('sort_order')->default(0);

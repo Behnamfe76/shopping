@@ -159,7 +159,6 @@ trait HasCrudOperations
         }
 
         $validator = Validator::make($data, $rules, $this->dtoClass::messages());
-
         if ($validator->fails()) {
             throw new \Illuminate\Validation\ValidationException($validator);
         }
@@ -169,7 +168,9 @@ trait HasCrudOperations
     protected function updateUniqueRules(array $rules, int $excludeId): array
     {
         foreach ($rules as $field => $fieldRules) {
-
+            if (!is_array($fieldRules)) {
+                $fieldRules = explode('|', $fieldRules);
+            }
             $rules[$field] = array_map(function ($rule) use ($excludeId, $field) {
                 if (is_string($rule) && str_starts_with($rule, 'unique:')) {
                     // Parse the unique rule properly

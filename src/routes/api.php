@@ -189,6 +189,70 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
         });
     });
 
+    // Brand API routes
+    Route::prefix('brands')->name('brands.')->group(function () {
+        // List brands
+        Route::get('/', [ApiBrandController::class, 'index'])->name('index');
+
+        // Get brand's status list
+        Route::get('/statuses/cursor-all', [ApiBrandController::class, 'statuses'])->name('statuses');
+
+        // Create brand
+        Route::post('/', [ApiBrandController::class, 'store'])->name('store');
+
+        Route::delete('/destroy-some', [ApiBrandController::class, 'destroySome'])->name('destroySome');
+        Route::delete('/destroy-all', [ApiBrandController::class, 'destroyAll'])->name('destroyAll');
+
+        //     // Get brand count
+        //     Route::get('/count', [ApiBrandController::class, 'getCount'])->name('count');
+
+        //     // Search brands
+        //     Route::get('/search', [ApiBrandController::class, 'search'])->name('search');
+
+        //     // Get active brands
+        //     Route::get('/active', [ApiBrandController::class, 'active'])->name('active');
+
+        //     // Get featured brands
+        //     Route::get('/featured', [ApiBrandController::class, 'featured'])->name('featured');
+
+        //     // Get popular brands
+        //     Route::get('/popular', [ApiBrandController::class, 'popular'])->name('popular');
+
+        //     // Get brands by first letter
+        //     Route::get('/alphabetical/{letter}', [ApiBrandController::class, 'alphabetical'])->name('alphabetical');
+
+        //     // Get brands with products
+        //     Route::get('/with-products', [ApiBrandController::class, 'getWithProducts'])->name('with-products');
+
+
+        // Brand-specific routes
+        Route::prefix('{brand}')->group(function () {
+            // Show brand
+            Route::get('/', [ApiBrandController::class, 'show'])->name('show');
+
+            // Update brand (full update)
+            Route::put('/', [ApiBrandController::class, 'update'])->name('update');
+
+            // Delete brand
+            Route::delete('/', [ApiBrandController::class, 'destroy'])->name('destroy');
+
+            //         // Update brand (partial update)
+            //         Route::patch('/', [ApiBrandController::class, 'update'])->name('update.partial');
+
+
+            //         // Toggle active status
+            //         Route::post('/toggle-active', [ApiBrandController::class, 'toggleActive'])->name('toggle-active');
+
+            //         // Toggle featured status
+            //         Route::post('/toggle-featured', [ApiBrandController::class, 'toggleFeatured'])->name('toggle-featured');
+
+            //         // Upload brand media
+            //         Route::post('/media', [ApiBrandController::class, 'uploadMedia'])->name('media.upload');
+
+            // Delete brand media
+            Route::delete('/media/{media}', [ApiBrandController::class, 'deleteMedia'])->name('media.delete');
+        });
+    });
 
     // // Address API routes
     // Route::prefix('addresses')->name('addresses.')->group(function () {
@@ -226,64 +290,6 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
     //     });
     // });
 
-
-
-    // // Brand API routes
-    // Route::prefix('brands')->name('brands.')->group(function () {
-    //     // List brands
-    //     Route::get('/', [ApiBrandController::class, 'index'])->name('index');
-
-    //     // Get brand count
-    //     Route::get('/count', [ApiBrandController::class, 'getCount'])->name('count');
-
-    //     // Search brands
-    //     Route::get('/search', [ApiBrandController::class, 'search'])->name('search');
-
-    //     // Get active brands
-    //     Route::get('/active', [ApiBrandController::class, 'active'])->name('active');
-
-    //     // Get featured brands
-    //     Route::get('/featured', [ApiBrandController::class, 'featured'])->name('featured');
-
-    //     // Get popular brands
-    //     Route::get('/popular', [ApiBrandController::class, 'popular'])->name('popular');
-
-    //     // Get brands by first letter
-    //     Route::get('/alphabetical/{letter}', [ApiBrandController::class, 'alphabetical'])->name('alphabetical');
-
-    //     // Get brands with products
-    //     Route::get('/with-products', [ApiBrandController::class, 'getWithProducts'])->name('with-products');
-
-    //     // Create brand
-    //     Route::post('/', [ApiBrandController::class, 'store'])->name('store');
-
-    //     // Brand-specific routes
-    //     Route::prefix('{brand:slug}')->group(function () {
-    //         // Show brand
-    //         Route::get('/', [ApiBrandController::class, 'show'])->name('show');
-
-    //         // Update brand (full update)
-    //         Route::put('/', [ApiBrandController::class, 'update'])->name('update');
-
-    //         // Update brand (partial update)
-    //         Route::patch('/', [ApiBrandController::class, 'update'])->name('update.partial');
-
-    //         // Delete brand
-    //         Route::delete('/', [ApiBrandController::class, 'destroy'])->name('destroy');
-
-    //         // Toggle active status
-    //         Route::post('/toggle-active', [ApiBrandController::class, 'toggleActive'])->name('toggle-active');
-
-    //         // Toggle featured status
-    //         Route::post('/toggle-featured', [ApiBrandController::class, 'toggleFeatured'])->name('toggle-featured');
-
-    //         // Upload brand media
-    //         Route::post('/media', [ApiBrandController::class, 'uploadMedia'])->name('media.upload');
-
-    //         // Delete brand media
-    //         Route::delete('/media/{media}', [ApiBrandController::class, 'deleteMedia'])->name('media.delete');
-    //     });
-    // });
 
     // // Order API routes
     // Route::prefix('orders')->name('orders.')->group(function () {

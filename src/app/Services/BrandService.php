@@ -11,20 +11,24 @@ use Fereydooni\Shopping\app\Traits\HasSearchOperations;
 use Fereydooni\Shopping\app\Traits\HasSlugGeneration;
 use Fereydooni\Shopping\app\Traits\HasMediaOperations;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Http\UploadedFile;
 
 class BrandService
 {
-    use HasCrudOperations, HasStatusToggle, HasSearchOperations, HasSlugGeneration, HasMediaOperations;
+    use HasCrudOperations;
+    use HasStatusToggle;
+    use HasSearchOperations;
+    use HasSlugGeneration;
+    use HasMediaOperations;
 
-    protected BrandRepositoryInterface $repository;
+    public array $searchableFields = ['name', 'slug', 'description'];
 
-    public function __construct(BrandRepositoryInterface $repository)
-    {
-        $this->repository = $repository;
+
+    public function __construct(
+        private BrandRepositoryInterface $repository
+    ) {
+        $this->model = Brand::class;
+        $this->dtoClass = BrandDTO::class;
     }
 
     /**
@@ -43,29 +47,6 @@ class BrandService
         return $this->all()->map(fn($brand) => BrandDTO::fromModel($brand));
     }
 
-    /**
-     * Get paginated brands
-     */
-    public function paginate(int $perPage = 15): LengthAwarePaginator
-    {
-        return $this->repository->paginate($perPage);
-    }
-
-    /**
-     * Get simple paginated brands
-     */
-    public function simplePaginate(int $perPage = 15): Paginator
-    {
-        return $this->repository->simplePaginate($perPage);
-    }
-
-    /**
-     * Get cursor paginated brands
-     */
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
-    {
-        return $this->repository->cursorPaginate($perPage, $cursor);
-    }
 
     /**
      * Find brand by ID
@@ -99,13 +80,6 @@ class BrandService
         return $this->repository->findBySlugDTO($slug);
     }
 
-    /**
-     * Create brand
-     */
-    public function create(array $data): Brand
-    {
-        return $this->repository->create($data);
-    }
 
     /**
      * Create brand and return DTO
@@ -115,13 +89,6 @@ class BrandService
         return $this->repository->createAndReturnDTO($data);
     }
 
-    /**
-     * Update brand
-     */
-    public function update(Brand $brand, array $data): bool
-    {
-        return $this->repository->update($brand, $data);
-    }
 
     /**
      * Update brand and return DTO
@@ -131,13 +98,6 @@ class BrandService
         return $this->repository->updateAndReturnDTO($brand, $data);
     }
 
-    /**
-     * Delete brand
-     */
-    public function delete(Brand $brand): bool
-    {
-        return $this->repository->delete($brand);
-    }
 
     /**
      * Get active brands

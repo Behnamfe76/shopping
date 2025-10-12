@@ -50,11 +50,25 @@ class ShoppingServiceProvider extends ServiceProvider
         });
 
 
-        // // Register Brand Repository
-        // $this->app->bind(
-        //     \Fereydooni\Shopping\app\Repositories\Interfaces\BrandRepositoryInterface::class,
-        //     \Fereydooni\Shopping\app\Repositories\BrandRepository::class
-        // );
+        // Register Brand Repository
+        $this->app->bind(
+            \Fereydooni\Shopping\app\Repositories\Interfaces\BrandRepositoryInterface::class,
+            \Fereydooni\Shopping\app\Repositories\BrandRepository::class
+        );
+
+        // Register Brand Service
+        $this->app->scoped('shopping.brand', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\BrandService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\BrandRepositoryInterface::class)
+            );
+        });
+
+        // Register Brand Facade
+        $this->app->singleton('shopping.brand.facade', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\BrandService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\BrandRepositoryInterface::class)
+            );
+        });
 
         // // Register Order Repository
         // $this->app->bind(
@@ -262,12 +276,7 @@ class ShoppingServiceProvider extends ServiceProvider
         //     return new \Fereydooni\Shopping\app\Services\GeographicDataService();
         // });
 
-        // // Register Brand Service
-        // $this->app->scoped('shopping.brand', function ($app) {
-        //     return new \Fereydooni\Shopping\app\Services\BrandService(
-        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\BrandRepositoryInterface::class)
-        //     );
-        // });
+
 
         // // Register Order Service
         // $this->app->scoped('shopping.order', function ($app) {

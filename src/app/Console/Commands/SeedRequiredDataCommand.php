@@ -112,6 +112,7 @@ class SeedRequiredDataCommand extends Command
         // Run all permission seeders
         $permissionSeeders = [
             'CategoryPermissionSeeder',
+            'BrandPermissionSeeder',
             'AddressPermissionSeeder',
             'OrderPermissionSeeder',
             'OrderItemPermissionSeeder',

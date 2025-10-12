@@ -31,6 +31,8 @@ class BrandPermissionSeeder extends Seeder
             'brand.delete',
             'brand.delete.any',
             'brand.delete.own',
+            'brand.delete.some',
+            'brand.delete.all',
 
             // Status toggle permissions
             'brand.toggle.active',

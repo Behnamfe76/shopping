@@ -32,14 +32,11 @@ class BrandResource extends JsonResource
             'is_active' => $this->is_active,
             'is_featured' => $this->is_featured,
             'sort_order' => $this->sort_order,
-            'status' => [
-                'value' => $this->status->value,
-                'label' => $this->status->label(),
-                'color' => $this->status->color(),
-            ],
+            'status' => __('brands.statuses.' . $this->status->value),
+            'status_label' => $this->status->label(),
             'products_count' => $this->when(isset($this->products_count), $this->products_count),
             'media' => $this->when($this->relationLoaded('media'), function () {
-                return $this->getMedia()->map(function ($media) {
+                return $this->getMedia('*')->map(function ($media) {
                     return [
                         'id' => $media->id,
                         'name' => $media->name,

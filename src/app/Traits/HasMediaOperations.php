@@ -62,14 +62,6 @@ trait HasMediaOperations
     }
 
     /**
-     * Get media from collection
-     */
-    public function getMedia(object $item, string $collection = 'default'): Collection
-    {
-        return $item->getMedia($collection);
-    }
-
-    /**
      * Get first media from collection
      */
     public function getFirstMedia(object $item, string $collection = 'default'): ?Media

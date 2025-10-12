@@ -50,7 +50,7 @@ class CategoryController extends \App\Http\Controllers\Controller
     }
 
     /**
-     * Display a listing of categories.
+     * Display a listing of category statuses.
      */
     public function statuses(): JsonResponse
     {
@@ -65,7 +65,7 @@ class CategoryController extends \App\Http\Controllers\Controller
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
-                'error' => 'Failed to retrieve categories',
+                'error' => 'Failed to retrieve category statuses',
                 'message' => $e->getMessage(),
             ], 500);
         }
@@ -184,7 +184,6 @@ class CategoryController extends \App\Http\Controllers\Controller
                 'message' => 'All categories deleted successfully',
             ]);
         } catch (\Exception $e) {
-            dd($e->getMessage());
             return response()->json([
                 'error' => 'Failed to delete all categories',
                 'message' => $e->getMessage(),
@@ -212,7 +211,6 @@ class CategoryController extends \App\Http\Controllers\Controller
                 'message' => 'Selected categories deleted successfully',
             ]);
         } catch (\Exception $e) {
-            dd($e->getMessage());
             return response()->json([
                 'error' => 'Failed to delete selected categories',
                 'message' => $e->getMessage(),

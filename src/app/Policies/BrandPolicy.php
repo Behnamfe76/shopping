@@ -87,6 +87,22 @@ class BrandPolicy
     }
 
     /**
+     * Determine whether the user can delete some product tag.
+     */
+    public function deleteSome(User $user): bool
+    {
+        return $user->hasPermissionTo('brand.delete.some');
+    }
+
+    /**
+     * Determine whether the user can delete all product tag.
+     */
+    public function deleteAll(User $user): bool
+    {
+        return $user->hasPermissionTo('brand.delete.all');
+    }
+
+    /**
      * Determine whether the user can toggle the brand's active status.
      */
     public function toggleActive(User $user, Brand $brand): bool
