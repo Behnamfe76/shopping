@@ -87,12 +87,11 @@ class TypesenseQueryDriver implements QueryDriverInterface
         if (empty($searchTerm)) {
             return $query;
         }
-
         $searchableFields = $searchableFields ?: $this->model::searchableFields();
 
         // Build Typesense options based on search configuration
         $typesenseOptions = $this->buildTypesenseOptions($searchOptions, $searchableFields);
-        
+
         // Apply the search with options
         return $query->options($typesenseOptions);
     }
@@ -159,6 +158,7 @@ class TypesenseQueryDriver implements QueryDriverInterface
                     $options['vector_query'] = "{$embeddingField}:([], k:{$k}, alpha:{$alpha})";
                     $options['exclude_fields'] = $embeddingField; // Don't return large embeddings
                 }
+                $options['query_by'] = 'embedding'; // Only use embedding field for semantic search;
                 break;
 
             case 'hybrid':
@@ -183,7 +183,7 @@ class TypesenseQueryDriver implements QueryDriverInterface
                 $options['infix'] = 'fallback';
                 break;
         }
-        
+
         // ==================== TYPO TOLERANCE ====================
         if (isset($config['typo_tolerance'])) {
             $options['num_typos'] = min(2, max(0, $config['typo_tolerance']));

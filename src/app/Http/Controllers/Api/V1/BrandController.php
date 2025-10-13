@@ -22,8 +22,8 @@ use Fereydooni\Shopping\app\Http\Requests\ToggleBrandStatusRequest;
 class BrandController extends Controller
 {
     public function __construct(
-        private BrandService $brandService)
-    {}
+        private BrandService $brandService
+    ) {}
 
     /**
      * Display a listing of brands.
@@ -68,6 +68,28 @@ class BrandController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Failed to retrieve brand statuses',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Display a all of categories.
+     */
+    public function cursorAll(): JsonResponse
+    {
+        Gate::authorize('viewAny', Brand::class);
+
+        try {
+            return response()->json(
+                BrandFacade::cursorAll(),
+                200
+            );
+
+            // return (new CategoryCollection($categories))->response();
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to retrieve categories',
                 'message' => $e->getMessage(),
             ], 500);
         }
@@ -139,7 +161,7 @@ class BrandController extends Controller
      */
     public function destroy(Brand $brand): JsonResponse
     {
-         Gate::authorize('delete', $brand);
+        Gate::authorize('delete', $brand);
 
         try {
             BrandFacade::delete($brand);
@@ -155,7 +177,7 @@ class BrandController extends Controller
         }
     }
 
-     /**
+    /**
      * Remove all product tags from storage.
      */
     public function destroyAll(): JsonResponse

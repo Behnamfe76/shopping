@@ -70,6 +70,28 @@ class ShoppingServiceProvider extends ServiceProvider
             );
         });
 
+
+        // Register Product Repository
+        $this->app->bind(
+            \Fereydooni\Shopping\app\Repositories\Interfaces\ProductRepositoryInterface::class,
+            \Fereydooni\Shopping\app\Repositories\ProductRepository::class
+        );
+
+        // Register Product Service
+        $this->app->scoped('shopping.product', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\ProductService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductRepositoryInterface::class)
+            );
+        });
+
+        // Register Product Facade
+        $this->app->singleton('shopping.product.facade', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\ProductService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductRepositoryInterface::class)
+            );
+        });
+
+
         // // Register Order Repository
         // $this->app->bind(
         //     \Fereydooni\Shopping\app\Repositories\Interfaces\OrderRepositoryInterface::class,
@@ -394,25 +416,6 @@ class ShoppingServiceProvider extends ServiceProvider
         //     );
         // });
 
-        // // Register Product Repository
-        // $this->app->bind(
-        //     \Fereydooni\Shopping\app\Repositories\Interfaces\ProductRepositoryInterface::class,
-        //     \Fereydooni\Shopping\app\Repositories\ProductRepository::class
-        // );
-
-        // // Register Product Service
-        // $this->app->scoped('shopping.product', function ($app) {
-        //     return new \Fereydooni\Shopping\app\Services\ProductService(
-        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductRepositoryInterface::class)
-        //     );
-        // });
-
-        // // Register Product Facade
-        // $this->app->singleton('shopping.product.facade', function ($app) {
-        //     return new \Fereydooni\Shopping\app\Services\ProductService(
-        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductRepositoryInterface::class)
-        //     );
-        // });
 
         // // Register ProductMeta Repository
         // $this->app->bind(

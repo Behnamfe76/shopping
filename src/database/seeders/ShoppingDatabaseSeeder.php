@@ -34,6 +34,7 @@ class ShoppingDatabaseSeeder extends Seeder
             BrandSeeder::class,
             ProductAttributeSeeder::class,
             ProductTagSeeder::class,
+            ProductSeeder::class,
             CustomerSeeder::class,
             DefaultCustomerPreferencesSeeder::class,
             CustomerPreferenceSeeder::class,

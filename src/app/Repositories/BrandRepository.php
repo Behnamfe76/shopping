@@ -31,6 +31,25 @@ class BrandRepository implements BrandRepositoryInterface
     }
 
     /**
+     * Get paginated brands (CursorPaginator)
+     */
+    public function cursorAll(int $perPage = 15, ?string $cursor = null): CursorPaginator
+    {
+        $select = '*';
+        $columns = request()->get('columns', []);
+        if (!empty($columns)) {
+            $select = $columns;
+        }
+
+        return $this->model
+            ->query()->when(request()->input('search'), function ($query, $input) {
+                return $query->whereLike('name', "%$input%");
+            })
+            ->select($select)
+            ->cursorPaginate($perPage, [$columns], 'id', $cursor);
+    }
+
+    /**
      * Get paginated brands (LengthAwarePaginator)
      */
     public function paginate(int $perPage = 15): LengthAwarePaginator

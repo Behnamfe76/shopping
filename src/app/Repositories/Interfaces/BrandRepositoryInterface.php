@@ -32,6 +32,11 @@ interface BrandRepositoryInterface
     public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator;
 
     /**
+     * Get cursor paginated categories
+     */
+    public function cursorAll(int $perPage = 15, ?string $cursor = null): CursorPaginator;
+
+    /**
      * Find brand by ID
      */
     public function find(int $id): ?Brand;

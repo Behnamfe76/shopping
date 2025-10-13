@@ -4,21 +4,24 @@ namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Gate;
+use Fereydooni\Shopping\app\Models\Brand;
 use Fereydooni\Shopping\app\Models\Product;
 use Fereydooni\Shopping\app\Models\Category;
-use Fereydooni\Shopping\app\Models\Brand;
-use Fereydooni\Shopping\app\Facades\Product as ProductFacade;
-use Fereydooni\Shopping\app\Http\Requests\StoreProductRequest;
-use Fereydooni\Shopping\app\Http\Requests\UpdateProductRequest;
-use Fereydooni\Shopping\app\Http\Requests\ToggleProductStatusRequest;
-use Fereydooni\Shopping\app\Http\Requests\SearchProductRequest;
-use Fereydooni\Shopping\app\Http\Requests\UploadProductMediaRequest;
-use Fereydooni\Shopping\app\Http\Requests\BulkProductOperationsRequest;
+use Fereydooni\Shopping\app\Enums\ProductStatus;
+use Fereydooni\Shopping\app\Enums\ProductType;
 use Fereydooni\Shopping\app\Http\Resources\ProductResource;
+use Fereydooni\Shopping\app\Facades\Product as ProductFacade;
 use Fereydooni\Shopping\app\Http\Resources\ProductCollection;
-use Fereydooni\Shopping\app\Http\Resources\ProductSearchResource;
+use Fereydooni\Shopping\app\Http\Requests\StoreProductRequest;
+use Fereydooni\Shopping\app\Http\Requests\SearchProductRequest;
+use Fereydooni\Shopping\app\Http\Requests\UpdateProductRequest;
 use Fereydooni\Shopping\app\Http\Resources\ProductMediaResource;
+use Fereydooni\Shopping\app\Http\Resources\ProductSearchResource;
+use Fereydooni\Shopping\app\Http\Requests\UploadProductMediaRequest;
 use Fereydooni\Shopping\app\Http\Resources\ProductAnalyticsResource;
+use Fereydooni\Shopping\app\Http\Requests\ToggleProductStatusRequest;
+use Fereydooni\Shopping\app\Http\Requests\BulkProductOperationsRequest;
 
 class ProductController extends \App\Http\Controllers\Controller
 {
@@ -27,7 +30,7 @@ class ProductController extends \App\Http\Controllers\Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $this->authorize('viewAny', Product::class);
+        Gate::authorize('viewAny', Product::class);
 
         try {
             $perPage = $request->get('per_page', 15);
@@ -39,8 +42,11 @@ class ProductController extends \App\Http\Controllers\Controller
                 default => ProductFacade::paginate($perPage),
             };
 
-            return (new ProductCollection($products))->response();
+            return response()->json(
+                new ProductCollection($products)
+            );
         } catch (\Exception $e) {
+
             return response()->json([
                 'error' => 'Failed to retrieve products',
                 'message' => $e->getMessage(),
@@ -48,17 +54,64 @@ class ProductController extends \App\Http\Controllers\Controller
         }
     }
 
+     /**
+     * Display a listing of product statuses.
+     */
+    public function statuses(): JsonResponse
+    {
+        Gate::authorize('viewAny', Product::class);
+
+        try {
+            return response()->json([
+                'data' => array_map(fn($status) => [
+                    'id' => $status->value,
+                    'name' => __('products.statuses.' . $status->value),
+                ], ProductStatus::cases()),
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to retrieve product statuses',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Display a listing of product tpyes.
+     */
+    public function productTypes(): JsonResponse
+    {
+        Gate::authorize('viewAny', Product::class);
+
+        try {
+            return response()->json([
+                'data' => array_map(fn($type) => [
+                    'id' => $type->value,
+                    'name' => __('products.types.' . $type->value),
+                ], ProductType::cases()),
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to retrieve product types',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+
+
+
     /**
      * Store a newly created product.
      */
     public function store(StoreProductRequest $request): JsonResponse
     {
-        $this->authorize('create', Product::class);
+        Gate::authorize('create', Product::class);
 
         try {
-            $productDTO = ProductFacade::createDTO($request->validated());
+            $product = ProductFacade::create($request->validated());
 
-            return (new ProductResource($productDTO))->response()->setStatusCode(201);
+            return (new ProductResource($product))->response()->setStatusCode(201);
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Failed to create product',

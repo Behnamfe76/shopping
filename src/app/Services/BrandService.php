@@ -2,16 +2,17 @@
 
 namespace Fereydooni\Shopping\app\Services;
 
-use Fereydooni\Shopping\app\Repositories\Interfaces\BrandRepositoryInterface;
+use Illuminate\Http\UploadedFile;
 use Fereydooni\Shopping\app\Models\Brand;
 use Fereydooni\Shopping\app\DTOs\BrandDTO;
-use Fereydooni\Shopping\app\Traits\HasCrudOperations;
+use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Database\Eloquent\Collection;
 use Fereydooni\Shopping\app\Traits\HasStatusToggle;
-use Fereydooni\Shopping\app\Traits\HasSearchOperations;
+use Fereydooni\Shopping\app\Traits\HasCrudOperations;
 use Fereydooni\Shopping\app\Traits\HasSlugGeneration;
 use Fereydooni\Shopping\app\Traits\HasMediaOperations;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Http\UploadedFile;
+use Fereydooni\Shopping\app\Traits\HasSearchOperations;
+use Fereydooni\Shopping\app\Repositories\Interfaces\BrandRepositoryInterface;
 
 class BrandService
 {
@@ -37,6 +38,11 @@ class BrandService
     public function all(): Collection
     {
         return $this->repository->all();
+    }
+
+    public function cursorAll(): CursorPaginator
+    {
+        return $this->repository->cursorAll(10, request()->get('cursor'));
     }
 
     /**

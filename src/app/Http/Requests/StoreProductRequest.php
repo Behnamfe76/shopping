@@ -12,7 +12,7 @@ class StoreProductRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', \Fereydooni\Shopping\app\Models\Product::class);
+        return true;
     }
 
     /**

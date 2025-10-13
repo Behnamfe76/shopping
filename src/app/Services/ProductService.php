@@ -14,28 +14,25 @@ use Fereydooni\Shopping\app\Traits\HasAnalyticsOperations;
 use Fereydooni\Shopping\app\Models\Product;
 use Fereydooni\Shopping\app\DTOs\ProductDTO;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
 
 class ProductService
 {
-    use HasCrudOperations,
-        HasStatusToggle,
-        HasSearchOperations,
-        HasSlugGeneration,
-        HasMediaOperations,
-        HasInventoryManagement,
-        HasSeoOperations,
-        HasAnalyticsOperations;
+    use HasCrudOperations;
+    use HasStatusToggle;
+    use HasSearchOperations;
+    use HasSlugGeneration;
+    use HasMediaOperations;
+    use HasInventoryManagement;
+    use HasSeoOperations;
+    use HasAnalyticsOperations;
 
-    protected ProductRepositoryInterface $repository;
-    protected string $dtoClass = ProductDTO::class;
 
-    public function __construct(ProductRepositoryInterface $repository)
-    {
+    public function __construct(
+        private ProductRepositoryInterface $repository
+    ) {
         $this->repository = $repository;
-        $this->model = new Product();
+        $this->model = Product::class;
+        $this->dtoClass = ProductDTO::class;
     }
 
     // Repository method delegation
@@ -385,26 +382,6 @@ class ProductService
     }
 
     // Override trait methods to use repository
-    public function all(): Collection
-    {
-        return $this->repository->all();
-    }
-
-    public function paginate(int $perPage = 15): LengthAwarePaginator
-    {
-        return $this->repository->paginate($perPage);
-    }
-
-    public function simplePaginate(int $perPage = 15): Paginator
-    {
-        return $this->repository->simplePaginate($perPage);
-    }
-
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
-    {
-        return $this->repository->cursorPaginate($perPage, $cursor);
-    }
-
     public function find(int $id): ?Product
     {
         return $this->repository->find($id);
@@ -415,29 +392,14 @@ class ProductService
         return $this->repository->findDTO($id);
     }
 
-    public function create(array $data): Product
-    {
-        return $this->repository->create($data);
-    }
-
     public function createAndReturnDTO(array $data): ProductDTO
     {
         return $this->repository->createAndReturnDTO($data);
     }
 
-    public function update(Product $product, array $data): bool
-    {
-        return $this->repository->update($product, $data);
-    }
-
     public function updateAndReturnDTO(Product $product, array $data): ?ProductDTO
     {
         return $this->repository->updateAndReturnDTO($product, $data);
-    }
-
-    public function delete(Product $product): bool
-    {
-        return $this->repository->delete($product);
     }
 
     public function search(string $query): Collection
