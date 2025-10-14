@@ -31,6 +31,8 @@ class ProductAttributePermissionSeeder extends Seeder
             'product-attribute.delete',
             'product-attribute.delete.any',
             'product-attribute.delete.own',
+            'product-attribute.delete.all',
+            'product-attribute.delete.some',
 
             // Toggle permissions
             'product-attribute.toggle.active',

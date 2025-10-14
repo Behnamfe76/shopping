@@ -146,9 +146,6 @@ class BrandController extends Controller
 
             return (new BrandResource($brand))->response();
         } catch (\Exception $e) {
-            dd(
-                $e->getMessage()
-            );
             return response()->json([
                 'error' => 'Failed to update category',
                 'message' => $e->getMessage(),
@@ -220,7 +217,6 @@ class BrandController extends Controller
                 'message' => 'Selected brands deleted successfully',
             ]);
         } catch (\Exception $e) {
-            dd($e->getMessage());
             return response()->json([
                 'error' => 'Failed to delete selected brands',
                 'message' => $e->getMessage(),

@@ -4,39 +4,96 @@ namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Fereydooni\Shopping\app\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Gate;
 use Fereydooni\Shopping\app\Models\ProductAttribute;
-use Fereydooni\Shopping\app\Services\ProductAttributeService;
-use Fereydooni\Shopping\app\Http\Requests\StoreProductAttributeRequest;
-use Fereydooni\Shopping\app\Http\Requests\UpdateProductAttributeRequest;
-use Fereydooni\Shopping\app\Http\Requests\ToggleProductAttributeStatusRequest;
-use Fereydooni\Shopping\app\Http\Requests\SearchProductAttributeRequest;
-use Fereydooni\Shopping\app\Http\Requests\AddProductAttributeValueRequest;
-use Fereydooni\Shopping\app\Http\Requests\UpdateProductAttributeValueRequest;
+use Fereydooni\Shopping\app\Enums\ProductAttributeType;
+use Fereydooni\Shopping\app\Enums\ProductAttributeInputType;
 use Fereydooni\Shopping\app\Http\Resources\ProductAttributeResource;
 use Fereydooni\Shopping\app\Http\Resources\ProductAttributeCollection;
-use Fereydooni\Shopping\app\Http\Resources\ProductAttributeSearchResource;
+use Fereydooni\Shopping\app\Http\Requests\StoreProductAttributeRequest;
+use Fereydooni\Shopping\app\Http\Requests\SearchProductAttributeRequest;
+use Fereydooni\Shopping\app\Http\Requests\UpdateProductAttributeRequest;
 use Fereydooni\Shopping\app\Http\Resources\ProductAttributeValueResource;
+use Fereydooni\Shopping\app\Http\Requests\AddProductAttributeValueRequest;
+use Fereydooni\Shopping\app\Http\Resources\ProductAttributeSearchResource;
+use Fereydooni\Shopping\app\Http\Requests\UpdateProductAttributeValueRequest;
 use Fereydooni\Shopping\app\Http\Resources\ProductAttributeAnalyticsResource;
+use Fereydooni\Shopping\app\Http\Requests\ToggleProductAttributeStatusRequest;
+use Fereydooni\Shopping\app\Facades\ProductAttribute as ProductAttributeFacade;
 
 class ProductAttributeController extends Controller
 {
-    public function __construct(
-        private ProductAttributeService $productAttributeService
-    ) {
-    }
+    public function __construct() {}
 
     /**
      * Display a listing of the product attributes.
      */
     public function index(Request $request): JsonResponse
     {
-        $this->authorize('viewAny', ProductAttribute::class);
+        Gate::authorize('viewAny', ProductAttribute::class);
 
-        $perPage = $request->get('per_page', 15);
-        $attributes = $this->productAttributeService->paginate($perPage);
+        try {
+            $perPage = min((int) $request->get('per_page', 15), 100);
+            $paginationType = $request->get('pagination', 'regular');
 
-        return response()->json(new ProductAttributeCollection($attributes));
+            $categories = match ($paginationType) {
+                'simplePaginate' => ProductAttributeFacade::simplePaginate($perPage),
+                'cursorPaginate' => ProductAttributeFacade::cursorPaginate($perPage),
+                default => ProductAttributeFacade::paginate($perPage),
+            };
+
+            return ProductAttributeResource::collection($categories)->response()->setStatusCode(200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to retrieve categories',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+     /**
+     * Display a listing of category statuses.
+     */
+    public function types(): JsonResponse
+    {
+        Gate::authorize('viewAny', ProductAttribute::class);
+
+        try {
+            return response()->json([
+                'data' => array_map(fn($status) => [
+                    'id' => $status->value,
+                    'name' => __('product-attributes.types.' . $status->value),
+                ], ProductAttributeType::cases()),
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to retrieve product attribute statuses',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+     /**
+     * Display a listing of category statuses.
+     */
+    public function inputTypes(): JsonResponse
+    {
+        Gate::authorize('viewAny', ProductAttribute::class);
+
+        try {
+            return response()->json([
+                'data' => array_map(fn($status) => [
+                    'id' => $status->value,
+                    'name' => __('product-attributes.input-types.' . $status->value),
+                ], ProductAttributeInputType::cases()),
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to retrieve product attribute input types',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
@@ -44,51 +101,124 @@ class ProductAttributeController extends Controller
      */
     public function store(StoreProductAttributeRequest $request): JsonResponse
     {
-        $this->authorize('create', ProductAttribute::class);
+        Gate::authorize('create', ProductAttribute::class);
 
-        $data = $request->validated();
-        $data['created_by'] = auth()->id();
+        try {
+            $category = ProductAttributeFacade::create($request->validated());
 
-        $attribute = $this->productAttributeService->create($data);
-
-        return response()->json(new ProductAttributeResource($attribute), 201);
+            return (new ProductAttributeResource($category))->response()->setStatusCode(201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to create category',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
      * Display the specified product attribute.
      */
-    public function show(ProductAttribute $attribute): JsonResponse
+    public function show(ProductAttribute $productAttribute): JsonResponse
     {
-        $this->authorize('view', $attribute);
+        Gate::authorize('view', $productAttribute);
 
-        return response()->json(new ProductAttributeResource($attribute));
+        try {
+            return (new ProductAttributeResource($productAttribute->load('values')))->response();
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to retrieve product attribute',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
      * Update the specified product attribute in storage.
      */
-    public function update(UpdateProductAttributeRequest $request, ProductAttribute $attribute): JsonResponse
+    public function update(UpdateProductAttributeRequest $request, ProductAttribute $productAttribute): JsonResponse
     {
-        $this->authorize('update', $attribute);
+        Gate::authorize('update', $productAttribute);
 
-        $data = $request->validated();
-        $data['updated_by'] = auth()->id();
+        try {
+            ProductAttributeFacade::update($productAttribute, $request->validated());
 
-        $this->productAttributeService->update($attribute, $data);
-
-        return response()->json(new ProductAttributeResource($attribute->fresh()));
+            return (new ProductAttributeResource($productAttribute))->response();
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to update product attribute',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
      * Remove the specified product attribute from storage.
      */
-    public function destroy(ProductAttribute $attribute): JsonResponse
+    public function destroy(ProductAttribute $productAttribute): JsonResponse
     {
-        $this->authorize('delete', $attribute);
+        Gate::authorize('delete', $productAttribute);
 
-        $this->productAttributeService->delete($attribute);
+        try {
+            ProductAttributeFacade::delete($productAttribute);
 
-        return response()->json(['message' => 'Product attribute deleted successfully']);
+            return response()->json([
+                'message' => 'Product attribute deleted successfully',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to delete product attribute',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Remove all product tags from storage.
+     */
+    public function destroyAll(): JsonResponse
+    {
+
+        Gate::authorize('deleteAll', ProductAttribute::class);
+
+        try {
+            ProductAttributeFacade::deleteAll();
+
+            return response()->json([
+                'message' => 'All product attributes deleted successfully',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to delete all product attributes',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Remove a selection of product tags from storage.
+     */
+    public function destroySome(Request $request): JsonResponse
+    {
+        $request->validate([
+            'ids' => 'required|array',
+            'ids.*' => 'required|integer|exists:product_attributes,id',
+        ]);
+        $ids = $request->input('ids');
+
+        Gate::authorize('deleteSome', ProductAttribute::class);
+
+        try {
+            ProductAttributeFacade::deleteSome($ids);
+
+            return response()->json([
+                'message' => 'Selected product attributes deleted successfully',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to delete selected product attributes',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
@@ -448,4 +578,3 @@ class ProductAttributeController extends Controller
         return response()->json(['usage' => $usage]);
     }
 }
-

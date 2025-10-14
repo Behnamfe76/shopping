@@ -32,7 +32,6 @@ class ProductAttribute extends Model
         'meta_description',
         'meta_keywords',
         'created_by',
-        'updated_by',
     ];
 
     protected $casts = [

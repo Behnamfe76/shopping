@@ -86,6 +86,22 @@ class ProductAttributePolicy
     }
 
     /**
+     * Determine whether the user can delete some product tag.
+     */
+    public function deleteSome($user): bool
+    {
+        return $user->hasPermissionTo('category.delete.some');
+    }
+
+    /**
+     * Determine whether the user can delete all product tag.
+     */
+    public function deleteAll($user): bool
+    {
+        return $user->hasPermissionTo('category.delete.all');
+    }
+
+    /**
      * Determine whether the user can toggle the active status of the product attribute.
      */
     public function toggleActive(User $user, ProductAttribute $attribute): bool

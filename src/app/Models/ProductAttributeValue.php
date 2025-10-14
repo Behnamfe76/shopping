@@ -14,13 +14,11 @@ class ProductAttributeValue extends Model
     protected $fillable = [
         'attribute_id',
         'value',
-        'slug',
         'description',
         'sort_order',
         'is_active',
         'is_default',
         'color_code',
-        'image_url',
         'meta_data',
         'usage_count',
         'created_by',
@@ -127,11 +125,6 @@ class ProductAttributeValue extends Model
         $this->attributes['value'] = trim($value);
     }
 
-    public function setSlugAttribute($value)
-    {
-        $this->attributes['slug'] = $value ? strtolower(trim($value)) : null;
-    }
-
     public function setColorCodeAttribute($value)
     {
         $this->attributes['color_code'] = $value ? strtolower(trim($value)) : null;
@@ -175,13 +168,6 @@ class ProductAttributeValue extends Model
     {
         return !static::where('attribute_id', $this->attribute_id)
             ->where('value', $this->value)
-            ->where('id', '!=', $this->id)
-            ->exists();
-    }
-
-    public function isSlugUnique(): bool
-    {
-        return !static::where('slug', $this->slug)
             ->where('id', '!=', $this->id)
             ->exists();
     }

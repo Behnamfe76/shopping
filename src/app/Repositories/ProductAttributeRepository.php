@@ -51,7 +51,25 @@ class ProductAttributeRepository implements ProductAttributeRepositoryInterface
 
     public function create(array $data): ProductAttribute
     {
-        return ProductAttribute::create($data);
+        try {
+            DB::beginTransaction();
+
+            $data['created_by'] = auth()->id();
+            $productAttribute = ProductAttribute::create($data);
+
+            $productAttribute->values()->createMany(
+                collect($data['values'])->map(fn($value) => [
+                    'value' => $value,
+                    'created_by' => auth()->id(),
+                ])->toArray()
+            );
+            DB::commit();
+
+            return $productAttribute;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
     }
 
     public function createAndReturnDTO(array $data): ProductAttributeDTO
@@ -60,9 +78,40 @@ class ProductAttributeRepository implements ProductAttributeRepositoryInterface
         return ProductAttributeDTO::fromModel($attribute);
     }
 
-    public function update(ProductAttribute $attribute, array $data): bool
+    public function update(ProductAttribute $productAttribute, array $data): bool
     {
-        return $attribute->update($data);
+        try {
+            DB::beginTransaction();
+
+            $data['updated_by'] = auth()->id();
+            $productAttribute->update($data);
+
+            // Sync attribute values: update existing, create new, delete removed
+            $existingValues = $productAttribute->values()->pluck('id', 'value')->toArray();
+            $newValues = collect($data['values'])->mapWithKeys(function ($value) {
+                return [$value => $value];
+            })->toArray();
+
+            // Delete removed values
+            $toDelete = array_diff($existingValues, $newValues);
+            if (!empty($toDelete)) {
+                $productAttribute->values()->whereIn('id', $toDelete)->delete();
+            }
+
+            // Add or update values
+            foreach ($data['values'] as $value) {
+                $productAttribute->values()->updateOrCreate(
+                    ['value' => $value],
+                    ['updated_by' => auth()->id()]
+                );
+            }
+            DB::commit();
+
+            return true;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
     }
 
     public function updateAndReturnDTO(ProductAttribute $attribute, array $data): ?ProductAttributeDTO
@@ -297,9 +346,9 @@ class ProductAttributeRepository implements ProductAttributeRepositoryInterface
     {
         return ProductAttribute::where(function ($q) use ($query) {
             $q->where('name', 'like', "%{$query}%")
-              ->orWhere('slug', 'like', "%{$query}%")
-              ->orWhere('description', 'like', "%{$query}%")
-              ->orWhere('group', 'like', "%{$query}%");
+                ->orWhere('slug', 'like', "%{$query}%")
+                ->orWhere('description', 'like', "%{$query}%")
+                ->orWhere('group', 'like', "%{$query}%");
         })->ordered()->get();
     }
 

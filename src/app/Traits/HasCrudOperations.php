@@ -28,7 +28,7 @@ trait HasCrudOperations
         $queryManager = $this->getQueryManager();
         $filters = $this->getFiltersFromRequest();
         $searchOptions = $this->getSearchOptionsFromRequest();
-
+        
         return $queryManager->paginate($this->model, $filters, $searchOptions, $perPage, $driver);
     }
 

@@ -3,9 +3,6 @@
 namespace Fereydooni\Shopping\app\Services;
 
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
 use Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeRepositoryInterface;
 use Fereydooni\Shopping\app\Models\ProductAttribute;
 use Fereydooni\Shopping\app\DTOs\ProductAttributeDTO;
@@ -30,34 +27,13 @@ class ProductAttributeService
     public function __construct(
         private ProductAttributeRepositoryInterface $repository
     ) {
+        $this->model = ProductAttribute::class;
+        $this->dtoClass = ProductAttributeDTO::class;
     }
+
+    public array $searchableFields = ['name', 'slug', 'description', 'group', 'unit'];
 
     // Basic CRUD operations (inherited from HasCrudOperations)
-    public function all(): Collection
-    {
-        return $this->repository->all();
-    }
-
-    public function paginate(int $perPage = 15): LengthAwarePaginator
-    {
-        return $this->repository->paginate($perPage);
-    }
-
-    public function simplePaginate(int $perPage = 15): Paginator
-    {
-        return $this->repository->simplePaginate($perPage);
-    }
-
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
-    {
-        return $this->repository->cursorPaginate($perPage, $cursor);
-    }
-
-    public function find(int $id): ?ProductAttribute
-    {
-        return $this->repository->find($id);
-    }
-
     public function findDTO(int $id): ?ProductAttributeDTO
     {
         return $this->repository->findDTO($id);
@@ -81,11 +57,6 @@ class ProductAttributeService
     public function updateAndReturnDTO(ProductAttribute $attribute, array $data): ?ProductAttributeDTO
     {
         return $this->repository->updateAndReturnDTO($attribute, $data);
-    }
-
-    public function delete(ProductAttribute $attribute): bool
-    {
-        return $this->repository->delete($attribute);
     }
 
     // Find by specific fields

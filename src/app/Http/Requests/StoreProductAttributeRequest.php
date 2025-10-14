@@ -32,16 +32,17 @@ class StoreProductAttributeRequest extends FormRequest
             'is_filterable' => 'boolean',
             'is_comparable' => 'boolean',
             'is_visible' => 'boolean',
-            'sort_order' => 'integer|min:0',
-            'validation_rules' => 'nullable|string|max:1000',
-            'default_value' => 'nullable|string|max:500',
-            'unit' => 'nullable|string|max:50',
-            'group' => 'nullable|string|max:100',
             'is_system' => 'boolean',
             'is_active' => 'boolean',
+            'sort_order' => 'integer|min:0',
+            'validation_rules' => 'nullable|string|max:1000',
+            'unit' => 'nullable|string|max:50',
+            'group' => 'nullable|string|max:100',
             'meta_title' => 'nullable|string|max:255',
             'meta_description' => 'nullable|string|max:500',
             'meta_keywords' => 'nullable|string|max:500',
+            'values' => 'required|array|min:1',
+            'values.*' => 'required|string',
         ];
     }
 
@@ -64,12 +65,16 @@ class StoreProductAttributeRequest extends FormRequest
             'sort_order.integer' => 'The sort order must be a number.',
             'sort_order.min' => 'The sort order must be a positive number.',
             'validation_rules.max' => 'The validation rules cannot exceed 1000 characters.',
-            'default_value.max' => 'The default value cannot exceed 500 characters.',
             'unit.max' => 'The unit cannot exceed 50 characters.',
             'group.max' => 'The group name cannot exceed 100 characters.',
             'meta_title.max' => 'The meta title cannot exceed 255 characters.',
             'meta_description.max' => 'The meta description cannot exceed 500 characters.',
             'meta_keywords.max' => 'The meta keywords cannot exceed 500 characters.',
+            'values.required' => 'At least one attribute value is required.',
+            'values.array' => 'The attribute values must be an array.',
+            'values.min' => 'At least one attribute value is required.',
+            'values.*.required' => 'Each attribute value is required.',
+            'values.*.string' => 'Each attribute value must be a string.',
         ];
     }
 
@@ -91,7 +96,6 @@ class StoreProductAttributeRequest extends FormRequest
             'is_visible' => 'visible status',
             'sort_order' => 'sort order',
             'validation_rules' => 'validation rules',
-            'default_value' => 'default value',
             'unit' => 'unit',
             'group' => 'group',
             'is_system' => 'system status',
@@ -99,6 +103,8 @@ class StoreProductAttributeRequest extends FormRequest
             'meta_title' => 'meta title',
             'meta_description' => 'meta description',
             'meta_keywords' => 'meta keywords',
+            'values' => 'attribute values',
+            'values.*' => 'attribute value',
         ];
     }
 

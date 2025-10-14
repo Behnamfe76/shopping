@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\CursorPaginator;
-use Fereydooni\Shopping\app\Models\ProductAttribute;
+use Fereydooni\Shopping\app\Models\ProductAttribute as ProductAttributeModel;
 use Fereydooni\Shopping\app\DTOs\ProductAttributeDTO;
 use Fereydooni\Shopping\app\Models\ProductAttributeValue;
 use Fereydooni\Shopping\app\DTOs\ProductAttributeValueDTO;
@@ -17,17 +17,17 @@ use Fereydooni\Shopping\app\DTOs\ProductAttributeValueDTO;
  * @method static LengthAwarePaginator paginate(int $perPage = 15)
  * @method static Paginator simplePaginate(int $perPage = 15)
  * @method static CursorPaginator cursorPaginate(int $perPage = 15, string $cursor = null)
- * @method static ProductAttribute|null find(int $id)
+ * @method static ProductAttributeModel|null find(int $id)
  * @method static ProductAttributeDTO|null findDTO(int $id)
- * @method static ProductAttribute create(array $data)
+ * @method static ProductAttributeModel create(array $data)
  * @method static ProductAttributeDTO createAndReturnDTO(array $data)
- * @method static bool update(ProductAttribute $attribute, array $data)
- * @method static ProductAttributeDTO|null updateAndReturnDTO(ProductAttribute $attribute, array $data)
- * @method static bool delete(ProductAttribute $attribute)
+ * @method static bool update(ProductAttributeModel $attribute, array $data)
+ * @method static ProductAttributeDTO|null updateAndReturnDTO(ProductAttributeModel $attribute, array $data)
+ * @method static bool delete(ProductAttributeModel $attribute)
  *
- * @method static ProductAttribute|null findBySlug(string $slug)
+ * @method static ProductAttributeModel|null findBySlug(string $slug)
  * @method static ProductAttributeDTO|null findBySlugDTO(string $slug)
- * @method static ProductAttribute|null findByName(string $name)
+ * @method static ProductAttributeModel|null findByName(string $name)
  * @method static ProductAttributeDTO|null findByNameDTO(string $name)
  *
  * @method static Collection findByType(string $type)
@@ -55,12 +55,12 @@ use Fereydooni\Shopping\app\DTOs\ProductAttributeValueDTO;
  * @method static Collection findActive()
  * @method static Collection findActiveDTO()
  *
- * @method static bool toggleActive(ProductAttribute $attribute)
- * @method static bool toggleRequired(ProductAttribute $attribute)
- * @method static bool toggleSearchable(ProductAttribute $attribute)
- * @method static bool toggleFilterable(ProductAttribute $attribute)
- * @method static bool toggleComparable(ProductAttribute $attribute)
- * @method static bool toggleVisible(ProductAttribute $attribute)
+ * @method static bool toggleActive(ProductAttributeModel $attribute)
+ * @method static bool toggleRequired(ProductAttributeModel $attribute)
+ * @method static bool toggleSearchable(ProductAttributeModel $attribute)
+ * @method static bool toggleFilterable(ProductAttributeModel $attribute)
+ * @method static bool toggleComparable(ProductAttributeModel $attribute)
+ * @method static bool toggleVisible(ProductAttributeModel $attribute)
  *
  * @method static int getAttributeCount()
  * @method static int getAttributeCountByType(string $type)
@@ -103,7 +103,7 @@ use Fereydooni\Shopping\app\DTOs\ProductAttributeValueDTO;
  *
  * @see \Fereydooni\Shopping\app\Services\ProductAttributeService
  */
-class ProductAttributeFacade extends Facade
+class ProductAttribute extends Facade
 {
     /**
      * Get the registered name of the component.

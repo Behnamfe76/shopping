@@ -70,8 +70,6 @@ class ProductTagPolicy
             return true;
         }
 
-        dd($user);
-
         return false;
     }
 

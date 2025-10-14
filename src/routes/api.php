@@ -334,6 +334,88 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
         //     });
     });
 
+    // ProductAttribute API routes
+    Route::prefix('product-attributes')->name('product-attributes.')->group(function () {
+        // List product attributes
+        Route::get('/', [ApiProductAttributeController::class, 'index'])->name('index');
+
+        // Get product attribute types
+        Route::get('/types/cursor-all', [ApiProductAttributeController::class, 'types'])->name('types');
+
+        Route::get('/input-types/cursor-all', [ApiProductAttributeController::class, 'inputTypes'])->name('input-types');
+
+        // Get product attribute input-types
+        Route::post('/', [ApiProductAttributeController::class, 'store'])->name('store');
+
+        Route::delete('/destroy-some', [ApiProductAttributeController::class, 'destroySome'])->name('destroySome');
+        Route::delete('/destroy-all', [ApiProductAttributeController::class, 'destroyAll'])->name('destroyAll');
+
+        //     // Get attribute count
+        //     Route::get('/count', [ApiProductAttributeController::class, 'getCount'])->name('count');
+
+        //     // Get attribute groups
+        //     Route::get('/groups', [ApiProductAttributeController::class, 'getGroups'])->name('groups');
+
+        //     // Get attribute types
+        //     Route::get('/types', [ApiProductAttributeController::class, 'getTypes'])->name('types');
+
+        //     // Get input types
+        //     Route::get('/input-types', [ApiProductAttributeController::class, 'getInputTypes'])->name('input-types');
+
+        //     // Search product attributes
+        //     Route::get('/search', [ApiProductAttributeController::class, 'search'])->name('search');
+
+        //     // Filter by functionality
+        //     Route::get('/required', [ApiProductAttributeController::class, 'required'])->name('required');
+        //     Route::get('/searchable', [ApiProductAttributeController::class, 'searchable'])->name('searchable');
+        //     Route::get('/filterable', [ApiProductAttributeController::class, 'filterable'])->name('filterable');
+        //     Route::get('/comparable', [ApiProductAttributeController::class, 'comparable'])->name('comparable');
+        //     Route::get('/visible', [ApiProductAttributeController::class, 'visible'])->name('visible');
+        //     Route::get('/system', [ApiProductAttributeController::class, 'system'])->name('system');
+        //     Route::get('/custom', [ApiProductAttributeController::class, 'custom'])->name('custom');
+
+        //     // Filter by type/group/input type
+        //     Route::get('/by-type/{type}', [ApiProductAttributeController::class, 'byType'])->name('by-type');
+        //     Route::get('/by-group/{group}', [ApiProductAttributeController::class, 'byGroup'])->name('by-group');
+        //     Route::get('/by-input-type/{inputType}', [ApiProductAttributeController::class, 'byInputType'])->name('by-input-type');
+
+
+        // ProductAttribute-specific routes
+        Route::prefix('{productAttribute}')->group(function () {
+            // Show product attribute
+            Route::get('/', [ApiProductAttributeController::class, 'show'])->name('show');
+
+            // Update product attribute (full update)
+            Route::put('/', [ApiProductAttributeController::class, 'update'])->name('update');
+
+            //         // Update product attribute (partial update)
+            //         Route::patch('/', [ApiProductAttributeController::class, 'update'])->name('update.partial');
+
+            // Delete product attribute
+            Route::delete('/', [ApiProductAttributeController::class, 'destroy'])->name('destroy');
+
+            //         // Toggle operations
+            //         Route::post('/toggle-active', [ApiProductAttributeController::class, 'toggleActive'])->name('toggle-active');
+            //         Route::post('/toggle-required', [ApiProductAttributeController::class, 'toggleRequired'])->name('toggle-required');
+            //         Route::post('/toggle-searchable', [ApiProductAttributeController::class, 'toggleSearchable'])->name('toggle-searchable');
+            //         Route::post('/toggle-filterable', [ApiProductAttributeController::class, 'toggleFilterable'])->name('toggle-filterable');
+            //         Route::post('/toggle-comparable', [ApiProductAttributeController::class, 'toggleComparable'])->name('toggle-comparable');
+            //         Route::post('/toggle-visible', [ApiProductAttributeController::class, 'toggleVisible'])->name('toggle-visible');
+
+            //         // Analytics
+            //         Route::get('/analytics', [ApiProductAttributeController::class, 'getAnalytics'])->name('analytics');
+            //         Route::get('/usage', [ApiProductAttributeController::class, 'getUsage'])->name('usage');
+
+            //         // Attribute values
+            //         Route::prefix('values')->name('values.')->group(function () {
+            //             Route::get('/', [ApiProductAttributeController::class, 'getValues'])->name('index');
+            //             Route::post('/', [ApiProductAttributeController::class, 'addValue'])->name('store');
+            //             Route::put('/{value}', [ApiProductAttributeController::class, 'updateValue'])->name('update');
+            //             Route::delete('/{value}', [ApiProductAttributeController::class, 'deleteValue'])->name('destroy');
+            //         });
+        });
+    });
+
 
     // // Address API routes
     // Route::prefix('addresses')->name('addresses.')->group(function () {
@@ -527,78 +609,7 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
     //     });
     // });
 
-    // // ProductAttribute API routes
-    // Route::prefix('product-attributes')->name('product-attributes.')->group(function () {
-    //     // List product attributes
-    //     Route::get('/', [ApiProductAttributeController::class, 'index'])->name('index');
 
-    //     // Get attribute count
-    //     Route::get('/count', [ApiProductAttributeController::class, 'getCount'])->name('count');
-
-    //     // Get attribute groups
-    //     Route::get('/groups', [ApiProductAttributeController::class, 'getGroups'])->name('groups');
-
-    //     // Get attribute types
-    //     Route::get('/types', [ApiProductAttributeController::class, 'getTypes'])->name('types');
-
-    //     // Get input types
-    //     Route::get('/input-types', [ApiProductAttributeController::class, 'getInputTypes'])->name('input-types');
-
-    //     // Search product attributes
-    //     Route::get('/search', [ApiProductAttributeController::class, 'search'])->name('search');
-
-    //     // Filter by functionality
-    //     Route::get('/required', [ApiProductAttributeController::class, 'required'])->name('required');
-    //     Route::get('/searchable', [ApiProductAttributeController::class, 'searchable'])->name('searchable');
-    //     Route::get('/filterable', [ApiProductAttributeController::class, 'filterable'])->name('filterable');
-    //     Route::get('/comparable', [ApiProductAttributeController::class, 'comparable'])->name('comparable');
-    //     Route::get('/visible', [ApiProductAttributeController::class, 'visible'])->name('visible');
-    //     Route::get('/system', [ApiProductAttributeController::class, 'system'])->name('system');
-    //     Route::get('/custom', [ApiProductAttributeController::class, 'custom'])->name('custom');
-
-    //     // Filter by type/group/input type
-    //     Route::get('/by-type/{type}', [ApiProductAttributeController::class, 'byType'])->name('by-type');
-    //     Route::get('/by-group/{group}', [ApiProductAttributeController::class, 'byGroup'])->name('by-group');
-    //     Route::get('/by-input-type/{inputType}', [ApiProductAttributeController::class, 'byInputType'])->name('by-input-type');
-
-    //     // Create product attribute
-    //     Route::post('/', [ApiProductAttributeController::class, 'store'])->name('store');
-
-    //     // ProductAttribute-specific routes
-    //     Route::prefix('{attribute:slug}')->group(function () {
-    //         // Show product attribute
-    //         Route::get('/', [ApiProductAttributeController::class, 'show'])->name('show');
-
-    //         // Update product attribute (full update)
-    //         Route::put('/', [ApiProductAttributeController::class, 'update'])->name('update');
-
-    //         // Update product attribute (partial update)
-    //         Route::patch('/', [ApiProductAttributeController::class, 'update'])->name('update.partial');
-
-    //         // Delete product attribute
-    //         Route::delete('/', [ApiProductAttributeController::class, 'destroy'])->name('destroy');
-
-    //         // Toggle operations
-    //         Route::post('/toggle-active', [ApiProductAttributeController::class, 'toggleActive'])->name('toggle-active');
-    //         Route::post('/toggle-required', [ApiProductAttributeController::class, 'toggleRequired'])->name('toggle-required');
-    //         Route::post('/toggle-searchable', [ApiProductAttributeController::class, 'toggleSearchable'])->name('toggle-searchable');
-    //         Route::post('/toggle-filterable', [ApiProductAttributeController::class, 'toggleFilterable'])->name('toggle-filterable');
-    //         Route::post('/toggle-comparable', [ApiProductAttributeController::class, 'toggleComparable'])->name('toggle-comparable');
-    //         Route::post('/toggle-visible', [ApiProductAttributeController::class, 'toggleVisible'])->name('toggle-visible');
-
-    //         // Analytics
-    //         Route::get('/analytics', [ApiProductAttributeController::class, 'getAnalytics'])->name('analytics');
-    //         Route::get('/usage', [ApiProductAttributeController::class, 'getUsage'])->name('usage');
-
-    //         // Attribute values
-    //         Route::prefix('values')->name('values.')->group(function () {
-    //             Route::get('/', [ApiProductAttributeController::class, 'getValues'])->name('index');
-    //             Route::post('/', [ApiProductAttributeController::class, 'addValue'])->name('store');
-    //             Route::put('/{value}', [ApiProductAttributeController::class, 'updateValue'])->name('update');
-    //             Route::delete('/{value}', [ApiProductAttributeController::class, 'deleteValue'])->name('destroy');
-    //         });
-    //     });
-    // });
 
     // // ProductAttributeValue API routes
     // Route::prefix('product-attribute-values')->name('product-attribute-values.')->group(function () {

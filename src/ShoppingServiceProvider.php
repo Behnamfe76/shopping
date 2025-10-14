@@ -333,18 +333,24 @@ class ShoppingServiceProvider extends ServiceProvider
         //     );
         // });
 
-        // // Register ProductAttribute Repository
-        // $this->app->bind(
-        //     \Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeRepositoryInterface::class,
-        //     \Fereydooni\Shopping\app\Repositories\ProductAttributeRepository::class
-        // );
+        // Register ProductAttribute Repository
+        $this->app->bind(
+            \Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeRepositoryInterface::class,
+            \Fereydooni\Shopping\app\Repositories\ProductAttributeRepository::class
+        );
 
-        // // Register ProductAttribute Service
-        // $this->app->scoped('shopping.product-attribute', function ($app) {
-        //     return new \Fereydooni\Shopping\app\Services\ProductAttributeService(
-        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeRepositoryInterface::class)
-        //     );
-        // });
+        // Register ProductAttribute Service
+        $this->app->scoped('shopping.product-attribute', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\ProductAttributeService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeRepositoryInterface::class)
+            );
+        });
+
+        $this->app->singleton('shopping.product-attribute.facade', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\ProductAttributeService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeRepositoryInterface::class)
+            );
+        });
 
         // // Register ProductAttributeValue Repository
         // $this->app->bind(
@@ -388,12 +394,6 @@ class ShoppingServiceProvider extends ServiceProvider
         // $this->app->singleton('shopping.order-status-history.facade', function ($app) {
         //     return new \Fereydooni\Shopping\app\Services\OrderStatusHistoryService(
         //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\OrderStatusHistoryRepositoryInterface::class)
-        //     );
-        // });
-
-        // $this->app->singleton('shopping.product-attribute.facade', function ($app) {
-        //     return new \Fereydooni\Shopping\app\Services\ProductAttributeService(
-        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeRepositoryInterface::class)
         //     );
         // });
 
