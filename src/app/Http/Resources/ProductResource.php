@@ -146,7 +146,9 @@ class ProductResource extends JsonResource
             'product_multiple_variants' => $this->when($this->has_variant && $this->multi_variant, function () {
                 return $this->variants->map(function ($variant) {
                     $variantNames = $variant->attributeValues->map(function ($item) {
-                        return [$item->attribute->slug => $item->value];
+                        return [$item->attribute->slug => [
+                            'variant_name' => $item->value
+                        ]];
                     })->collapse()->toArray();
 
                     return array_merge($variantNames, [
@@ -159,7 +161,6 @@ class ProductResource extends JsonResource
                         'variant_stock' => $variant->stock_quantity,
                         'variant_description' => $variant->description,
                         'repeater_dependencies' => array_keys($variantNames),
-                        // 'variant_in_stock' => $variant->in_stock,
                         // 'attribute_values' => $variant->attributeValues->map(function ($value) {
                         //     return [
                         //         'id' => $value->id,
