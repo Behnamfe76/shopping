@@ -8,6 +8,8 @@ use Fereydooni\Shopping\app\Models\Product;
 
 class ProductResource extends JsonResource
 {
+
+
     /**
      * Transform the resource into an array.
      */
@@ -18,28 +20,49 @@ class ProductResource extends JsonResource
             'id' => $this->id,
             'category_id' => $this->category_id,
             'brand_id' => $this->brand_id,
-            'sku' => $this->sku,
             'title' => $this->title,
             'slug' => $this->slug,
             'description' => $this->description,
-            'weight' => $this->weight,
-            'dimensions' => $this->dimensions,
-            'status' => __("products.statuses.". $this->status->value),
-            'status_label' => $this->status?->label(),
-            'product_type' => __("products.types.". $this->product_type->value),
-            'product_type_label' => $this->product_type?->label(),
-            // 'price' => $this->price,
-            // 'sale_price' => $this->sale_price,
-            // 'cost_price' => $this->cost_price,
-            // 'stock_quantity' => $this->stock_quantity,
+            'status' => [
+                'id' => $this->status->toString(),
+                'label' => __("products.statuses." . $this->status->toString())
+            ],
+            'product_type' => [
+                'id' => $this->product_type->toString(),
+                'label' => __("products.types." . $this->product_type->toString())
+            ],
+            'specifications' => json_encode($this->specifications),
+            'main_image' => $this->main_image,
+            'images' => $this->images,
+            'videos' => $this->videos,
+            'price' => $this->price,
+            'sale_price' => $this->sale_price,
+            'cost_price' => $this->cost_price,
+            'stock_quantity' => $this->stock_quantity,
+            'has_variant' => !$this->has_variant ? 'none' : ($this->multi_variant ? 'more_than_one' : 'one'),
+            'product_attribute' => $this->has_variant && !$this->multi_variant
+                ? [
+                    'id' => $this->productAttribute()->value('slug'),
+                    'label' => $this->productAttribute()->value('name')
+                ]
+                : null,
+            'product_multi_attributes' => $this->has_variant && $this->multi_variant
+                ?
+                $this->productAttributes()->select('slug', 'name')->get()->map(function ($attr) {
+                    return [
+                        'id' => $attr->slug,
+                        'label' => $attr->name
+                    ];
+                })
+                : null,
             // 'min_stock_level' => $this->min_stock_level,
             // 'max_stock_level' => $this->max_stock_level,
             // 'is_featured' => $this->is_featured,
             // 'is_active' => $this->is_active,
             // 'sort_order' => $this->sort_order,
-            // 'meta_title' => $this->meta_title,
-            // 'meta_description' => $this->meta_description,
-            // 'meta_keywords' => $this->meta_keywords,
+            'meta_title' => $this->meta_title,
+            'meta_description' => $this->meta_description,
+            'meta_keywords' => $this->meta_keywords,
             // 'seo_url' => $this->seo_url,
             // 'canonical_url' => $this->canonical_url,
             // 'og_image' => $this->og_image,
@@ -48,7 +71,6 @@ class ProductResource extends JsonResource
             // 'warranty_info' => $this->warranty_info,
             // 'shipping_info' => $this->shipping_info,
             // 'return_policy' => $this->return_policy,
-            // 'tags' => $this->tags,
             // 'attributes' => $this->attributes,
             // 'variants_count' => $this->variants_count,
             // 'reviews_count' => $this->reviews_count,
@@ -63,15 +85,25 @@ class ProductResource extends JsonResource
             'category' => $this->whenLoaded('category', function () {
                 return [
                     'id' => $this->category->id,
-                    'name' => $this->category->name,
+                    'label' => $this->category->name,
                 ];
+            }),
+            'product_tags' => $this->whenLoaded('tags', function () {
+                return $this->tags->map(function ($tag) {
+                    return [
+                        'id' => $tag->id,
+                        'label' => $tag->name,
+                    ];
+                });
             }),
             'brand' => $this->whenLoaded('brand', function () {
                 return [
                     'id' => $this->brand->id,
-                    'name' => $this->brand->name,
+                    'label' => $this->brand->name,
                 ];
             }),
+
+
 
             // 'media' => $this->whenLoaded('media', function () {
             //     return $this->media->map(function ($media) {
@@ -87,6 +119,58 @@ class ProductResource extends JsonResource
             //         ];
             //     });
             // }),
+
+            'product_single_variants' => $this->when($this->has_variant && !$this->multi_variant, function () {
+                return $this->variants->map(function ($variant) {
+                    return [
+                        'id' => $variant->id,
+                        'variant_name' => $variant->name,
+                        // 'variant_sku' => $variant->sku,
+                        'variant_price' => $variant->price,
+                        'variant_sale_price' => $variant->sale_price,
+                        'variant_cost_price' => $variant->cost_price,
+                        'variant_stock' => $variant->stock_quantity,
+                        'variant_description' => $variant->description,
+                        // 'variant_in_stock' => $variant->in_stock,
+                        'attribute_values' => $variant->attributeValues->map(function ($value) {
+                            return [
+                                'id' => $value->id,
+                                'name' => $value->name,
+                                'value' => $value->value,
+                            ];
+                        }),
+                    ];
+                });
+            }),
+
+            'product_multiple_variants' => $this->when($this->has_variant && $this->multi_variant, function () {
+                return $this->variants->map(function ($variant) {
+                    $variantNames = $variant->attributeValues->map(function ($item) {
+                        return [$item->attribute->slug => $item->value];
+                    })->collapse()->toArray();
+
+                    return array_merge($variantNames, [
+                        'id' => $variant->id,
+                        'variant_name' => $variant->name,
+                        // 'variant_sku' => $variant->sku,
+                        'variant_price' => $variant->price,
+                        'variant_sale_price' => $variant->sale_price,
+                        'variant_cost_price' => $variant->cost_price,
+                        'variant_stock' => $variant->stock_quantity,
+                        'variant_description' => $variant->description,
+                        'repeater_dependencies' => array_keys($variantNames),
+                        // 'variant_in_stock' => $variant->in_stock,
+                        // 'attribute_values' => $variant->attributeValues->map(function ($value) {
+                        //     return [
+                        //         'id' => $value->id,
+                        //         'name' => $value->value,
+                        //         'value' => $value->value,
+                        //     ];
+                        // }),
+                    ]);
+                });
+            }),
+
             // 'variants' => $this->whenLoaded('variants', function () {
             //     return $this->variants->map(function ($variant) {
             //         return [
@@ -98,6 +182,7 @@ class ProductResource extends JsonResource
             //         ];
             //     });
             // }),
+
             // 'reviews' => $this->whenLoaded('reviews', function () {
             //     return $this->reviews->map(function ($review) {
             //         return [

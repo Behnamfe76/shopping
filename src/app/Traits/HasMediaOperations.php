@@ -2,37 +2,40 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Str;
 use Illuminate\Http\UploadedFile;
+use Spatie\MediaLibrary\HasMedia;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Validation\ValidationException;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use Illuminate\Database\Eloquent\Model;
-use Spatie\MediaLibrary\HasMedia;
 
 trait HasMediaOperations
 {
     /**
      * Upload media file
      */
-    public function uploadMedia(object $item, UploadedFile $file, string $collection = 'default'): Media
+    public function uploadMedia(Model $model, UploadedFile $file, string $collection = 'default', array $customProperties = []): Media
     {
         $this->validateMediaFile($file);
 
-        return $item->addMedia($file)
+        return $model->addMedia($file)
+            ->usingFileName(Str::uuid() . '.' . $file->getClientOriginalExtension())
+            ->withCustomProperties($customProperties)
             ->toMediaCollection($collection);
     }
 
     /**
      * Upload multiple media files
      */
-    public function uploadMultipleMedia(object $item, array $files, string $collection = 'default'): array
+    public function uploadMultipleMedia(Model $model, array $files, string $collection = 'default'): array
     {
         $media = [];
 
         foreach ($files as $file) {
             if ($file instanceof UploadedFile) {
-                $media[] = $this->uploadMedia($item, $file, $collection);
+                $media[] = $this->uploadMedia($model, $file, $collection);
             }
         }
 
@@ -42,9 +45,9 @@ trait HasMediaOperations
     /**
      * Delete media file
      */
-    public function deleteMedia(object $item, int $mediaId): bool
+    public function deleteMedia(object $model, int $mediaId): bool
     {
-        $media = $item->getMedia()->find($mediaId);
+        $media = $model->getMedia()->find($mediaId);
 
         if ($media) {
             return $media->delete();
@@ -56,25 +59,25 @@ trait HasMediaOperations
     /**
      * Delete all media from collection
      */
-    public function deleteAllMedia(object $item, string $collection = 'default'): bool
+    public function deleteAllMedia(object $model, string $collection = 'default'): bool
     {
-        return $item->clearMediaCollection($collection);
+        return $model->clearMediaCollection($collection);
     }
 
     /**
      * Get first media from collection
      */
-    public function getFirstMedia(object $item, string $collection = 'default'): ?Media
+    public function getFirstMedia(object $model, string $collection = 'default'): ?Media
     {
-        return $item->getFirstMedia($collection);
+        return $model->getFirstMedia($collection);
     }
 
     /**
      * Get media URLs
      */
-    public function getMediaUrls(object $item, string $collection = 'default'): array
+    public function getMediaUrls(object $model, string $collection = 'default'): array
     {
-        return $item->getMedia($collection)->map(function ($media) {
+        return $model->getMedia($collection)->map(function ($media) {
             return [
                 'id' => $media->id,
                 'name' => $media->name,
@@ -92,7 +95,7 @@ trait HasMediaOperations
     protected function validateMediaFile(UploadedFile $file): void
     {
         $rules = [
-            'file' => 'required|file|max:10240', // 10MB max
+            'file' => 'required|file',
         ];
 
         $data = ['file' => $file];
@@ -107,51 +110,51 @@ trait HasMediaOperations
     /**
      * Upload logo
      */
-    public function uploadLogo(object $item, UploadedFile $file): Media
+    public function uploadLogo(object $model, UploadedFile $file): Media
     {
-        return $this->uploadMedia($item, $file, 'logo');
+        return $this->uploadMedia($model, $file, 'logo');
     }
 
     /**
      * Upload banner
      */
-    public function uploadBanner(object $item, UploadedFile $file): Media
+    public function uploadBanner(object $model, UploadedFile $file): Media
     {
-        return $this->uploadMedia($item, $file, 'banner');
+        return $this->uploadMedia($model, $file, 'banner');
     }
 
     /**
      * Get logo URL
      */
-    public function getLogoUrl(object $item): ?string
+    public function getLogoUrl(object $model): ?string
     {
-        $media = $this->getFirstMedia($item, 'logo');
+        $media = $this->getFirstMedia($model, 'logo');
         return $media ? $media->getUrl() : null;
     }
 
     /**
      * Get banner URL
      */
-    public function getBannerUrl(object $item): ?string
+    public function getBannerUrl(object $model): ?string
     {
-        $media = $this->getFirstMedia($item, 'banner');
+        $media = $this->getFirstMedia($model, 'banner');
         return $media ? $media->getUrl() : null;
     }
 
     /**
      * Delete logo
      */
-    public function deleteLogo(object $item): bool
+    public function deleteLogo(object $model): bool
     {
-        return $this->deleteAllMedia($item, 'logo');
+        return $this->deleteAllMedia($model, 'logo');
     }
 
     /**
      * Delete banner
      */
-    public function deleteBanner(object $item): bool
+    public function deleteBanner(object $model): bool
     {
-        return $this->deleteAllMedia($item, 'banner');
+        return $this->deleteAllMedia($model, 'banner');
     }
 
     public function addMedia(Model $model, $file, string $collection = 'default'): bool

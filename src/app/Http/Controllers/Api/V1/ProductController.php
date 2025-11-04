@@ -64,8 +64,8 @@ class ProductController extends \App\Http\Controllers\Controller
         try {
             return response()->json([
                 'data' => array_map(fn($status) => [
-                    'id' => $status->value,
-                    'name' => __('products.statuses.' . $status->value),
+                    'id' => $status->toString(),
+                    'name' => __('products.statuses.' . $status->toString()),
                 ], ProductStatus::cases()),
             ], 200);
         } catch (\Exception $e) {
@@ -86,8 +86,8 @@ class ProductController extends \App\Http\Controllers\Controller
         try {
             return response()->json([
                 'data' => array_map(fn($type) => [
-                    'id' => $type->value,
-                    'name' => __('products.types.' . $type->value),
+                    'id' => $type->toString(),
+                    'name' => __('products.types.' . $type->toString()),
                 ], ProductType::cases()),
             ], 200);
         } catch (\Exception $e) {
@@ -97,9 +97,6 @@ class ProductController extends \App\Http\Controllers\Controller
             ], 500);
         }
     }
-
-
-
 
     /**
      * Store a newly created product.
@@ -125,14 +122,20 @@ class ProductController extends \App\Http\Controllers\Controller
      */
     public function show(Product $product): JsonResponse
     {
-        $this->authorize('view', $product);
+        Gate::authorize('view', $product);
 
-        // Increment view count
-        app('shopping.product')->incrementViewCount($product);
+        try {
+            // Increment view count
+            // app('shopping.product')->incrementViewCount($product);
 
-        return response()->json([
-            'data' => new ProductResource($product)
-        ]);
+            return (new ProductResource($product->load(['category', 'brand', 'tags', 'variants'])))->response()->setStatusCode(200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to find product',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
@@ -140,9 +143,9 @@ class ProductController extends \App\Http\Controllers\Controller
      */
     public function update(UpdateProductRequest $request, Product $product): JsonResponse
     {
-        $this->authorize('update', $product);
-
-        $updated = app('shopping.product')->update($product, $request->validated());
+        Gate::authorize('update', $product);
+        
+        $updated = ProductFacade::update($product, $request->validated());
 
         if (!$updated) {
             return response()->json([

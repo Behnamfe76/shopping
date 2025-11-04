@@ -2,18 +2,21 @@
 
 namespace Fereydooni\Shopping\app\Services;
 
-use Fereydooni\Shopping\app\Repositories\Interfaces\ProductRepositoryInterface;
-use Fereydooni\Shopping\app\Traits\HasCrudOperations;
-use Fereydooni\Shopping\app\Traits\HasStatusToggle;
-use Fereydooni\Shopping\app\Traits\HasSearchOperations;
-use Fereydooni\Shopping\app\Traits\HasSlugGeneration;
-use Fereydooni\Shopping\app\Traits\HasMediaOperations;
-use Fereydooni\Shopping\app\Traits\HasInventoryManagement;
-use Fereydooni\Shopping\app\Traits\HasSeoOperations;
-use Fereydooni\Shopping\app\Traits\HasAnalyticsOperations;
+use Attribute;
+use Illuminate\Support\Facades\DB;
 use Fereydooni\Shopping\app\Models\Product;
 use Fereydooni\Shopping\app\DTOs\ProductDTO;
+use Fereydooni\Shopping\app\Models\ProductAttribute;
 use Illuminate\Database\Eloquent\Collection;
+use Fereydooni\Shopping\app\Traits\HasStatusToggle;
+use Fereydooni\Shopping\app\Traits\HasSeoOperations;
+use Fereydooni\Shopping\app\Traits\HasCrudOperations;
+use Fereydooni\Shopping\app\Traits\HasSlugGeneration;
+use Fereydooni\Shopping\app\Traits\HasMediaOperations;
+use Fereydooni\Shopping\app\Traits\HasSearchOperations;
+use Fereydooni\Shopping\app\Traits\HasAnalyticsOperations;
+use Fereydooni\Shopping\app\Traits\HasInventoryManagement;
+use Fereydooni\Shopping\app\Repositories\Interfaces\ProductRepositoryInterface;
 
 class ProductService
 {
@@ -33,6 +36,266 @@ class ProductService
         $this->repository = $repository;
         $this->model = Product::class;
         $this->dtoClass = ProductDTO::class;
+    }
+
+    public function create(array $data): Product
+    {
+        try {
+            DB::beginTransaction();
+            $productData = $data;
+            $productData['has_variant'] = $data['has_variant'] !== 'none';
+            $productData['multi_variant'] = $data['has_variant'] === 'more_than_one';
+            $product = $this->repository->create($productData);
+
+            // storing product tags
+            if (isset($data['product_tags']) && is_array($data['product_tags'])) {
+                $product->tags()->sync($data['product_tags']);
+            }
+
+            // storing product attributes and variants
+            if ($data['has_variant'] === 'one' && isset($data['product_single_variants'])) {
+                $attribute = ProductAttribute::where('slug', $data['product_attribute'])->firstOrFail();
+
+                foreach ($data['product_single_variants'] as $variantData) {
+                    $attributeValue = $attribute->values()
+                        ->where('value', 'ilike', '%' . $variantData['variant_name'] . '%')
+                        ->first();
+
+                    // If not found, create it
+                    if (!$attributeValue) {
+                        $attributeValue = $attribute->values()->create([
+                            'value' => $variantData['variant_name']
+                        ]);
+                    }
+
+                    $variant = $product->variants()->create([
+                        'name' => $variantData['variant_name'],
+                        'description' => $variantData['variant_description'] ?? null,
+                        'price' => $variantData['variant_price'],
+                        'sale_price' => $variantData['variant_sale_price'] ?? null,
+                        'cost_price' => $variantData['variant_cost_price'] ?? null,
+                        'stock_quantity' => $variantData['variant_stock'],
+                        'in_stock' => $variantData['variant_stock'] > 0,
+                    ]);
+
+                    $variant->values()->create([
+                        'product_id' => $product->id,
+                        'attribute_id' => $attribute->id,
+                        'attribute_value_id' => $attributeValue->id,
+                    ]);
+                }
+            } else if ($data['has_variant'] === 'more_than_one' && isset($data['product_multiple_variants'])) {
+
+                foreach ($data['product_multiple_variants'] as $variantSet) {
+
+                    $variant = $product->variants()->create([
+                        'description' => $variantSet['variant_description'] ?? null,
+                        'price' => $variantSet['variant_price'],
+                        'sale_price' => $variantSet['variant_sale_price'] ?? null,
+                        'cost_price' => $variantSet['variant_cost_price'] ?? null,
+                        'stock_quantity' => $variantSet['variant_stock'],
+                        'in_stock' => $variantSet['variant_stock'] > 0,
+                        'multi_variant' => true,
+                    ]);
+
+                    foreach ($data['product_multi_attributes'] as $multiAttr) {
+                        $attribute = ProductAttribute::where('slug', $multiAttr)->firstOrFail();
+                        $attributeValue = $attribute->values()
+                            ->where('value', 'ilike', $variantSet[$multiAttr]['variant_name'] . '%')
+                            ->first();
+
+                        // If not found, create it
+                        if (!$attributeValue) {
+                            $attributeValue = $attribute->values()->create([
+                                'value' => $variantSet[$multiAttr]['variant_name']
+                            ]);
+                        }
+                        $variant->values()->create([
+                            'product_id' => $product->id,
+                            'attribute_id' => $attribute->id,
+                            'attribute_value_id' => $attributeValue->id,
+                        ]);
+                    }
+                }
+            }
+
+            // storing main image
+            if (isset($data['main_image'])) {
+                $this->uploadMedia($product, $data['main_image'], 'product-images', ['is_main' => true]);
+            }
+
+            // storing product images
+            if (isset($data['images'])) {
+                if (is_array($data['images']) && count($data['images']) > 0) {
+                    $this->uploadMultipleMedia($product, $data['images'], 'product-images');
+                } else {
+                    $this->uploadMedia($product, $data['images'], 'product-images', ['is_main' => true]);
+                }
+            }
+
+            // storing product videos
+            if (isset($data['videos'])) {
+                if (is_array($data['videos']) && count($data['videos']) > 0) {
+                    $this->uploadMultipleMedia($product, $data['videos'], 'product-videos');
+                } else {
+                    $this->uploadMedia($product, $data['videos'], 'product-videos', ['is_main' => true]);
+                }
+            }
+
+            DB::commit();
+
+            return $product;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
+    }
+
+    public function update(Product $product, array $data): Product
+    {
+        try {
+            DB::beginTransaction();
+
+            // === 1. Normalize variant mode flags ===
+            $variantMode = $data['has_variant'] ?? 'none';
+            $productData = $data;
+
+            $productData['has_variant'] = $variantMode !== 'none';
+            $productData['multi_variant'] = $variantMode === 'more_than_one';
+
+            $product->update($productData);
+
+            // === 2. Sync tags ===
+            if (!empty($data['product_tags']) && is_array($data['product_tags'])) {
+                $product->tags()->sync($data['product_tags']);
+            }
+
+            // === 3. Handle variants ===
+            if ($variantMode === 'none') {
+                // ➤ Downgrade to simple product
+                // Delete all variants safely
+                $product->variants()->delete();
+            } elseif ($variantMode === 'one' && !empty($data['product_single_variants'])) {
+
+                // ➤ Single attribute variant mode
+                $attribute = ProductAttribute::where('slug', $data['product_attribute'])->firstOrFail();
+
+                foreach ($data['product_single_variants'] as $variantData) {
+
+                    $attributeValue = $attribute->values()
+                        ->where('value', 'ilike', $variantData['variant_name'])
+                        ->first();
+
+                    if (!$attributeValue) {
+                        $attributeValue = $attribute->values()->create([
+                            'value' => $variantData['variant_name'],
+                        ]);
+                    }
+
+                    $variant = $product->variants()->updateOrCreate(
+                        ['name' => $variantData['variant_name']],
+                        [
+                            'description' => $variantData['variant_description'] ?? null,
+                            'price' => $variantData['variant_price'],
+                            'sale_price' => $variantData['variant_sale_price'] ?? null,
+                            'cost_price' => $variantData['variant_cost_price'] ?? null,
+                            'stock_quantity' => $variantData['variant_stock'],
+                            'in_stock' => $variantData['variant_stock'] > 0,
+                            'multi_variant' => false,
+                        ]
+                    );
+
+                    $variant->values()->updateOrCreate(
+                        [
+                            'product_id' => $product->id,
+                            'attribute_id' => $attribute->id,
+                        ],
+                        [
+                            'attribute_value_id' => $attributeValue->id,
+                        ]
+                    );
+                }
+            } elseif ($variantMode === 'more_than_one' && !empty($data['product_multiple_variants'])) {
+
+                // ➤ Multi-attribute variant mode
+                foreach ($data['product_multiple_variants'] as $variantSet) {
+
+                    $variant = $product->variants()->updateOrCreate(
+                        [
+                            'description' => $variantSet['variant_description'] ?? null,
+                        ],
+                        [
+                            'price' => $variantSet['variant_price'],
+                            'sale_price' => $variantSet['variant_sale_price'] ?? null,
+                            'cost_price' => $variantSet['variant_cost_price'] ?? null,
+                            'stock_quantity' => $variantSet['variant_stock'],
+                            'in_stock' => $variantSet['variant_stock'] > 0,
+                            'multi_variant' => true,
+                        ]
+                    );
+
+                    foreach ($data['product_multi_attributes'] as $multiAttr) {
+                        $attribute = ProductAttribute::where('slug', $multiAttr)->firstOrFail();
+
+                        $variantName = $variantSet[$multiAttr]['variant_name'] ?? null;
+                        if (!$variantName) continue;
+
+                        $attributeValue = $attribute->values()
+                            ->where('value', 'ilike', $variantName)
+                            ->first();
+
+                        if (!$attributeValue) {
+                            $attributeValue = $attribute->values()->create([
+                                'value' => $variantName,
+                            ]);
+                        }
+
+                        $variant->values()->updateOrCreate(
+                            [
+                                'product_id' => $product->id,
+                                'attribute_id' => $attribute->id,
+                            ],
+                            [
+                                'attribute_value_id' => $attributeValue->id,
+                            ]
+                        );
+                    }
+                }
+            }
+
+            // storing main image
+            if (isset($data['main_image'])) {
+                $product->mainMedia()->update(
+                    ['custom_properties' => ['is_main' => false]]
+                );
+                $this->uploadMedia($product, $data['main_image'], 'product-images', ['is_main' => true]);
+            }
+
+            // storing product images
+            if (isset($data['images'])) {
+                if (is_array($data['images']) && count($data['images']) > 0) {
+                    $this->uploadMultipleMedia($product, $data['images'], 'product-images');
+                } else {
+                    $this->uploadMedia($product, $data['images'], 'product-images', ['is_main' => true]);
+                }
+            }
+
+            // storing product videos
+            if (isset($data['videos'])) {
+                if (is_array($data['videos']) && count($data['videos']) > 0) {
+                    $this->uploadMultipleMedia($product, $data['videos'], 'product-videos');
+                } else {
+                    $this->uploadMedia($product, $data['videos'], 'product-videos', ['is_main' => true]);
+                }
+            }
+
+            DB::commit();
+
+            return $product;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
+        }
     }
 
     // Repository method delegation

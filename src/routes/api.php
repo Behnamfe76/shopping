@@ -40,6 +40,7 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
     Route::prefix('product-tags')->name('product-tags.')->group(function () {
         // List product tags
         Route::get('/', [ApiProductTagController::class, 'index'])->name('index');
+        Route::get('/cursor-all', [ApiProductTagController::class, 'cursorAll'])->name('cursor-all');
 
         // Delete product tag
         Route::delete('/destroy-some', [ApiProductTagController::class, 'destroySome'])->name('destroySome');
@@ -304,34 +305,34 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
         //     Route::post('/inventory/update', [ApiProductController::class, 'updateInventory'])->name('update-inventory');
 
 
-        //     // Product-specific routes
-        //     Route::prefix('{product}')->group(function () {
-        //         // Show product
-        //         Route::get('/', [ApiProductController::class, 'show'])->name('show');
+        // Product-specific routes
+        Route::prefix('{product}')->group(function () {
+            // Show product
+            Route::get('/', [ApiProductController::class, 'show'])->name('show');
 
-        //         // Update product (full update)
-        //         Route::put('/', [ApiProductController::class, 'update'])->name('update');
+            // Update product (full update)
+            Route::put('/', [ApiProductController::class, 'update'])->name('update');
 
-        //         // Update product (partial update)
-        //         Route::patch('/', [ApiProductController::class, 'update'])->name('update.partial');
+            //         // Update product (partial update)
+            //         Route::patch('/', [ApiProductController::class, 'update'])->name('update.partial');
 
-        //         // Delete product
-        //         Route::delete('/', [ApiProductController::class, 'destroy'])->name('destroy');
+            //         // Delete product
+            //         Route::delete('/', [ApiProductController::class, 'destroy'])->name('destroy');
 
-        //         // Status management
-        //         Route::post('/toggle-active', [ApiProductController::class, 'toggleActive'])->name('toggle-active');
-        //         Route::post('/toggle-featured', [ApiProductController::class, 'toggleFeatured'])->name('toggle-featured');
-        //         Route::post('/publish', [ApiProductController::class, 'publish'])->name('publish');
-        //         Route::post('/unpublish', [ApiProductController::class, 'unpublish'])->name('unpublish');
-        //         Route::post('/archive', [ApiProductController::class, 'archive'])->name('archive');
+            //         // Status management
+            //         Route::post('/toggle-active', [ApiProductController::class, 'toggleActive'])->name('toggle-active');
+            //         Route::post('/toggle-featured', [ApiProductController::class, 'toggleFeatured'])->name('toggle-featured');
+            //         Route::post('/publish', [ApiProductController::class, 'publish'])->name('publish');
+            //         Route::post('/unpublish', [ApiProductController::class, 'unpublish'])->name('unpublish');
+            //         Route::post('/archive', [ApiProductController::class, 'archive'])->name('archive');
 
-        //         // Media management
-        //         Route::post('/media', [ApiProductController::class, 'uploadMedia'])->name('upload-media');
-        //         Route::delete('/media/{media}', [ApiProductController::class, 'deleteMedia'])->name('delete-media');
+            //         // Media management
+            //         Route::post('/media', [ApiProductController::class, 'uploadMedia'])->name('upload-media');
+            //         Route::delete('/media/{media}', [ApiProductController::class, 'deleteMedia'])->name('delete-media');
 
-        //         // Product operations
-        //         Route::post('/duplicate', [ApiProductController::class, 'duplicate'])->name('duplicate');
-        //     });
+            //         // Product operations
+            //         Route::post('/duplicate', [ApiProductController::class, 'duplicate'])->name('duplicate');
+        });
     });
 
     // ProductAttribute API routes
