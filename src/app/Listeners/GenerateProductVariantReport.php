@@ -115,7 +115,7 @@ class GenerateProductVariantReport implements ShouldQueue
                 'price' => $variant->price,
                 'sale_price' => $variant->sale_price,
                 'compare_price' => $variant->compare_price,
-                'stock' => $variant->stock,
+                'stock_quantity' => $variant->stock,
                 'reserved_stock' => $variant->reserved_stock,
                 'available_stock' => $variant->available_stock,
                 'is_active' => $variant->is_active,
@@ -152,7 +152,7 @@ class GenerateProductVariantReport implements ShouldQueue
                 'price' => $variant->price,
                 'sale_price' => $variant->sale_price,
                 'compare_price' => $variant->compare_price,
-                'stock' => $variant->stock,
+                'stock_quantity' => $variant->stock,
                 'reserved_stock' => $variant->reserved_stock,
                 'available_stock' => $variant->available_stock,
                 'is_active' => $variant->is_active,
@@ -180,7 +180,7 @@ class GenerateProductVariantReport implements ShouldQueue
                 'price' => $variant->price,
                 'sale_price' => $variant->sale_price,
                 'compare_price' => $variant->compare_price,
-                'stock' => $variant->stock,
+                'stock_quantity' => $variant->stock,
                 'reserved_stock' => $variant->reserved_stock,
                 'available_stock' => $variant->available_stock,
                 'is_active' => $variant->is_active,
@@ -249,7 +249,7 @@ class GenerateProductVariantReport implements ShouldQueue
                 'changed_at' => now()->toISOString(),
             ],
             'current_data' => [
-                'stock' => $variant->stock,
+                'stock_quantity' => $variant->stock,
                 'reserved_stock' => $variant->reserved_stock,
                 'available_stock' => $variant->available_stock,
                 'low_stock_threshold' => $variant->low_stock_threshold,
@@ -352,19 +352,19 @@ class GenerateProductVariantReport implements ShouldQueue
 
     private function getInStockVariantsCount(int $productId): int
     {
-        return ProductVariant::where('product_id', $productId)->where('stock', '>', 0)->count();
+        return ProductVariant::where('product_id', $productId)->where('stock_quantity', '>', 0)->count();
     }
 
     private function getOutOfStockVariantsCount(int $productId): int
     {
-        return ProductVariant::where('product_id', $productId)->where('stock', '<=', 0)->count();
+        return ProductVariant::where('product_id', $productId)->where('stock_quantity', '<=', 0)->count();
     }
 
     private function getLowStockVariantsCount(int $productId): int
     {
         return ProductVariant::where('product_id', $productId)
             ->whereRaw('stock <= low_stock_threshold')
-            ->where('stock', '>', 0)
+            ->where('stock_quantity', '>', 0)
             ->count();
     }
 

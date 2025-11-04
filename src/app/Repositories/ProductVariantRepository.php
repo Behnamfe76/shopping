@@ -99,7 +99,7 @@ class ProductVariantRepository implements ProductVariantRepositoryInterface
 
     public function findInStock(): Collection
     {
-        return ProductVariant::where('stock', '>', 0)
+        return ProductVariant::where('stock_quantity', '>', 0)
             ->where('is_active', true)
             ->with(['product', 'attributeValues'])
             ->get();
@@ -107,7 +107,7 @@ class ProductVariantRepository implements ProductVariantRepositoryInterface
 
     public function findOutOfStock(): Collection
     {
-        return ProductVariant::where('stock', '<=', 0)
+        return ProductVariant::where('stock_quantity', '<=', 0)
             ->with(['product', 'attributeValues'])
             ->get();
     }
@@ -115,7 +115,7 @@ class ProductVariantRepository implements ProductVariantRepositoryInterface
     public function findLowStock(): Collection
     {
         return ProductVariant::whereRaw('stock <= low_stock_threshold')
-            ->where('stock', '>', 0)
+            ->where('stock_quantity', '>', 0)
             ->with(['product', 'attributeValues'])
             ->get();
     }
@@ -127,18 +127,18 @@ class ProductVariantRepository implements ProductVariantRepositoryInterface
 
     public function getInStockVariantCount(): int
     {
-        return ProductVariant::where('stock', '>', 0)->where('is_active', true)->count();
+        return ProductVariant::where('stock_quantity', '>', 0)->where('is_active', true)->count();
     }
 
     public function getOutOfStockVariantCount(): int
     {
-        return ProductVariant::where('stock', '<=', 0)->count();
+        return ProductVariant::where('stock_quantity', '<=', 0)->count();
     }
 
     public function getLowStockVariantCount(): int
     {
         return ProductVariant::whereRaw('stock <= low_stock_threshold')
-            ->where('stock', '>', 0)
+            ->where('stock_quantity', '>', 0)
             ->count();
     }
 
@@ -152,7 +152,7 @@ class ProductVariantRepository implements ProductVariantRepositoryInterface
 
     public function findByStockRange(int $minStock, int $maxStock): Collection
     {
-        return ProductVariant::whereBetween('stock', [$minStock, $maxStock])
+        return ProductVariant::whereBetween('stock_quantity', [$minStock, $maxStock])
             ->with(['product', 'attributeValues'])
             ->get();
     }
@@ -430,7 +430,7 @@ class ProductVariantRepository implements ProductVariantRepositoryInterface
             $exportData[] = [
                 'sku' => $variant->sku,
                 'price' => $variant->price,
-                'stock' => $variant->stock,
+                'stock_quantity' => $variant->stock,
                 'weight' => $variant->weight,
                 'dimensions' => $variant->dimensions,
                 'barcode' => $variant->barcode,

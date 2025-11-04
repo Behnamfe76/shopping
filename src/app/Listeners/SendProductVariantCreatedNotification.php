@@ -26,7 +26,7 @@ class SendProductVariantCreatedNotification implements ShouldQueue
             'product_id' => $variant->product_id,
             'sku' => $variant->sku,
             'price' => $variant->price,
-            'stock' => $variant->stock,
+            'stock_quantity' => $variant->stock,
         ]);
     }
 }
