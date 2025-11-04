@@ -42,6 +42,8 @@ class ProductAttributeValue extends Model
         'usage_count' => 0,
     ];
 
+    protected $with = ['attribute'];
+
     public function attribute(): BelongsTo
     {
         return $this->belongsTo(ProductAttribute::class, 'attribute_id');
