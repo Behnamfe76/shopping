@@ -23,8 +23,8 @@ class ProductVariantCollection extends ResourceCollection
                 'to' => $this->lastItem(),
                 'variant_count' => $this->count(),
                 'active_variants' => $this->collection->where('is_active', true)->count(),
-                'in_stock_variants' => $this->collection->where('stock', '>', 0)->count(),
-                'out_of_stock_variants' => $this->collection->where('stock', '<=', 0)->count(),
+                'in_stock_variants' => $this->collection->where('stock_quantity', '>', 0)->count(),
+                'out_of_stock_variants' => $this->collection->where('stock_quantity', '<=', 0)->count(),
                 'low_stock_variants' => $this->collection->filter(function ($variant) {
                     return $variant->stock <= $variant->low_stock_threshold && $variant->stock > 0;
                 })->count(),

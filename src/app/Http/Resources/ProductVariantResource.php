@@ -17,7 +17,7 @@ class ProductVariantResource extends JsonResource
             'product_id' => $this->product_id,
             'sku' => $this->sku,
             'price' => $this->price,
-            'stock' => $this->stock,
+            'stock_quantity' => $this->stock,
             'weight' => $this->when($this->weight, $this->weight),
             'dimensions' => $this->when($this->dimensions, $this->dimensions),
             'barcode' => $this->when($this->barcode, $this->barcode),

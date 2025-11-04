@@ -68,7 +68,7 @@ class ProductVariantDTO extends Data
             'product_id' => ['required', 'integer', 'min:1', 'exists:products,id'],
             'sku' => ['required', 'string', 'max:255', 'unique:product_variants,sku'],
             'price' => ['required', 'numeric', 'min:0'],
-            'stock' => ['required', 'integer', 'min:0'],
+            'stock_quantity' => ['required', 'integer', 'min:0'],
             'weight' => ['nullable', 'numeric', 'min:0'],
             'dimensions' => ['nullable', 'string', 'max:255'],
             'barcode' => ['nullable', 'string', 'max:255', 'unique:product_variants,barcode'],

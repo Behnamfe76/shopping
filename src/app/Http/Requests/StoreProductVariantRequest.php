@@ -40,7 +40,7 @@ class StoreProductVariantRequest extends FormRequest
             'product_id' => 'product',
             'sku' => 'SKU',
             'price' => 'price',
-            'stock' => 'stock quantity',
+            'stock_quantity' => 'stock quantity',
             'weight' => 'weight',
             'dimensions' => 'dimensions',
             'barcode' => 'barcode',

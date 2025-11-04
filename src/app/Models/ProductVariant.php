@@ -4,15 +4,23 @@ namespace Fereydooni\Shopping\app\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Fereydooni\Shopping\app\Models\ProductVariantValue;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ProductVariant extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'product_id',
+        'name',
+        'description',
+        'in_stock',
+        'multi_variant',
         'sku',
         'price',
-        'stock',
+        'stock_quantity',
         'weight',
         'dimensions',
         'barcode',
@@ -32,7 +40,7 @@ class ProductVariant extends Model
 
     protected $casts = [
         'price' => 'decimal:2',
-        'stock' => 'integer',
+        'stock_quantity' => 'integer',
         'weight' => 'decimal:2',
         'cost_price' => 'decimal:2',
         'sale_price' => 'decimal:2',
@@ -47,6 +55,8 @@ class ProductVariant extends Model
         'updated_by' => 'integer',
     ];
 
+    protected $with = ['values'];
+
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
@@ -60,5 +70,10 @@ class ProductVariant extends Model
     public function orderItems(): BelongsTo
     {
         return $this->belongsTo(OrderItem::class, 'variant_id');
+    }
+
+    public function values()
+    {
+        return $this->hasMany(ProductVariantValue::class, 'variant_id');
     }
 }

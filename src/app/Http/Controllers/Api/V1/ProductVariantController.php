@@ -132,7 +132,7 @@ class ProductVariantController extends Controller
         return response()->json([
             'success' => $success,
             'message' => $success ? 'Stock updated successfully.' : 'Failed to update stock.',
-            'stock' => $variant->fresh()->stock
+            'stock_quantity' => $variant->fresh()->stock
         ]);
     }
 
@@ -184,7 +184,7 @@ class ProductVariantController extends Controller
         return response()->json([
             'success' => $success,
             'message' => $success ? 'Stock adjusted successfully.' : 'Failed to adjust stock.',
-            'stock' => $variant->fresh()->stock
+            'stock_quantity' => $variant->fresh()->stock
         ]);
     }
 
