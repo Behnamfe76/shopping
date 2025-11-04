@@ -35,7 +35,7 @@ class ProductTagController extends Controller
             $perPage = min((int) $request->get('per_page', 15), 100);
             $paginationType = $request->get('pagination', 'regular');
 
-            $tags = match($paginationType) {
+            $tags = match ($paginationType) {
                 'simplePaginate' => ProductTagFacade::simplePaginate($perPage),
                 'cursorPaginate' => ProductTagFacade::cursorPaginate($perPage, $request->get('id')),
                 default => ProductTagFacade::paginate($perPage),
@@ -43,6 +43,29 @@ class ProductTagController extends Controller
 
             return ProductTagResource::collection($tags)->response()->setStatusCode(200);
             // return (new ProductTagCollection($tags))->response();
+        } catch (\Throwable $tr) {
+
+            return response()->json([
+                'error' => 'Failed to retrieve product tags',
+                'message' => $tr->getMessage(),
+            ], $tr->getCode() ?: 500);
+        }
+    }
+
+    /**
+     * Display a listing of product tags cursor paginated.
+     */
+    public function cursorAll(Request $request): JsonResponse
+    {
+        Gate::authorize('viewAny', ProductTag::class);
+
+        try {
+            $perPage = min((int) $request->get('per_page', 10), 100);
+
+            return response()->json(
+                ProductTagFacade::cursorPaginate($perPage, $request->get('cursor')),
+                200
+            );
         } catch (\Throwable $tr) {
 
             return response()->json([
