@@ -173,27 +173,42 @@ class ProductService
             // === 3. Handle variants ===
             if ($variantMode === 'none') {
                 // ➤ Downgrade to simple product
-                // Delete all variants safely
+                // Delete all variants and their associated values
+                $product->variants()->each(function ($variant) {
+                    $variant->values()->delete();
+                });
                 $product->variants()->delete();
             } elseif ($variantMode === 'one' && !empty($data['product_single_variants'])) {
 
                 // ➤ Single attribute variant mode
+                // Clean up any existing multi-variants or mismatched single-variants
+                $product->variants()->where('multi_variant', true)->each(function ($variant) {
+                    $variant->values()->delete();
+                });
+                $product->variants()->where('multi_variant', true)->delete();
+
                 $attribute = ProductAttribute::where('slug', $data['product_attribute'])->firstOrFail();
+                $processedVariantNames = [];
 
                 foreach ($data['product_single_variants'] as $variantData) {
+                    $variantName = $variantData['variant_name'];
+                    $processedVariantNames[] = $variantName;
 
                     $attributeValue = $attribute->values()
-                        ->where('value', 'ilike', $variantData['variant_name'])
+                        ->where('value', 'ilike', $variantName)
                         ->first();
 
                     if (!$attributeValue) {
                         $attributeValue = $attribute->values()->create([
-                            'value' => $variantData['variant_name'],
+                            'value' => $variantName,
                         ]);
                     }
 
                     $variant = $product->variants()->updateOrCreate(
-                        ['name' => $variantData['variant_name']],
+                        [
+                            'product_id' => $product->id,
+                            'name' => $variantName
+                        ],
                         [
                             'description' => $variantData['variant_description'] ?? null,
                             'price' => $variantData['variant_price'],
@@ -205,6 +220,9 @@ class ProductService
                         ]
                     );
 
+                    // Clean up old attribute values for this variant
+                    $variant->values()->where('attribute_id', '!=', $attribute->id)->delete();
+
                     $variant->values()->updateOrCreate(
                         [
                             'product_id' => $product->id,
@@ -215,16 +233,48 @@ class ProductService
                         ]
                     );
                 }
+
+                // Delete variants that are no longer in the submitted data
+                $product->variants()
+                    ->where('multi_variant', false)
+                    ->whereNotIn('name', $processedVariantNames)
+                    ->each(function ($variant) {
+                        $variant->values()->delete();
+                    });
+                $product->variants()
+                    ->where('multi_variant', false)
+                    ->whereNotIn('name', $processedVariantNames)
+                    ->delete();
+
             } elseif ($variantMode === 'more_than_one' && !empty($data['product_multiple_variants'])) {
 
                 // ➤ Multi-attribute variant mode
-                foreach ($data['product_multiple_variants'] as $variantSet) {
+                // Clean up any existing single-variants
+                $product->variants()->where('multi_variant', false)->each(function ($variant) {
+                    $variant->values()->delete();
+                });
+                $product->variants()->where('multi_variant', false)->delete();
 
+                $processedVariantIds = [];
+
+                foreach ($data['product_multiple_variants'] as $index => $variantSet) {
+                    // Build a unique name for multi-variants from attribute values
+                    $variantNameParts = [];
+                    foreach ($data['product_multi_attributes'] as $multiAttr) {
+                        if (isset($variantSet[$multiAttr]['variant_name'])) {
+                            $variantNameParts[] = $variantSet[$multiAttr]['variant_name'];
+                        }
+                    }
+                    $variantName = implode(' - ', $variantNameParts) ?: "Variant " . ($index + 1);
+
+                    // Use a combination of product_id and name to identify the variant
                     $variant = $product->variants()->updateOrCreate(
                         [
-                            'description' => $variantSet['variant_description'] ?? null,
+                            'product_id' => $product->id,
+                            'name' => $variantName
                         ],
                         [
+                            'description' => $variantSet['variant_description'] ?? null,
                             'price' => $variantSet['variant_price'],
                             'sale_price' => $variantSet['variant_sale_price'] ?? null,
                             'cost_price' => $variantSet['variant_cost_price'] ?? null,
@@ -234,8 +284,12 @@ class ProductService
                         ]
                     );
 
+                    $processedVariantIds[] = $variant->id;
+                    $processedAttributeIds = [];
+
                     foreach ($data['product_multi_attributes'] as $multiAttr) {
                         $attribute = ProductAttribute::where('slug', $multiAttr)->firstOrFail();
+                        $processedAttributeIds[] = $attribute->id;
 
                         $variantName = $variantSet[$multiAttr]['variant_name'] ?? null;
                         if (!$variantName) continue;
@@ -260,7 +314,22 @@ class ProductService
                             ]
                         );
                     }
+
+                    // Clean up old attribute values for this variant that are no longer used
+                    $variant->values()->whereNotIn('attribute_id', $processedAttributeIds)->delete();
                 }
+
+                // Delete variants that are no longer in the submitted data
+                $product->variants()
+                    ->where('multi_variant', true)
+                    ->whereNotIn('id', $processedVariantIds)
+                    ->each(function ($variant) {
+                        $variant->values()->delete();
+                    });
+                $product->variants()
+                    ->where('multi_variant', true)
+                    ->whereNotIn('id', $processedVariantIds)
+                    ->delete();
             }
 
             // storing main image
