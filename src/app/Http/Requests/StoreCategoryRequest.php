@@ -70,6 +70,7 @@ class StoreCategoryRequest extends FormRequest
         $this->merge([
             'sort_order' => $this->integer('sort_order', 0),
             'user_id' => $this->user()->id,
+            'is_default' => $this->boolean('is_default', false),
         ]);
     }
 }

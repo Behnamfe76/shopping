@@ -82,7 +82,7 @@ class Brand extends Model implements HasMedia
             'website' => $this->website ?? '',
             'email' => $this->email ?? '',
             'phone' => $this->phone ?? '',
-            'founded_year' => $this->founded_year,
+            'founded_year' => $this->founded_year ?? 0,
             'headquarters' => $this->headquarters ?? '',
             'is_active' => $this->is_active,
             'is_featured' => $this->is_featured,
