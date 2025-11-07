@@ -71,7 +71,9 @@ class StoreProductTagRequest extends FormRequest
 
     public function prepareForValidation(){
         $this->merge([
-            'usage_count' => 0
+            'usage_count' => 0,
+            'is_active' => $this->boolean('is_active', false),
+            'is_featured' => $this->boolean('is_featured', false),
         ]);
     }
 }
