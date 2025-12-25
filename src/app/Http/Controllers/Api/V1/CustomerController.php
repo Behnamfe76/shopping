@@ -2,15 +2,23 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
-use Fereydooni\Shopping\app\Http\Controllers\Controller;
-use Fereydooni\Shopping\app\Models\Customer;
-use Fereydooni\Shopping\app\Services\CustomerService;
-use Fereydooni\Shopping\app\DTOs\CustomerDTO;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Http\Resources\Json\ResourceCollection;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Gate;
+use Fereydooni\Shopping\app\Models\Customer;
+use Fereydooni\Shopping\app\DTOs\CustomerDTO;
+use Fereydooni\Shopping\app\Enums\CustomerStatus;
 use Illuminate\Validation\ValidationException;
+use Fereydooni\Shopping\app\Enums\CustomerType;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Fereydooni\Shopping\app\Services\CustomerService;
+use Illuminate\Http\Resources\Json\ResourceCollection;
+use Fereydooni\Shopping\app\Http\Resources\CustomerResource;
+use Fereydooni\Shopping\app\Facades\Customer as CustomerFacade;
+use Fereydooni\Shopping\app\Http\Requests\CustomerStoreRequest;
+use Fereydooni\Shopping\app\Http\Requests\CustomerUpdateRequest;
+
 
 class CustomerController extends Controller
 {
@@ -21,26 +29,85 @@ class CustomerController extends Controller
     /**
      * Display a listing of customers.
      */
-    public function index(Request $request): ResourceCollection
+    public function index(Request $request): JsonResponse
     {
-        $perPage = $request->get('per_page', 15);
-        $customers = $this->customerService->getPaginatedCustomers($perPage);
+        Gate::authorize('viewAny', Customer::class);
 
-        return JsonResource::collection($customers);
+        try {
+            $perPage = min((int) $request->get('per_page', 15), 100);
+            $paginationType = $request->get('pagination', 'regular');
+
+            $customers = match ($paginationType) {
+                'simplePaginate' => CustomerFacade::simplePaginate($perPage),
+                'cursorPaginate' => CustomerFacade::cursorPaginate($perPage),
+                default => CustomerFacade::paginate($perPage),
+            };
+
+            return CustomerResource::collection($customers)->response()->setStatusCode(200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to retrieve customers',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Display a listing of category statuses.
+     */
+    public function customerTypes(): JsonResponse
+    {
+        Gate::authorize('viewAny', Customer::class);
+
+        try {
+            return response()->json([
+                'data' => array_map(fn($status) => [
+                    'id' => $status->value,
+                    'name' => __('customers.customer_types.' . $status->value),
+                ], CustomerType::cases()),
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to retrieve customer types',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Display a listing of category statuses.
+     */
+    public function statuses(): JsonResponse
+    {
+        Gate::authorize('viewAny', Customer::class);
+
+        try {
+            return response()->json([
+                'data' => array_map(fn($status) => [
+                    'id' => $status->value,
+                    'name' => __('customers.statuses.' . $status->value),
+                ], CustomerStatus::cases()),
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to retrieve customer statuses',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
      * Store a newly created customer.
      */
-    public function store(Request $request): JsonResponse
+    public function store(CustomerStoreRequest $request): JsonResponse
     {
-        try {
-            $customer = $this->customerService->createCustomer($request->all());
+        Gate::authorize('create', Customer::class);
 
-            return response()->json([
-                'message' => 'Customer created successfully',
-                'data' => $customer
-            ], 201);
+        try {
+            $category = CustomerFacade::create($request->validated());
+
+            return (new CustomerResource($category))->response()->setStatusCode(201);
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Validation failed',
@@ -59,24 +126,27 @@ class CustomerController extends Controller
      */
     public function show(Customer $customer): JsonResponse
     {
-        $this->authorize('view', $customer);
+        Gate::authorize('view', $customer);
 
-        $customerDTO = $this->customerService->getCustomerDTO($customer->id);
-
-        return response()->json([
-            'data' => $customerDTO
-        ]);
+        try {
+            return (new CustomerResource($customer))->response();
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to retrieve category',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
      * Update the specified customer.
      */
-    public function update(Request $request, Customer $customer): JsonResponse
+    public function update(CustomerUpdateRequest $request, Customer $customer): JsonResponse
     {
-        $this->authorize('update', $customer);
+        Gate::authorize('update', $customer);
 
         try {
-            $updatedCustomer = $this->customerService->updateCustomer($customer, $request->all());
+            $updatedCustomer = $this->customerService->updateCustomer($customer, $request->validated());
 
             if (!$updatedCustomer) {
                 return response()->json([

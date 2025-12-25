@@ -7,7 +7,7 @@ use Fereydooni\Shopping\app\Models\Customer;
 use Fereydooni\Shopping\app\Enums\CustomerStatus;
 use Fereydooni\Shopping\app\Enums\CustomerType;
 use Fereydooni\Shopping\app\Enums\Gender;
-use Illuminate\Support\Str;
+use App\Models\User;
 
 class CustomerSeeder extends Seeder
 {
@@ -16,11 +16,13 @@ class CustomerSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create sample customers
+        // Create 100 users for customers
+        $users = User::factory()->count(100)->create();
+
+        // Create sample customers with predefined data
         $customers = [
             [
-                'user_id' => 1, // Assuming user with ID 1 exists
-                'customer_number' => 'CUST' . strtoupper(Str::random(8)),
+                'user_id' => $users[0]->id,
                 'first_name' => 'John',
                 'last_name' => 'Doe',
                 'email' => 'john.doe@example.com',
@@ -49,8 +51,7 @@ class CustomerSeeder extends Seeder
                 'wishlist_count' => 8,
             ],
             [
-                'user_id' => 2, // Assuming user with ID 2 exists
-                'customer_number' => 'CUST' . strtoupper(Str::random(8)),
+                'user_id' => $users[1]->id,
                 'first_name' => 'Jane',
                 'last_name' => 'Smith',
                 'email' => 'jane.smith@example.com',
@@ -79,8 +80,7 @@ class CustomerSeeder extends Seeder
                 'wishlist_count' => 15,
             ],
             [
-                'user_id' => 3, // Assuming user with ID 3 exists
-                'customer_number' => 'CUST' . strtoupper(Str::random(8)),
+                'user_id' => $users[2]->id,
                 'first_name' => 'Mike',
                 'last_name' => 'Johnson',
                 'email' => 'mike.johnson@example.com',
@@ -109,8 +109,7 @@ class CustomerSeeder extends Seeder
                 'wishlist_count' => 0,
             ],
             [
-                'user_id' => 4, // Assuming user with ID 4 exists
-                'customer_number' => 'CUST' . strtoupper(Str::random(8)),
+                'user_id' => $users[3]->id,
                 'first_name' => 'Sarah',
                 'last_name' => 'Wilson',
                 'email' => 'sarah.wilson@example.com',
@@ -139,8 +138,7 @@ class CustomerSeeder extends Seeder
                 'wishlist_count' => 30,
             ],
             [
-                'user_id' => 5, // Assuming user with ID 5 exists
-                'customer_number' => 'CUST' . strtoupper(Str::random(8)),
+                'user_id' => $users[4]->id,
                 'first_name' => 'David',
                 'last_name' => 'Brown',
                 'email' => 'david.brown@example.com',
@@ -174,15 +172,14 @@ class CustomerSeeder extends Seeder
             Customer::create($customerData);
         }
 
-        // Create additional random customers
-        for ($i = 6; $i <= 20; $i++) {
+        // Create additional random customers (95 more to reach 100 total)
+        for ($i = 5; $i < 100; $i++) {
             $gender = Gender::cases()[array_rand(Gender::cases())];
             $customerType = CustomerType::cases()[array_rand(CustomerType::cases())];
             $status = CustomerStatus::cases()[array_rand(CustomerStatus::cases())];
 
             Customer::create([
-                'user_id' => $i,
-                'customer_number' => 'CUST' . strtoupper(Str::random(8)),
+                'user_id' => $users[$i]->id,
                 'first_name' => fake()->firstName(),
                 'last_name' => fake()->lastName(),
                 'email' => fake()->unique()->safeEmail(),

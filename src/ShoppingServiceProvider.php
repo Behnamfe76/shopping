@@ -23,11 +23,7 @@ class ShoppingServiceProvider extends ServiceProvider
         //     \Fereydooni\Shopping\app\Repositories\AddressRepository::class
         // );
 
-        // // Register Customer Repository
-        // $this->app->bind(
-        //     \Fereydooni\Shopping\app\Repositories\Interfaces\CustomerRepositoryInterface::class,
-        //     \Fereydooni\Shopping\app\Repositories\CustomerRepository::class
-        // );
+
 
         // Register Category Repository
         $this->app->bind(
@@ -91,6 +87,25 @@ class ShoppingServiceProvider extends ServiceProvider
             );
         });
 
+        // Register Customer Service
+        $this->app->scoped('shopping.customer', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\CustomerService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerRepositoryInterface::class)
+            );
+        });
+
+        // Register Customer Repository
+        $this->app->bind(
+            \Fereydooni\Shopping\app\Repositories\Interfaces\CustomerRepositoryInterface::class,
+            \Fereydooni\Shopping\app\Repositories\CustomerRepository::class
+        );
+
+        // Register Customer Facade
+        $this->app->singleton('shopping.customer.facade', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\CustomerService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerRepositoryInterface::class)
+            );
+        });
 
         // // Register Order Repository
         // $this->app->bind(
@@ -106,10 +121,12 @@ class ShoppingServiceProvider extends ServiceProvider
         //     );
         // });
 
-        // // Register Customer Service
-        // $this->app->scoped('shopping.customer', function ($app) {
-        //     return new \Fereydooni\Shopping\app\Services\CustomerService(
-        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerRepositoryInterface::class)
+
+
+        // // Register CustomerSegment Service
+        // $this->app->scoped('shopping.customer-segment', function ($app) {
+        //     return new \Fereydooni\Shopping\app\Services\CustomerSegmentService(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerSegmentRepositoryInterface::class)
         //     );
         // });
 
@@ -118,13 +135,6 @@ class ShoppingServiceProvider extends ServiceProvider
         //     \Fereydooni\Shopping\app\Repositories\Interfaces\CustomerSegmentRepositoryInterface::class,
         //     \Fereydooni\Shopping\app\Repositories\CustomerSegmentRepository::class
         // );
-
-        // // Register CustomerSegment Service
-        // $this->app->scoped('shopping.customer-segment', function ($app) {
-        //     return new \Fereydooni\Shopping\app\Services\CustomerSegmentService(
-        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerSegmentRepositoryInterface::class)
-        //     );
-        // });
 
         // // Register CustomerSegment Facade
         // $this->app->singleton('shopping.customer-segment.facade', function ($app) {
@@ -406,13 +416,6 @@ class ShoppingServiceProvider extends ServiceProvider
         // $this->app->singleton('product-discount-service', function ($app) {
         //     return new \Fereydooni\Shopping\app\Services\ProductDiscountService(
         //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductDiscountRepositoryInterface::class)
-        //     );
-        // });
-
-        // // Register Customer Facade
-        // $this->app->singleton('shopping.customer.facade', function ($app) {
-        //     return new \Fereydooni\Shopping\app\Services\CustomerService(
-        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerRepositoryInterface::class)
         //     );
         // });
 
@@ -760,9 +763,9 @@ class ShoppingServiceProvider extends ServiceProvider
         $this->app->alias('shopping.provider-location.facade', \Fereydooni\Shopping\app\Facades\ProviderLocation::class);
 
         // Register ProviderInsurance facade alias
-        $this->app->alias('shopping.provider-insurance.facade', \Fereydooni\Shopping\app\Facades\ProviderInsurance::class);
-
-        // Register ProviderCommunication facade alias
-        $this->app->alias('shopping.provider-communication.facade', \Fereydooni\Shopping\app\Facades\ProviderCommunication::class);
+//        $this->app->alias('shopping.provider-insurance.facade', \Fereydooni\Shopping\app\Facades\ProviderInsurance::class);
+//
+//        // Register ProviderCommunication facade alias
+//        $this->app->alias('shopping.provider-communication.facade', \Fereydooni\Shopping\app\Facades\ProviderCommunication::class);
     }
 }

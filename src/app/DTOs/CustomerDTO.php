@@ -220,7 +220,7 @@ class CustomerDTO extends Data
     {
         return [
             'user_id' => ['required', 'integer', 'exists:users,id'],
-            'customer_number' => ['required', 'string', 'max:50', 'unique:customers,customer_number'],
+//            'customer_number' => ['required', 'string', 'max:50', 'unique:customers,customer_number'],
             'first_name' => ['required', 'string', 'max:100'],
             'last_name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'email', 'max:255', 'unique:customers,email'],
@@ -249,7 +249,7 @@ class CustomerDTO extends Data
         return [
             'user_id.required' => 'User ID is required.',
             'user_id.exists' => 'The selected user does not exist.',
-            'customer_number.required' => 'Customer number is required.',
+//            'customer_number.required' => 'Customer number is required.',
             'customer_number.unique' => 'This customer number is already taken.',
             'first_name.required' => 'First name is required.',
             'last_name.required' => 'Last name is required.',

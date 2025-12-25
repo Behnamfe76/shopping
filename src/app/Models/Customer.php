@@ -3,16 +3,61 @@
 namespace Fereydooni\Shopping\app\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Fereydooni\Shopping\app\Enums\CustomerStatus;
-use Fereydooni\Shopping\app\Enums\CustomerType;
 use Fereydooni\Shopping\app\Enums\Gender;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Fereydooni\Shopping\app\Enums\CustomerType;
+use Fereydooni\Unixtime\HasTimestampEquivalents;
+use Fereydooni\Shopping\app\Enums\CustomerStatus;
+use Fereydooni\Shopping\app\Traits\HasUniqueColumn;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Customer extends Model
 {
     use SoftDeletes;
+    use HasUniqueColumn;
+    use HasTimestampEquivalents;
+
+    protected $uniqueColumnField = 'customer_number';
+
+    /**
+     * Optional: Specify which datetime columns should have timestamp equivalents.
+     * If not set, all datetime/date/timestamp casts will be auto-detected.
+     *
+     * @var array
+     */
+    // protected $timestampEquivalentColumns = [
+    //     'date_of_birth',
+    //     'created_at',
+    //     'updated_at',
+    //     'deleted_at',
+    //     'last_order_date',
+    //     'first_order_date',
+    // ];
+
+    /**
+     * Optional: Exclude specific columns from having timestamp equivalents.
+     *
+     * @var array
+     */
+    // protected $excludedTimestampColumns = [
+    //     'date_of_birth', // Example: exclude date of birth from timestamp conversion
+    // ];
+
+    /**
+     * Optional: Customize the suffix for timestamp columns.
+     * Default is '_unix' (e.g., created_at_unix)
+     *
+     * @var string
+     */
+    // protected $timestampColumnSuffix = '_timestamp';
+
+    protected $uniqueColumnSignature = [
+        'length' => 15,
+        'type'   => 'alphanumeric',
+        'prefix' => 'CUST-',
+        'suffix' => '',
+    ];
 
     protected $fillable = [
         'user_id',
@@ -145,9 +190,9 @@ class Customer extends Model
     {
         return $query->where(function ($q) use ($search) {
             $q->where('first_name', 'like', "%{$search}%")
-              ->orWhere('last_name', 'like', "%{$search}%")
-              ->orWhere('email', 'like', "%{$search}%")
-              ->orWhere('customer_number', 'like', "%{$search}%");
+                ->orWhere('last_name', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%")
+                ->orWhere('customer_number', 'like', "%{$search}%");
         });
     }
 

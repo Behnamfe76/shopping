@@ -1225,10 +1225,16 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
     //     });
     // });
 
-    // // Customer API routes
-    // Route::prefix('customers')->name('customers.')->group(function () {
-    //     // List customers
-    //     Route::get('/', [ApiCustomerController::class, 'index'])->name('index');
+    // Customer API routes
+    Route::prefix('customers')->name('customers.')->group(function () {
+        // List customers
+        Route::get('/', [ApiCustomerController::class, 'index'])->name('index');
+
+        // Get customer's type list
+        Route::get('/customer-types/cursor-all', [ApiCustomerController::class, 'customerTypes'])->name('customer-types');
+
+        // Get customer's status list
+        Route::get('/statuses/cursor-all', [ApiCustomerController::class, 'statuses'])->name('statuses');
 
     //     // Search customers
     //     Route::get('/search', [ApiCustomerController::class, 'search'])->name('search');
@@ -1236,13 +1242,13 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
     //     // Get customer statistics
     //     Route::get('/stats', [ApiCustomerController::class, 'stats'])->name('stats');
 
-    //     // Create customer
-    //     Route::post('/', [ApiCustomerController::class, 'store'])->name('store');
+        // Create customer
+        Route::post('/', [ApiCustomerController::class, 'store'])->name('store');
 
-    //     // Customer-specific routes
-    //     Route::prefix('{customer}')->group(function () {
+         // Customer-specific routes
+         Route::prefix('{customer}')->group(function () {
     //         // Show customer
-    //         Route::get('/', [ApiCustomerController::class, 'show'])->name('show');
+             Route::get('/', [ApiCustomerController::class, 'show'])->name('show');
 
     //         // Update customer (full update)
     //         Route::put('/', [ApiCustomerController::class, 'update'])->name('update');
@@ -1276,8 +1282,8 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
 
     //         // Customer preferences
     //         Route::put('/preferences', [ApiCustomerController::class, 'updatePreferences'])->name('update-preferences');
-    //     });
-    // });
+         });
+    });
 
     // // Customer Segment API routes
     // Route::prefix('customer-segments')->name('customer-segments.')->middleware(['permission:customer-segments.*'])->group(function () {

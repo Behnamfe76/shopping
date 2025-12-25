@@ -2,31 +2,33 @@
 
 namespace Fereydooni\Shopping\app\Services;
 
-use Fereydooni\Shopping\app\Repositories\Interfaces\CustomerRepositoryInterface;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Pagination\CursorPaginator;
+use Fereydooni\Shopping\app\Models\Customer;
+use Illuminate\Database\Eloquent\Collection;
+use Fereydooni\Shopping\app\DTOs\CustomerDTO;
+use Fereydooni\Shopping\app\Enums\CustomerType;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Fereydooni\Shopping\app\Enums\CustomerStatus;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
+use Fereydooni\Shopping\app\Traits\HasNotesManagement;
 use Fereydooni\Shopping\app\Traits\HasSearchOperations;
 use Fereydooni\Shopping\app\Traits\HasCustomerOperations;
 use Fereydooni\Shopping\app\Traits\HasCustomerStatusManagement;
 use Fereydooni\Shopping\app\Traits\HasCustomerLoyaltyManagement;
-use Fereydooni\Shopping\app\Traits\HasNotesManagement;
-use Fereydooni\Shopping\app\DTOs\CustomerDTO;
-use Fereydooni\Shopping\app\Models\Customer;
-use Fereydooni\Shopping\app\Enums\CustomerStatus;
-use Fereydooni\Shopping\app\Enums\CustomerType;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Illuminate\Support\Facades\Log;
+use Fereydooni\Shopping\app\Repositories\Interfaces\CustomerRepositoryInterface;
+use Illuminate\Support\Str;
 
 class CustomerService
 {
-    use HasCrudOperations, 
-        HasSearchOperations, 
-        HasCustomerOperations, 
-        HasCustomerStatusManagement, 
-        HasCustomerLoyaltyManagement, 
-        HasNotesManagement;
+    use HasCrudOperations;
+    // use HasCustomerOperations;
+    // use HasCustomerStatusManagement;
+    // use HasCustomerLoyaltyManagement;
+    // use HasNotesManagement;
 
     public function __construct(
         private CustomerRepositoryInterface $repository
@@ -213,32 +215,41 @@ class CustomerService
      */
     public function create(array $data): Customer
     {
-        // Generate customer number if not provided
-        if (!isset($data['customer_number'])) {
-            $data['customer_number'] = $this->generateCustomerNumber();
+        try {
+            DB::beginTransaction();
+            $password = $data['password'] ?? Str::random(12);
+            $userData = [
+                'name' => $data['first_name'] . ' ' . $data['last_name'],
+                'email' => $data['email'] ?? null,
+                'password' => Hash::make($password),
+            ];
+            $user = User::firstOrCreate(['email' => $userData['email']], $userData);
+
+            // Set default values
+            $data['user_id'] = $user->id;
+            $data['status'] = $data['status'] ?? CustomerStatus::PENDING;
+            $data['customer_type'] = $data['customer_type'] ?? CustomerType::INDIVIDUAL;
+            $data['loyalty_points'] = $data['loyalty_points'] ?? 0;
+            $data['total_orders'] = $data['total_orders'] ?? 0;
+            $data['total_spent'] = $data['total_spent'] ?? 0;
+            $data['average_order_value'] = $data['average_order_value'] ?? 0;
+            $data['marketing_consent'] = $data['marketing_consent'] ?? false;
+            $data['newsletter_subscription'] = $data['newsletter_subscription'] ?? false;
+            $data['address_count'] = $data['address_count'] ?? 0;
+            $data['order_count'] = $data['order_count'] ?? 0;
+            $data['review_count'] = $data['review_count'] ?? 0;
+            $data['wishlist_count'] = $data['wishlist_count'] ?? 0;
+
+            $this->validateData($data);
+            $customer = $this->repository->create($data);
+
+            DB::commit();
+
+            return $customer;
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            throw $th;
         }
-
-        // Set default values
-        $data['status'] = $data['status'] ?? CustomerStatus::PENDING;
-        $data['customer_type'] = $data['customer_type'] ?? CustomerType::INDIVIDUAL;
-        $data['loyalty_points'] = $data['loyalty_points'] ?? 0;
-        $data['total_orders'] = $data['total_orders'] ?? 0;
-        $data['total_spent'] = $data['total_spent'] ?? 0;
-        $data['average_order_value'] = $data['average_order_value'] ?? 0;
-        $data['marketing_consent'] = $data['marketing_consent'] ?? false;
-        $data['newsletter_subscription'] = $data['newsletter_subscription'] ?? false;
-        $data['address_count'] = $data['address_count'] ?? 0;
-        $data['order_count'] = $data['order_count'] ?? 0;
-        $data['review_count'] = $data['review_count'] ?? 0;
-        $data['wishlist_count'] = $data['wishlist_count'] ?? 0;
-
-        $this->validateData($data);
-        $customer = $this->repository->create($data);
-
-        // Fire customer created event
-        event(new \Fereydooni\Shopping\app\Events\Customer\CustomerCreated($customer));
-
-        return $customer;
     }
 
     /**
