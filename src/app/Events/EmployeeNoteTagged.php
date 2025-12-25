@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Events;
 
+use Fereydooni\Shopping\app\Models\EmployeeNote;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Fereydooni\Shopping\app\Models\EmployeeNote;
 
 class EmployeeNoteTagged
 {

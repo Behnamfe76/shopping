@@ -20,7 +20,7 @@ class SendCommunicationRequest extends FormRequest
                 'email', 'phone', 'chat', 'sms', 'video_call', 'in_person',
                 'support_ticket', 'complaint', 'inquiry', 'order_update',
                 'payment_notification', 'quality_issue', 'delivery_update',
-                'contract_discussion', 'general'
+                'contract_discussion', 'general',
             ])],
             'subject' => ['required', 'string', 'max:255'],
             'message' => ['required', 'string', 'max:10000'],

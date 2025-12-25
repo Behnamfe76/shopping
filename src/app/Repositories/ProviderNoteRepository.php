@@ -2,16 +2,16 @@
 
 namespace Fereydooni\Shopping\app\Repositories;
 
-use Fereydooni\Shopping\app\Repositories\Interfaces\ProviderNoteRepositoryInterface;
-use Fereydooni\Shopping\app\Models\ProviderNote;
 use Fereydooni\Shopping\app\DTOs\ProviderNoteDTO;
+use Fereydooni\Shopping\app\Models\ProviderNote;
+use Fereydooni\Shopping\app\Repositories\Interfaces\ProviderNoteRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Cache;
 
 class ProviderNoteRepository implements ProviderNoteRepositoryInterface
 {
@@ -24,7 +24,7 @@ class ProviderNoteRepository implements ProviderNoteRepositoryInterface
 
     public function paginate(int $perPage = 15): LengthAwarePaginator
     {
-        $cacheKey = "provider_notes_paginate_{$perPage}_" . request()->get('page', 1);
+        $cacheKey = "provider_notes_paginate_{$perPage}_".request()->get('page', 1);
 
         return Cache::remember($cacheKey, 1800, function () use ($perPage) {
             return ProviderNote::with(['provider', 'user'])
@@ -40,7 +40,7 @@ class ProviderNoteRepository implements ProviderNoteRepositoryInterface
             ->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return ProviderNote::with(['provider', 'user'])
             ->orderBy('created_at', 'desc')
@@ -57,6 +57,7 @@ class ProviderNoteRepository implements ProviderNoteRepositoryInterface
     public function findDTO(int $id): ?ProviderNoteDTO
     {
         $providerNote = $this->find($id);
+
         return $providerNote ? ProviderNoteDTO::fromModel($providerNote) : null;
     }
 
@@ -75,7 +76,8 @@ class ProviderNoteRepository implements ProviderNoteRepositoryInterface
     public function findByProviderIdDTO(int $providerId): Collection
     {
         $notes = $this->findByProviderId($providerId);
-        return $notes->map(fn($note) => ProviderNoteDTO::fromModel($note));
+
+        return $notes->map(fn ($note) => ProviderNoteDTO::fromModel($note));
     }
 
     public function findByUserId(int $userId): Collection
@@ -93,7 +95,8 @@ class ProviderNoteRepository implements ProviderNoteRepositoryInterface
     public function findByUserIdDTO(int $userId): Collection
     {
         $notes = $this->findByUserId($userId);
-        return $notes->map(fn($note) => ProviderNoteDTO::fromModel($note));
+
+        return $notes->map(fn ($note) => ProviderNoteDTO::fromModel($note));
     }
 
     public function findByNoteType(string $noteType): Collection
@@ -111,7 +114,8 @@ class ProviderNoteRepository implements ProviderNoteRepositoryInterface
     public function findByNoteTypeDTO(string $noteType): Collection
     {
         $notes = $this->findByNoteType($noteType);
-        return $notes->map(fn($note) => ProviderNoteDTO::fromModel($note));
+
+        return $notes->map(fn ($note) => ProviderNoteDTO::fromModel($note));
     }
 
     public function findByPriority(string $priority): Collection
@@ -129,7 +133,8 @@ class ProviderNoteRepository implements ProviderNoteRepositoryInterface
     public function findByPriorityDTO(string $priority): Collection
     {
         $notes = $this->findByPriority($priority);
-        return $notes->map(fn($note) => ProviderNoteDTO::fromModel($note));
+
+        return $notes->map(fn ($note) => ProviderNoteDTO::fromModel($note));
     }
 
     public function findPrivate(): Collection
@@ -145,7 +150,8 @@ class ProviderNoteRepository implements ProviderNoteRepositoryInterface
     public function findPrivateDTO(): Collection
     {
         $notes = $this->findPrivate();
-        return $notes->map(fn($note) => ProviderNoteDTO::fromModel($note));
+
+        return $notes->map(fn ($note) => ProviderNoteDTO::fromModel($note));
     }
 
     public function findPublic(): Collection
@@ -161,7 +167,8 @@ class ProviderNoteRepository implements ProviderNoteRepositoryInterface
     public function findPublicDTO(): Collection
     {
         $notes = $this->findPublic();
-        return $notes->map(fn($note) => ProviderNoteDTO::fromModel($note));
+
+        return $notes->map(fn ($note) => ProviderNoteDTO::fromModel($note));
     }
 
     public function findArchived(): Collection
@@ -177,7 +184,8 @@ class ProviderNoteRepository implements ProviderNoteRepositoryInterface
     public function findArchivedDTO(): Collection
     {
         $notes = $this->findArchived();
-        return $notes->map(fn($note) => ProviderNoteDTO::fromModel($note));
+
+        return $notes->map(fn ($note) => ProviderNoteDTO::fromModel($note));
     }
 
     public function findActive(): Collection
@@ -193,12 +201,13 @@ class ProviderNoteRepository implements ProviderNoteRepositoryInterface
     public function findActiveDTO(): Collection
     {
         $notes = $this->findActive();
-        return $notes->map(fn($note) => ProviderNoteDTO::fromModel($note));
+
+        return $notes->map(fn ($note) => ProviderNoteDTO::fromModel($note));
     }
 
     public function findByTags(array $tags): Collection
     {
-        $cacheKey = 'provider_notes_tags_' . md5(serialize($tags));
+        $cacheKey = 'provider_notes_tags_'.md5(serialize($tags));
 
         return Cache::remember($cacheKey, 1800, function () use ($tags) {
             return ProviderNote::with(['provider', 'user'])
@@ -211,7 +220,8 @@ class ProviderNoteRepository implements ProviderNoteRepositoryInterface
     public function findByTagsDTO(array $tags): Collection
     {
         $notes = $this->findByTags($tags);
-        return $notes->map(fn($note) => ProviderNoteDTO::fromModel($note));
+
+        return $notes->map(fn ($note) => ProviderNoteDTO::fromModel($note));
     }
 
     public function findByDateRange(string $startDate, string $endDate): Collection
@@ -229,7 +239,8 @@ class ProviderNoteRepository implements ProviderNoteRepositoryInterface
     public function findByDateRangeDTO(string $startDate, string $endDate): Collection
     {
         $notes = $this->findByDateRange($startDate, $endDate);
-        return $notes->map(fn($note) => ProviderNoteDTO::fromModel($note));
+
+        return $notes->map(fn ($note) => ProviderNoteDTO::fromModel($note));
     }
 
     public function findByProviderAndType(int $providerId, string $noteType): Collection
@@ -248,7 +259,8 @@ class ProviderNoteRepository implements ProviderNoteRepositoryInterface
     public function findByProviderAndTypeDTO(int $providerId, string $noteType): Collection
     {
         $notes = $this->findByProviderAndType($providerId, $noteType);
-        return $notes->map(fn($note) => ProviderNoteDTO::fromModel($note));
+
+        return $notes->map(fn ($note) => ProviderNoteDTO::fromModel($note));
     }
 
     public function findByProviderAndPriority(int $providerId, string $priority): Collection
@@ -267,7 +279,8 @@ class ProviderNoteRepository implements ProviderNoteRepositoryInterface
     public function findByProviderAndPriorityDTO(int $providerId, string $priority): Collection
     {
         $notes = $this->findByProviderAndPriority($providerId, $priority);
-        return $notes->map(fn($note) => ProviderNoteDTO::fromModel($note));
+
+        return $notes->map(fn ($note) => ProviderNoteDTO::fromModel($note));
     }
 
     public function create(array $data): ProviderNote
@@ -296,6 +309,7 @@ class ProviderNoteRepository implements ProviderNoteRepositoryInterface
     public function createAndReturnDTO(array $data): ProviderNoteDTO
     {
         $providerNote = $this->create($data);
+
         return ProviderNoteDTO::fromModel($providerNote);
     }
 
@@ -327,6 +341,7 @@ class ProviderNoteRepository implements ProviderNoteRepositoryInterface
     public function updateAndReturnDTO(ProviderNote $providerNote, array $data): ?ProviderNoteDTO
     {
         $updated = $this->update($providerNote, $data);
+
         return $updated ? ProviderNoteDTO::fromModel($providerNote->fresh()) : null;
     }
 
@@ -385,6 +400,7 @@ class ProviderNoteRepository implements ProviderNoteRepositoryInterface
 
         } catch (\Exception $e) {
             Log::error('Failed to add tags to provider note', ['error' => $e->getMessage(), 'id' => $providerNote->id]);
+
             return false;
         }
     }
@@ -399,6 +415,7 @@ class ProviderNoteRepository implements ProviderNoteRepositoryInterface
 
         } catch (\Exception $e) {
             Log::error('Failed to remove tags from provider note', ['error' => $e->getMessage(), 'id' => $providerNote->id]);
+
             return false;
         }
     }
@@ -418,6 +435,7 @@ class ProviderNoteRepository implements ProviderNoteRepositoryInterface
 
         } catch (\Exception $e) {
             Log::error('Failed to add attachment to provider note', ['error' => $e->getMessage(), 'id' => $providerNote->id]);
+
             return false;
         }
     }
@@ -426,12 +444,13 @@ class ProviderNoteRepository implements ProviderNoteRepositoryInterface
     {
         try {
             $currentAttachments = $providerNote->attachments ?? [];
-            $newAttachments = array_filter($currentAttachments, fn($path) => $path !== $attachmentPath);
+            $newAttachments = array_filter($currentAttachments, fn ($path) => $path !== $attachmentPath);
 
             return $this->update($providerNote, ['attachments' => array_values($newAttachments)]);
 
         } catch (\Exception $e) {
             Log::error('Failed to remove attachment from provider note', ['error' => $e->getMessage(), 'id' => $providerNote->id]);
+
             return false;
         }
     }
@@ -551,7 +570,8 @@ class ProviderNoteRepository implements ProviderNoteRepositoryInterface
     public function getRecentNotesDTO(int $limit = 10): Collection
     {
         $notes = $this->getRecentNotes($limit);
-        return $notes->map(fn($note) => ProviderNoteDTO::fromModel($note));
+
+        return $notes->map(fn ($note) => ProviderNoteDTO::fromModel($note));
     }
 
     public function getRecentNotesByProvider(int $providerId, int $limit = 10): Collection
@@ -570,19 +590,20 @@ class ProviderNoteRepository implements ProviderNoteRepositoryInterface
     public function getRecentNotesByProviderDTO(int $providerId, int $limit = 10): Collection
     {
         $notes = $this->getRecentNotesByProvider($providerId, $limit);
-        return $notes->map(fn($note) => ProviderNoteDTO::fromModel($note));
+
+        return $notes->map(fn ($note) => ProviderNoteDTO::fromModel($note));
     }
 
     public function searchNotes(string $query): Collection
     {
-        $cacheKey = 'provider_notes_search_' . md5($query);
+        $cacheKey = 'provider_notes_search_'.md5($query);
 
         return Cache::remember($cacheKey, 1800, function () use ($query) {
             return ProviderNote::with(['provider', 'user'])
                 ->where(function ($q) use ($query) {
                     $q->where('title', 'like', "%{$query}%")
-                      ->orWhere('content', 'like', "%{$query}%")
-                      ->orWhereJsonContains('tags', [$query]);
+                        ->orWhere('content', 'like', "%{$query}%")
+                        ->orWhereJsonContains('tags', [$query]);
                 })
                 ->orderBy('created_at', 'desc')
                 ->get();
@@ -592,20 +613,21 @@ class ProviderNoteRepository implements ProviderNoteRepositoryInterface
     public function searchNotesDTO(string $query): Collection
     {
         $notes = $this->searchNotes($query);
-        return $notes->map(fn($note) => ProviderNoteDTO::fromModel($note));
+
+        return $notes->map(fn ($note) => ProviderNoteDTO::fromModel($note));
     }
 
     public function searchNotesByProvider(int $providerId, string $query): Collection
     {
-        $cacheKey = "provider_notes_search_provider_{$providerId}_" . md5($query);
+        $cacheKey = "provider_notes_search_provider_{$providerId}_".md5($query);
 
         return Cache::remember($cacheKey, 1800, function () use ($providerId, $query) {
             return ProviderNote::with(['provider', 'user'])
                 ->where('provider_id', $providerId)
                 ->where(function ($q) use ($query) {
                     $q->where('title', 'like', "%{$query}%")
-                      ->orWhere('content', 'like', "%{$query}%")
-                      ->orWhereJsonContains('tags', [$query]);
+                        ->orWhere('content', 'like', "%{$query}%")
+                        ->orWhereJsonContains('tags', [$query]);
                 })
                 ->orderBy('created_at', 'desc')
                 ->get();
@@ -615,7 +637,8 @@ class ProviderNoteRepository implements ProviderNoteRepositoryInterface
     public function searchNotesByProviderDTO(int $providerId, string $query): Collection
     {
         $notes = $this->searchNotesByProvider($providerId, $query);
-        return $notes->map(fn($note) => ProviderNoteDTO::fromModel($note));
+
+        return $notes->map(fn ($note) => ProviderNoteDTO::fromModel($note));
     }
 
     /**

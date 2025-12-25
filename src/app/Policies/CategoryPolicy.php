@@ -2,9 +2,8 @@
 
 namespace Fereydooni\Shopping\app\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Fereydooni\Shopping\app\Models\Category;
-use Fereydooni\Shopping\app\Enums\CategoryStatus;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CategoryPolicy
 {

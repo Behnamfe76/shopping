@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\app\Repositories;
 
-use Fereydooni\Shopping\app\Repositories\Interfaces\OrderStatusHistoryRepositoryInterface;
-use Fereydooni\Shopping\app\Models\OrderStatusHistory;
 use Fereydooni\Shopping\app\DTOs\OrderStatusHistoryDTO;
+use Fereydooni\Shopping\app\Models\OrderStatusHistory;
+use Fereydooni\Shopping\app\Repositories\Interfaces\OrderStatusHistoryRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request;
@@ -16,8 +16,7 @@ class OrderStatusHistoryRepository implements OrderStatusHistoryRepositoryInterf
 {
     public function __construct(
         protected OrderStatusHistory $model
-    ) {
-    }
+    ) {}
 
     public function all(): Collection
     {
@@ -38,7 +37,7 @@ class OrderStatusHistoryRepository implements OrderStatusHistoryRepositoryInterf
             ->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->model->with(['order', 'changedByUser'])
             ->orderBy('changed_at', 'desc')
@@ -53,6 +52,7 @@ class OrderStatusHistoryRepository implements OrderStatusHistoryRepositoryInterf
     public function findDTO(int $id): ?OrderStatusHistoryDTO
     {
         $history = $this->find($id);
+
         return $history ? OrderStatusHistoryDTO::fromModel($history) : null;
     }
 
@@ -124,6 +124,7 @@ class OrderStatusHistoryRepository implements OrderStatusHistoryRepositoryInterf
     public function createAndReturnDTO(array $data): OrderStatusHistoryDTO
     {
         $history = $this->create($data);
+
         return OrderStatusHistoryDTO::fromModel($history->load(['order', 'changedByUser']));
     }
 
@@ -135,6 +136,7 @@ class OrderStatusHistoryRepository implements OrderStatusHistoryRepositoryInterf
     public function updateAndReturnDTO(OrderStatusHistory $history, array $data): ?OrderStatusHistoryDTO
     {
         $updated = $this->update($history, $data);
+
         return $updated ? OrderStatusHistoryDTO::fromModel($history->fresh()->load(['order', 'changedByUser'])) : null;
     }
 
@@ -168,12 +170,12 @@ class OrderStatusHistoryRepository implements OrderStatusHistoryRepositoryInterf
         return $this->model->with(['order', 'changedByUser'])
             ->where(function ($q) use ($query) {
                 $q->where('note', 'like', "%{$query}%")
-                  ->orWhere('reason', 'like', "%{$query}%")
-                  ->orWhere('old_status', 'like', "%{$query}%")
-                  ->orWhere('new_status', 'like', "%{$query}%")
-                  ->orWhereHas('order', function ($orderQuery) use ($query) {
-                      $orderQuery->where('id', 'like', "%{$query}%");
-                  });
+                    ->orWhere('reason', 'like', "%{$query}%")
+                    ->orWhere('old_status', 'like', "%{$query}%")
+                    ->orWhere('new_status', 'like', "%{$query}%")
+                    ->orWhereHas('order', function ($orderQuery) use ($query) {
+                        $orderQuery->where('id', 'like', "%{$query}%");
+                    });
             })
             ->orderBy('changed_at', 'desc')
             ->get();
@@ -281,10 +283,11 @@ class OrderStatusHistoryRepository implements OrderStatusHistoryRepositoryInterf
     public function validateHistoryEntry(array $data): bool
     {
         $validator = validator($data, OrderStatusHistoryDTO::rules(), OrderStatusHistoryDTO::messages());
-        return !$validator->fails();
+
+        return ! $validator->fails();
     }
 
-    public function logStatusChange(int $orderId, string $oldStatus, string $newStatus, int $changedBy, string $note = null, array $metadata = []): OrderStatusHistory
+    public function logStatusChange(int $orderId, string $oldStatus, string $newStatus, int $changedBy, ?string $note = null, array $metadata = []): OrderStatusHistory
     {
         $data = [
             'order_id' => $orderId,
@@ -304,9 +307,10 @@ class OrderStatusHistoryRepository implements OrderStatusHistoryRepositoryInterf
         return $this->create($data);
     }
 
-    public function logStatusChangeDTO(int $orderId, string $oldStatus, string $newStatus, int $changedBy, string $note = null, array $metadata = []): OrderStatusHistoryDTO
+    public function logStatusChangeDTO(int $orderId, string $oldStatus, string $newStatus, int $changedBy, ?string $note = null, array $metadata = []): OrderStatusHistoryDTO
     {
         $history = $this->logStatusChange($orderId, $oldStatus, $newStatus, $changedBy, $note, $metadata);
+
         return OrderStatusHistoryDTO::fromModel($history->load(['order', 'changedByUser']));
     }
 
@@ -332,9 +336,9 @@ class OrderStatusHistoryRepository implements OrderStatusHistoryRepositoryInterf
             DB::raw('count(DISTINCT order_id) as unique_orders'),
             DB::raw('count(DISTINCT changed_by) as unique_users')
         )
-        ->whereBetween('changed_at', [$startDate, $endDate])
-        ->groupBy('new_status')
-        ->get();
+            ->whereBetween('changed_at', [$startDate, $endDate])
+            ->groupBy('new_status')
+            ->get();
 
         $totalChanges = $this->model->whereBetween('changed_at', [$startDate, $endDate])->count();
         $systemChanges = $this->model->whereBetween('changed_at', [$startDate, $endDate])

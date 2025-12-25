@@ -2,15 +2,14 @@
 
 namespace Fereydooni\Shopping\app\Repositories;
 
-use Fereydooni\Shopping\app\Models\CustomerPreference;
 use Fereydooni\Shopping\app\DTOs\CustomerPreferenceDTO;
+use Fereydooni\Shopping\app\Models\CustomerPreference;
 use Fereydooni\Shopping\app\Repositories\Interfaces\CustomerPreferenceRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 class CustomerPreferenceRepository implements CustomerPreferenceRepositoryInterface
 {
@@ -29,7 +28,7 @@ class CustomerPreferenceRepository implements CustomerPreferenceRepositoryInterf
         return CustomerPreference::with('customer')->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return CustomerPreference::with('customer')->cursorPaginate($perPage, ['*'], 'id', $cursor);
     }
@@ -42,6 +41,7 @@ class CustomerPreferenceRepository implements CustomerPreferenceRepositoryInterf
     public function findDTO(int $id): ?CustomerPreferenceDTO
     {
         $preference = $this->find($id);
+
         return $preference ? CustomerPreferenceDTO::fromModel($preference) : null;
     }
 
@@ -53,7 +53,8 @@ class CustomerPreferenceRepository implements CustomerPreferenceRepositoryInterf
     public function findByCustomerIdDTO(int $customerId): Collection
     {
         $preferences = $this->findByCustomerId($customerId);
-        return $preferences->map(fn($preference) => CustomerPreferenceDTO::fromModel($preference));
+
+        return $preferences->map(fn ($preference) => CustomerPreferenceDTO::fromModel($preference));
     }
 
     public function findByCustomerAndKey(int $customerId, string $key): ?CustomerPreference
@@ -66,6 +67,7 @@ class CustomerPreferenceRepository implements CustomerPreferenceRepositoryInterf
     public function findByCustomerAndKeyDTO(int $customerId, string $key): ?CustomerPreferenceDTO
     {
         $preference = $this->findByCustomerAndKey($customerId, $key);
+
         return $preference ? CustomerPreferenceDTO::fromModel($preference) : null;
     }
 
@@ -77,7 +79,8 @@ class CustomerPreferenceRepository implements CustomerPreferenceRepositoryInterf
     public function findByKeyDTO(string $key): Collection
     {
         $preferences = $this->findByKey($key);
-        return $preferences->map(fn($preference) => CustomerPreferenceDTO::fromModel($preference));
+
+        return $preferences->map(fn ($preference) => CustomerPreferenceDTO::fromModel($preference));
     }
 
     public function findByType(string $type): Collection
@@ -88,7 +91,8 @@ class CustomerPreferenceRepository implements CustomerPreferenceRepositoryInterf
     public function findByTypeDTO(string $type): Collection
     {
         $preferences = $this->findByType($type);
-        return $preferences->map(fn($preference) => CustomerPreferenceDTO::fromModel($preference));
+
+        return $preferences->map(fn ($preference) => CustomerPreferenceDTO::fromModel($preference));
     }
 
     public function findActive(): Collection
@@ -99,7 +103,8 @@ class CustomerPreferenceRepository implements CustomerPreferenceRepositoryInterf
     public function findActiveDTO(): Collection
     {
         $preferences = $this->findActive();
-        return $preferences->map(fn($preference) => CustomerPreferenceDTO::fromModel($preference));
+
+        return $preferences->map(fn ($preference) => CustomerPreferenceDTO::fromModel($preference));
     }
 
     public function findInactive(): Collection
@@ -110,7 +115,8 @@ class CustomerPreferenceRepository implements CustomerPreferenceRepositoryInterf
     public function findInactiveDTO(): Collection
     {
         $preferences = $this->findInactive();
-        return $preferences->map(fn($preference) => CustomerPreferenceDTO::fromModel($preference));
+
+        return $preferences->map(fn ($preference) => CustomerPreferenceDTO::fromModel($preference));
     }
 
     public function findByCustomerAndType(int $customerId, string $type): Collection
@@ -123,7 +129,8 @@ class CustomerPreferenceRepository implements CustomerPreferenceRepositoryInterf
     public function findByCustomerAndTypeDTO(int $customerId, string $type): Collection
     {
         $preferences = $this->findByCustomerAndType($customerId, $type);
-        return $preferences->map(fn($preference) => CustomerPreferenceDTO::fromModel($preference));
+
+        return $preferences->map(fn ($preference) => CustomerPreferenceDTO::fromModel($preference));
     }
 
     public function create(array $data): CustomerPreference
@@ -134,6 +141,7 @@ class CustomerPreferenceRepository implements CustomerPreferenceRepositoryInterf
     public function createAndReturnDTO(array $data): CustomerPreferenceDTO
     {
         $preference = $this->create($data);
+
         return CustomerPreferenceDTO::fromModel($preference);
     }
 
@@ -145,6 +153,7 @@ class CustomerPreferenceRepository implements CustomerPreferenceRepositoryInterf
     public function updateAndReturnDTO(CustomerPreference $preference, array $data): ?CustomerPreferenceDTO
     {
         $updated = $this->update($preference, $data);
+
         return $updated ? CustomerPreferenceDTO::fromModel($preference->fresh()) : null;
     }
 
@@ -189,6 +198,7 @@ class CustomerPreferenceRepository implements CustomerPreferenceRepositoryInterf
     public function setPreferenceDTO(int $customerId, string $key, $value, string $type = 'string'): ?CustomerPreferenceDTO
     {
         $success = $this->setPreference($customerId, $key, $value, $type);
+
         return $success ? $this->findByCustomerAndKeyDTO($customerId, $key) : null;
     }
 
@@ -196,7 +206,7 @@ class CustomerPreferenceRepository implements CustomerPreferenceRepositoryInterf
     {
         $preference = $this->findByCustomerAndKey($customerId, $key);
 
-        if (!$preference || !$preference->is_active) {
+        if (! $preference || ! $preference->is_active) {
             return $default;
         }
 
@@ -211,12 +221,14 @@ class CustomerPreferenceRepository implements CustomerPreferenceRepositoryInterf
     public function removePreference(int $customerId, string $key): bool
     {
         $preference = $this->findByCustomerAndKey($customerId, $key);
+
         return $preference ? $preference->delete() : false;
     }
 
     public function hasPreference(int $customerId, string $key): bool
     {
         $preference = $this->findByCustomerAndKey($customerId, $key);
+
         return $preference && $preference->is_active;
     }
 
@@ -291,33 +303,35 @@ class CustomerPreferenceRepository implements CustomerPreferenceRepositoryInterf
 
     public function search(string $query): Collection
     {
-        return CustomerPreference::where(function($q) use ($query) {
+        return CustomerPreference::where(function ($q) use ($query) {
             $q->where('preference_key', 'like', "%{$query}%")
-              ->orWhere('preference_value', 'like', "%{$query}%")
-              ->orWhere('description', 'like', "%{$query}%");
+                ->orWhere('preference_value', 'like', "%{$query}%")
+                ->orWhere('description', 'like', "%{$query}%");
         })->get();
     }
 
     public function searchDTO(string $query): Collection
     {
         $preferences = $this->search($query);
-        return $preferences->map(fn($preference) => CustomerPreferenceDTO::fromModel($preference));
+
+        return $preferences->map(fn ($preference) => CustomerPreferenceDTO::fromModel($preference));
     }
 
     public function searchByCustomer(int $customerId, string $query): Collection
     {
         return CustomerPreference::where('customer_id', $customerId)
-            ->where(function($q) use ($query) {
+            ->where(function ($q) use ($query) {
                 $q->where('preference_key', 'like', "%{$query}%")
-                  ->orWhere('preference_value', 'like', "%{$query}%")
-                  ->orWhere('description', 'like', "%{$query}%");
+                    ->orWhere('preference_value', 'like', "%{$query}%")
+                    ->orWhere('description', 'like', "%{$query}%");
             })->get();
     }
 
     public function searchByCustomerDTO(int $customerId, string $query): Collection
     {
         $preferences = $this->searchByCustomer($customerId, $query);
-        return $preferences->map(fn($preference) => CustomerPreferenceDTO::fromModel($preference));
+
+        return $preferences->map(fn ($preference) => CustomerPreferenceDTO::fromModel($preference));
     }
 
     public function getPopularPreferences(int $limit = 10): array
@@ -350,7 +364,7 @@ class CustomerPreferenceRepository implements CustomerPreferenceRepositoryInterf
             'active_preferences' => $preferences->where('is_active', true)->count(),
             'inactive_preferences' => $preferences->where('is_active', false)->count(),
             'preferences_by_type' => $preferences->groupBy('preference_type')->map->count(),
-            'preferences_by_category' => $preferences->groupBy(function($pref) {
+            'preferences_by_category' => $preferences->groupBy(function ($pref) {
                 return explode('.', $pref->preference_key)[0] ?? 'general';
             })->map->count(),
         ];
@@ -389,13 +403,13 @@ class CustomerPreferenceRepository implements CustomerPreferenceRepositoryInterf
         $rules = CustomerPreferenceDTO::rules();
 
         foreach ($rules as $field => $fieldRules) {
-            if (!isset($data[$field]) && in_array('required', $fieldRules)) {
+            if (! isset($data[$field]) && in_array('required', $fieldRules)) {
                 return false;
             }
 
             if (isset($data[$field])) {
                 foreach ($fieldRules as $rule) {
-                    if (!$this->validateRule($rule, $data[$field])) {
+                    if (! $this->validateRule($rule, $data[$field])) {
                         return false;
                     }
                 }
@@ -451,9 +465,11 @@ class CustomerPreferenceRepository implements CustomerPreferenceRepositoryInterf
             }
 
             DB::commit();
+
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
+
             return false;
         }
     }
@@ -509,9 +525,11 @@ class CustomerPreferenceRepository implements CustomerPreferenceRepositoryInterf
             }
 
             DB::commit();
+
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
+
             return false;
         }
     }
@@ -520,19 +538,20 @@ class CustomerPreferenceRepository implements CustomerPreferenceRepositoryInterf
     {
         // This would typically query a history/audit table
         // For now, return empty collection as history tracking would need additional implementation
-        return new Collection();
+        return new Collection;
     }
 
     public function getPreferenceHistoryDTO(int $customerId, string $key): Collection
     {
         $history = $this->getPreferenceHistory($customerId, $key);
-        return $history->map(fn($item) => CustomerPreferenceDTO::fromModel($item));
+
+        return $history->map(fn ($item) => CustomerPreferenceDTO::fromModel($item));
     }
 
     // Helper methods
     private function convertValueToString($value, string $type): string
     {
-        return match($type) {
+        return match ($type) {
             'string' => (string) $value,
             'integer' => (string) (int) $value,
             'float' => (string) (float) $value,
@@ -544,7 +563,7 @@ class CustomerPreferenceRepository implements CustomerPreferenceRepositoryInterf
 
     private function convertStringToValue(string $value, string $type): mixed
     {
-        return match($type) {
+        return match ($type) {
             'string' => $value,
             'integer' => (int) $value,
             'float' => (float) $value,
@@ -558,8 +577,8 @@ class CustomerPreferenceRepository implements CustomerPreferenceRepositoryInterf
     {
         // Basic validation implementation
         // In a real application, you'd use Laravel's Validator
-        return match($rule) {
-            'required' => !empty($value),
+        return match ($rule) {
+            'required' => ! empty($value),
             'string' => is_string($value),
             'integer' => is_numeric($value) && floor($value) == $value,
             'boolean' => is_bool($value) || in_array($value, ['true', 'false', '1', '0']),
@@ -567,4 +586,3 @@ class CustomerPreferenceRepository implements CustomerPreferenceRepositoryInterf
         };
     }
 }
-

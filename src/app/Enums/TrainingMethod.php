@@ -13,7 +13,7 @@ enum TrainingMethod: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::IN_PERSON => 'In Person',
             self::ONLINE => 'Online',
             self::HYBRID => 'Hybrid',
@@ -25,7 +25,7 @@ enum TrainingMethod: string
 
     public function description(): string
     {
-        return match($this) {
+        return match ($this) {
             self::IN_PERSON => 'Traditional classroom-based training',
             self::ONLINE => 'Web-based or e-learning training',
             self::HYBRID => 'Combination of in-person and online training',
@@ -59,7 +59,7 @@ enum TrainingMethod: string
     {
         return array_combine(
             self::values(),
-            array_map(fn($case) => $case->label(), self::cases())
+            array_map(fn ($case) => $case->label(), self::cases())
         );
     }
 }

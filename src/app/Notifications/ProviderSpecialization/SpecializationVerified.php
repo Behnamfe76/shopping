@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\App\Notifications\ProviderSpecialization;
 
+use Fereydooni\Shopping\App\Models\ProviderSpecialization;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Fereydooni\Shopping\App\Models\ProviderSpecialization;
 
 class SpecializationVerified extends Notification implements ShouldQueue
 {
@@ -43,7 +43,7 @@ class SpecializationVerified extends Notification implements ShouldQueue
             ->greeting("Congratulations {$notifiable->name}!")
             ->line("Your specialization '{$specializationName}' has been verified successfully.")
             ->line("Verification Date: {$verifiedAt}")
-            ->line("This specialization is now visible to potential clients and customers.")
+            ->line('This specialization is now visible to potential clients and customers.')
             ->action('View Specialization', url("/provider/specializations/{$this->specialization->id}"))
             ->line('Thank you for maintaining high standards!');
     }

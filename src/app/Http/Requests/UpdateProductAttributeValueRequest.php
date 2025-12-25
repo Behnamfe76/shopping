@@ -92,4 +92,3 @@ class UpdateProductAttributeValueRequest extends FormRequest
         ];
     }
 }
-

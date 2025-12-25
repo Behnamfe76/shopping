@@ -221,7 +221,7 @@ enum Country: string
 
     public function flag(): string
     {
-        return 'flag-' . strtolower($this->value);
+        return 'flag-'.strtolower($this->value);
     }
 
     public function currency(): string
@@ -320,7 +320,7 @@ enum Country: string
     {
         return array_combine(
             array_column(self::cases(), 'value'),
-            array_map(fn($case) => $case->name(), self::cases())
+            array_map(fn ($case) => $case->name(), self::cases())
         );
     }
 }

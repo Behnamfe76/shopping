@@ -12,7 +12,9 @@ class ProductReviewVoted
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public ProductReview $review;
+
     public bool $isHelpful;
+
     public int $userId;
 
     /**

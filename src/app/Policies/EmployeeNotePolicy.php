@@ -19,7 +19,7 @@ class EmployeeNotePolicy
     public function view(User $user, EmployeeNote $employeeNote): bool
     {
         // Public notes can be viewed by anyone with permission
-        if (!$employeeNote->is_private) {
+        if (! $employeeNote->is_private) {
             return $user->hasPermissionTo('view employee notes');
         }
 
@@ -151,4 +151,3 @@ class EmployeeNotePolicy
         return false; // Placeholder implementation
     }
 }
-

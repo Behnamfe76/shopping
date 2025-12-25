@@ -10,7 +10,7 @@ enum ProductType: int
 
     public function toString(): string
     {
-        return match($this) {
+        return match ($this) {
             self::PHYSICAL => 'physical',
             self::DIGITAL => 'digital',
             self::SUBSCRIPTION => 'subscription',
@@ -19,7 +19,7 @@ enum ProductType: int
 
     public static function fromString(string $value): self
     {
-        return match($value) {
+        return match ($value) {
             'physical' => self::PHYSICAL,
             'digital' => self::DIGITAL,
             'subscription' => self::SUBSCRIPTION,
@@ -29,7 +29,7 @@ enum ProductType: int
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::PHYSICAL => 'Physical',
             self::DIGITAL => 'Digital',
             self::SUBSCRIPTION => 'Subscription',

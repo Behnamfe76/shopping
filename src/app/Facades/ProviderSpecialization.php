@@ -2,13 +2,13 @@
 
 namespace Fereydooni\Shopping\App\Facades;
 
-use Illuminate\Support\Facades\Facade;
+use Fereydooni\Shopping\App\DTOs\ProviderSpecializationDTO;
+use Fereydooni\Shopping\App\Models\ProviderSpecialization;
+use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderSpecializationRepositoryInterface;
+use Fereydooni\Shopping\App\Repositories\ProviderSpecializationRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Fereydooni\Shopping\App\Models\ProviderSpecialization;
-use Fereydooni\Shopping\App\DTOs\ProviderSpecializationDTO;
-use Fereydooni\Shopping\App\Repositories\ProviderSpecializationRepository;
-use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderSpecializationRepositoryInterface;
+use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static Collection all()
@@ -163,7 +163,7 @@ class ProviderSpecialization extends Facade
         $repository = static::getRepository();
         $specialization = $repository->find($id);
 
-        if (!$specialization) {
+        if (! $specialization) {
             throw new \InvalidArgumentException("Specialization with ID {$id} not found.");
         }
 
@@ -178,7 +178,7 @@ class ProviderSpecialization extends Facade
         $repository = static::getRepository();
         $specialization = $repository->find($id);
 
-        if (!$specialization) {
+        if (! $specialization) {
             throw new \InvalidArgumentException("Specialization with ID {$id} not found.");
         }
 
@@ -193,7 +193,7 @@ class ProviderSpecialization extends Facade
         $repository = static::getRepository();
         $specialization = $repository->find($id);
 
-        if (!$specialization) {
+        if (! $specialization) {
             throw new \InvalidArgumentException("Specialization with ID {$id} not found.");
         }
 
@@ -208,7 +208,7 @@ class ProviderSpecialization extends Facade
         $repository = static::getRepository();
         $specialization = $repository->find($id);
 
-        if (!$specialization) {
+        if (! $specialization) {
             throw new \InvalidArgumentException("Specialization with ID {$id} not found.");
         }
 
@@ -223,7 +223,7 @@ class ProviderSpecialization extends Facade
         $repository = static::getRepository();
         $specialization = $repository->find($id);
 
-        if (!$specialization) {
+        if (! $specialization) {
             throw new \InvalidArgumentException("Specialization with ID {$id} not found.");
         }
 
@@ -238,7 +238,7 @@ class ProviderSpecialization extends Facade
         $repository = static::getRepository();
         $specialization = $repository->find($id);
 
-        if (!$specialization) {
+        if (! $specialization) {
             throw new \InvalidArgumentException("Specialization with ID {$id} not found.");
         }
 
@@ -253,7 +253,7 @@ class ProviderSpecialization extends Facade
         $repository = static::getRepository();
         $specialization = $repository->find($id);
 
-        if (!$specialization) {
+        if (! $specialization) {
             throw new \InvalidArgumentException("Specialization with ID {$id} not found.");
         }
 
@@ -263,12 +263,12 @@ class ProviderSpecialization extends Facade
     /**
      * Reject a specialization.
      */
-    public static function rejectSpecialization(int $id, string $reason = null): bool
+    public static function rejectSpecialization(int $id, ?string $reason = null): bool
     {
         $repository = static::getRepository();
         $specialization = $repository->find($id);
 
-        if (!$specialization) {
+        if (! $specialization) {
             throw new \InvalidArgumentException("Specialization with ID {$id} not found.");
         }
 
@@ -444,7 +444,7 @@ class ProviderSpecialization extends Facade
     {
         $defaultSorting = [
             'field' => 'created_at',
-            'direction' => 'desc'
+            'direction' => 'desc',
         ];
 
         $sorting = array_merge($defaultSorting, $sorting);
@@ -452,7 +452,7 @@ class ProviderSpecialization extends Facade
         $allowedFields = [
             'id', 'provider_id', 'specialization_name', 'category',
             'years_experience', 'proficiency_level', 'verification_status',
-            'is_primary', 'is_active', 'created_at', 'updated_at'
+            'is_primary', 'is_active', 'created_at', 'updated_at',
         ];
 
         $allowedDirections = ['asc', 'desc'];
@@ -490,6 +490,7 @@ class ProviderSpecialization extends Facade
     public static function getByName(string $name): ?ProviderSpecialization
     {
         $specializations = static::getRepository()->findBySpecializationName($name);
+
         return $specializations->first();
     }
 
@@ -564,6 +565,7 @@ class ProviderSpecialization extends Facade
     {
         $repository = static::getRepository();
         $query = $repository->getModel()->newQuery();
+
         return $query->where('verification_status', 'rejected')->with(['provider', 'verifiedBy'])->get();
     }
 }

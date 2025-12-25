@@ -2,24 +2,23 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Email;
-use Spatie\LaravelData\Attributes\Validation\Max;
-use Spatie\LaravelData\Attributes\Validation\Min;
-use Spatie\LaravelData\Attributes\Validation\Nullable;
-use Spatie\LaravelData\Attributes\Validation\Required;
-use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
-use Spatie\LaravelData\Attributes\Validation\BooleanType;
-use Spatie\LaravelData\Attributes\Validation\Date;
-use Spatie\LaravelData\Attributes\Validation\Numeric;
-use Spatie\LaravelData\Attributes\Validation\In;
-use Spatie\LaravelData\Attributes\Validation\Unique;
-use Illuminate\Support\Carbon;
 use Fereydooni\Shopping\app\Enums\CustomerStatus;
 use Fereydooni\Shopping\app\Enums\CustomerType;
 use Fereydooni\Shopping\app\Enums\Gender;
 use Fereydooni\Shopping\app\Models\Customer;
+use Illuminate\Support\Carbon;
+use Spatie\LaravelData\Attributes\Validation\BooleanType;
+use Spatie\LaravelData\Attributes\Validation\Date;
+use Spatie\LaravelData\Attributes\Validation\Email;
+use Spatie\LaravelData\Attributes\Validation\IntegerType;
+use Spatie\LaravelData\Attributes\Validation\Max;
+use Spatie\LaravelData\Attributes\Validation\Min;
+use Spatie\LaravelData\Attributes\Validation\Nullable;
+use Spatie\LaravelData\Attributes\Validation\Numeric;
+use Spatie\LaravelData\Attributes\Validation\Required;
+use Spatie\LaravelData\Attributes\Validation\StringType;
+use Spatie\LaravelData\Attributes\Validation\Unique;
+use Spatie\LaravelData\Data;
 
 class CustomerDTO extends Data
 {
@@ -158,8 +157,7 @@ class CustomerDTO extends Data
 
         #[Nullable]
         public mixed $reviews = null,
-    ) {
-    }
+    ) {}
 
     public static function fromModel(Customer $customer): static
     {
@@ -199,7 +197,7 @@ class CustomerDTO extends Data
             // Computed fields
             full_name: $customer->full_name,
             display_name: $customer->display_name,
-            customer_number_formatted: 'CUST-' . str_pad($customer->customer_number, 8, '0', STR_PAD_LEFT),
+            customer_number_formatted: 'CUST-'.str_pad($customer->customer_number, 8, '0', STR_PAD_LEFT),
             is_active: $customer->is_active,
             can_order: $customer->can_order,
             has_business_fields: $customer->customer_type->hasBusinessFields(),
@@ -220,17 +218,17 @@ class CustomerDTO extends Data
     {
         return [
             'user_id' => ['required', 'integer', 'exists:users,id'],
-//            'customer_number' => ['required', 'string', 'max:50', 'unique:customers,customer_number'],
+            //            'customer_number' => ['required', 'string', 'max:50', 'unique:customers,customer_number'],
             'first_name' => ['required', 'string', 'max:100'],
             'last_name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'email', 'max:255', 'unique:customers,email'],
             'phone' => ['nullable', 'string', 'max:20'],
             'date_of_birth' => ['nullable', 'date', 'before:today'],
-            'gender' => ['nullable', 'in:' . implode(',', array_column(Gender::cases(), 'value'))],
+            'gender' => ['nullable', 'in:'.implode(',', array_column(Gender::cases(), 'value'))],
             'company_name' => ['nullable', 'string', 'max:255'],
             'tax_id' => ['nullable', 'string', 'max:100'],
-            'customer_type' => ['required', 'in:' . implode(',', array_column(CustomerType::cases(), 'value'))],
-            'status' => ['required', 'in:' . implode(',', array_column(CustomerStatus::cases(), 'value'))],
+            'customer_type' => ['required', 'in:'.implode(',', array_column(CustomerType::cases(), 'value'))],
+            'status' => ['required', 'in:'.implode(',', array_column(CustomerStatus::cases(), 'value'))],
             'loyalty_points' => ['integer', 'min:0'],
             'total_orders' => ['integer', 'min:0'],
             'total_spent' => ['numeric', 'min:0'],
@@ -249,7 +247,7 @@ class CustomerDTO extends Data
         return [
             'user_id.required' => 'User ID is required.',
             'user_id.exists' => 'The selected user does not exist.',
-//            'customer_number.required' => 'Customer number is required.',
+            //            'customer_number.required' => 'Customer number is required.',
             'customer_number.unique' => 'This customer number is already taken.',
             'first_name.required' => 'First name is required.',
             'last_name.required' => 'Last name is required.',

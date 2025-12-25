@@ -3,17 +3,16 @@
 namespace App\Listeners\ProviderCertification;
 
 use App\Events\ProviderCertification\ProviderCertificationCreated;
+use App\Events\ProviderCertification\ProviderCertificationExpired;
+use App\Events\ProviderCertification\ProviderCertificationRejected;
+use App\Events\ProviderCertification\ProviderCertificationRenewed;
+use App\Events\ProviderCertification\ProviderCertificationRevoked;
+use App\Events\ProviderCertification\ProviderCertificationSuspended;
 use App\Events\ProviderCertification\ProviderCertificationUpdated;
 use App\Events\ProviderCertification\ProviderCertificationVerified;
-use App\Events\ProviderCertification\ProviderCertificationRejected;
-use App\Events\ProviderCertification\ProviderCertificationExpired;
-use App\Events\ProviderCertification\ProviderCertificationRenewed;
-use App\Events\ProviderCertification\ProviderCertificationSuspended;
-use App\Events\ProviderCertification\ProviderCertificationRevoked;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
 
 class UpdateProviderCertificationRecord implements ShouldQueue
 {
@@ -65,14 +64,14 @@ class UpdateProviderCertificationRecord implements ShouldQueue
 
             Log::info('Provider certification record updated successfully', [
                 'event' => get_class($event),
-                'certification_id' => $certification->id
+                'certification_id' => $certification->id,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to update provider certification record', [
                 'event' => get_class($event),
                 'certification_id' => $event->certification->id ?? null,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             throw $e;
@@ -117,7 +116,7 @@ class UpdateProviderCertificationRecord implements ShouldQueue
         $certification->update([
             'verification_status' => 'verified',
             'verified_at' => now(),
-            'verified_by' => $verifiedBy->id
+            'verified_by' => $verifiedBy->id,
         ]);
 
         // Update verification metrics
@@ -131,7 +130,7 @@ class UpdateProviderCertificationRecord implements ShouldQueue
     {
         $certification->update([
             'verification_status' => 'rejected',
-            'notes' => $certification->notes . "\nRejected: " . $reason
+            'notes' => $certification->notes."\nRejected: ".$reason,
         ]);
     }
 
@@ -141,7 +140,7 @@ class UpdateProviderCertificationRecord implements ShouldQueue
     private function handleExpired($certification): void
     {
         $certification->update([
-            'status' => 'expired'
+            'status' => 'expired',
         ]);
 
         // Update status metrics
@@ -156,7 +155,7 @@ class UpdateProviderCertificationRecord implements ShouldQueue
         $certification->update([
             'status' => 'active',
             'expiry_date' => $newExpiryDate,
-            'renewal_date' => now()
+            'renewal_date' => now(),
         ]);
 
         // Update status metrics
@@ -170,7 +169,7 @@ class UpdateProviderCertificationRecord implements ShouldQueue
     {
         $certification->update([
             'status' => 'suspended',
-            'notes' => $certification->notes . "\nSuspended: " . $reason
+            'notes' => $certification->notes."\nSuspended: ".$reason,
         ]);
 
         // Update status metrics
@@ -184,7 +183,7 @@ class UpdateProviderCertificationRecord implements ShouldQueue
     {
         $certification->update([
             'status' => 'revoked',
-            'notes' => $certification->notes . "\nRevoked: " . $reason
+            'notes' => $certification->notes."\nRevoked: ".$reason,
         ]);
 
         // Update status metrics
@@ -233,7 +232,7 @@ class UpdateProviderCertificationRecord implements ShouldQueue
         Log::error('Provider certification record update job failed', [
             'event' => get_class($event),
             'certification_id' => $event->certification->id ?? null,
-            'error' => $exception->getMessage()
+            'error' => $exception->getMessage(),
         ]);
     }
 }

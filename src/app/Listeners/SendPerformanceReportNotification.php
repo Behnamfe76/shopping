@@ -32,7 +32,7 @@ class SendPerformanceReportNotification implements ShouldQueue
             Log::info('Sending performance report notification', [
                 'report_type' => $event->reportType,
                 'generated_by' => $event->generatedBy->id ?? 'system',
-                'report_data' => $event->reportData
+                'report_data' => $event->reportData,
             ]);
 
             // Get users who should receive this notification
@@ -49,14 +49,14 @@ class SendPerformanceReportNotification implements ShouldQueue
 
             Log::info('Performance report notifications sent successfully', [
                 'recipients_count' => count($recipients),
-                'report_type' => $event->reportType
+                'report_type' => $event->reportType,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to send performance report notifications', [
                 'error' => $e->getMessage(),
                 'report_type' => $event->reportType,
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
         }
     }
@@ -101,7 +101,7 @@ class SendPerformanceReportNotification implements ShouldQueue
         Log::error('Failed to send performance report notification', [
             'event' => $event,
             'error' => $exception->getMessage(),
-            'trace' => $exception->getTraceAsString()
+            'trace' => $exception->getTraceAsString(),
         ]);
     }
 }

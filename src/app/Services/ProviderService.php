@@ -2,31 +2,30 @@
 
 namespace Fereydooni\Shopping\App\Services;
 
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderRepositoryInterface;
-use Fereydooni\Shopping\App\Models\Provider;
 use Fereydooni\Shopping\App\DTOs\ProviderDTO;
 use Fereydooni\Shopping\App\Enums\ProviderStatus;
 use Fereydooni\Shopping\App\Enums\ProviderType;
-use Fereydooni\Shopping\App\Traits\HasProviderOperations;
-use Fereydooni\Shopping\App\Traits\HasProviderStatusManagement;
-use Fereydooni\Shopping\App\Traits\HasProviderRatingManagement;
-use Fereydooni\Shopping\App\Traits\HasProviderFinancialManagement;
-use Fereydooni\Shopping\App\Traits\HasProviderContractManagement;
+use Fereydooni\Shopping\App\Models\Provider;
+use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderRepositoryInterface;
 use Fereydooni\Shopping\App\Traits\HasProviderAnalytics;
+use Fereydooni\Shopping\App\Traits\HasProviderContractManagement;
+use Fereydooni\Shopping\App\Traits\HasProviderFinancialManagement;
+use Fereydooni\Shopping\App\Traits\HasProviderOperations;
+use Fereydooni\Shopping\App\Traits\HasProviderRatingManagement;
+use Fereydooni\Shopping\App\Traits\HasProviderStatusManagement;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
-use Carbon\Carbon;
 
 class ProviderService
 {
-    use HasProviderOperations,
-        HasProviderStatusManagement,
-        HasProviderRatingManagement,
-        HasProviderFinancialManagement,
+    use HasProviderAnalytics,
         HasProviderContractManagement,
-        HasProviderAnalytics;
+        HasProviderFinancialManagement,
+        HasProviderOperations,
+        HasProviderRatingManagement,
+        HasProviderStatusManagement;
 
     public function __construct(ProviderRepositoryInterface $providerRepository)
     {
@@ -39,7 +38,7 @@ class ProviderService
     public function onboardProvider(array $data): ProviderDTO
     {
         // Validate provider data
-        if (!$this->validateProviderData($data)) {
+        if (! $this->validateProviderData($data)) {
             throw new \InvalidArgumentException('Invalid provider data provided');
         }
 
@@ -48,12 +47,12 @@ class ProviderService
         $data['provider_number'] = $this->generateProviderNumber();
 
         // Set default commission and discount rates based on provider type
-        if (!isset($data['commission_rate'])) {
+        if (! isset($data['commission_rate'])) {
             $providerType = ProviderType::from($data['provider_type']);
             $data['commission_rate'] = $providerType->getDefaultCommissionRate();
         }
 
-        if (!isset($data['credit_limit'])) {
+        if (! isset($data['credit_limit'])) {
             $providerType = ProviderType::from($data['provider_type']);
             $data['credit_limit'] = $providerType->getDefaultCreditLimit();
         }
@@ -67,7 +66,7 @@ class ProviderService
         Log::info('Provider onboarded successfully', [
             'provider_id' => $provider->id,
             'provider_number' => $provider->provider_number,
-            'company_name' => $provider->company_name
+            'company_name' => $provider->company_name,
         ]);
 
         return ProviderDTO::fromModel($provider);
@@ -80,7 +79,7 @@ class ProviderService
     {
         $provider = $this->getProvider($providerId);
 
-        if (!$provider) {
+        if (! $provider) {
             throw new \InvalidArgumentException('Provider not found');
         }
 
@@ -94,7 +93,7 @@ class ProviderService
 
             Log::info('Provider profile updated', [
                 'provider_id' => $provider->id,
-                'updated_fields' => array_keys($data)
+                'updated_fields' => array_keys($data),
             ]);
 
             return ProviderDTO::fromModel($provider->fresh());
@@ -110,7 +109,7 @@ class ProviderService
     {
         $provider = $this->getProvider($providerId);
 
-        if (!$provider) {
+        if (! $provider) {
             throw new \InvalidArgumentException('Provider not found');
         }
 
@@ -125,18 +124,18 @@ class ProviderService
 
             Log::info('Provider activated', [
                 'provider_id' => $provider->id,
-                'company_name' => $provider->company_name
+                'company_name' => $provider->company_name,
             ]);
         }
 
         return $activated;
     }
 
-    public function deactivateProvider(int $providerId, string $reason = null): bool
+    public function deactivateProvider(int $providerId, ?string $reason = null): bool
     {
         $provider = $this->getProvider($providerId);
 
-        if (!$provider) {
+        if (! $provider) {
             throw new \InvalidArgumentException('Provider not found');
         }
 
@@ -152,18 +151,18 @@ class ProviderService
             Log::info('Provider deactivated', [
                 'provider_id' => $provider->id,
                 'company_name' => $provider->company_name,
-                'reason' => $reason
+                'reason' => $reason,
             ]);
         }
 
         return $deactivated;
     }
 
-    public function suspendProvider(int $providerId, string $reason = null): bool
+    public function suspendProvider(int $providerId, ?string $reason = null): bool
     {
         $provider = $this->getProvider($providerId);
 
-        if (!$provider) {
+        if (! $provider) {
             throw new \InvalidArgumentException('Provider not found');
         }
 
@@ -179,7 +178,7 @@ class ProviderService
             Log::info('Provider suspended', [
                 'provider_id' => $provider->id,
                 'company_name' => $provider->company_name,
-                'reason' => $reason
+                'reason' => $reason,
             ]);
         }
 
@@ -190,7 +189,7 @@ class ProviderService
     {
         $provider = $this->getProvider($providerId);
 
-        if (!$provider) {
+        if (! $provider) {
             throw new \InvalidArgumentException('Provider not found');
         }
 
@@ -205,7 +204,7 @@ class ProviderService
 
             Log::info('Provider unsuspended', [
                 'provider_id' => $provider->id,
-                'company_name' => $provider->company_name
+                'company_name' => $provider->company_name,
             ]);
         }
 
@@ -219,7 +218,7 @@ class ProviderService
     {
         $provider = $this->getProvider($providerId);
 
-        if (!$provider) {
+        if (! $provider) {
             throw new \InvalidArgumentException('Provider not found');
         }
 
@@ -230,7 +229,7 @@ class ProviderService
 
             Log::info('Provider rating updated', [
                 'provider_id' => $provider->id,
-                'new_rating' => $rating
+                'new_rating' => $rating,
             ]);
         }
 
@@ -241,7 +240,7 @@ class ProviderService
     {
         $provider = $this->getProvider($providerId);
 
-        if (!$provider) {
+        if (! $provider) {
             throw new \InvalidArgumentException('Provider not found');
         }
 
@@ -252,7 +251,7 @@ class ProviderService
 
             Log::info('Provider quality rating updated', [
                 'provider_id' => $provider->id,
-                'new_quality_rating' => $rating
+                'new_quality_rating' => $rating,
             ]);
         }
 
@@ -263,7 +262,7 @@ class ProviderService
     {
         $provider = $this->getProvider($providerId);
 
-        if (!$provider) {
+        if (! $provider) {
             throw new \InvalidArgumentException('Provider not found');
         }
 
@@ -274,7 +273,7 @@ class ProviderService
 
             Log::info('Provider delivery rating updated', [
                 'provider_id' => $provider->id,
-                'new_delivery_rating' => $rating
+                'new_delivery_rating' => $rating,
             ]);
         }
 
@@ -285,7 +284,7 @@ class ProviderService
     {
         $provider = $this->getProvider($providerId);
 
-        if (!$provider) {
+        if (! $provider) {
             throw new \InvalidArgumentException('Provider not found');
         }
 
@@ -296,7 +295,7 @@ class ProviderService
 
             Log::info('Provider communication rating updated', [
                 'provider_id' => $provider->id,
-                'new_communication_rating' => $rating
+                'new_communication_rating' => $rating,
             ]);
         }
 
@@ -310,7 +309,7 @@ class ProviderService
     {
         $provider = $this->getProvider($providerId);
 
-        if (!$provider) {
+        if (! $provider) {
             throw new \InvalidArgumentException('Provider not found');
         }
 
@@ -322,7 +321,7 @@ class ProviderService
             Log::info('Provider credit limit updated', [
                 'provider_id' => $provider->id,
                 'old_limit' => $provider->credit_limit,
-                'new_limit' => $newLimit
+                'new_limit' => $newLimit,
             ]);
         }
 
@@ -333,7 +332,7 @@ class ProviderService
     {
         $provider = $this->getProvider($providerId);
 
-        if (!$provider) {
+        if (! $provider) {
             throw new \InvalidArgumentException('Provider not found');
         }
 
@@ -345,7 +344,7 @@ class ProviderService
             Log::info('Provider commission rate updated', [
                 'provider_id' => $provider->id,
                 'old_rate' => $provider->commission_rate,
-                'new_rate' => $newRate
+                'new_rate' => $newRate,
             ]);
         }
 
@@ -356,7 +355,7 @@ class ProviderService
     {
         $provider = $this->getProvider($providerId);
 
-        if (!$provider) {
+        if (! $provider) {
             throw new \InvalidArgumentException('Provider not found');
         }
 
@@ -368,7 +367,7 @@ class ProviderService
             Log::info('Provider discount rate updated', [
                 'provider_id' => $provider->id,
                 'old_rate' => $provider->discount_rate,
-                'new_rate' => $newRate
+                'new_rate' => $newRate,
             ]);
         }
 
@@ -382,7 +381,7 @@ class ProviderService
     {
         $provider = $this->getProvider($providerId);
 
-        if (!$provider) {
+        if (! $provider) {
             throw new \InvalidArgumentException('Provider not found');
         }
 
@@ -393,18 +392,18 @@ class ProviderService
 
             Log::info('Provider contract extended', [
                 'provider_id' => $provider->id,
-                'new_end_date' => $newEndDate
+                'new_end_date' => $newEndDate,
             ]);
         }
 
         return $extended;
     }
 
-    public function terminateProviderContract(int $providerId, string $reason = null): bool
+    public function terminateProviderContract(int $providerId, ?string $reason = null): bool
     {
         $provider = $this->getProvider($providerId);
 
-        if (!$provider) {
+        if (! $provider) {
             throw new \InvalidArgumentException('Provider not found');
         }
 
@@ -415,7 +414,7 @@ class ProviderService
 
             Log::info('Provider contract terminated', [
                 'provider_id' => $provider->id,
-                'reason' => $reason
+                'reason' => $reason,
             ]);
         }
 
@@ -429,7 +428,7 @@ class ProviderService
     {
         $provider = $this->getProvider($providerId);
 
-        if (!$provider) {
+        if (! $provider) {
             throw new \InvalidArgumentException('Provider not found');
         }
 
@@ -470,7 +469,7 @@ class ProviderService
                 'on_time_delivery_rate' => $provider->on_time_delivery_rate,
                 'return_rate' => $provider->return_rate,
                 'defect_rate' => $provider->defect_rate,
-            ]
+            ],
         ];
     }
 
@@ -481,7 +480,7 @@ class ProviderService
     {
         $provider = $this->getProvider($providerId);
 
-        if (!$provider) {
+        if (! $provider) {
             throw new \InvalidArgumentException('Provider not found');
         }
 
@@ -489,7 +488,7 @@ class ProviderService
         $metrics = $this->getProviderPerformanceMetrics($providerId);
 
         // Determine performance level
-        $performanceLevel = match(true) {
+        $performanceLevel = match (true) {
             $score >= 90 => 'excellent',
             $score >= 80 => 'good',
             $score >= 70 => 'satisfactory',
@@ -517,7 +516,7 @@ class ProviderService
     {
         $provider = $this->getProvider($providerId);
 
-        if (!$provider) {
+        if (! $provider) {
             throw new \InvalidArgumentException('Provider not found');
         }
 
@@ -527,7 +526,7 @@ class ProviderService
             Log::info('Provider note added', [
                 'provider_id' => $providerId,
                 'note_type' => $type,
-                'note' => $note
+                'note' => $note,
             ]);
         }
 
@@ -538,7 +537,7 @@ class ProviderService
     {
         $provider = $this->getProvider($providerId);
 
-        if (!$provider) {
+        if (! $provider) {
             throw new \InvalidArgumentException('Provider not found');
         }
 
@@ -552,7 +551,7 @@ class ProviderService
     {
         $provider = $this->getProvider($providerId);
 
-        if (!$provider) {
+        if (! $provider) {
             throw new \InvalidArgumentException('Provider not found');
         }
 
@@ -574,7 +573,7 @@ class ProviderService
     {
         $provider = $this->getProvider($providerId);
 
-        if (!$provider) {
+        if (! $provider) {
             throw new \InvalidArgumentException('Provider not found');
         }
 
@@ -585,7 +584,7 @@ class ProviderService
 
             Log::info('Provider specializations updated', [
                 'provider_id' => $providerId,
-                'specializations' => $specializations
+                'specializations' => $specializations,
             ]);
         }
 
@@ -596,7 +595,7 @@ class ProviderService
     {
         $provider = $this->getProvider($providerId);
 
-        if (!$provider) {
+        if (! $provider) {
             throw new \InvalidArgumentException('Provider not found');
         }
 
@@ -607,7 +606,7 @@ class ProviderService
 
             Log::info('Provider certifications updated', [
                 'provider_id' => $providerId,
-                'certifications' => $certifications
+                'certifications' => $certifications,
             ]);
         }
 
@@ -621,7 +620,7 @@ class ProviderService
     {
         $provider = $this->getProvider($providerId);
 
-        if (!$provider) {
+        if (! $provider) {
             throw new \InvalidArgumentException('Provider not found');
         }
 
@@ -632,7 +631,7 @@ class ProviderService
 
             Log::info('Provider insurance updated', [
                 'provider_id' => $providerId,
-                'insurance' => $insurance
+                'insurance' => $insurance,
             ]);
         }
 
@@ -646,7 +645,7 @@ class ProviderService
     {
         $provider = $this->getProvider($providerId);
 
-        if (!$provider) {
+        if (! $provider) {
             throw new \InvalidArgumentException('Provider not found');
         }
 
@@ -664,7 +663,7 @@ class ProviderService
 
             Log::info('Provider location updated', [
                 'provider_id' => $providerId,
-                'location_data' => $updateData
+                'location_data' => $updateData,
             ]);
         }
 
@@ -678,7 +677,7 @@ class ProviderService
     {
         $provider = $this->getProvider($providerId);
 
-        if (!$provider) {
+        if (! $provider) {
             throw new \InvalidArgumentException('Provider not found');
         }
 
@@ -692,7 +691,7 @@ class ProviderService
     {
         $provider = $this->getProvider($providerId);
 
-        if (!$provider) {
+        if (! $provider) {
             throw new \InvalidArgumentException('Provider not found');
         }
 
@@ -706,7 +705,7 @@ class ProviderService
     {
         $provider = $this->getProvider($providerId);
 
-        if (!$provider) {
+        if (! $provider) {
             throw new \InvalidArgumentException('Provider not found');
         }
 

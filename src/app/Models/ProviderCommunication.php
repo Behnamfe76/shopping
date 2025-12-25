@@ -2,16 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Enums\CommunicationType;
 use App\Enums\Direction;
-use App\Enums\Status;
 use App\Enums\Priority;
-use Carbon\Carbon;
+use App\Enums\Status;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ProviderCommunication extends Model
 {
@@ -155,17 +154,17 @@ class ProviderCommunication extends Model
     // Accessors
     public function getIsReadAttribute(): bool
     {
-        return !is_null($this->read_at);
+        return ! is_null($this->read_at);
     }
 
     public function getIsRepliedAttribute(): bool
     {
-        return !is_null($this->replied_at);
+        return ! is_null($this->replied_at);
     }
 
     public function getResponseTimeInMinutesAttribute(): ?int
     {
-        if (!$this->sent_at || !$this->replied_at) {
+        if (! $this->sent_at || ! $this->replied_at) {
             return null;
         }
 
@@ -174,7 +173,7 @@ class ProviderCommunication extends Model
 
     public function getDaysSinceSentAttribute(): int
     {
-        if (!$this->sent_at) {
+        if (! $this->sent_at) {
             return 0;
         }
 
@@ -204,78 +203,89 @@ class ProviderCommunication extends Model
     public function markAsRead(): bool
     {
         $this->update(['read_at' => now()]);
+
         return true;
     }
 
     public function markAsReplied(): bool
     {
         $this->update(['replied_at' => now()]);
+
         return true;
     }
 
     public function markAsClosed(): bool
     {
         $this->update(['status' => Status::CLOSED]);
+
         return true;
     }
 
     public function archive(): bool
     {
         $this->update(['is_archived' => true]);
+
         return true;
     }
 
     public function unarchive(): bool
     {
         $this->update(['is_archived' => false]);
+
         return true;
     }
 
     public function setUrgent(): bool
     {
         $this->update(['is_urgent' => true]);
+
         return true;
     }
 
     public function unsetUrgent(): bool
     {
         $this->update(['is_urgent' => false]);
+
         return true;
     }
 
     public function addTag(string $tag): bool
     {
         $tags = $this->tags ?? [];
-        if (!in_array($tag, $tags)) {
+        if (! in_array($tag, $tags)) {
             $tags[] = $tag;
             $this->update(['tags' => $tags]);
         }
+
         return true;
     }
 
     public function removeTag(string $tag): bool
     {
         $tags = $this->tags ?? [];
-        $tags = array_filter($tags, fn($t) => $t !== $tag);
+        $tags = array_filter($tags, fn ($t) => $t !== $tag);
         $this->update(['tags' => $tags]);
+
         return true;
     }
 
     public function addAttachment(string $attachmentPath): bool
     {
         $attachments = $this->attachments ?? [];
-        if (!in_array($attachmentPath, $attachments)) {
+        if (! in_array($attachmentPath, $attachments)) {
             $attachments[] = $attachmentPath;
             $this->update(['attachments' => $attachments]);
         }
+
         return true;
     }
 
     public function removeAttachment(string $attachmentPath): bool
     {
         $attachments = $this->attachments ?? [];
-        $attachments = array_filter($attachments, fn($a) => $a !== $attachmentPath);
+        $attachments = array_filter($attachments, fn ($a) => $a !== $attachmentPath);
         $this->update(['attachments' => $attachments]);
+
         return true;
     }
 
@@ -283,8 +293,10 @@ class ProviderCommunication extends Model
     {
         if ($rating >= 0 && $rating <= 5) {
             $this->update(['satisfaction_rating' => $rating]);
+
             return true;
         }
+
         return false;
     }
 
@@ -293,8 +305,10 @@ class ProviderCommunication extends Model
         if ($this->sent_at && $this->replied_at) {
             $responseTime = $this->sent_at->diffInMinutes($this->replied_at);
             $this->update(['response_time' => $responseTime]);
+
             return true;
         }
+
         return false;
     }
 }

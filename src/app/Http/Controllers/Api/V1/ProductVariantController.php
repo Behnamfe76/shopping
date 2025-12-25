@@ -2,23 +2,22 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Fereydooni\Shopping\app\Models\ProductVariant;
-use Fereydooni\Shopping\app\Services\ProductVariantService;
-use Fereydooni\Shopping\app\Http\Requests\StoreProductVariantRequest;
-use Fereydooni\Shopping\app\Http\Requests\UpdateProductVariantRequest;
-use Fereydooni\Shopping\app\Http\Requests\ToggleProductVariantStatusRequest;
-use Fereydooni\Shopping\app\Http\Requests\UpdateProductVariantStockRequest;
-use Fereydooni\Shopping\app\Http\Requests\SetProductVariantPriceRequest;
-use Fereydooni\Shopping\app\Http\Requests\SearchProductVariantRequest;
 use Fereydooni\Shopping\app\Http\Requests\BulkProductVariantRequest;
 use Fereydooni\Shopping\app\Http\Requests\ImportProductVariantRequest;
-use Fereydooni\Shopping\app\Http\Resources\ProductVariantResource;
-use Fereydooni\Shopping\app\Http\Resources\ProductVariantCollection;
-use Fereydooni\Shopping\app\Http\Resources\ProductVariantSearchResource;
-use Fereydooni\Shopping\app\Http\Resources\ProductVariantBulkResource;
+use Fereydooni\Shopping\app\Http\Requests\SearchProductVariantRequest;
+use Fereydooni\Shopping\app\Http\Requests\SetProductVariantPriceRequest;
+use Fereydooni\Shopping\app\Http\Requests\StoreProductVariantRequest;
+use Fereydooni\Shopping\app\Http\Requests\ToggleProductVariantStatusRequest;
+use Fereydooni\Shopping\app\Http\Requests\UpdateProductVariantRequest;
+use Fereydooni\Shopping\app\Http\Requests\UpdateProductVariantStockRequest;
 use Fereydooni\Shopping\app\Http\Resources\ProductVariantAnalyticsResource;
+use Fereydooni\Shopping\app\Http\Resources\ProductVariantCollection;
+use Fereydooni\Shopping\app\Http\Resources\ProductVariantResource;
+use Fereydooni\Shopping\app\Http\Resources\ProductVariantSearchResource;
+use Fereydooni\Shopping\app\Models\ProductVariant;
+use Fereydooni\Shopping\app\Services\ProductVariantService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class ProductVariantController extends Controller
 {
@@ -99,7 +98,7 @@ class ProductVariantController extends Controller
         return response()->json([
             'success' => $success,
             'message' => $success ? 'Status toggled successfully.' : 'Failed to toggle status.',
-            'is_active' => $variant->fresh()->is_active
+            'is_active' => $variant->fresh()->is_active,
         ]);
     }
 
@@ -115,7 +114,7 @@ class ProductVariantController extends Controller
         return response()->json([
             'success' => $success,
             'message' => $success ? 'Featured status toggled successfully.' : 'Failed to toggle featured status.',
-            'is_featured' => $variant->fresh()->is_featured
+            'is_featured' => $variant->fresh()->is_featured,
         ]);
     }
 
@@ -132,7 +131,7 @@ class ProductVariantController extends Controller
         return response()->json([
             'success' => $success,
             'message' => $success ? 'Stock updated successfully.' : 'Failed to update stock.',
-            'stock_quantity' => $variant->fresh()->stock
+            'stock_quantity' => $variant->fresh()->stock,
         ]);
     }
 
@@ -149,7 +148,7 @@ class ProductVariantController extends Controller
         return response()->json([
             'success' => $success,
             'message' => $success ? 'Stock reserved successfully.' : 'Failed to reserve stock.',
-            'reserved_stock' => $variant->fresh()->reserved_stock
+            'reserved_stock' => $variant->fresh()->reserved_stock,
         ]);
     }
 
@@ -166,7 +165,7 @@ class ProductVariantController extends Controller
         return response()->json([
             'success' => $success,
             'message' => $success ? 'Stock released successfully.' : 'Failed to release stock.',
-            'reserved_stock' => $variant->fresh()->reserved_stock
+            'reserved_stock' => $variant->fresh()->reserved_stock,
         ]);
     }
 
@@ -184,7 +183,7 @@ class ProductVariantController extends Controller
         return response()->json([
             'success' => $success,
             'message' => $success ? 'Stock adjusted successfully.' : 'Failed to adjust stock.',
-            'stock_quantity' => $variant->fresh()->stock
+            'stock_quantity' => $variant->fresh()->stock,
         ]);
     }
 
@@ -201,7 +200,7 @@ class ProductVariantController extends Controller
         return response()->json([
             'success' => $success,
             'message' => $success ? 'Price set successfully.' : 'Failed to set price.',
-            'price' => $variant->fresh()->price
+            'price' => $variant->fresh()->price,
         ]);
     }
 
@@ -218,7 +217,7 @@ class ProductVariantController extends Controller
         return response()->json([
             'success' => $success,
             'message' => $success ? 'Sale price set successfully.' : 'Failed to set sale price.',
-            'sale_price' => $variant->fresh()->sale_price
+            'sale_price' => $variant->fresh()->sale_price,
         ]);
     }
 
@@ -235,7 +234,7 @@ class ProductVariantController extends Controller
         return response()->json([
             'success' => $success,
             'message' => $success ? 'Compare price set successfully.' : 'Failed to set compare price.',
-            'compare_price' => $variant->fresh()->compare_price
+            'compare_price' => $variant->fresh()->compare_price,
         ]);
     }
 
@@ -321,7 +320,7 @@ class ProductVariantController extends Controller
 
         $variant = $this->variantService->findBySku($sku);
 
-        if (!$variant) {
+        if (! $variant) {
             return response()->json(['message' => 'Variant not found.'], 404);
         }
 
@@ -337,7 +336,7 @@ class ProductVariantController extends Controller
 
         $variant = $this->variantService->findByBarcode($barcode);
 
-        if (!$variant) {
+        if (! $variant) {
             return response()->json(['message' => 'Variant not found.'], 404);
         }
 
@@ -460,7 +459,7 @@ class ProductVariantController extends Controller
             'success' => true,
             'message' => 'Variants created successfully.',
             'count' => $variants->count(),
-            'variants' => ProductVariantResource::collection($variants)
+            'variants' => ProductVariantResource::collection($variants),
         ]);
     }
 
@@ -476,7 +475,7 @@ class ProductVariantController extends Controller
 
         return response()->json([
             'success' => $success,
-            'message' => $success ? 'Variants updated successfully.' : 'Failed to update variants.'
+            'message' => $success ? 'Variants updated successfully.' : 'Failed to update variants.',
         ]);
     }
 
@@ -492,7 +491,7 @@ class ProductVariantController extends Controller
 
         return response()->json([
             'success' => $success,
-            'message' => $success ? 'Variants deleted successfully.' : 'Failed to delete variants.'
+            'message' => $success ? 'Variants deleted successfully.' : 'Failed to delete variants.',
         ]);
     }
 
@@ -508,7 +507,7 @@ class ProductVariantController extends Controller
 
         return response()->json([
             'success' => $success,
-            'message' => $success ? 'Variants imported successfully.' : 'Failed to import variants.'
+            'message' => $success ? 'Variants imported successfully.' : 'Failed to import variants.',
         ]);
     }
 
@@ -536,7 +535,7 @@ class ProductVariantController extends Controller
 
         return response()->json([
             'success' => $success,
-            'message' => $success ? 'Variants synced successfully.' : 'Failed to sync variants.'
+            'message' => $success ? 'Variants synced successfully.' : 'Failed to sync variants.',
         ]);
     }
 

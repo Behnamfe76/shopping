@@ -2,25 +2,27 @@
 
 namespace Fereydooni\Shopping\app\Events\Provider;
 
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Queue\SerializesModels;
 use Fereydooni\Shopping\app\Models\ProviderLocation;
 use Fereydooni\Shopping\app\Models\User;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class LocationGeocoded
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public ProviderLocation $providerLocation;
+
     public ?User $user;
+
     public array $geocodingResults;
+
     public array $geocodingData;
+
     public ?string $geocodingService;
+
     public ?string $geocodingMethod;
 
     /**
@@ -51,11 +53,11 @@ class LocationGeocoded
             'postal_code' => $providerLocation->postal_code,
             'old_coordinates' => [
                 'latitude' => $providerLocation->getOriginal('latitude'),
-                'longitude' => $providerLocation->getOriginal('longitude')
+                'longitude' => $providerLocation->getOriginal('longitude'),
             ],
             'new_coordinates' => [
                 'latitude' => $providerLocation->latitude,
-                'longitude' => $providerLocation->longitude
+                'longitude' => $providerLocation->longitude,
             ],
             'geocoding_results' => $geocodingResults,
             'geocoding_service' => $geocodingService,
@@ -64,7 +66,7 @@ class LocationGeocoded
             'address_verified' => $this->isAddressVerified(),
             'geocoding_success' => $this->isGeocodingSuccessful(),
             'accuracy_level' => $this->getAccuracyLevel(),
-            'geocoded_at' => now()->toISOString()
+            'geocoded_at' => now()->toISOString(),
         ];
     }
 
@@ -78,17 +80,18 @@ class LocationGeocoded
         $newLat = $this->geocodingData['new_coordinates']['latitude'];
         $newLng = $this->geocodingData['new_coordinates']['longitude'];
 
-        if (is_null($oldLat) && is_null($oldLng) && !is_null($newLat) && !is_null($newLng)) {
+        if (is_null($oldLat) && is_null($oldLng) && ! is_null($newLat) && ! is_null($newLng)) {
             return true; // Coordinates were added
         }
 
-        if (!is_null($oldLat) && !is_null($oldLng) && is_null($newLat) && is_null($newLng)) {
+        if (! is_null($oldLat) && ! is_null($oldLng) && is_null($newLat) && is_null($newLng)) {
             return true; // Coordinates were removed
         }
 
-        if (!is_null($oldLat) && !is_null($oldLng) && !is_null($newLat) && !is_null($newLng)) {
+        if (! is_null($oldLat) && ! is_null($oldLng) && ! is_null($newLat) && ! is_null($newLng)) {
             // Check if coordinates are significantly different (more than 1 meter)
             $distance = $this->calculateDistance($oldLat, $oldLng, $newLat, $newLng);
+
             return $distance > 0.001; // 1 meter threshold
         }
 
@@ -116,7 +119,7 @@ class LocationGeocoded
      */
     protected function getAccuracyLevel(): string
     {
-        if (!isset($this->geocodingResults['accuracy'])) {
+        if (! isset($this->geocodingResults['accuracy'])) {
             return 'unknown';
         }
 
@@ -162,7 +165,7 @@ class LocationGeocoded
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('provider.' . $this->providerLocation->provider_id),
+            new PrivateChannel('provider.'.$this->providerLocation->provider_id),
             new PrivateChannel('admin.provider-locations'),
         ];
     }
@@ -180,7 +183,7 @@ class LocationGeocoded
             'geocoding_data' => $this->geocodingData,
             'user_id' => $this->user?->id,
             'user_name' => $this->user?->name,
-            'timestamp' => now()->toISOString()
+            'timestamp' => now()->toISOString(),
         ];
     }
 
@@ -202,7 +205,7 @@ class LocationGeocoded
         $newLat = $this->geocodingData['new_coordinates']['latitude'];
         $newLng = $this->geocodingData['new_coordinates']['longitude'];
 
-        return is_null($oldLat) && is_null($oldLng) && !is_null($newLat) && !is_null($newLng);
+        return is_null($oldLat) && is_null($oldLng) && ! is_null($newLat) && ! is_null($newLng);
     }
 
     /**
@@ -215,7 +218,7 @@ class LocationGeocoded
         $newLat = $this->geocodingData['new_coordinates']['latitude'];
         $newLng = $this->geocodingData['new_coordinates']['longitude'];
 
-        return !is_null($oldLat) && !is_null($oldLng) && is_null($newLat) && is_null($newLng);
+        return ! is_null($oldLat) && ! is_null($oldLng) && is_null($newLat) && is_null($newLng);
     }
 
     /**
@@ -228,7 +231,7 @@ class LocationGeocoded
         $newLat = $this->geocodingData['new_coordinates']['latitude'];
         $newLng = $this->geocodingData['new_coordinates']['longitude'];
 
-        return !is_null($oldLat) && !is_null($oldLng) && !is_null($newLat) && !is_null($newLng);
+        return ! is_null($oldLat) && ! is_null($oldLng) && ! is_null($newLat) && ! is_null($newLng);
     }
 
     /**
@@ -260,7 +263,7 @@ class LocationGeocoded
      */
     public function getDistanceChange(): ?float
     {
-        if (!$this->coordinatesUpdated()) {
+        if (! $this->coordinatesUpdated()) {
             return null;
         }
 

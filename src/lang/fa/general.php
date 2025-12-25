@@ -11,9 +11,8 @@ return [
     |
     */
 
-    
     'not-used' => 'بلااستفاده',
-    'usage-counter' => ":value استفاده",
+    'usage-counter' => ':value استفاده',
     'active' => 'فعال',
     'in-active' => 'غیرفعال',
     'featured' => 'ویژه',

@@ -2,10 +2,7 @@
 
 namespace App\Traits;
 
-use App\DTOs\ProviderInsuranceDTO;
-use App\Models\ProviderInsurance;
 use App\Services\ProviderInsuranceService;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\App;
 
 /**
@@ -31,7 +28,7 @@ trait HasProviderInsuranceCompliance
             'missing_insurance_types' => [],
             'expiring_soon_count' => App::make(ProviderInsuranceService::class)->getExpiringSoonCount($providerId),
             'expired_insurance_count' => App::make(ProviderInsuranceService::class)->getExpiredInsuranceCount($providerId),
-            'compliance_score' => 0
+            'compliance_score' => 0,
         ];
 
         // Check if provider has required insurance types
@@ -65,8 +62,8 @@ trait HasProviderInsuranceCompliance
                 'total_insurance_count' => App::make(ProviderInsuranceService::class)->getInsuranceCount($providerId),
                 'insurance_by_type' => $this->getInsuranceCountByType($providerId),
                 'insurance_by_status' => $this->getInsuranceCountByStatus($providerId),
-                'coverage_amounts' => $this->getCoverageAmounts($providerId)
-            ]
+                'coverage_amounts' => $this->getCoverageAmounts($providerId),
+            ],
         ];
     }
 
@@ -84,8 +81,8 @@ trait HasProviderInsuranceCompliance
                 'total_active_insurance' => App::make(ProviderInsuranceService::class)->getTotalActiveInsuranceCount(),
                 'total_expired_insurance' => App::make(ProviderInsuranceService::class)->getTotalExpiredInsuranceCount(),
                 'total_expiring_soon' => App::make(ProviderInsuranceService::class)->getTotalExpiringSoonCount(),
-                'total_verified_insurance' => App::make(ProviderInsuranceService::class)->getTotalVerifiedInsuranceCount()
-            ]
+                'total_verified_insurance' => App::make(ProviderInsuranceService::class)->getTotalVerifiedInsuranceCount(),
+            ],
         ];
     }
 
@@ -126,7 +123,7 @@ trait HasProviderInsuranceCompliance
     {
         return [
             'total_coverage' => App::make(ProviderInsuranceService::class)->getTotalCoverageAmountByProvider($providerId),
-            'average_coverage' => App::make(ProviderInsuranceService::class)->getAverageCoverageAmountByProvider($providerId)
+            'average_coverage' => App::make(ProviderInsuranceService::class)->getAverageCoverageAmountByProvider($providerId),
         ];
     }
 
@@ -149,8 +146,8 @@ trait HasProviderInsuranceCompliance
         $compliance = $this->checkProviderCompliance($providerId);
         $recommendations = [];
 
-        if (!empty($compliance['missing_insurance_types'])) {
-            $recommendations[] = 'Add missing insurance types: ' . implode(', ', $compliance['missing_insurance_types']);
+        if (! empty($compliance['missing_insurance_types'])) {
+            $recommendations[] = 'Add missing insurance types: '.implode(', ', $compliance['missing_insurance_types']);
         }
 
         if ($compliance['expiring_soon_count'] > 0) {
@@ -161,7 +158,7 @@ trait HasProviderInsuranceCompliance
             $recommendations[] = "Address {$compliance['expired_insurance_count']} expired insurance policies";
         }
 
-        if (!$this->meetsMinimumCoverageRequirements($providerId)) {
+        if (! $this->meetsMinimumCoverageRequirements($providerId)) {
             $recommendations[] = 'Increase coverage amounts to meet minimum requirements';
         }
 

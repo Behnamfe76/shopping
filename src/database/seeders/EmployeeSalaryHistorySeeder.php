@@ -2,12 +2,12 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\EmployeeSalaryHistory;
-use App\Models\Employee;
-use App\Models\User;
 use App\Enums\SalaryChangeType;
+use App\Models\Employee;
+use App\Models\EmployeeSalaryHistory;
+use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
 
 class EmployeeSalaryHistorySeeder extends Seeder
 {
@@ -23,6 +23,7 @@ class EmployeeSalaryHistorySeeder extends Seeder
 
         if ($employees->isEmpty()) {
             $this->command->warn('No employees found. Please run EmployeeSeeder first.');
+
             return;
         }
 
@@ -31,6 +32,7 @@ class EmployeeSalaryHistorySeeder extends Seeder
 
         if ($users->isEmpty()) {
             $this->command->warn('No users found. Please run UserSeeder first.');
+
             return;
         }
 
@@ -167,7 +169,7 @@ class EmployeeSalaryHistorySeeder extends Seeder
      */
     private function calculateChangePercentage($changeType, $index): float
     {
-        return match($changeType) {
+        return match ($changeType) {
             SalaryChangeType::PROMOTION => $this->faker->randomFloat(2, 8, 20),
             SalaryChangeType::MERIT => $this->faker->randomFloat(2, 3, 8),
             SalaryChangeType::COST_OF_LIVING => $this->faker->randomFloat(2, 2, 5),
@@ -254,7 +256,7 @@ class EmployeeSalaryHistorySeeder extends Seeder
         ];
 
         // Only approved records can be retroactive
-        if (!$isApproved) {
+        if (! $isApproved) {
             return $data;
         }
 
@@ -273,7 +275,7 @@ class EmployeeSalaryHistorySeeder extends Seeder
      */
     private function generateReason($changeType, $employee): string
     {
-        return match($changeType) {
+        return match ($changeType) {
             SalaryChangeType::PROMOTION => "Promotion to {$this->getNextPosition($employee)}",
             SalaryChangeType::MERIT => $this->faker->randomElement([
                 'Annual merit increase',
@@ -327,6 +329,7 @@ class EmployeeSalaryHistorySeeder extends Seeder
         ];
 
         $currentPosition = $employee->position?->title ?? 'Developer';
+
         return $positions[$currentPosition] ?? 'Senior Developer';
     }
 
@@ -336,12 +339,12 @@ class EmployeeSalaryHistorySeeder extends Seeder
     private function generateNotes($changeType, $changePercentage): ?string
     {
         if ($this->faker->boolean(60)) {
-            return match($changeType) {
-                SalaryChangeType::PROMOTION => "Promotion reflects increased responsibilities and leadership capabilities.",
-                SalaryChangeType::MERIT => "Merit increase based on consistent high performance and contributions.",
-                SalaryChangeType::MARKET_ADJUSTMENT => "Adjustment brings salary in line with market rates for similar positions.",
-                SalaryChangeType::PERFORMANCE_BONUS => "Bonus recognizes exceptional performance and project delivery.",
-                default => "Salary adjustment based on company policy and performance review.",
+            return match ($changeType) {
+                SalaryChangeType::PROMOTION => 'Promotion reflects increased responsibilities and leadership capabilities.',
+                SalaryChangeType::MERIT => 'Merit increase based on consistent high performance and contributions.',
+                SalaryChangeType::MARKET_ADJUSTMENT => 'Adjustment brings salary in line with market rates for similar positions.',
+                SalaryChangeType::PERFORMANCE_BONUS => 'Bonus recognizes exceptional performance and project delivery.',
+                default => 'Salary adjustment based on company policy and performance review.',
             };
         }
 

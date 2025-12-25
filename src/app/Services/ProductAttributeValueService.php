@@ -2,13 +2,13 @@
 
 namespace Fereydooni\Shopping\app\Services;
 
+use Fereydooni\Shopping\app\DTOs\ProductAttributeValueDTO;
+use Fereydooni\Shopping\app\Models\ProductAttributeValue;
+use Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeValueRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Fereydooni\Shopping\app\Models\ProductAttributeValue;
-use Fereydooni\Shopping\app\DTOs\ProductAttributeValueDTO;
-use Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeValueRepositoryInterface;
 
 class ProductAttributeValueService
 {
@@ -32,7 +32,7 @@ class ProductAttributeValueService
         return $this->repository->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->repository->cursorPaginate($perPage, $cursor);
     }

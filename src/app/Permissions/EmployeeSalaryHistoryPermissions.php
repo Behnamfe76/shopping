@@ -2,10 +2,10 @@
 
 namespace App\Permissions;
 
-use Illuminate\Support\Facades\Gate;
-use App\Models\User;
-use App\Models\EmployeeSalaryHistory;
 use App\Models\Employee;
+use App\Models\EmployeeSalaryHistory;
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 
 class EmployeeSalaryHistoryPermissions
 {
@@ -38,13 +38,13 @@ class EmployeeSalaryHistoryPermissions
         });
 
         // Edit permissions
-        Gate::define('employee-salary-history.edit', function (User $user, EmployeeSalaryHistory $salaryHistory = null) {
-            if (!$user->hasPermissionTo('employee-salary-history.edit')) {
+        Gate::define('employee-salary-history.edit', function (User $user, ?EmployeeSalaryHistory $salaryHistory = null) {
+            if (! $user->hasPermissionTo('employee-salary-history.edit')) {
                 return false;
             }
 
             // If no specific record, just check general permission
-            if (!$salaryHistory) {
+            if (! $salaryHistory) {
                 return true;
             }
 
@@ -53,13 +53,13 @@ class EmployeeSalaryHistoryPermissions
         });
 
         // Delete permissions
-        Gate::define('employee-salary-history.delete', function (User $user, EmployeeSalaryHistory $salaryHistory = null) {
-            if (!$user->hasPermissionTo('employee-salary-history.delete')) {
+        Gate::define('employee-salary-history.delete', function (User $user, ?EmployeeSalaryHistory $salaryHistory = null) {
+            if (! $user->hasPermissionTo('employee-salary-history.delete')) {
                 return false;
             }
 
             // If no specific record, just check general permission
-            if (!$salaryHistory) {
+            if (! $salaryHistory) {
                 return true;
             }
 
@@ -68,13 +68,13 @@ class EmployeeSalaryHistoryPermissions
         });
 
         // Approval permissions
-        Gate::define('employee-salary-history.approve', function (User $user, EmployeeSalaryHistory $salaryHistory = null) {
-            if (!$user->hasPermissionTo('employee-salary-history.approve')) {
+        Gate::define('employee-salary-history.approve', function (User $user, ?EmployeeSalaryHistory $salaryHistory = null) {
+            if (! $user->hasPermissionTo('employee-salary-history.approve')) {
                 return false;
             }
 
             // If no specific record, just check general permission
-            if (!$salaryHistory) {
+            if (! $salaryHistory) {
                 return true;
             }
 
@@ -82,13 +82,13 @@ class EmployeeSalaryHistoryPermissions
             return $user->hasPermissionTo('employee-salary-history.approve');
         });
 
-        Gate::define('employee-salary-history.reject', function (User $user, EmployeeSalaryHistory $salaryHistory = null) {
-            if (!$user->hasPermissionTo('employee-salary-history.reject')) {
+        Gate::define('employee-salary-history.reject', function (User $user, ?EmployeeSalaryHistory $salaryHistory = null) {
+            if (! $user->hasPermissionTo('employee-salary-history.reject')) {
                 return false;
             }
 
             // If no specific record, just check general permission
-            if (!$salaryHistory) {
+            if (! $salaryHistory) {
                 return true;
             }
 
@@ -127,7 +127,7 @@ class EmployeeSalaryHistoryPermissions
         // Policy-based permissions
         Gate::define('employee-salary-history.view-employee', function (User $user, Employee $employee) {
             // Check if user has general view permission
-            if (!$user->hasPermissionTo('employee-salary-history.view')) {
+            if (! $user->hasPermissionTo('employee-salary-history.view')) {
                 return false;
             }
 
@@ -155,7 +155,7 @@ class EmployeeSalaryHistoryPermissions
 
         Gate::define('employee-salary-history.manage-employee', function (User $user, Employee $employee) {
             // Check if user has general management permission
-            if (!$user->hasPermissionTo('employee-salary-history.manage-all')) {
+            if (! $user->hasPermissionTo('employee-salary-history.manage-all')) {
                 return false;
             }
 
@@ -165,7 +165,7 @@ class EmployeeSalaryHistoryPermissions
 
         Gate::define('employee-salary-history.approve-employee', function (User $user, Employee $employee) {
             // Check if user has general approval permission
-            if (!$user->hasPermissionTo('employee-salary-history.approve')) {
+            if (! $user->hasPermissionTo('employee-salary-history.approve')) {
                 return false;
             }
 
@@ -175,7 +175,7 @@ class EmployeeSalaryHistoryPermissions
 
         Gate::define('employee-salary-history.reject-employee', function (User $user, Employee $employee) {
             // Check if user has general rejection permission
-            if (!$user->hasPermissionTo('employee-salary-history.reject')) {
+            if (! $user->hasPermissionTo('employee-salary-history.reject')) {
                 return false;
             }
 

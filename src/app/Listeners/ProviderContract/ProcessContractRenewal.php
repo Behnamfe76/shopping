@@ -2,8 +2,8 @@
 
 namespace Fereydooni\Shopping\app\Listeners\ProviderContract;
 
-use Fereydooni\Shopping\app\Events\Provider\ProviderContractRenewed;
 use Fereydooni\Shopping\app\Events\Provider\ProviderContractExpiring;
+use Fereydooni\Shopping\app\Events\Provider\ProviderContractRenewed;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
@@ -23,7 +23,7 @@ class ProcessContractRenewal implements ShouldQueue
             Log::error('Failed to process provider contract renewal', [
                 'event' => get_class($event),
                 'error' => $e->getMessage(),
-                'contract_id' => $event->contract->id ?? null
+                'contract_id' => $event->contract->id ?? null,
             ]);
         }
     }
@@ -62,7 +62,7 @@ class ProcessContractRenewal implements ShouldQueue
 
         Log::info('Provider contract renewal processed', [
             'contract_id' => $contract->id,
-            'provider_id' => $provider->id
+            'provider_id' => $provider->id,
         ]);
     }
 
@@ -81,7 +81,7 @@ class ProcessContractRenewal implements ShouldQueue
         Log::info('Provider contract expiration processed', [
             'contract_id' => $contract->id,
             'provider_id' => $provider->id,
-            'days_until_expiry' => $daysUntilExpiry
+            'days_until_expiry' => $daysUntilExpiry,
         ]);
     }
 
@@ -93,7 +93,7 @@ class ProcessContractRenewal implements ShouldQueue
         $contract->update([
             'renewal_date' => now(),
             'start_date' => $contract->end_date,
-            'end_date' => $contract->end_date->addDays($contract->renewal_terms['duration_days'] ?? 365)
+            'end_date' => $contract->end_date->addDays($contract->renewal_terms['duration_days'] ?? 365),
         ]);
     }
 
@@ -107,7 +107,7 @@ class ProcessContractRenewal implements ShouldQueue
 
         // Update last renewal date
         $provider->update([
-            'last_contract_renewal' => now()
+            'last_contract_renewal' => now(),
         ]);
     }
 
@@ -120,12 +120,12 @@ class ProcessContractRenewal implements ShouldQueue
         $contract->update([
             'status' => 'active',
             'renewal_date' => now(),
-            'end_date' => $contract->end_date->addDays($contract->renewal_terms['duration_days'] ?? 365)
+            'end_date' => $contract->end_date->addDays($contract->renewal_terms['duration_days'] ?? 365),
         ]);
 
         Log::info('Provider contract auto-renewed', [
             'contract_id' => $contract->id,
-            'provider_id' => $provider->id
+            'provider_id' => $provider->id,
         ]);
     }
 
@@ -137,7 +137,7 @@ class ProcessContractRenewal implements ShouldQueue
         // Send confirmation to provider and stakeholders
         Log::info('Provider contract renewal confirmation sent', [
             'contract_id' => $contract->id,
-            'provider_id' => $provider->id
+            'provider_id' => $provider->id,
         ]);
     }
 
@@ -150,7 +150,7 @@ class ProcessContractRenewal implements ShouldQueue
         Log::info('Provider contract expiration reminder sent', [
             'contract_id' => $contract->id,
             'provider_id' => $provider->id,
-            'days_until_expiry' => $daysUntilExpiry
+            'days_until_expiry' => $daysUntilExpiry,
         ]);
     }
 }

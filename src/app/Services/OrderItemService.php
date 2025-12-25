@@ -2,18 +2,14 @@
 
 namespace Fereydooni\Shopping\app\Services;
 
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Fereydooni\Shopping\app\Repositories\Interfaces\OrderItemRepositoryInterface;
-use Fereydooni\Shopping\app\Models\OrderItem;
 use Fereydooni\Shopping\app\DTOs\OrderItemDTO;
+use Fereydooni\Shopping\app\Models\OrderItem;
+use Fereydooni\Shopping\app\Repositories\Interfaces\OrderItemRepositoryInterface;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
 use Fereydooni\Shopping\app\Traits\HasInventoryManagement;
 use Fereydooni\Shopping\app\Traits\HasSearchOperations;
-use Fereydooni\Shopping\app\Traits\HasFinancialOperations;
 use Fereydooni\Shopping\app\Traits\HasShippingOperations;
+use Illuminate\Database\Eloquent\Collection;
 
 class OrderItemService
 {
@@ -158,26 +154,26 @@ class OrderItemService
     public function createOrderItem(array $data): OrderItem
     {
         // Validate the data
-        if (!$this->validateOrderItem($data)) {
+        if (! $this->validateOrderItem($data)) {
             throw new \InvalidArgumentException('Invalid order item data');
         }
 
         // Check inventory availability
-        if (!$this->checkInventory($data['product_id'], $data['variant_id'] ?? null, $data['quantity'])) {
+        if (! $this->checkInventory($data['product_id'], $data['variant_id'] ?? null, $data['quantity'])) {
             throw new \InvalidArgumentException('Insufficient inventory');
         }
 
         // Reserve inventory
-        if (!$this->reserveInventory($data['product_id'], $data['variant_id'] ?? null, $data['quantity'])) {
+        if (! $this->reserveInventory($data['product_id'], $data['variant_id'] ?? null, $data['quantity'])) {
             throw new \InvalidArgumentException('Failed to reserve inventory');
         }
 
         // Calculate totals if not provided
-        if (!isset($data['subtotal'])) {
+        if (! isset($data['subtotal'])) {
             $data['subtotal'] = ($data['price'] ?? 0) * ($data['quantity'] ?? 1);
         }
 
-        if (!isset($data['total_amount'])) {
+        if (! isset($data['total_amount'])) {
             $data['total_amount'] = ($data['subtotal'] ?? 0) - ($data['discount_amount'] ?? 0) + ($data['tax_amount'] ?? 0);
         }
 
@@ -187,13 +183,14 @@ class OrderItemService
     public function createOrderItemDTO(array $data): OrderItemDTO
     {
         $orderItem = $this->createOrderItem($data);
+
         return OrderItemDTO::fromModel($orderItem);
     }
 
     public function updateOrderItem(OrderItem $orderItem, array $data): bool
     {
         // Validate the data
-        if (!$this->validateOrderItem($data)) {
+        if (! $this->validateOrderItem($data)) {
             throw new \InvalidArgumentException('Invalid order item data');
         }
 
@@ -203,7 +200,7 @@ class OrderItemService
 
             if ($quantityDiff > 0) {
                 // Increasing quantity - check and reserve additional inventory
-                if (!$this->checkInventory($orderItem->product_id, $orderItem->variant_id, $quantityDiff)) {
+                if (! $this->checkInventory($orderItem->product_id, $orderItem->variant_id, $quantityDiff)) {
                     throw new \InvalidArgumentException('Insufficient inventory for quantity increase');
                 }
                 $this->reserveInventory($orderItem->product_id, $orderItem->variant_id, $quantityDiff);
@@ -219,6 +216,7 @@ class OrderItemService
     public function updateOrderItemDTO(OrderItem $orderItem, array $data): ?OrderItemDTO
     {
         $updated = $this->updateOrderItem($orderItem, $data);
+
         return $updated ? OrderItemDTO::fromModel($orderItem->fresh()) : null;
     }
 
@@ -231,7 +229,7 @@ class OrderItemService
     }
 
     // Shipping operations with business logic
-    public function markOrderItemAsShipped(OrderItem $orderItem, int $shippedQuantity = null): bool
+    public function markOrderItemAsShipped(OrderItem $orderItem, ?int $shippedQuantity = null): bool
     {
         $shippedQuantity = $shippedQuantity ?? $orderItem->quantity;
 
@@ -242,13 +240,14 @@ class OrderItemService
         return $this->markAsShipped($orderItem, $shippedQuantity);
     }
 
-    public function markOrderItemAsShippedDTO(OrderItem $orderItem, int $shippedQuantity = null): ?OrderItemDTO
+    public function markOrderItemAsShippedDTO(OrderItem $orderItem, ?int $shippedQuantity = null): ?OrderItemDTO
     {
         $updated = $this->markOrderItemAsShipped($orderItem, $shippedQuantity);
+
         return $updated ? OrderItemDTO::fromModel($orderItem->fresh()) : null;
     }
 
-    public function markOrderItemAsReturned(OrderItem $orderItem, int $returnedQuantity = null): bool
+    public function markOrderItemAsReturned(OrderItem $orderItem, ?int $returnedQuantity = null): bool
     {
         $returnedQuantity = $returnedQuantity ?? $orderItem->shipped_quantity;
 
@@ -259,13 +258,14 @@ class OrderItemService
         return $this->markAsReturned($orderItem, $returnedQuantity);
     }
 
-    public function markOrderItemAsReturnedDTO(OrderItem $orderItem, int $returnedQuantity = null): ?OrderItemDTO
+    public function markOrderItemAsReturnedDTO(OrderItem $orderItem, ?int $returnedQuantity = null): ?OrderItemDTO
     {
         $updated = $this->markOrderItemAsReturned($orderItem, $returnedQuantity);
+
         return $updated ? OrderItemDTO::fromModel($orderItem->fresh()) : null;
     }
 
-    public function processOrderItemRefund(OrderItem $orderItem, float $refundAmount = null): bool
+    public function processOrderItemRefund(OrderItem $orderItem, ?float $refundAmount = null): bool
     {
         $refundAmount = $refundAmount ?? $orderItem->total_amount;
 
@@ -276,9 +276,10 @@ class OrderItemService
         return $this->processRefund($orderItem, $refundAmount);
     }
 
-    public function processOrderItemRefundDTO(OrderItem $orderItem, float $refundAmount = null): ?OrderItemDTO
+    public function processOrderItemRefundDTO(OrderItem $orderItem, ?float $refundAmount = null): ?OrderItemDTO
     {
         $updated = $this->processOrderItemRefund($orderItem, $refundAmount);
+
         return $updated ? OrderItemDTO::fromModel($orderItem->fresh()) : null;
     }
 
@@ -300,12 +301,12 @@ class OrderItemService
             'shipping_status' => $this->getShippingStatus($orderItem),
             'return_status' => $this->getReturnStatus($orderItem),
             'refund_status' => $this->getRefundStatus($orderItem),
-            'inventory_status' => $this->isLowStock($orderItem->product_id, $orderItem->variant_id) ? 'low_stock' : 'in_stock'
+            'inventory_status' => $this->isLowStock($orderItem->product_id, $orderItem->variant_id) ? 'low_stock' : 'in_stock',
         ];
     }
 
     // Bulk operations
-    public function bulkMarkAsShipped(array $orderItemIds, int $shippedQuantity = null): array
+    public function bulkMarkAsShipped(array $orderItemIds, ?int $shippedQuantity = null): array
     {
         $results = [];
 
@@ -321,7 +322,7 @@ class OrderItemService
         return $results;
     }
 
-    public function bulkMarkAsReturned(array $orderItemIds, int $returnedQuantity = null): array
+    public function bulkMarkAsReturned(array $orderItemIds, ?int $returnedQuantity = null): array
     {
         $results = [];
 
@@ -337,7 +338,7 @@ class OrderItemService
         return $results;
     }
 
-    public function bulkProcessRefund(array $orderItemIds, float $refundAmount = null): array
+    public function bulkProcessRefund(array $orderItemIds, ?float $refundAmount = null): array
     {
         $results = [];
 

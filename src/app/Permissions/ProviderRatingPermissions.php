@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\App\Permissions;
 
-use Illuminate\Support\Facades\Gate;
-use App\Models\User;
 use App\Models\ProviderRating;
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 
 class ProviderRatingPermissions
 {

@@ -2,16 +2,15 @@
 
 namespace Fereydooni\Shopping\app\Repositories;
 
-use Fereydooni\Shopping\app\Models\Customer;
 use Fereydooni\Shopping\app\DTOs\CustomerDTO;
-use Fereydooni\Shopping\app\Repositories\Interfaces\CustomerRepositoryInterface;
 use Fereydooni\Shopping\app\Enums\CustomerStatus;
 use Fereydooni\Shopping\app\Enums\CustomerType;
+use Fereydooni\Shopping\app\Models\Customer;
+use Fereydooni\Shopping\app\Repositories\Interfaces\CustomerRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class CustomerRepository implements CustomerRepositoryInterface
@@ -31,7 +30,7 @@ class CustomerRepository implements CustomerRepositoryInterface
         return Customer::simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return Customer::cursorPaginate($perPage, ['*'], 'id', $cursor);
     }
@@ -44,6 +43,7 @@ class CustomerRepository implements CustomerRepositoryInterface
     public function findDTO(int $id): ?CustomerDTO
     {
         $customer = $this->find($id);
+
         return $customer ? CustomerDTO::fromModel($customer) : null;
     }
 
@@ -55,6 +55,7 @@ class CustomerRepository implements CustomerRepositoryInterface
     public function findByUserIdDTO(int $userId): ?CustomerDTO
     {
         $customer = $this->findByUserId($userId);
+
         return $customer ? CustomerDTO::fromModel($customer) : null;
     }
 
@@ -66,6 +67,7 @@ class CustomerRepository implements CustomerRepositoryInterface
     public function findByEmailDTO(string $email): ?CustomerDTO
     {
         $customer = $this->findByEmail($email);
+
         return $customer ? CustomerDTO::fromModel($customer) : null;
     }
 
@@ -77,6 +79,7 @@ class CustomerRepository implements CustomerRepositoryInterface
     public function findByPhoneDTO(string $phone): ?CustomerDTO
     {
         $customer = $this->findByPhone($phone);
+
         return $customer ? CustomerDTO::fromModel($customer) : null;
     }
 
@@ -88,6 +91,7 @@ class CustomerRepository implements CustomerRepositoryInterface
     public function findByCustomerNumberDTO(string $customerNumber): ?CustomerDTO
     {
         $customer = $this->findByCustomerNumber($customerNumber);
+
         return $customer ? CustomerDTO::fromModel($customer) : null;
     }
 
@@ -98,7 +102,7 @@ class CustomerRepository implements CustomerRepositoryInterface
 
     public function findByStatusDTO(string $status): Collection
     {
-        return Customer::where('status', $status)->get()->map(fn($customer) => CustomerDTO::fromModel($customer));
+        return Customer::where('status', $status)->get()->map(fn ($customer) => CustomerDTO::fromModel($customer));
     }
 
     public function findByType(string $type): Collection
@@ -108,7 +112,7 @@ class CustomerRepository implements CustomerRepositoryInterface
 
     public function findByTypeDTO(string $type): Collection
     {
-        return Customer::where('customer_type', $type)->get()->map(fn($customer) => CustomerDTO::fromModel($customer));
+        return Customer::where('customer_type', $type)->get()->map(fn ($customer) => CustomerDTO::fromModel($customer));
     }
 
     public function findActive(): Collection
@@ -118,7 +122,7 @@ class CustomerRepository implements CustomerRepositoryInterface
 
     public function findActiveDTO(): Collection
     {
-        return Customer::where('status', CustomerStatus::ACTIVE)->get()->map(fn($customer) => CustomerDTO::fromModel($customer));
+        return Customer::where('status', CustomerStatus::ACTIVE)->get()->map(fn ($customer) => CustomerDTO::fromModel($customer));
     }
 
     public function findInactive(): Collection
@@ -128,7 +132,7 @@ class CustomerRepository implements CustomerRepositoryInterface
 
     public function findInactiveDTO(): Collection
     {
-        return Customer::where('status', CustomerStatus::INACTIVE)->get()->map(fn($customer) => CustomerDTO::fromModel($customer));
+        return Customer::where('status', CustomerStatus::INACTIVE)->get()->map(fn ($customer) => CustomerDTO::fromModel($customer));
     }
 
     public function findByDateRange(string $startDate, string $endDate): Collection
@@ -138,7 +142,7 @@ class CustomerRepository implements CustomerRepositoryInterface
 
     public function findByDateRangeDTO(string $startDate, string $endDate): Collection
     {
-        return Customer::whereBetween('created_at', [$startDate, $endDate])->get()->map(fn($customer) => CustomerDTO::fromModel($customer));
+        return Customer::whereBetween('created_at', [$startDate, $endDate])->get()->map(fn ($customer) => CustomerDTO::fromModel($customer));
     }
 
     public function findByLoyaltyPointsRange(int $minPoints, int $maxPoints): Collection
@@ -148,7 +152,7 @@ class CustomerRepository implements CustomerRepositoryInterface
 
     public function findByLoyaltyPointsRangeDTO(int $minPoints, int $maxPoints): Collection
     {
-        return Customer::whereBetween('loyalty_points', [$minPoints, $maxPoints])->get()->map(fn($customer) => CustomerDTO::fromModel($customer));
+        return Customer::whereBetween('loyalty_points', [$minPoints, $maxPoints])->get()->map(fn ($customer) => CustomerDTO::fromModel($customer));
     }
 
     public function findByTotalSpentRange(float $minSpent, float $maxSpent): Collection
@@ -158,7 +162,7 @@ class CustomerRepository implements CustomerRepositoryInterface
 
     public function findByTotalSpentRangeDTO(float $minSpent, float $maxSpent): Collection
     {
-        return Customer::whereBetween('total_spent', [$minSpent, $maxSpent])->get()->map(fn($customer) => CustomerDTO::fromModel($customer));
+        return Customer::whereBetween('total_spent', [$minSpent, $maxSpent])->get()->map(fn ($customer) => CustomerDTO::fromModel($customer));
     }
 
     public function findByOrderCountRange(int $minOrders, int $maxOrders): Collection
@@ -168,7 +172,7 @@ class CustomerRepository implements CustomerRepositoryInterface
 
     public function findByOrderCountRangeDTO(int $minOrders, int $maxOrders): Collection
     {
-        return Customer::whereBetween('order_count', [$minOrders, $maxOrders])->get()->map(fn($customer) => CustomerDTO::fromModel($customer));
+        return Customer::whereBetween('order_count', [$minOrders, $maxOrders])->get()->map(fn ($customer) => CustomerDTO::fromModel($customer));
     }
 
     public function create(array $data): Customer
@@ -179,6 +183,7 @@ class CustomerRepository implements CustomerRepositoryInterface
     public function createAndReturnDTO(array $data): CustomerDTO
     {
         $customer = $this->create($data);
+
         return CustomerDTO::fromModel($customer);
     }
 
@@ -190,6 +195,7 @@ class CustomerRepository implements CustomerRepositoryInterface
     public function updateAndReturnDTO(Customer $customer, array $data): ?CustomerDTO
     {
         $updated = $this->update($customer, $data);
+
         return $updated ? CustomerDTO::fromModel($customer->fresh()) : null;
     }
 
@@ -208,12 +214,13 @@ class CustomerRepository implements CustomerRepositoryInterface
         return $customer->deactivate();
     }
 
-    public function suspend(Customer $customer, string $reason = null): bool
+    public function suspend(Customer $customer, ?string $reason = null): bool
     {
         $data = ['status' => CustomerStatus::SUSPENDED];
         if ($reason) {
-            $data['notes'] = $customer->notes . "\nSuspended: " . $reason;
+            $data['notes'] = $customer->notes."\nSuspended: ".$reason;
         }
+
         return $this->update($customer, $data);
     }
 
@@ -222,25 +229,25 @@ class CustomerRepository implements CustomerRepositoryInterface
         return $this->update($customer, ['status' => CustomerStatus::ACTIVE]);
     }
 
-    public function addLoyaltyPoints(Customer $customer, int $points, string $reason = null): bool
+    public function addLoyaltyPoints(Customer $customer, int $points, ?string $reason = null): bool
     {
         $newPoints = $customer->loyalty_points + $points;
         $data = ['loyalty_points' => $newPoints];
 
         if ($reason) {
-            $data['notes'] = $customer->notes . "\nLoyalty points added: +{$points} ({$reason})";
+            $data['notes'] = $customer->notes."\nLoyalty points added: +{$points} ({$reason})";
         }
 
         return $this->update($customer, $data);
     }
 
-    public function deductLoyaltyPoints(Customer $customer, int $points, string $reason = null): bool
+    public function deductLoyaltyPoints(Customer $customer, int $points, ?string $reason = null): bool
     {
         $newPoints = max(0, $customer->loyalty_points - $points);
         $data = ['loyalty_points' => $newPoints];
 
         if ($reason) {
-            $data['notes'] = $customer->notes . "\nLoyalty points deducted: -{$points} ({$reason})";
+            $data['notes'] = $customer->notes."\nLoyalty points deducted: -{$points} ({$reason})";
         }
 
         return $this->update($customer, $data);
@@ -300,17 +307,17 @@ class CustomerRepository implements CustomerRepositoryInterface
     {
         return Customer::where(function ($q) use ($query) {
             $q->where('first_name', 'like', "%{$query}%")
-              ->orWhere('last_name', 'like', "%{$query}%")
-              ->orWhere('email', 'like', "%{$query}%")
-              ->orWhere('phone', 'like', "%{$query}%")
-              ->orWhere('customer_number', 'like', "%{$query}%")
-              ->orWhere('company_name', 'like', "%{$query}%");
+                ->orWhere('last_name', 'like', "%{$query}%")
+                ->orWhere('email', 'like', "%{$query}%")
+                ->orWhere('phone', 'like', "%{$query}%")
+                ->orWhere('customer_number', 'like', "%{$query}%")
+                ->orWhere('company_name', 'like', "%{$query}%");
         })->get();
     }
 
     public function searchDTO(string $query): Collection
     {
-        return $this->search($query)->map(fn($customer) => CustomerDTO::fromModel($customer));
+        return $this->search($query)->map(fn ($customer) => CustomerDTO::fromModel($customer));
     }
 
     public function searchByCompany(string $companyName): Collection
@@ -320,7 +327,7 @@ class CustomerRepository implements CustomerRepositoryInterface
 
     public function searchByCompanyDTO(string $companyName): Collection
     {
-        return $this->searchByCompany($companyName)->map(fn($customer) => CustomerDTO::fromModel($customer));
+        return $this->searchByCompany($companyName)->map(fn ($customer) => CustomerDTO::fromModel($customer));
     }
 
     public function getTopSpenders(int $limit = 10): Collection
@@ -330,7 +337,7 @@ class CustomerRepository implements CustomerRepositoryInterface
 
     public function getTopSpendersDTO(int $limit = 10): Collection
     {
-        return $this->getTopSpenders($limit)->map(fn($customer) => CustomerDTO::fromModel($customer));
+        return $this->getTopSpenders($limit)->map(fn ($customer) => CustomerDTO::fromModel($customer));
     }
 
     public function getMostLoyal(int $limit = 10): Collection
@@ -340,7 +347,7 @@ class CustomerRepository implements CustomerRepositoryInterface
 
     public function getMostLoyalDTO(int $limit = 10): Collection
     {
-        return $this->getMostLoyal($limit)->map(fn($customer) => CustomerDTO::fromModel($customer));
+        return $this->getMostLoyal($limit)->map(fn ($customer) => CustomerDTO::fromModel($customer));
     }
 
     public function getNewestCustomers(int $limit = 10): Collection
@@ -350,7 +357,7 @@ class CustomerRepository implements CustomerRepositoryInterface
 
     public function getNewestCustomersDTO(int $limit = 10): Collection
     {
-        return $this->getNewestCustomers($limit)->map(fn($customer) => CustomerDTO::fromModel($customer));
+        return $this->getNewestCustomers($limit)->map(fn ($customer) => CustomerDTO::fromModel($customer));
     }
 
     public function getOldestCustomers(int $limit = 10): Collection
@@ -360,7 +367,7 @@ class CustomerRepository implements CustomerRepositoryInterface
 
     public function getOldestCustomersDTO(int $limit = 10): Collection
     {
-        return $this->getOldestCustomers($limit)->map(fn($customer) => CustomerDTO::fromModel($customer));
+        return $this->getOldestCustomers($limit)->map(fn ($customer) => CustomerDTO::fromModel($customer));
     }
 
     public function getCustomersWithBirthdayThisMonth(): Collection
@@ -370,7 +377,7 @@ class CustomerRepository implements CustomerRepositoryInterface
 
     public function getCustomersWithBirthdayThisMonthDTO(): Collection
     {
-        return $this->getCustomersWithBirthdayThisMonth()->map(fn($customer) => CustomerDTO::fromModel($customer));
+        return $this->getCustomersWithBirthdayThisMonth()->map(fn ($customer) => CustomerDTO::fromModel($customer));
     }
 
     public function getCustomersByMarketingConsent(bool $consent): Collection
@@ -380,7 +387,7 @@ class CustomerRepository implements CustomerRepositoryInterface
 
     public function getCustomersByMarketingConsentDTO(bool $consent): Collection
     {
-        return $this->getCustomersByMarketingConsent($consent)->map(fn($customer) => CustomerDTO::fromModel($customer));
+        return $this->getCustomersByMarketingConsent($consent)->map(fn ($customer) => CustomerDTO::fromModel($customer));
     }
 
     public function getCustomersByNewsletterSubscription(bool $subscribed): Collection
@@ -390,7 +397,7 @@ class CustomerRepository implements CustomerRepositoryInterface
 
     public function getCustomersByNewsletterSubscriptionDTO(bool $subscribed): Collection
     {
-        return $this->getCustomersByNewsletterSubscription($subscribed)->map(fn($customer) => CustomerDTO::fromModel($customer));
+        return $this->getCustomersByNewsletterSubscription($subscribed)->map(fn ($customer) => CustomerDTO::fromModel($customer));
     }
 
     public function validateCustomer(array $data): bool
@@ -403,29 +410,30 @@ class CustomerRepository implements CustomerRepositoryInterface
             'email' => 'required|email|max:255|unique:customers,email',
             'phone' => 'nullable|string|max:20',
             'date_of_birth' => 'nullable|date',
-            'gender' => 'nullable|in:' . implode(',', ['male', 'female', 'other', 'prefer_not_to_say']),
+            'gender' => 'nullable|in:'.implode(',', ['male', 'female', 'other', 'prefer_not_to_say']),
             'company_name' => 'nullable|string|max:255',
             'tax_id' => 'nullable|string|max:100',
-            'customer_type' => 'required|in:' . implode(',', array_column(CustomerType::cases(), 'value')),
-            'status' => 'required|in:' . implode(',', array_column(CustomerStatus::cases(), 'value')),
+            'customer_type' => 'required|in:'.implode(',', array_column(CustomerType::cases(), 'value')),
+            'status' => 'required|in:'.implode(',', array_column(CustomerStatus::cases(), 'value')),
         ];
 
         $validator = validator($data, $rules);
-        return !$validator->fails();
+
+        return ! $validator->fails();
     }
 
     public function generateCustomerNumber(): string
     {
         do {
-            $number = 'CUST' . strtoupper(Str::random(8));
-        } while (!$this->isCustomerNumberUnique($number));
+            $number = 'CUST'.strtoupper(Str::random(8));
+        } while (! $this->isCustomerNumberUnique($number));
 
         return $number;
     }
 
     public function isCustomerNumberUnique(string $customerNumber): bool
     {
-        return !Customer::where('customer_number', $customerNumber)->exists();
+        return ! Customer::where('customer_number', $customerNumber)->exists();
     }
 
     public function getCustomerStats(): array
@@ -447,6 +455,7 @@ class CustomerRepository implements CustomerRepositoryInterface
         foreach (CustomerStatus::cases() as $status) {
             $stats[$status->value] = $this->getCustomerCountByStatus($status->value);
         }
+
         return $stats;
     }
 
@@ -456,6 +465,7 @@ class CustomerRepository implements CustomerRepositoryInterface
         foreach (CustomerType::cases() as $type) {
             $stats[$type->value] = $this->getCustomerCountByType($type->value);
         }
+
         return $stats;
     }
 
@@ -467,10 +477,10 @@ class CustomerRepository implements CustomerRepositoryInterface
 
         if ($period === 'weekly') {
             $query->selectRaw('YEARWEEK(created_at) as week, COUNT(*) as count')
-                  ->groupBy('week');
+                ->groupBy('week');
         } elseif ($period === 'monthly') {
             $query->selectRaw('DATE_FORMAT(created_at, "%Y-%m") as month, COUNT(*) as count')
-                  ->groupBy('month');
+                ->groupBy('month');
         }
 
         return $query->get()->toArray();
@@ -490,24 +500,27 @@ class CustomerRepository implements CustomerRepositoryInterface
     public function getCustomerLifetimeValue(int $customerId): float
     {
         $customer = $this->find($customerId);
-        if (!$customer) {
+        if (! $customer) {
             return 0;
         }
 
         // Basic LTV calculation: total_spent + (loyalty_points * conversion_rate)
         $conversionRate = 0.01; // 1 point = $0.01
+
         return $customer->total_spent + ($customer->loyalty_points * $conversionRate);
     }
 
     public function getCustomerOrderHistory(int $customerId): Collection
     {
         $customer = $this->find($customerId);
+
         return $customer ? $customer->orders : collect();
     }
 
     public function getCustomerAddresses(int $customerId): Collection
     {
         $customer = $this->find($customerId);
+
         return $customer ? $customer->addresses : collect();
     }
 
@@ -531,7 +544,7 @@ class CustomerRepository implements CustomerRepositoryInterface
         $formattedNote = "[{$timestamp}] [{$type}] {$note}";
 
         $currentNotes = $customer->notes ?? '';
-        $newNotes = $currentNotes ? $currentNotes . "\n" . $formattedNote : $formattedNote;
+        $newNotes = $currentNotes ? $currentNotes."\n".$formattedNote : $formattedNote;
 
         return $this->update($customer, ['notes' => $newNotes]);
     }
@@ -547,7 +560,7 @@ class CustomerRepository implements CustomerRepositoryInterface
                     $notes[] = [
                         'timestamp' => $matches[1],
                         'type' => $matches[2],
-                        'note' => $matches[3]
+                        'note' => $matches[3],
                     ];
                 }
             }
@@ -562,17 +575,18 @@ class CustomerRepository implements CustomerRepositoryInterface
             'preferred_payment_method',
             'preferred_shipping_method',
             'marketing_consent',
-            'newsletter_subscription'
+            'newsletter_subscription',
         ];
 
         $data = array_intersect_key($preferences, array_flip($allowedPreferences));
+
         return $this->update($customer, $data);
     }
 
     public function getCustomerPreferences(int $customerId): array
     {
         $customer = $this->find($customerId);
-        if (!$customer) {
+        if (! $customer) {
             return [];
         }
 

@@ -5,8 +5,8 @@ namespace Database\Seeders;
 use App\Models\Employee;
 use App\Models\EmployeeTimeOff;
 use App\Models\User;
-use Illuminate\Database\Seeder;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
 
 class EmployeeTimeOffSeeder extends Seeder
 {
@@ -23,11 +23,13 @@ class EmployeeTimeOffSeeder extends Seeder
 
         if ($employees->isEmpty()) {
             $this->command->warn('No employees found. Please run EmployeeSeeder first.');
+
             return;
         }
 
         if ($users->isEmpty()) {
             $this->command->warn('No users found. Please run UserSeeder first.');
+
             return;
         }
 
@@ -131,7 +133,7 @@ class EmployeeTimeOffSeeder extends Seeder
                 'end_date' => $followUpEnd,
                 'total_hours' => Carbon::parse($followUpStart)->diffInDays($followUpEnd) * 8,
                 'total_days' => Carbon::parse($followUpStart)->diffInDays($followUpEnd) + 1,
-                'reason' => 'Extended ' . $originalTimeOff->reason,
+                'reason' => 'Extended '.$originalTimeOff->reason,
                 'description' => 'Extension of previous request',
                 'status' => 'pending',
                 'is_half_day' => false,
@@ -203,6 +205,7 @@ class EmployeeTimeOffSeeder extends Seeder
     private function shouldBeHalfDay(string $timeOffType): bool
     {
         $halfDayTypes = ['personal', 'sick'];
+
         return in_array($timeOffType, $halfDayTypes) && rand(1, 4) === 1;
     }
 
@@ -212,6 +215,7 @@ class EmployeeTimeOffSeeder extends Seeder
     private function calculateTotalDays(Carbon $startDate, Carbon $endDate, bool $isHalfDay): float
     {
         $days = $startDate->diffInDays($endDate) + 1;
+
         return $isHalfDay ? 0.5 : $days;
     }
 
@@ -268,6 +272,7 @@ class EmployeeTimeOffSeeder extends Seeder
         ];
 
         $typeReasons = $reasons[$timeOffType] ?? $reasons['other'];
+
         return $typeReasons[array_rand($typeReasons)];
     }
 
@@ -295,6 +300,7 @@ class EmployeeTimeOffSeeder extends Seeder
     private function shouldBeUrgent(string $timeOffType): bool
     {
         $urgentTypes = ['sick', 'bereavement', 'personal'];
+
         return in_array($timeOffType, $urgentTypes) && rand(1, 5) === 1;
     }
 
@@ -315,7 +321,7 @@ class EmployeeTimeOffSeeder extends Seeder
             $selected = array_rand($attachments, rand(1, count($attachments)));
             $selected = is_array($selected) ? $selected : [$selected];
 
-            return json_encode(array_map(fn($index) => $attachments[$index], $selected));
+            return json_encode(array_map(fn ($index) => $attachments[$index], $selected));
         }
 
         return null;
@@ -327,6 +333,7 @@ class EmployeeTimeOffSeeder extends Seeder
     private function generateCreatedAt(Carbon $startDate): Carbon
     {
         $daysBefore = rand(1, 30);
+
         return $startDate->copy()->subDays($daysBefore);
     }
 
@@ -337,6 +344,7 @@ class EmployeeTimeOffSeeder extends Seeder
     {
         $createdAt = $this->generateCreatedAt($startDate);
         $daysAfter = rand(0, 7);
+
         return $createdAt->copy()->addDays($daysAfter);
     }
 
@@ -346,6 +354,7 @@ class EmployeeTimeOffSeeder extends Seeder
     private function generateApprovalData($users): array
     {
         $approver = $users->random();
+
         return [
             'approved_by' => $approver->id,
             'approved_at' => now()->subDays(rand(1, 7)),

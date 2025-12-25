@@ -3,8 +3,6 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -35,7 +33,7 @@ class EmployeeDepartmentPermissionSeeder extends Seeder
             'employee-department.view-sensitive',
             'employee-department.manage-budget',
             'employee-department.manage-hierarchy',
-            'employee-department.audit'
+            'employee-department.audit',
         ];
 
         foreach ($permissions as $permission) {
@@ -49,7 +47,7 @@ class EmployeeDepartmentPermissionSeeder extends Seeder
             'department-manager',
             'finance-manager',
             'employee',
-            'auditor'
+            'auditor',
         ];
 
         foreach ($roles as $roleName) {
@@ -84,7 +82,7 @@ class EmployeeDepartmentPermissionSeeder extends Seeder
                 'employee-department.hierarchy-management',
                 'employee-department.statistics',
                 'employee-department.export',
-                'employee-department.import'
+                'employee-department.import',
             ]);
         }
 
@@ -95,7 +93,7 @@ class EmployeeDepartmentPermissionSeeder extends Seeder
                 'employee-department.view',
                 'employee-department.view-own',
                 'employee-department.view-team',
-                'employee-department.statistics'
+                'employee-department.statistics',
             ]);
         }
 
@@ -107,7 +105,7 @@ class EmployeeDepartmentPermissionSeeder extends Seeder
                 'employee-department.view-all',
                 'employee-department.budget-management',
                 'employee-department.statistics',
-                'employee-department.export'
+                'employee-department.export',
             ]);
         }
 
@@ -115,7 +113,7 @@ class EmployeeDepartmentPermissionSeeder extends Seeder
         $employeeRole = Role::where('name', 'employee')->first();
         if ($employeeRole) {
             $employeeRole->givePermissionTo([
-                'employee-department.view-own'
+                'employee-department.view-own',
             ]);
         }
 
@@ -126,7 +124,7 @@ class EmployeeDepartmentPermissionSeeder extends Seeder
                 'employee-department.view',
                 'employee-department.view-all',
                 'employee-department.audit',
-                'employee-department.export'
+                'employee-department.export',
             ]);
         }
     }

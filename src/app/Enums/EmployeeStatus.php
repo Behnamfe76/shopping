@@ -12,7 +12,7 @@ enum EmployeeStatus: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::ACTIVE => 'Active',
             self::INACTIVE => 'Inactive',
             self::TERMINATED => 'Terminated',
@@ -23,7 +23,7 @@ enum EmployeeStatus: string
 
     public function shortLabel(): string
     {
-        return match($this) {
+        return match ($this) {
             self::ACTIVE => 'Active',
             self::INACTIVE => 'Inactive',
             self::TERMINATED => 'Terminated',
@@ -34,7 +34,7 @@ enum EmployeeStatus: string
 
     public function color(): string
     {
-        return match($this) {
+        return match ($this) {
             self::ACTIVE => 'green',
             self::INACTIVE => 'yellow',
             self::TERMINATED => 'red',
@@ -63,4 +63,3 @@ enum EmployeeStatus: string
         return in_array($this, [self::ACTIVE, self::PENDING]);
     }
 }
-

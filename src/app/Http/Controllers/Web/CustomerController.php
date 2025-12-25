@@ -5,11 +5,10 @@ namespace Fereydooni\Shopping\app\Http\Controllers\Web;
 use Fereydooni\Shopping\app\Http\Controllers\Controller;
 use Fereydooni\Shopping\app\Models\Customer;
 use Fereydooni\Shopping\app\Services\CustomerService;
-use Fereydooni\Shopping\app\DTOs\CustomerDTO;
-use Illuminate\Http\Request;
-use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 
 class CustomerController extends Controller
 {
@@ -55,7 +54,7 @@ class CustomerController extends Controller
         } catch (ValidationException $e) {
             return back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to create customer: ' . $e->getMessage())->withInput();
+            return back()->with('error', 'Failed to create customer: '.$e->getMessage())->withInput();
         }
     }
 
@@ -97,7 +96,7 @@ class CustomerController extends Controller
         try {
             $updatedCustomer = $this->customerService->updateCustomer($customer, $request->all());
 
-            if (!$updatedCustomer) {
+            if (! $updatedCustomer) {
                 return back()->with('error', 'Failed to update customer.')->withInput();
             }
 
@@ -106,7 +105,7 @@ class CustomerController extends Controller
         } catch (ValidationException $e) {
             return back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to update customer: ' . $e->getMessage())->withInput();
+            return back()->with('error', 'Failed to update customer: '.$e->getMessage())->withInput();
         }
     }
 
@@ -120,14 +119,14 @@ class CustomerController extends Controller
         try {
             $deleted = $this->customerService->deleteCustomer($customer);
 
-            if (!$deleted) {
+            if (! $deleted) {
                 return back()->with('error', 'Failed to delete customer.');
             }
 
             return redirect()->route('customers.index')
                 ->with('success', 'Customer deleted successfully.');
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to delete customer: ' . $e->getMessage());
+            return back()->with('error', 'Failed to delete customer: '.$e->getMessage());
         }
     }
 
@@ -174,7 +173,7 @@ class CustomerController extends Controller
 
         try {
             $request->validate([
-                'file' => 'required|file|mimes:csv,xlsx,xls'
+                'file' => 'required|file|mimes:csv,xlsx,xls',
             ]);
 
             // Handle file import logic here
@@ -184,7 +183,7 @@ class CustomerController extends Controller
         } catch (ValidationException $e) {
             return back()->withErrors($e->errors());
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to import customer data: ' . $e->getMessage());
+            return back()->with('error', 'Failed to import customer data: '.$e->getMessage());
         }
     }
 
@@ -202,9 +201,9 @@ class CustomerController extends Controller
             // Handle export logic here
             // This would depend on the specific export implementation
 
-            return response()->download('customers.' . $format);
+            return response()->download('customers.'.$format);
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to export customer data: ' . $e->getMessage());
+            return back()->with('error', 'Failed to export customer data: '.$e->getMessage());
         }
     }
 
@@ -273,7 +272,7 @@ class CustomerController extends Controller
 
         try {
             $request->validate([
-                'query' => 'required|string|min:2'
+                'query' => 'required|string|min:2',
             ]);
 
             $query = $request->get('query');
@@ -283,7 +282,7 @@ class CustomerController extends Controller
         } catch (ValidationException $e) {
             return back()->withErrors($e->errors());
         } catch (\Exception $e) {
-            return back()->with('error', 'Search failed: ' . $e->getMessage());
+            return back()->with('error', 'Search failed: '.$e->getMessage());
         }
     }
 
@@ -297,13 +296,13 @@ class CustomerController extends Controller
         try {
             $activated = $this->customerService->activateCustomer($customer);
 
-            if (!$activated) {
+            if (! $activated) {
                 return back()->with('error', 'Failed to activate customer.');
             }
 
             return back()->with('success', 'Customer activated successfully.');
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to activate customer: ' . $e->getMessage());
+            return back()->with('error', 'Failed to activate customer: '.$e->getMessage());
         }
     }
 
@@ -317,13 +316,13 @@ class CustomerController extends Controller
         try {
             $deactivated = $this->customerService->deactivateCustomer($customer);
 
-            if (!$deactivated) {
+            if (! $deactivated) {
                 return back()->with('error', 'Failed to deactivate customer.');
             }
 
             return back()->with('success', 'Customer deactivated successfully.');
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to deactivate customer: ' . $e->getMessage());
+            return back()->with('error', 'Failed to deactivate customer: '.$e->getMessage());
         }
     }
 
@@ -338,13 +337,13 @@ class CustomerController extends Controller
             $reason = $request->get('reason');
             $suspended = $this->customerService->suspendCustomer($customer, $reason);
 
-            if (!$suspended) {
+            if (! $suspended) {
                 return back()->with('error', 'Failed to suspend customer.');
             }
 
             return back()->with('success', 'Customer suspended successfully.');
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to suspend customer: ' . $e->getMessage());
+            return back()->with('error', 'Failed to suspend customer: '.$e->getMessage());
         }
     }
 
@@ -358,7 +357,7 @@ class CustomerController extends Controller
         try {
             $request->validate([
                 'points' => 'required|integer|min:1',
-                'reason' => 'nullable|string|max:255'
+                'reason' => 'nullable|string|max:255',
             ]);
 
             $points = $request->get('points');
@@ -366,7 +365,7 @@ class CustomerController extends Controller
 
             $success = $this->customerService->addLoyaltyPoints($customer, $points, $reason);
 
-            if (!$success) {
+            if (! $success) {
                 return back()->with('error', 'Failed to add loyalty points.');
             }
 
@@ -374,7 +373,7 @@ class CustomerController extends Controller
         } catch (ValidationException $e) {
             return back()->withErrors($e->errors());
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to add loyalty points: ' . $e->getMessage());
+            return back()->with('error', 'Failed to add loyalty points: '.$e->getMessage());
         }
     }
 
@@ -388,7 +387,7 @@ class CustomerController extends Controller
         try {
             $request->validate([
                 'points' => 'required|integer|min:1',
-                'reason' => 'nullable|string|max:255'
+                'reason' => 'nullable|string|max:255',
             ]);
 
             $points = $request->get('points');
@@ -396,7 +395,7 @@ class CustomerController extends Controller
 
             $success = $this->customerService->deductLoyaltyPoints($customer, $points, $reason);
 
-            if (!$success) {
+            if (! $success) {
                 return back()->with('error', 'Failed to deduct loyalty points.');
             }
 
@@ -404,7 +403,7 @@ class CustomerController extends Controller
         } catch (ValidationException $e) {
             return back()->withErrors($e->errors());
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to deduct loyalty points: ' . $e->getMessage());
+            return back()->with('error', 'Failed to deduct loyalty points: '.$e->getMessage());
         }
     }
 }

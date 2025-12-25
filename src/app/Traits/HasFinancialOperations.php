@@ -92,7 +92,7 @@ trait HasFinancialOperations
     /**
      * Process refund
      */
-    public function processRefund(object $item, float $amount, string $reason = null): bool
+    public function processRefund(object $item, float $amount, ?string $reason = null): bool
     {
         $this->validateRefund($item, $amount);
 
@@ -130,6 +130,7 @@ trait HasFinancialOperations
     {
         // Default tax rate of 10%
         $taxRate = config('shopping.tax_rate', 0.10);
+
         return $subtotal * $taxRate;
     }
 
@@ -253,6 +254,7 @@ trait HasFinancialOperations
 
         // This would typically use an exchange rate service
         $exchangeRate = $this->getExchangeRate($fromCurrency, $toCurrency);
+
         return $amount * $exchangeRate;
     }
 

@@ -2,17 +2,17 @@
 
 namespace Fereydooni\Shopping\app\Facades;
 
-use Illuminate\Support\Facades\Facade;
-use Fereydooni\Shopping\app\Repositories\Interfaces\ProviderNoteRepositoryInterface;
-use Fereydooni\Shopping\app\Actions\ProviderNote\CreateProviderNoteAction;
-use Fereydooni\Shopping\app\Actions\ProviderNote\UpdateProviderNoteAction;
-use Fereydooni\Shopping\app\Actions\ProviderNote\ArchiveProviderNoteAction;
 use Fereydooni\Shopping\app\Actions\ProviderNote\AddProviderNoteTagsAction;
+use Fereydooni\Shopping\app\Actions\ProviderNote\ArchiveProviderNoteAction;
+use Fereydooni\Shopping\app\Actions\ProviderNote\CreateProviderNoteAction;
 use Fereydooni\Shopping\app\Actions\ProviderNote\SearchProviderNotesAction;
+use Fereydooni\Shopping\app\Actions\ProviderNote\UpdateProviderNoteAction;
 use Fereydooni\Shopping\app\DTOs\ProviderNoteDTO;
 use Fereydooni\Shopping\app\Models\ProviderNote;
+use Fereydooni\Shopping\app\Repositories\Interfaces\ProviderNoteRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static Collection all()
@@ -89,6 +89,7 @@ class ProviderNote extends Facade
     public static function createNote(array $data): ProviderNoteDTO
     {
         $action = app(CreateProviderNoteAction::class);
+
         return $action->execute($data);
     }
 
@@ -98,6 +99,7 @@ class ProviderNote extends Facade
     public static function updateNote(ProviderNote $providerNote, array $data): ProviderNoteDTO
     {
         $action = app(UpdateProviderNoteAction::class);
+
         return $action->execute($providerNote, $data);
     }
 
@@ -107,6 +109,7 @@ class ProviderNote extends Facade
     public static function archiveNote(ProviderNote $providerNote): ProviderNoteDTO
     {
         $action = app(ArchiveProviderNoteAction::class);
+
         return $action->execute($providerNote);
     }
 
@@ -116,6 +119,7 @@ class ProviderNote extends Facade
     public static function addTagsToNote(ProviderNote $providerNote, array $tags): ProviderNoteDTO
     {
         $action = app(AddProviderNoteTagsAction::class);
+
         return $action->execute($providerNote, $tags);
     }
 
@@ -125,6 +129,7 @@ class ProviderNote extends Facade
     public static function searchNotes(string $query, ?int $providerId = null, ?string $noteType = null, ?string $priority = null, ?string $sortBy = 'created_at', ?string $sortOrder = 'desc'): Collection
     {
         $action = app(SearchProviderNotesAction::class);
+
         return $action->execute($query, $providerId, $noteType, $priority, $sortBy, $sortOrder);
     }
 

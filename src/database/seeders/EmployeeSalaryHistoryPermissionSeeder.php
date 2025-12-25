@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Permissions\EmployeeSalaryHistoryPermissions;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
-use App\Permissions\EmployeeSalaryHistoryPermissions;
 
 class EmployeeSalaryHistoryPermissionSeeder extends Seeder
 {

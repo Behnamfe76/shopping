@@ -2,8 +2,8 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Fereydooni\Shopping\app\DTOs\OrderStatusHistoryDTO;
+use Illuminate\Foundation\Http\FormRequest;
 
 class StoreOrderStatusHistoryRequest extends FormRequest
 {

@@ -6,13 +6,14 @@ use Fereydooni\Shopping\app\Contracts\QueryDriverInterface;
 use Fereydooni\Shopping\app\Drivers\DatabaseQueryDriver;
 use Fereydooni\Shopping\app\Drivers\TypesenseQueryDriver;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
 
 class QueryManager
 {
     protected array $drivers = [];
+
     protected string $defaultDriver;
 
     public function __construct()
@@ -23,8 +24,8 @@ class QueryManager
 
     protected function registerDefaultDrivers(): void
     {
-        $this->registerDriver('database', new DatabaseQueryDriver());
-        $this->registerDriver('typesense', new TypesenseQueryDriver());
+        $this->registerDriver('database', new DatabaseQueryDriver);
+        $this->registerDriver('typesense', new TypesenseQueryDriver);
     }
 
     public function registerDriver(string $name, QueryDriverInterface $driver): void
@@ -35,7 +36,7 @@ class QueryManager
     public function getDriver(?string $name = null): QueryDriverInterface
     {
         $driverName = $name ?? $this->defaultDriver;
-        if (!isset($this->drivers[$driverName])) {
+        if (! isset($this->drivers[$driverName])) {
             throw new \InvalidArgumentException("Query driver '{$driverName}' not found.");
         }
 
@@ -49,7 +50,7 @@ class QueryManager
 
     public function setDefaultDriver(string $driverName): void
     {
-        if (!isset($this->drivers[$driverName])) {
+        if (! isset($this->drivers[$driverName])) {
             throw new \InvalidArgumentException("Query driver '{$driverName}' not found.");
         }
 
@@ -65,7 +66,7 @@ class QueryManager
     public function paginate(string $model, array $filters = [], array $searchOptions = [], int $perPage = 15, ?string $driver = null): LengthAwarePaginator
     {
         $queryDriver = $this->getDriver($driver);
-        if (!$queryDriver->supports($model)) {
+        if (! $queryDriver->supports($model)) {
             // Fallback to database driver if the requested driver doesn't support the model
             $queryDriver = $this->getDriver('database');
         }
@@ -77,7 +78,7 @@ class QueryManager
     {
         $queryDriver = $this->getDriver($driver);
 
-        if (!$queryDriver->supports($model)) {
+        if (! $queryDriver->supports($model)) {
             $queryDriver = $this->getDriver('database');
         }
 
@@ -88,7 +89,7 @@ class QueryManager
     {
         $queryDriver = $this->getDriver($driver);
 
-        if (!$queryDriver->supports($model)) {
+        if (! $queryDriver->supports($model)) {
             $queryDriver = $this->getDriver('database');
         }
 
@@ -99,7 +100,7 @@ class QueryManager
     {
         $queryDriver = $this->getDriver($driver);
 
-        if (!$queryDriver->supports($model)) {
+        if (! $queryDriver->supports($model)) {
             $queryDriver = $this->getDriver('database');
         }
 
@@ -110,7 +111,7 @@ class QueryManager
     {
         $queryDriver = $this->getDriver($driver);
 
-        if (!$queryDriver->supports($model)) {
+        if (! $queryDriver->supports($model)) {
             $queryDriver = $this->getDriver('database');
         }
 

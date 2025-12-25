@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\App\Notifications\ProviderPayment;
 
+use Fereydooni\Shopping\App\Models\ProviderPayment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Fereydooni\Shopping\App\Models\ProviderPayment;
 
 class PaymentCompleted extends Notification implements ShouldQueue
 {
@@ -43,12 +43,12 @@ class PaymentCompleted extends Notification implements ShouldQueue
             ->greeting('Hello!')
             ->line('Your provider payment has been completed successfully.')
             ->line('Payment Details:')
-            ->line('Payment Number: ' . $this->payment->payment_number)
-            ->line('Amount: ' . $this->payment->currency . ' ' . number_format($this->payment->amount, 2))
-            ->line('Payment Method: ' . $this->payment->payment_method)
-            ->line('Status: ' . ucfirst($this->payment->status))
-            ->line('Transaction ID: ' . $this->payment->transaction_id)
-            ->action('View Payment', url('/provider-payments/' . $this->payment->id))
+            ->line('Payment Number: '.$this->payment->payment_number)
+            ->line('Amount: '.$this->payment->currency.' '.number_format($this->payment->amount, 2))
+            ->line('Payment Method: '.$this->payment->payment_method)
+            ->line('Status: '.ucfirst($this->payment->status))
+            ->line('Transaction ID: '.$this->payment->transaction_id)
+            ->action('View Payment', url('/provider-payments/'.$this->payment->id))
             ->line('Thank you for using our application!');
     }
 
@@ -67,7 +67,7 @@ class PaymentCompleted extends Notification implements ShouldQueue
             'status' => $this->payment->status,
             'transaction_id' => $this->payment->transaction_id,
             'type' => 'payment_completed',
-            'message' => 'Provider payment completed: ' . $this->payment->payment_number
+            'message' => 'Provider payment completed: '.$this->payment->payment_number,
         ];
     }
 }

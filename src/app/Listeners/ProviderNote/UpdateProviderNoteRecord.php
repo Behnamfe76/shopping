@@ -2,14 +2,13 @@
 
 namespace Fereydooni\Shopping\app\Listeners\ProviderNote;
 
-use Fereydooni\Shopping\app\Events\ProviderNote\ProviderNoteCreated;
-use Fereydooni\Shopping\app\Events\ProviderNote\ProviderNoteUpdated;
 use Fereydooni\Shopping\app\Events\ProviderNote\ProviderNoteArchived;
+use Fereydooni\Shopping\app\Events\ProviderNote\ProviderNoteCreated;
 use Fereydooni\Shopping\app\Events\ProviderNote\ProviderNoteDeleted;
+use Fereydooni\Shopping\app\Events\ProviderNote\ProviderNoteUpdated;
 use Fereydooni\Shopping\app\Models\Provider;
-use Fereydooni\Shopping\app\Models\ProviderNote;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class UpdateProviderNoteRecord
 {
@@ -42,13 +41,13 @@ class UpdateProviderNoteRecord
                     'provider_note_id' => $providerNote->id,
                     'provider_id' => $provider->id,
                     'note_type' => $providerNote->note_type,
-                    'priority' => $providerNote->priority
+                    'priority' => $providerNote->priority,
                 ]);
             }
         } catch (\Exception $e) {
             Log::error('Failed to update provider note record for created note', [
                 'provider_note_id' => $event->providerNote->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -85,13 +84,13 @@ class UpdateProviderNoteRecord
                 Log::info('Provider note record updated for updated note', [
                     'provider_note_id' => $providerNote->id,
                     'provider_id' => $provider->id,
-                    'changes' => $changes
+                    'changes' => $changes,
                 ]);
             }
         } catch (\Exception $e) {
             Log::error('Failed to update provider note record for updated note', [
                 'provider_note_id' => $event->providerNote->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -117,13 +116,13 @@ class UpdateProviderNoteRecord
 
                 Log::info('Provider note record updated for archived note', [
                     'provider_note_id' => $providerNote->id,
-                    'provider_id' => $provider->id
+                    'provider_id' => $provider->id,
                 ]);
             }
         } catch (\Exception $e) {
             Log::error('Failed to update provider note record for archived note', [
                 'provider_note_id' => $event->providerNote->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -159,13 +158,13 @@ class UpdateProviderNoteRecord
 
                 Log::info('Provider note record updated for deleted note', [
                     'provider_note_id' => $providerNote->id,
-                    'provider_id' => $provider->id
+                    'provider_id' => $provider->id,
                 ]);
             }
         } catch (\Exception $e) {
             Log::error('Failed to update provider note record for deleted note', [
                 'provider_note_id' => $event->providerNote->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -237,7 +236,7 @@ class UpdateProviderNoteRecord
             "provider_{$providerId}_notes",
             "provider_{$providerId}_note_statistics",
             "provider_{$providerId}_recent_notes",
-            "provider_{$providerId}_note_search_results"
+            "provider_{$providerId}_note_search_results",
         ];
 
         foreach ($cacheKeys as $key) {

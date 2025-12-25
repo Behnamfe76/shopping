@@ -2,13 +2,12 @@
 
 namespace Fereydooni\Shopping\Actions\EmployeeTraining;
 
-use Illuminate\Support\Facades\Validator;
+use Fereydooni\Shopping\DTOs\EmployeeTrainingDTO;
+use Fereydooni\Shopping\Enums\TrainingStatus;
+use Fereydooni\Shopping\Models\EmployeeTraining;
+use Fereydooni\Shopping\Repositories\Interfaces\EmployeeTrainingRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Fereydooni\Shopping\Models\EmployeeTraining;
-use Fereydooni\Shopping\DTOs\EmployeeTrainingDTO;
-use Fereydooni\Shopping\Repositories\Interfaces\EmployeeTrainingRepositoryInterface;
-use Fereydooni\Shopping\Enums\TrainingStatus;
 
 class StartEmployeeTrainingAction
 {
@@ -27,7 +26,7 @@ class StartEmployeeTrainingAction
             // Start the training
             $started = $this->repository->start($training);
 
-            if (!$started) {
+            if (! $started) {
                 throw new \Exception('Failed to start employee training');
             }
 
@@ -48,7 +47,7 @@ class StartEmployeeTrainingAction
             DB::rollBack();
             Log::error('Failed to start employee training', [
                 'training_id' => $training->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -62,7 +61,7 @@ class StartEmployeeTrainingAction
         }
 
         // Check if training has required dates
-        if (!$training->start_date || !$training->end_date) {
+        if (! $training->start_date || ! $training->end_date) {
             throw new \Exception('Training must have start and end dates before it can be started');
         }
 
@@ -77,7 +76,7 @@ class StartEmployeeTrainingAction
         }
 
         // Check if employee is available for training
-        if (!$this->isEmployeeAvailable($training)) {
+        if (! $this->isEmployeeAvailable($training)) {
             throw new \Exception('Employee is not available for training at this time');
         }
     }
@@ -90,7 +89,7 @@ class StartEmployeeTrainingAction
         // - Employee is not on leave
         // - Employee is not already in another training
         // - Employee has required prerequisites
-        
+
         return true; // For now, assume employee is available
     }
 
@@ -116,7 +115,7 @@ class StartEmployeeTrainingAction
         // Update employee's current training status
         $training->employee->update([
             'current_training_id' => $training->id,
-            'training_status' => 'in_progress'
+            'training_status' => 'in_progress',
         ]);
 
         // Log the training start in employee history

@@ -2,14 +2,13 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Gate;
 use App\Models\ProviderPerformance;
+use App\Policies\ProviderPerformancePolicy;
 use App\Repositories\Interfaces\ProviderPerformanceRepositoryInterface;
 use App\Repositories\ProviderPerformanceRepository;
 use App\Services\ProviderPerformanceService;
-use App\Policies\ProviderPerformancePolicy;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\ServiceProvider;
 
 class ProviderPerformanceServiceProvider extends ServiceProvider
 {
@@ -44,27 +43,27 @@ class ProviderPerformanceServiceProvider extends ServiceProvider
         Gate::policy(ProviderPerformance::class, ProviderPerformancePolicy::class);
 
         // Load routes
-        $this->loadRoutesFrom(__DIR__ . '/../../routes/web.php');
+        $this->loadRoutesFrom(__DIR__.'/../../routes/web.php');
 
         // Load views
-        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'provider-performance');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'provider-performance');
 
         // Load migrations
-        $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
 
         // Publish config
         $this->publishes([
-            __DIR__ . '/../config/provider-performance.php' => config_path('provider-performance.php'),
+            __DIR__.'/../config/provider-performance.php' => config_path('provider-performance.php'),
         ], 'provider-performance-config');
 
         // Publish views
         $this->publishes([
-            __DIR__ . '/../resources/views' => resource_path('views/vendor/provider-performance'),
+            __DIR__.'/../resources/views' => resource_path('views/vendor/provider-performance'),
         ], 'provider-performance-views');
 
         // Publish assets
         $this->publishes([
-            __DIR__ . '/../resources/assets' => public_path('vendor/provider-performance'),
+            __DIR__.'/../resources/assets' => public_path('vendor/provider-performance'),
         ], 'provider-performance-assets');
     }
 }

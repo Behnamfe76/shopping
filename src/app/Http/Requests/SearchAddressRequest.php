@@ -2,8 +2,8 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Fereydooni\Shopping\app\Enums\AddressType;
+use Illuminate\Foundation\Http\FormRequest;
 
 class SearchAddressRequest extends FormRequest
 {
@@ -22,7 +22,7 @@ class SearchAddressRequest extends FormRequest
     {
         return [
             'query' => 'required|string|min:2|max:255',
-            'type' => 'nullable|in:' . implode(',', array_column(AddressType::cases(), 'value')),
+            'type' => 'nullable|in:'.implode(',', array_column(AddressType::cases(), 'value')),
             'pagination' => 'nullable|in:regular,simple,cursor',
             'per_page' => 'nullable|integer|min:1|max:100',
             'page' => 'nullable|integer|min:1',
@@ -70,17 +70,17 @@ class SearchAddressRequest extends FormRequest
             if ($this->has('type')) {
                 $type = $this->get('type');
 
-                if ($type === 'billing' && !$this->user()->can('address.view.billing')) {
+                if ($type === 'billing' && ! $this->user()->can('address.view.billing')) {
                     $validator->errors()->add('type', 'You do not have permission to search billing addresses.');
                 }
 
-                if ($type === 'shipping' && !$this->user()->can('address.view.shipping')) {
+                if ($type === 'shipping' && ! $this->user()->can('address.view.shipping')) {
                     $validator->errors()->add('type', 'You do not have permission to search shipping addresses.');
                 }
             }
 
             // Validate cursor pagination parameters
-            if ($this->get('pagination') === 'cursor' && !$this->has('cursor')) {
+            if ($this->get('pagination') === 'cursor' && ! $this->has('cursor')) {
                 // Cursor pagination requires a cursor parameter
                 // This is optional for the first page
             }
@@ -93,12 +93,12 @@ class SearchAddressRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         // Set default pagination type if not provided
-        if (!$this->has('pagination')) {
+        if (! $this->has('pagination')) {
             $this->merge(['pagination' => 'regular']);
         }
 
         // Set default per_page if not provided
-        if (!$this->has('per_page')) {
+        if (! $this->has('per_page')) {
             $this->merge(['per_page' => 15]);
         }
     }

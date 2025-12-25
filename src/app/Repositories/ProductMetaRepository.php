@@ -2,12 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Repositories;
 
+use Fereydooni\Shopping\app\DTOs\ProductMetaDTO;
+use Fereydooni\Shopping\app\Models\ProductMeta;
+use Fereydooni\Shopping\app\Repositories\Interfaces\ProductMetaRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Fereydooni\Shopping\app\Models\ProductMeta;
-use Fereydooni\Shopping\app\DTOs\ProductMetaDTO;
-use Fereydooni\Shopping\app\Repositories\Interfaces\ProductMetaRepositoryInterface;
-use Fereydooni\Shopping\app\Enums\MetaType;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -31,6 +30,7 @@ class ProductMetaRepository implements ProductMetaRepositoryInterface
     public function findDTO(int $id): ?ProductMetaDTO
     {
         $meta = $this->find($id);
+
         return $meta ? ProductMetaDTO::fromModel($meta) : null;
     }
 
@@ -42,6 +42,7 @@ class ProductMetaRepository implements ProductMetaRepositoryInterface
     public function createAndReturnDTO(array $data): ProductMetaDTO
     {
         $meta = $this->create($data);
+
         return ProductMetaDTO::fromModel($meta);
     }
 
@@ -127,11 +128,11 @@ class ProductMetaRepository implements ProductMetaRepositoryInterface
     {
         return ProductMeta::where(function ($q) use ($query) {
             $q->where('meta_key', 'like', "%{$query}%")
-              ->orWhere('meta_value', 'like', "%{$query}%")
-              ->orWhere('description', 'like', "%{$query}%");
+                ->orWhere('meta_value', 'like', "%{$query}%")
+                ->orWhere('description', 'like', "%{$query}%");
         })
-        ->orderBy('sort_order')
-        ->get();
+            ->orderBy('sort_order')
+            ->get();
     }
 
     public function findByValue(string $metaValue): Collection
@@ -150,17 +151,17 @@ class ProductMetaRepository implements ProductMetaRepositoryInterface
 
     public function togglePublic(ProductMeta $meta): bool
     {
-        return $meta->update(['is_public' => !$meta->is_public]);
+        return $meta->update(['is_public' => ! $meta->is_public]);
     }
 
     public function toggleSearchable(ProductMeta $meta): bool
     {
-        return $meta->update(['is_searchable' => !$meta->is_searchable]);
+        return $meta->update(['is_searchable' => ! $meta->is_searchable]);
     }
 
     public function toggleFilterable(ProductMeta $meta): bool
     {
-        return $meta->update(['is_filterable' => !$meta->is_filterable]);
+        return $meta->update(['is_filterable' => ! $meta->is_filterable]);
     }
 
     public function getMetaKeys(): Collection
@@ -217,7 +218,7 @@ class ProductMetaRepository implements ProductMetaRepositoryInterface
         $rules = ProductMetaDTO::rules();
         $validator = Validator::make($data, $rules);
 
-        return !$validator->fails();
+        return ! $validator->fails();
     }
 
     public function isKeyUnique(int $productId, string $metaKey, ?int $excludeId = null): bool
@@ -229,7 +230,7 @@ class ProductMetaRepository implements ProductMetaRepositoryInterface
             $query->where('id', '!=', $excludeId);
         }
 
-        return !$query->exists();
+        return ! $query->exists();
     }
 
     public function bulkCreate(int $productId, array $metaData): Collection
@@ -254,7 +255,7 @@ class ProductMetaRepository implements ProductMetaRepositoryInterface
             if (isset($data['id'])) {
                 $meta = $this->find($data['id']);
                 if ($meta && $meta->product_id === $productId) {
-                    if (!$this->update($meta, $data)) {
+                    if (! $this->update($meta, $data)) {
                         $success = false;
                     }
                 }
@@ -283,9 +284,11 @@ class ProductMetaRepository implements ProductMetaRepositoryInterface
             $this->bulkCreate($productId, $metaData);
 
             DB::commit();
+
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
+
             return false;
         }
     }
@@ -324,7 +327,7 @@ class ProductMetaRepository implements ProductMetaRepositoryInterface
 
             // Delete meta that are not in the new data
             $keysToDelete = array_diff($existingKeys, $newKeys);
-            if (!empty($keysToDelete)) {
+            if (! empty($keysToDelete)) {
                 $this->bulkDelete($productId, $keysToDelete);
             }
 
@@ -340,9 +343,11 @@ class ProductMetaRepository implements ProductMetaRepositoryInterface
             }
 
             DB::commit();
+
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
+
             return false;
         }
     }

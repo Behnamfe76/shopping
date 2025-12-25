@@ -2,16 +2,14 @@
 
 namespace App\Permissions;
 
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Cache;
 
 class ProviderContractPermissions
 {
     /**
      * Register all provider contract permissions
-     *
-     * @return void
      */
     public static function register(): void
     {
@@ -72,24 +70,20 @@ class ProviderContractPermissions
 
         } catch (\Exception $e) {
             Log::error('Failed to register provider contract permissions', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
 
     /**
      * Create a permission if it doesn't exist
-     *
-     * @param string $name
-     * @param string $description
-     * @return void
      */
     protected static function createPermission(string $name, string $description): void
     {
         try {
             $permission = DB::table('permissions')->where('name', $name)->first();
 
-            if (!$permission) {
+            if (! $permission) {
                 DB::table('permissions')->insert([
                     'name' => $name,
                     'guard_name' => 'web',
@@ -102,16 +96,13 @@ class ProviderContractPermissions
             }
         } catch (\Exception $e) {
             Log::warning("Failed to create permission: {$name}", [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
 
     /**
      * Assign permissions to roles
-     *
-     * @param array $rolePermissions
-     * @return void
      */
     public static function assignToRoles(array $rolePermissions): void
     {
@@ -131,17 +122,13 @@ class ProviderContractPermissions
             }
         } catch (\Exception $e) {
             Log::error('Failed to assign permissions to roles', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
 
     /**
      * Assign a permission to a role
-     *
-     * @param string $permissionName
-     * @param int $roleId
-     * @return void
      */
     protected static function assignPermissionToRole(string $permissionName, int $roleId): void
     {
@@ -154,7 +141,7 @@ class ProviderContractPermissions
                     ->where('role_id', $roleId)
                     ->exists();
 
-                if (!$exists) {
+                if (! $exists) {
                     DB::table('role_has_permissions')->insert([
                         'permission_id' => $permission->id,
                         'role_id' => $roleId,
@@ -163,15 +150,13 @@ class ProviderContractPermissions
             }
         } catch (\Exception $e) {
             Log::warning("Failed to assign permission {$permissionName} to role {$roleId}", [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
 
     /**
      * Get default role permissions mapping
-     *
-     * @return array
      */
     public static function getDefaultRolePermissions(): array
     {
@@ -273,10 +258,6 @@ class ProviderContractPermissions
 
     /**
      * Check if user has permission
-     *
-     * @param string $permission
-     * @param int $userId
-     * @return bool
      */
     public static function hasPermission(string $permission, int $userId): bool
     {
@@ -297,17 +278,15 @@ class ProviderContractPermissions
             Log::error('Failed to check user permission', [
                 'user_id' => $userId,
                 'permission' => $permission,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
 
     /**
      * Get user permissions
-     *
-     * @param int $userId
-     * @return array
      */
     public static function getUserPermissions(int $userId): array
     {
@@ -327,17 +306,15 @@ class ProviderContractPermissions
         } catch (\Exception $e) {
             Log::error('Failed to get user permissions', [
                 'user_id' => $userId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return [];
         }
     }
 
     /**
      * Clear user permission cache
-     *
-     * @param int $userId
-     * @return void
      */
     public static function clearUserPermissionCache(int $userId): void
     {
@@ -352,7 +329,7 @@ class ProviderContractPermissions
         } catch (\Exception $e) {
             Log::warning('Failed to clear user permission cache', [
                 'user_id' => $userId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }

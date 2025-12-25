@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\EmployeeDepartment;
 use App\Models\Employee;
+use App\Models\EmployeeDepartment;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -27,16 +27,16 @@ class EmployeeDepartmentFactory extends Factory
     {
         $departmentTypes = [
             'Engineering', 'Marketing', 'Sales', 'Finance', 'HR', 'Operations',
-            'Product', 'Design', 'Support', 'Legal', 'IT', 'Research'
+            'Product', 'Design', 'Support', 'Legal', 'IT', 'Research',
         ];
 
         $locations = [
             'New York', 'San Francisco', 'London', 'Berlin', 'Tokyo', 'Sydney',
-            'Toronto', 'Paris', 'Singapore', 'Dubai', 'Mumbai', 'São Paulo'
+            'Toronto', 'Paris', 'Singapore', 'Dubai', 'Mumbai', 'São Paulo',
         ];
 
         return [
-            'name' => $this->faker->randomElement($departmentTypes) . ' ' . $this->faker->randomElement(['Team', 'Department', 'Division', 'Group']),
+            'name' => $this->faker->randomElement($departmentTypes).' '.$this->faker->randomElement(['Team', 'Department', 'Division', 'Group']),
             'code' => strtoupper($this->faker->unique()->lexify('???###')),
             'description' => $this->faker->paragraph(),
             'parent_id' => null, // Will be set in specific states
@@ -63,9 +63,9 @@ class EmployeeDepartmentFactory extends Factory
                     'employee_satisfaction',
                     'project_completion_rate',
                     'budget_utilization',
-                    'turnover_rate'
-                ]
-            ]
+                    'turnover_rate',
+                ],
+            ],
         ];
     }
 
@@ -115,7 +115,7 @@ class EmployeeDepartmentFactory extends Factory
     /**
      * Indicate that the department has a parent.
      */
-    public function withParent(EmployeeDepartment $parent = null): static
+    public function withParent(?EmployeeDepartment $parent = null): static
     {
         return $this->state(fn (array $attributes) => [
             'parent_id' => $parent ? $parent->id : EmployeeDepartment::factory()->create()->id,
@@ -125,7 +125,7 @@ class EmployeeDepartmentFactory extends Factory
     /**
      * Indicate that the department has a manager.
      */
-    public function withManager(Employee $manager = null): static
+    public function withManager(?Employee $manager = null): static
     {
         return $this->state(fn (array $attributes) => [
             'manager_id' => $manager ? $manager->id : Employee::factory()->create()->id,
@@ -168,7 +168,7 @@ class EmployeeDepartmentFactory extends Factory
     public function ofType(string $type): static
     {
         return $this->state(fn (array $attributes) => [
-            'name' => $type . ' ' . $this->faker->randomElement(['Team', 'Department', 'Division', 'Group']),
+            'name' => $type.' '.$this->faker->randomElement(['Team', 'Department', 'Division', 'Group']),
         ]);
     }
 
@@ -178,7 +178,7 @@ class EmployeeDepartmentFactory extends Factory
     public function engineering(): static
     {
         return $this->state(fn (array $attributes) => [
-            'name' => 'Engineering ' . $this->faker->randomElement(['Team', 'Department', 'Division']),
+            'name' => 'Engineering '.$this->faker->randomElement(['Team', 'Department', 'Division']),
             'description' => 'Responsible for software development, system architecture, and technical implementation.',
             'budget' => $this->faker->randomFloat(2, 200000, 2000000),
             'headcount_limit' => $this->faker->numberBetween(20, 150),
@@ -190,8 +190,8 @@ class EmployeeDepartmentFactory extends Factory
                 'testing_requirements' => 'Unit tests + Integration tests',
                 'deployment_frequency' => $this->faker->randomElement(['Daily', 'Weekly', 'On-demand']),
                 'on_call_schedule' => '24/7 rotation',
-                'documentation_standards' => 'Comprehensive API and code documentation'
-            ]
+                'documentation_standards' => 'Comprehensive API and code documentation',
+            ],
         ]);
     }
 
@@ -201,7 +201,7 @@ class EmployeeDepartmentFactory extends Factory
     public function sales(): static
     {
         return $this->state(fn (array $attributes) => [
-            'name' => 'Sales ' . $this->faker->randomElement(['Team', 'Department', 'Division']),
+            'name' => 'Sales '.$this->faker->randomElement(['Team', 'Department', 'Division']),
             'description' => 'Responsible for customer acquisition, revenue generation, and market expansion.',
             'budget' => $this->faker->randomFloat(2, 150000, 1500000),
             'headcount_limit' => $this->faker->numberBetween(15, 100),
@@ -213,8 +213,8 @@ class EmployeeDepartmentFactory extends Factory
                 'commission_structure' => 'Base + Commission + Bonuses',
                 'sales_tools' => ['CRM', 'Salesforce', 'HubSpot', 'LinkedIn Sales Navigator'],
                 'territory_assignment' => 'Geographic + Industry vertical',
-                'performance_metrics' => ['Revenue', 'Pipeline', 'Conversion Rate', 'Customer Acquisition Cost']
-            ]
+                'performance_metrics' => ['Revenue', 'Pipeline', 'Conversion Rate', 'Customer Acquisition Cost'],
+            ],
         ]);
     }
 
@@ -224,7 +224,7 @@ class EmployeeDepartmentFactory extends Factory
     public function marketing(): static
     {
         return $this->state(fn (array $attributes) => [
-            'name' => 'Marketing ' . $this->faker->randomElement(['Team', 'Department', 'Division']),
+            'name' => 'Marketing '.$this->faker->randomElement(['Team', 'Department', 'Division']),
             'description' => 'Responsible for brand awareness, lead generation, and market positioning.',
             'budget' => $this->faker->randomFloat(2, 100000, 1000000),
             'headcount_limit' => $this->faker->numberBetween(10, 80),
@@ -240,9 +240,9 @@ class EmployeeDepartmentFactory extends Factory
                     'digital_ads' => '40%',
                     'content_creation' => '25%',
                     'events' => '20%',
-                    'tools_platforms' => '15%'
-                ]
-            ]
+                    'tools_platforms' => '15%',
+                ],
+            ],
         ]);
     }
 }

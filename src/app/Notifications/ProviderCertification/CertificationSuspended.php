@@ -14,6 +14,7 @@ class CertificationSuspended extends Notification implements ShouldQueue
     use Queueable;
 
     public $certification;
+
     public $reason;
 
     /**
@@ -45,45 +46,45 @@ class CertificationSuspended extends Notification implements ShouldQueue
 
         $url = URL::route('provider.certifications.show', [
             'provider' => $provider->id,
-            'certification' => $certification->id
+            'certification' => $certification->id,
         ]);
 
         $mailMessage = (new MailMessage)
-            ->subject('WARNING: Certification Suspended - ' . $certification->certification_name)
-            ->greeting('Hello ' . $provider->name . ',')
+            ->subject('WARNING: Certification Suspended - '.$certification->certification_name)
+            ->greeting('Hello '.$provider->name.',')
             ->line('**WARNING:** Your certification has been suspended.')
             ->line('**Certification Details:**')
-            ->line('• **Name:** ' . $certification->certification_name)
-            ->line('• **Number:** ' . $certification->certification_number)
-            ->line('• **Issuing Organization:** ' . $certification->issuing_organization)
-            ->line('• **Category:** ' . ucfirst(str_replace('_', ' ', $certification->category)))
-            ->line('• **Status:** ' . ucfirst($certification->status))
-            ->line('• **Verification Status:** ' . ucfirst(str_replace('_', ' ', $certification->verification_status)));
+            ->line('• **Name:** '.$certification->certification_name)
+            ->line('• **Number:** '.$certification->certification_number)
+            ->line('• **Issuing Organization:** '.$certification->issuing_organization)
+            ->line('• **Category:** '.ucfirst(str_replace('_', ' ', $certification->category)))
+            ->line('• **Status:** '.ucfirst($certification->status))
+            ->line('• **Verification Status:** '.ucfirst(str_replace('_', ' ', $certification->verification_status)));
 
         if ($this->reason) {
             $mailMessage->line('**Suspension Reason:**')
-                       ->line($this->reason);
+                ->line($this->reason);
         }
 
         $mailMessage->line('**Immediate Action Required:**')
-                   ->line('1. **STOP** providing services that require this certification')
-                   ->line('2. Review the suspension reason carefully')
-                   ->line('3. Address any issues or concerns identified')
-                   ->line('4. Contact our compliance team for guidance')
-                   ->line('5. Submit required documentation for reinstatement')
-                   ->action('View Certification', $url)
-                   ->line('**What This Means:**')
-                   ->line('• Your certification is temporarily inactive')
-                   ->line('• You cannot provide services requiring this certification')
-                   ->line('• This may affect your current contracts and clients')
-                   ->line('• Your professional reputation may be impacted')
-                   ->line('**Next Steps:**')
-                   ->line('• Contact our support team immediately')
-                   ->line('• Understand the reinstatement process')
-                   ->line('• Work to resolve the suspension issues')
-                   ->line('• Keep documentation of all communications')
-                   ->line('We\'re here to help you resolve this situation and restore your certification.')
-                   ->salutation('Best regards,<br>' . config('app.name') . ' Compliance Team');
+            ->line('1. **STOP** providing services that require this certification')
+            ->line('2. Review the suspension reason carefully')
+            ->line('3. Address any issues or concerns identified')
+            ->line('4. Contact our compliance team for guidance')
+            ->line('5. Submit required documentation for reinstatement')
+            ->action('View Certification', $url)
+            ->line('**What This Means:**')
+            ->line('• Your certification is temporarily inactive')
+            ->line('• You cannot provide services requiring this certification')
+            ->line('• This may affect your current contracts and clients')
+            ->line('• Your professional reputation may be impacted')
+            ->line('**Next Steps:**')
+            ->line('• Contact our support team immediately')
+            ->line('• Understand the reinstatement process')
+            ->line('• Work to resolve the suspension issues')
+            ->line('• Keep documentation of all communications')
+            ->line('We\'re here to help you resolve this situation and restore your certification.')
+            ->salutation('Best regards,<br>'.config('app.name').' Compliance Team');
 
         return $mailMessage;
     }
@@ -105,10 +106,10 @@ class CertificationSuspended extends Notification implements ShouldQueue
             'status' => $this->certification->status,
             'verification_status' => $this->certification->verification_status,
             'suspension_reason' => $this->reason,
-            'message' => 'Your certification "' . $this->certification->certification_name . '" has been suspended.',
+            'message' => 'Your certification "'.$this->certification->certification_name.'" has been suspended.',
             'action_url' => URL::route('provider.certifications.show', [
                 'provider' => $notifiable->id,
-                'certification' => $this->certification->id
+                'certification' => $this->certification->id,
             ]),
             'created_at' => now()->toISOString(),
         ];
@@ -140,9 +141,9 @@ class CertificationSuspended extends Notification implements ShouldQueue
         return [
             'provider_certification',
             'certification_suspended',
-            'provider_' . $this->certification->provider_id,
-            'certification_' . $this->certification->id,
-            'urgency_high'
+            'provider_'.$this->certification->provider_id,
+            'certification_'.$this->certification->id,
+            'urgency_high',
         ];
     }
 }

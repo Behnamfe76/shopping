@@ -40,14 +40,14 @@ class InvoiceCancelled extends Notification implements ShouldQueue
         $provider = $this->invoice->provider;
 
         return (new MailMessage)
-            ->subject('Provider Invoice Cancelled - ' . $this->invoice->invoice_number)
-            ->greeting('Hello ' . ($notifiable->name ?? 'Team Member'))
+            ->subject('Provider Invoice Cancelled - '.$this->invoice->invoice_number)
+            ->greeting('Hello '.($notifiable->name ?? 'Team Member'))
             ->line('A provider invoice has been cancelled.')
-            ->line('Invoice Number: ' . $this->invoice->invoice_number)
-            ->line('Provider: ' . ($provider->name ?? 'Unknown Provider'))
-            ->line('Amount: $' . number_format($this->invoice->total_amount, 2))
-            ->line('Cancellation Date: ' . now()->format('M d, Y H:i'))
-            ->action('View Invoice', url('/provider-invoices/' . $this->invoice->id))
+            ->line('Invoice Number: '.$this->invoice->invoice_number)
+            ->line('Provider: '.($provider->name ?? 'Unknown Provider'))
+            ->line('Amount: $'.number_format($this->invoice->total_amount, 2))
+            ->line('Cancellation Date: '.now()->format('M d, Y H:i'))
+            ->action('View Invoice', url('/provider-invoices/'.$this->invoice->id))
             ->line('The invoice has been cancelled and is no longer active.');
     }
 
@@ -67,7 +67,7 @@ class InvoiceCancelled extends Notification implements ShouldQueue
             'cancellation_date' => now()->toISOString(),
             'status' => $this->invoice->status,
             'type' => 'invoice_cancelled',
-            'message' => 'Provider invoice cancelled: ' . $this->invoice->invoice_number
+            'message' => 'Provider invoice cancelled: '.$this->invoice->invoice_number,
         ];
     }
 
@@ -79,4 +79,3 @@ class InvoiceCancelled extends Notification implements ShouldQueue
         return $this->toArray($notifiable);
     }
 }
-

@@ -2,16 +2,14 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
+use Fereydooni\Shopping\app\Enums\PositionLevel;
+use Fereydooni\Shopping\app\Enums\PositionStatus;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection;
-use Fereydooni\Shopping\app\Enums\PositionStatus;
-use Fereydooni\Shopping\app\Enums\PositionLevel;
 
 class EmployeePosition extends Model
 {
@@ -123,13 +121,13 @@ class EmployeePosition extends Model
     public function scopeBySalaryRange($query, float $minSalary, float $maxSalary)
     {
         return $query->whereBetween('salary_min', [$minSalary, $maxSalary])
-                    ->orWhereBetween('salary_max', [$minSalary, $maxSalary]);
+            ->orWhereBetween('salary_max', [$minSalary, $maxSalary]);
     }
 
     public function scopeByHourlyRateRange($query, float $minRate, float $maxRate)
     {
         return $query->whereBetween('hourly_rate_min', [$minRate, $maxRate])
-                    ->orWhereBetween('hourly_rate_max', [$minRate, $maxRate]);
+            ->orWhereBetween('hourly_rate_max', [$minRate, $maxRate]);
     }
 
     public function scopeByExperienceLevel($query, int $minExperience)
@@ -156,16 +154,18 @@ class EmployeePosition extends Model
     public function getSalaryRangeAttribute(): string
     {
         if ($this->salary_min && $this->salary_max) {
-            return '$' . number_format($this->salary_min, 0) . ' - $' . number_format($this->salary_max, 0);
+            return '$'.number_format($this->salary_min, 0).' - $'.number_format($this->salary_max, 0);
         }
+
         return 'Not specified';
     }
 
     public function getHourlyRateRangeAttribute(): string
     {
         if ($this->hourly_rate_min && $this->hourly_rate_max) {
-            return '$' . number_format($this->hourly_rate_min, 2) . ' - $' . number_format($this->hourly_rate_max, 2);
+            return '$'.number_format($this->hourly_rate_min, 2).' - $'.number_format($this->hourly_rate_max, 2);
         }
+
         return 'Not specified';
     }
 
@@ -174,6 +174,7 @@ class EmployeePosition extends Model
         if ($this->salary_min && $this->salary_max) {
             return ($this->salary_min + $this->salary_max) / 2;
         }
+
         return 0;
     }
 
@@ -182,6 +183,7 @@ class EmployeePosition extends Model
         if ($this->hourly_rate_min && $this->hourly_rate_max) {
             return ($this->hourly_rate_min + $this->hourly_rate_max) / 2;
         }
+
         return 0;
     }
 
@@ -205,8 +207,9 @@ class EmployeePosition extends Model
     {
         $this->update([
             'is_active' => true,
-            'status' => PositionStatus::ACTIVE
+            'status' => PositionStatus::ACTIVE,
         ]);
+
         return true;
     }
 
@@ -214,8 +217,9 @@ class EmployeePosition extends Model
     {
         $this->update([
             'is_active' => false,
-            'status' => PositionStatus::INACTIVE
+            'status' => PositionStatus::INACTIVE,
         ]);
+
         return true;
     }
 
@@ -223,8 +227,9 @@ class EmployeePosition extends Model
     {
         $this->update([
             'is_active' => true,
-            'status' => PositionStatus::HIRING
+            'status' => PositionStatus::HIRING,
         ]);
+
         return true;
     }
 
@@ -232,8 +237,9 @@ class EmployeePosition extends Model
     {
         $this->update([
             'is_active' => false,
-            'status' => PositionStatus::FROZEN
+            'status' => PositionStatus::FROZEN,
         ]);
+
         return true;
     }
 
@@ -241,8 +247,9 @@ class EmployeePosition extends Model
     {
         $this->update([
             'is_active' => false,
-            'status' => PositionStatus::ARCHIVED
+            'status' => PositionStatus::ARCHIVED,
         ]);
+
         return true;
     }
 
@@ -250,7 +257,7 @@ class EmployeePosition extends Model
     {
         return $this->update([
             'salary_min' => $minSalary,
-            'salary_max' => $maxSalary
+            'salary_max' => $maxSalary,
         ]);
     }
 
@@ -258,24 +265,27 @@ class EmployeePosition extends Model
     {
         return $this->update([
             'hourly_rate_min' => $minRate,
-            'hourly_rate_max' => $maxRate
+            'hourly_rate_max' => $maxRate,
         ]);
     }
 
     public function addSkillRequirement(string $skill): bool
     {
         $skills = $this->skills_required ?? [];
-        if (!in_array($skill, $skills)) {
+        if (! in_array($skill, $skills)) {
             $skills[] = $skill;
+
             return $this->update(['skills_required' => $skills]);
         }
+
         return true;
     }
 
     public function removeSkillRequirement(string $skill): bool
     {
         $skills = $this->skills_required ?? [];
-        $skills = array_filter($skills, fn($s) => $s !== $skill);
+        $skills = array_filter($skills, fn ($s) => $s !== $skill);
+
         return $this->update(['skills_required' => array_values($skills)]);
     }
 

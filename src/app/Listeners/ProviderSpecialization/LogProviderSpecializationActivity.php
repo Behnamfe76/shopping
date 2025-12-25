@@ -2,16 +2,16 @@
 
 namespace Fereydooni\Shopping\App\Listeners\ProviderSpecialization;
 
+use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderPrimarySpecializationChanged;
+use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationActivated;
+use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationCreated;
+use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationDeactivated;
+use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationRejected;
+use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationUpdated;
+use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationVerified;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationCreated;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationUpdated;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationVerified;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationRejected;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationActivated;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationDeactivated;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderPrimarySpecializationChanged;
 
 class LogProviderSpecializationActivity implements ShouldQueue
 {

@@ -3,19 +3,20 @@
 namespace Fereydooni\Shopping\app\Traits;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Collection;
 
 trait HasAnalyticsOperations
 {
     public function incrementViewCount(Model $model): bool
     {
         $model->increment('view_count');
+
         return true;
     }
 
     public function incrementWishlistCount(Model $model): bool
     {
         $model->increment('wishlist_count');
+
         return true;
     }
 
@@ -24,6 +25,7 @@ trait HasAnalyticsOperations
         $averageRating = $model->reviews()->avg('rating') ?? 0;
         $model->average_rating = $averageRating;
         $model->reviews_count = $model->reviews()->count();
+
         return $model->save();
     }
 
@@ -54,22 +56,22 @@ trait HasAnalyticsOperations
         return $this->repository->getShipmentAnalyticsByCarrier($carrier);
     }
 
-    public function getDeliveryPerformance(string $carrier = null): array
+    public function getDeliveryPerformance(?string $carrier = null): array
     {
         return $this->repository->getDeliveryPerformance($carrier);
     }
 
-    public function getShippingCosts(string $carrier = null): array
+    public function getShippingCosts(?string $carrier = null): array
     {
         return $this->repository->getShippingCosts($carrier);
     }
 
-    public function getDeliveryTimes(string $carrier = null): array
+    public function getDeliveryTimes(?string $carrier = null): array
     {
         return $this->repository->getDeliveryTimes($carrier);
     }
 
-    public function getReturnRates(string $carrier = null): array
+    public function getReturnRates(?string $carrier = null): array
     {
         return $this->repository->getReturnRates($carrier);
     }
@@ -139,4 +141,3 @@ trait HasAnalyticsOperations
         ];
     }
 }
-

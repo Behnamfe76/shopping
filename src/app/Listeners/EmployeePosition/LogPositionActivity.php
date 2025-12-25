@@ -2,15 +2,15 @@
 
 namespace App\Listeners\EmployeePosition;
 
+use App\Events\EmployeePosition\EmployeePositionArchived;
 use App\Events\EmployeePosition\EmployeePositionCreated;
-use App\Events\EmployeePosition\EmployeePositionUpdated;
 use App\Events\EmployeePosition\EmployeePositionSalaryUpdated;
 use App\Events\EmployeePosition\EmployeePositionSetHiring;
-use App\Events\EmployeePosition\EmployeePositionArchived;
+use App\Events\EmployeePosition\EmployeePositionUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class LogPositionActivity implements ShouldQueue
 {
@@ -37,7 +37,7 @@ class LogPositionActivity implements ShouldQueue
             Log::error('Failed to log position activity', [
                 'event' => get_class($event),
                 'position_id' => $event->position->id ?? null,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -66,7 +66,7 @@ class LogPositionActivity implements ShouldQueue
         Log::info('Position activity logged: created', [
             'position_id' => $position->id,
             'title' => $position->title,
-            'user_id' => $metadata['created_by'] ?? null
+            'user_id' => $metadata['created_by'] ?? null,
         ]);
     }
 
@@ -97,7 +97,7 @@ class LogPositionActivity implements ShouldQueue
             'position_id' => $position->id,
             'title' => $position->title,
             'changes' => $changes,
-            'user_id' => $metadata['updated_by'] ?? null
+            'user_id' => $metadata['updated_by'] ?? null,
         ]);
     }
 
@@ -128,7 +128,7 @@ class LogPositionActivity implements ShouldQueue
             'position_id' => $position->id,
             'title' => $position->title,
             'salary_changes' => $salaryChanges,
-            'user_id' => $metadata['updated_by'] ?? null
+            'user_id' => $metadata['updated_by'] ?? null,
         ]);
     }
 
@@ -159,7 +159,7 @@ class LogPositionActivity implements ShouldQueue
             'position_id' => $position->id,
             'title' => $position->title,
             'hiring_details' => $hiringDetails,
-            'user_id' => $metadata['set_by'] ?? null
+            'user_id' => $metadata['set_by'] ?? null,
         ]);
     }
 
@@ -190,7 +190,7 @@ class LogPositionActivity implements ShouldQueue
             'position_id' => $position->id,
             'title' => $position->title,
             'archive_details' => $archiveDetails,
-            'user_id' => $metadata['archived_by'] ?? null
+            'user_id' => $metadata['archived_by'] ?? null,
         ]);
     }
 
@@ -242,18 +242,18 @@ class LogPositionActivity implements ShouldQueue
                     ]);
                 } else {
                     // If no activity log tables exist, just log to Laravel log
-                    Log::info('Position activity (no activity log table): ' . $data['description'], $data);
+                    Log::info('Position activity (no activity log table): '.$data['description'], $data);
                 }
             }
         } catch (\Exception $e) {
             // If database logging fails, fallback to Laravel log
             Log::warning('Failed to log position activity to database, using fallback logging', [
                 'error' => $e->getMessage(),
-                'activity_data' => $data
+                'activity_data' => $data,
             ]);
 
             // Log the activity to Laravel log as fallback
-            Log::info('Position activity (fallback): ' . $data['description'], $data);
+            Log::info('Position activity (fallback): '.$data['description'], $data);
         }
     }
 

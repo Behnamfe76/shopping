@@ -2,8 +2,8 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Fereydooni\Shopping\app\Models\UserSubscription;
+use Illuminate\Foundation\Http\FormRequest;
 
 class StoreUserSubscriptionRequest extends FormRequest
 {
@@ -79,17 +79,17 @@ class StoreUserSubscriptionRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         // Ensure user_id is set to current user if not provided and user can only create own subscriptions
-        if (!$this->has('user_id') && $this->user()->can('create.own', UserSubscription::class)) {
+        if (! $this->has('user_id') && $this->user()->can('create.own', UserSubscription::class)) {
             $this->merge(['user_id' => $this->user()->id]);
         }
 
         // Set default status to trialing if not provided
-        if (!$this->has('status')) {
+        if (! $this->has('status')) {
             $this->merge(['status' => 'trialing']);
         }
 
         // Set start_date to today if not provided
-        if (!$this->has('start_date')) {
+        if (! $this->has('start_date')) {
             $this->merge(['start_date' => now()->format('Y-m-d')]);
         }
     }

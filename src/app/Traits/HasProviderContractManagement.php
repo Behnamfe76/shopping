@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\App\Traits;
 
+use Carbon\Carbon;
 use Fereydooni\Shopping\App\Models\Provider;
 use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderRepositoryInterface;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Date;
 
 trait HasProviderContractManagement
@@ -17,18 +17,18 @@ trait HasProviderContractManagement
     public function extendProviderContract(Provider $provider, string $newEndDate): bool
     {
         return $this->providerRepository->update($provider, [
-            'contract_end_date' => $newEndDate
+            'contract_end_date' => $newEndDate,
         ]);
     }
 
     /**
      * Terminate provider contract
      */
-    public function terminateProviderContract(Provider $provider, string $reason = null): bool
+    public function terminateProviderContract(Provider $provider, ?string $reason = null): bool
     {
         return $this->providerRepository->update($provider, [
             'contract_end_date' => now(),
-            'termination_reason' => $reason
+            'termination_reason' => $reason,
         ]);
     }
 
@@ -38,7 +38,7 @@ trait HasProviderContractManagement
     public function updateContractStartDate(Provider $provider, string $startDate): bool
     {
         return $this->providerRepository->update($provider, [
-            'contract_start_date' => $startDate
+            'contract_start_date' => $startDate,
         ]);
     }
 
@@ -48,7 +48,7 @@ trait HasProviderContractManagement
     public function updateContractEndDate(Provider $provider, string $endDate): bool
     {
         return $this->providerRepository->update($provider, [
-            'contract_end_date' => $endDate
+            'contract_end_date' => $endDate,
         ]);
     }
 
@@ -60,10 +60,11 @@ trait HasProviderContractManagement
         $expiryDate = Carbon::now()->addDays($daysAhead);
         $providers = $this->providerRepository->all();
 
-        return $providers->filter(function($provider) use ($expiryDate) {
-            if (!$provider->contract_end_date) {
+        return $providers->filter(function ($provider) use ($expiryDate) {
+            if (! $provider->contract_end_date) {
                 return false;
             }
+
             return Carbon::parse($provider->contract_end_date)->lte($expiryDate);
         })->toArray();
     }
@@ -75,10 +76,11 @@ trait HasProviderContractManagement
     {
         $providers = $this->providerRepository->all();
 
-        return $providers->filter(function($provider) {
-            if (!$provider->contract_end_date) {
+        return $providers->filter(function ($provider) {
+            if (! $provider->contract_end_date) {
                 return false;
             }
+
             return Carbon::parse($provider->contract_end_date)->lt(now());
         })->toArray();
     }
@@ -90,11 +92,12 @@ trait HasProviderContractManagement
     {
         $providers = $this->providerRepository->all();
 
-        return $providers->filter(function($provider) {
-            if (!$provider->contract_start_date || !$provider->contract_end_date) {
+        return $providers->filter(function ($provider) {
+            if (! $provider->contract_start_date || ! $provider->contract_end_date) {
                 return false;
             }
             $now = now();
+
             return Carbon::parse($provider->contract_start_date)->lte($now) &&
                    Carbon::parse($provider->contract_end_date)->gt($now);
         })->toArray();
@@ -108,10 +111,11 @@ trait HasProviderContractManagement
         $startDate = Carbon::now()->addDays($daysAhead);
         $providers = $this->providerRepository->all();
 
-        return $providers->filter(function($provider) use ($startDate) {
-            if (!$provider->contract_start_date) {
+        return $providers->filter(function ($provider) use ($startDate) {
+            if (! $provider->contract_start_date) {
                 return false;
             }
+
             return Carbon::parse($provider->contract_start_date)->lte($startDate);
         })->toArray();
     }
@@ -121,7 +125,7 @@ trait HasProviderContractManagement
      */
     public function getProviderContractDuration(Provider $provider): ?int
     {
-        if (!$provider->contract_start_date || !$provider->contract_end_date) {
+        if (! $provider->contract_start_date || ! $provider->contract_end_date) {
             return null;
         }
 
@@ -136,7 +140,7 @@ trait HasProviderContractManagement
      */
     public function getDaysUntilContractExpires(Provider $provider): ?int
     {
-        if (!$provider->contract_end_date) {
+        if (! $provider->contract_end_date) {
             return null;
         }
 
@@ -155,7 +159,7 @@ trait HasProviderContractManagement
      */
     public function getDaysSinceContractStarted(Provider $provider): ?int
     {
-        if (!$provider->contract_start_date) {
+        if (! $provider->contract_start_date) {
             return null;
         }
 
@@ -174,7 +178,7 @@ trait HasProviderContractManagement
      */
     public function isContractActive(Provider $provider): bool
     {
-        if (!$provider->contract_start_date || !$provider->contract_end_date) {
+        if (! $provider->contract_start_date || ! $provider->contract_end_date) {
             return false;
         }
 
@@ -190,7 +194,7 @@ trait HasProviderContractManagement
      */
     public function isContractExpired(Provider $provider): bool
     {
-        if (!$provider->contract_end_date) {
+        if (! $provider->contract_end_date) {
             return false;
         }
 
@@ -202,7 +206,7 @@ trait HasProviderContractManagement
      */
     public function isContractUpcoming(Provider $provider): bool
     {
-        if (!$provider->contract_start_date) {
+        if (! $provider->contract_start_date) {
             return false;
         }
 
@@ -216,7 +220,7 @@ trait HasProviderContractManagement
     {
         $provider = $this->providerRepository->find($providerId);
 
-        if (!$provider) {
+        if (! $provider) {
             return [];
         }
 

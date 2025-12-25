@@ -2,9 +2,6 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
-use Fereydooni\Shopping\app\Events\ProductTagCreated;
-use Fereydooni\Shopping\app\Events\ProductTagUpdated;
-use Fereydooni\Shopping\app\Events\ProductTagDeleted;
 use Fereydooni\Shopping\app\Events\ProductTagSynced;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;

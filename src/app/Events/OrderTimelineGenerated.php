@@ -2,17 +2,19 @@
 
 namespace Fereydooni\Shopping\app\Events;
 
+use Fereydooni\Shopping\app\Models\Order;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Database\Eloquent\Collection;
-use Fereydooni\Shopping\app\Models\Order;
 
 class OrderTimelineGenerated
 {
     use Dispatchable, SerializesModels;
 
     public Order $order;
+
     public Collection $timeline;
+
     public int $totalEvents;
 
     /**

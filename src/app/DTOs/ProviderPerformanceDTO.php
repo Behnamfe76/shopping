@@ -6,19 +6,7 @@ use App\Enums\PerformanceGrade;
 use App\Enums\PeriodType;
 use App\Models\Provider;
 use App\Models\User;
-use Carbon\Carbon;
 use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Max;
-use Spatie\LaravelData\Attributes\Validation\Min;
-use Spatie\LaravelData\Attributes\Validation\Between;
-use Spatie\LaravelData\Attributes\Validation\Date;
-use Spatie\LaravelData\Attributes\Validation\Exists;
-use Spatie\LaravelData\Attributes\Validation\Nullable;
-use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\Numeric;
-use Spatie\LaravelData\Attributes\Validation\In;
-use Spatie\LaravelData\Attributes\WithTransformer;
-use Spatie\LaravelData\Transformers\DateTimeTransformer;
 
 class ProviderPerformanceDTO extends Data
 {
@@ -62,7 +50,7 @@ class ProviderPerformanceDTO extends Data
             'provider_id' => ['required', 'integer', 'exists:providers,id'],
             'period_start' => ['required', 'date'],
             'period_end' => ['required', 'date', 'after:period_start'],
-            'period_type' => ['required', 'string', 'in:' . implode(',', PeriodType::values())],
+            'period_type' => ['required', 'string', 'in:'.implode(',', PeriodType::values())],
             'total_orders' => ['required', 'integer', 'min:0'],
             'total_revenue' => ['required', 'numeric', 'min:0'],
             'average_order_value' => ['required', 'numeric', 'min:0'],
@@ -80,7 +68,7 @@ class ProviderPerformanceDTO extends Data
             'fill_rate' => ['required', 'numeric', 'between:0,100'],
             'accuracy_rate' => ['required', 'numeric', 'between:0,100'],
             'performance_score' => ['required', 'numeric', 'between:0,100'],
-            'performance_grade' => ['required', 'string', 'in:' . implode(',', PerformanceGrade::values())],
+            'performance_grade' => ['required', 'string', 'in:'.implode(',', PerformanceGrade::values())],
             'is_verified' => ['boolean'],
             'verified_by' => ['nullable', 'integer', 'exists:users,id'],
             'verified_at' => ['nullable', 'date'],
@@ -206,10 +194,19 @@ class ProviderPerformanceDTO extends Data
     {
         $score = $this->performance_score;
 
-        if ($score >= 90) return PerformanceGrade::A;
-        if ($score >= 80) return PerformanceGrade::B;
-        if ($score >= 70) return PerformanceGrade::C;
-        if ($score >= 60) return PerformanceGrade::D;
+        if ($score >= 90) {
+            return PerformanceGrade::A;
+        }
+        if ($score >= 80) {
+            return PerformanceGrade::B;
+        }
+        if ($score >= 70) {
+            return PerformanceGrade::C;
+        }
+        if ($score >= 60) {
+            return PerformanceGrade::D;
+        }
+
         return PerformanceGrade::F;
     }
 
@@ -217,9 +214,16 @@ class ProviderPerformanceDTO extends Data
     {
         // This would typically compare with historical data
         // For now, return a basic trend based on score
-        if ($this->performance_score >= 80) return 'excellent';
-        if ($this->performance_score >= 60) return 'good';
-        if ($this->performance_score >= 40) return 'fair';
+        if ($this->performance_score >= 80) {
+            return 'excellent';
+        }
+        if ($this->performance_score >= 60) {
+            return 'good';
+        }
+        if ($this->performance_score >= 40) {
+            return 'fair';
+        }
+
         return 'poor';
     }
 
@@ -230,18 +234,18 @@ class ProviderPerformanceDTO extends Data
             'on_time_delivery' => [
                 'current' => $this->on_time_delivery_rate,
                 'benchmark' => 95.0,
-                'status' => $this->on_time_delivery_rate >= 95.0 ? 'above' : 'below'
+                'status' => $this->on_time_delivery_rate >= 95.0 ? 'above' : 'below',
             ],
             'customer_satisfaction' => [
                 'current' => $this->customer_satisfaction_score,
                 'benchmark' => 8.5,
-                'status' => $this->customer_satisfaction_score >= 8.5 ? 'above' : 'below'
+                'status' => $this->customer_satisfaction_score >= 8.5 ? 'above' : 'below',
             ],
             'quality_rating' => [
                 'current' => $this->quality_rating,
                 'benchmark' => 8.0,
-                'status' => $this->quality_rating >= 8.0 ? 'above' : 'below'
-            ]
+                'status' => $this->quality_rating >= 8.0 ? 'above' : 'below',
+            ],
         ];
     }
 

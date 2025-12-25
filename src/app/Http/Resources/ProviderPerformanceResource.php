@@ -2,10 +2,9 @@
 
 namespace App\Http\Resources;
 
+use App\Enums\PerformanceGrade;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Enums\PerformanceGrade;
-use App\Enums\PeriodType;
 
 class ProviderPerformanceResource extends JsonResource
 {
@@ -122,7 +121,7 @@ class ProviderPerformanceResource extends JsonResource
             'is_high_performer' => $this->isHighPerformer(),
             'is_low_performer' => $this->isLowPerformer(),
             'needs_attention' => $this->needsAttention(),
-            'can_be_verified' => !$this->is_verified,
+            'can_be_verified' => ! $this->is_verified,
             'can_be_unverified' => $this->is_verified,
             'can_be_recalculated' => true,
             'last_updated' => $this->updated_at?->diffForHumans(),
@@ -262,7 +261,7 @@ class ProviderPerformanceResource extends JsonResource
         $currentScore = $this->performance_score;
         $currentGrade = $this->performance_grade;
 
-        $nextGrade = match($currentGrade) {
+        $nextGrade = match ($currentGrade) {
             PerformanceGrade::F => PerformanceGrade::D,
             PerformanceGrade::D => PerformanceGrade::C,
             PerformanceGrade::C => PerformanceGrade::B,
@@ -270,7 +269,7 @@ class ProviderPerformanceResource extends JsonResource
             PerformanceGrade::A => null,
         };
 
-        if (!$nextGrade) {
+        if (! $nextGrade) {
             return [
                 'can_improve' => false,
                 'next_grade' => null,
@@ -422,10 +421,19 @@ class ProviderPerformanceResource extends JsonResource
      */
     protected function getStatusLevel(): string
     {
-        if ($this->performance_score >= 90) return 'excellent';
-        if ($this->performance_score >= 80) return 'good';
-        if ($this->performance_score >= 70) return 'fair';
-        if ($this->performance_score >= 60) return 'poor';
+        if ($this->performance_score >= 90) {
+            return 'excellent';
+        }
+        if ($this->performance_score >= 80) {
+            return 'good';
+        }
+        if ($this->performance_score >= 70) {
+            return 'fair';
+        }
+        if ($this->performance_score >= 60) {
+            return 'poor';
+        }
+
         return 'critical';
     }
 
@@ -434,9 +442,16 @@ class ProviderPerformanceResource extends JsonResource
      */
     protected function getPriorityLevel(): string
     {
-        if ($this->performance_score < 60) return 'high';
-        if ($this->performance_score < 70) return 'medium';
-        if ($this->performance_score < 80) return 'low';
+        if ($this->performance_score < 60) {
+            return 'high';
+        }
+        if ($this->performance_score < 70) {
+            return 'medium';
+        }
+        if ($this->performance_score < 80) {
+            return 'low';
+        }
+
         return 'none';
     }
 
@@ -445,9 +460,16 @@ class ProviderPerformanceResource extends JsonResource
      */
     protected function getRiskLevel(): string
     {
-        if ($this->performance_score < 60) return 'high';
-        if ($this->performance_score < 70) return 'medium';
-        if ($this->performance_score < 80) return 'low';
+        if ($this->performance_score < 60) {
+            return 'high';
+        }
+        if ($this->performance_score < 70) {
+            return 'medium';
+        }
+        if ($this->performance_score < 80) {
+            return 'low';
+        }
+
         return 'minimal';
     }
 }

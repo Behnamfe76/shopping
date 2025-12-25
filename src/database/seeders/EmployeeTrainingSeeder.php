@@ -2,13 +2,13 @@
 
 namespace Fereydooni\Shopping\Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Fereydooni\Shopping\Models\EmployeeTraining;
-use Fereydooni\Shopping\Models\Employee;
-use Fereydooni\Shopping\Enums\TrainingType;
-use Fereydooni\Shopping\Enums\TrainingStatus;
-use Fereydooni\Shopping\Enums\TrainingMethod;
 use Carbon\Carbon;
+use Fereydooni\Shopping\Enums\TrainingMethod;
+use Fereydooni\Shopping\Enums\TrainingStatus;
+use Fereydooni\Shopping\Enums\TrainingType;
+use Fereydooni\Shopping\Models\Employee;
+use Fereydooni\Shopping\Models\EmployeeTraining;
+use Illuminate\Database\Seeder;
 
 class EmployeeTrainingSeeder extends Seeder
 {
@@ -21,6 +21,7 @@ class EmployeeTrainingSeeder extends Seeder
 
         if ($employees->isEmpty()) {
             $this->command->warn('No employees found. Please run EmployeeSeeder first.');
+
             return;
         }
 
@@ -306,7 +307,7 @@ class EmployeeTrainingSeeder extends Seeder
             $completionDate = $isCompleted ? $this->getRandomCompletionDate($startDate, $endDate) : null;
             $score = $isCompleted ? rand(70, 100) : null;
             $grade = $score ? $this->getGradeFromScore($score) : null;
-            $hoursCompleted = $isCompleted ? $trainingData['total_hours'] : rand(0, (int)$trainingData['total_hours']);
+            $hoursCompleted = $isCompleted ? $trainingData['total_hours'] : rand(0, (int) $trainingData['total_hours']);
 
             EmployeeTraining::create([
                 'employee_id' => $employee->id,
@@ -320,8 +321,8 @@ class EmployeeTrainingSeeder extends Seeder
                 'status' => $this->getStatus($isCompleted, $startDate, $endDate),
                 'score' => $score,
                 'grade' => $grade,
-                'certificate_number' => $trainingData['is_certification'] && $isCompleted ? 'CERT-' . rand(1000, 9999) : null,
-                'certificate_url' => $trainingData['is_certification'] && $isCompleted ? 'https://certificates.example.com/' . rand(1000, 9999) : null,
+                'certificate_number' => $trainingData['is_certification'] && $isCompleted ? 'CERT-'.rand(1000, 9999) : null,
+                'certificate_url' => $trainingData['is_certification'] && $isCompleted ? 'https://certificates.example.com/'.rand(1000, 9999) : null,
                 'hours_completed' => $hoursCompleted,
                 'total_hours' => $trainingData['total_hours'],
                 'cost' => $trainingData['cost'],
@@ -371,7 +372,10 @@ class EmployeeTrainingSeeder extends Seeder
      */
     protected function getRandomRenewalDate(?Carbon $completionDate): ?Carbon
     {
-        if (!$completionDate) return null;
+        if (! $completionDate) {
+            return null;
+        }
+
         return $completionDate->copy()->addMonths(rand(6, 12));
     }
 
@@ -400,10 +404,19 @@ class EmployeeTrainingSeeder extends Seeder
      */
     protected function getGradeFromScore(int $score): string
     {
-        if ($score >= 90) return 'A';
-        if ($score >= 80) return 'B';
-        if ($score >= 70) return 'C';
-        if ($score >= 60) return 'D';
+        if ($score >= 90) {
+            return 'A';
+        }
+        if ($score >= 80) {
+            return 'B';
+        }
+        if ($score >= 70) {
+            return 'C';
+        }
+        if ($score >= 60) {
+            return 'D';
+        }
+
         return 'F';
     }
 
@@ -497,10 +510,10 @@ class EmployeeTrainingSeeder extends Seeder
 
         for ($i = 0; $i < $count; $i++) {
             $attachments[] = [
-                'name' => 'Training_Material_' . ($i + 1) . '.pdf',
-                'url' => 'https://training.example.com/materials/' . rand(1000, 9999) . '.pdf',
-                'size' => rand(100, 5000) . 'KB',
-                'type' => 'application/pdf'
+                'name' => 'Training_Material_'.($i + 1).'.pdf',
+                'url' => 'https://training.example.com/materials/'.rand(1000, 9999).'.pdf',
+                'size' => rand(100, 5000).'KB',
+                'type' => 'application/pdf',
             ];
         }
 

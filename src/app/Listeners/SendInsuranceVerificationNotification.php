@@ -42,13 +42,13 @@ class SendInsuranceVerificationNotification implements ShouldQueue
             Log::info('Insurance verification notifications sent successfully', [
                 'insurance_id' => $providerInsurance->id,
                 'verifier_id' => $verifier,
-                'verification_details' => $verificationDetails
+                'verification_details' => $verificationDetails,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to send insurance verification notifications', [
                 'insurance_id' => $event->providerInsurance->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -61,7 +61,7 @@ class SendInsuranceVerificationNotification implements ShouldQueue
         // Implementation for email notification
         // This would typically use Laravel's notification system
         Log::info('Email notification sent for insurance verification', [
-            'insurance_id' => $providerInsurance->id
+            'insurance_id' => $providerInsurance->id,
         ]);
     }
 
@@ -73,7 +73,7 @@ class SendInsuranceVerificationNotification implements ShouldQueue
         // Implementation for SMS notification
         // This would typically use a third-party SMS service
         Log::info('SMS notification sent for insurance verification', [
-            'insurance_id' => $providerInsurance->id
+            'insurance_id' => $providerInsurance->id,
         ]);
     }
 
@@ -85,7 +85,7 @@ class SendInsuranceVerificationNotification implements ShouldQueue
         // Implementation for in-app notification
         // This would typically use Laravel's notification system with database
         Log::info('In-app notification sent for insurance verification', [
-            'insurance_id' => $providerInsurance->id
+            'insurance_id' => $providerInsurance->id,
         ]);
     }
 }

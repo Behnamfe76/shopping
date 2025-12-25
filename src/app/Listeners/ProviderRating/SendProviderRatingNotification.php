@@ -2,16 +2,16 @@
 
 namespace Fereydooni\Shopping\app\Listeners\ProviderRating;
 
-use Fereydooni\Shopping\app\Events\ProviderRating\ProviderRatingCreated;
-use Fereydooni\Shopping\app\Events\ProviderRating\ProviderRatingUpdated;
 use Fereydooni\Shopping\app\Events\ProviderRating\ProviderRatingApproved;
-use Fereydooni\Shopping\app\Events\ProviderRating\ProviderRatingRejected;
+use Fereydooni\Shopping\app\Events\ProviderRating\ProviderRatingCreated;
 use Fereydooni\Shopping\app\Events\ProviderRating\ProviderRatingFlagged;
+use Fereydooni\Shopping\app\Events\ProviderRating\ProviderRatingRejected;
+use Fereydooni\Shopping\app\Events\ProviderRating\ProviderRatingUpdated;
 use Fereydooni\Shopping\app\Events\ProviderRating\ProviderRatingVerified;
-use Fereydooni\Shopping\app\Notifications\ProviderRating\RatingReceived;
 use Fereydooni\Shopping\app\Notifications\ProviderRating\RatingApproved;
-use Fereydooni\Shopping\app\Notifications\ProviderRating\RatingRejected;
 use Fereydooni\Shopping\app\Notifications\ProviderRating\RatingFlagged;
+use Fereydooni\Shopping\app\Notifications\ProviderRating\RatingReceived;
+use Fereydooni\Shopping\app\Notifications\ProviderRating\RatingRejected;
 use Fereydooni\Shopping\app\Notifications\ProviderRating\RatingVerified;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -56,7 +56,7 @@ class SendProviderRatingNotification implements ShouldQueue
                 'event' => get_class($event),
                 'rating_id' => $event->rating->id ?? null,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
         }
     }
@@ -76,7 +76,7 @@ class SendProviderRatingNotification implements ShouldQueue
             'rating_id' => $rating->id,
             'provider_id' => $rating->provider_id,
             'user_id' => $rating->user_id,
-            'type' => 'created'
+            'type' => 'created',
         ]);
     }
 
@@ -94,7 +94,7 @@ class SendProviderRatingNotification implements ShouldQueue
             'rating_id' => $rating->id,
             'provider_id' => $rating->provider_id,
             'user_id' => $rating->user_id,
-            'type' => 'updated'
+            'type' => 'updated',
         ]);
     }
 
@@ -112,7 +112,7 @@ class SendProviderRatingNotification implements ShouldQueue
             'rating_id' => $rating->id,
             'provider_id' => $rating->provider_id,
             'user_id' => $rating->user_id,
-            'type' => 'approved'
+            'type' => 'approved',
         ]);
     }
 
@@ -130,7 +130,7 @@ class SendProviderRatingNotification implements ShouldQueue
             'rating_id' => $rating->id,
             'provider_id' => $rating->provider_id,
             'user_id' => $rating->user_id,
-            'type' => 'rejected'
+            'type' => 'rejected',
         ]);
     }
 
@@ -146,7 +146,7 @@ class SendProviderRatingNotification implements ShouldQueue
             'rating_id' => $rating->id,
             'provider_id' => $rating->provider_id,
             'user_id' => $rating->user_id,
-            'type' => 'flagged'
+            'type' => 'flagged',
         ]);
     }
 
@@ -164,7 +164,7 @@ class SendProviderRatingNotification implements ShouldQueue
             'rating_id' => $rating->id,
             'provider_id' => $rating->provider_id,
             'user_id' => $rating->user_id,
-            'type' => 'verified'
+            'type' => 'verified',
         ]);
     }
 

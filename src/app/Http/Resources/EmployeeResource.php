@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Http\Resources;
 
+use Fereydooni\Shopping\app\DTOs\EmployeeDTO;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Fereydooni\Shopping\app\DTOs\EmployeeDTO;
 
 class EmployeeResource extends JsonResource
 {
@@ -181,4 +181,3 @@ class EmployeeResource extends JsonResource
         ];
     }
 }
-

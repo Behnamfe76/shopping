@@ -32,7 +32,7 @@ class SendGradeChangeNotification implements ShouldQueue
                 'provider_id' => $event->providerPerformance->provider_id,
                 'old_grade' => $event->oldGrade,
                 'new_grade' => $event->newGrade,
-                'reason' => $event->reason
+                'reason' => $event->reason,
             ]);
 
             // Get users who should receive this notification
@@ -50,14 +50,14 @@ class SendGradeChangeNotification implements ShouldQueue
 
             Log::info('Performance grade change notifications sent successfully', [
                 'recipients_count' => count($recipients),
-                'provider_id' => $event->providerPerformance->provider_id
+                'provider_id' => $event->providerPerformance->provider_id,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to send performance grade change notifications', [
                 'error' => $e->getMessage(),
                 'provider_id' => $event->providerPerformance->provider_id,
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
         }
     }
@@ -94,7 +94,7 @@ class SendGradeChangeNotification implements ShouldQueue
         Log::error('Failed to send performance grade change notification', [
             'event' => $event,
             'error' => $exception->getMessage(),
-            'trace' => $exception->getTraceAsString()
+            'trace' => $exception->getTraceAsString(),
         ]);
     }
 }

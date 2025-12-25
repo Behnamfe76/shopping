@@ -2,13 +2,13 @@
 
 namespace App\Listeners;
 
-use App\Events\ProviderInsuranceVerified;
-use App\Events\ProviderInsuranceExpired;
 use App\Events\ProviderInsuranceDeleted;
+use App\Events\ProviderInsuranceExpired;
+use App\Events\ProviderInsuranceVerified;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class UpdateProviderComplianceStatus implements ShouldQueue
 {
@@ -33,13 +33,13 @@ class UpdateProviderComplianceStatus implements ShouldQueue
 
             Log::info('Provider compliance status updated to verified', [
                 'provider_id' => $providerInsurance->provider_id,
-                'insurance_id' => $providerInsurance->id
+                'insurance_id' => $providerInsurance->id,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to update provider compliance status for verification', [
                 'insurance_id' => $event->providerInsurance->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -55,13 +55,13 @@ class UpdateProviderComplianceStatus implements ShouldQueue
 
             Log::info('Provider compliance status updated to expired', [
                 'provider_id' => $providerInsurance->provider_id,
-                'insurance_id' => $providerInsurance->id
+                'insurance_id' => $providerInsurance->id,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to update provider compliance status for expiration', [
                 'insurance_id' => $event->providerInsurance->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -77,13 +77,13 @@ class UpdateProviderComplianceStatus implements ShouldQueue
 
             Log::info('Provider compliance status updated to deleted', [
                 'provider_id' => $providerInsurance->provider_id,
-                'insurance_id' => $providerInsurance->id
+                'insurance_id' => $providerInsurance->id,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to update provider compliance status for deletion', [
                 'insurance_id' => $event->providerInsurance->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -98,19 +98,19 @@ class UpdateProviderComplianceStatus implements ShouldQueue
                 ->where('id', $providerId)
                 ->update([
                     'compliance_status' => $status,
-                    'compliance_updated_at' => now()
+                    'compliance_updated_at' => now(),
                 ]);
 
             Log::info('Provider compliance status updated in database', [
                 'provider_id' => $providerId,
-                'status' => $status
+                'status' => $status,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to update provider compliance status in database', [
                 'provider_id' => $providerId,
                 'status' => $status,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }

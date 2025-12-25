@@ -2,15 +2,13 @@
 
 namespace Fereydooni\Shopping\app\Listeners\ProviderNote;
 
-use Fereydooni\Shopping\app\Events\ProviderNote\ProviderNoteCreated;
-use Fereydooni\Shopping\app\Events\ProviderNote\ProviderNoteUpdated;
 use Fereydooni\Shopping\app\Events\ProviderNote\ProviderNoteArchived;
+use Fereydooni\Shopping\app\Events\ProviderNote\ProviderNoteCreated;
 use Fereydooni\Shopping\app\Events\ProviderNote\ProviderNoteDeleted;
+use Fereydooni\Shopping\app\Events\ProviderNote\ProviderNoteUpdated;
 use Fereydooni\Shopping\app\Models\Provider;
-use Fereydooni\Shopping\app\Models\ProviderNote;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class UpdateProviderNoteMetrics
 {
@@ -43,13 +41,13 @@ class UpdateProviderNoteMetrics
                     'provider_note_id' => $providerNote->id,
                     'provider_id' => $provider->id,
                     'note_type' => $providerNote->note_type,
-                    'priority' => $providerNote->priority
+                    'priority' => $providerNote->priority,
                 ]);
             }
         } catch (\Exception $e) {
             Log::error('Failed to update provider note metrics for created note', [
                 'provider_note_id' => $event->providerNote->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -86,13 +84,13 @@ class UpdateProviderNoteMetrics
                 Log::info('Provider note metrics updated for updated note', [
                     'provider_note_id' => $providerNote->id,
                     'provider_id' => $provider->id,
-                    'changes' => $changes
+                    'changes' => $changes,
                 ]);
             }
         } catch (\Exception $e) {
             Log::error('Failed to update provider note metrics for updated note', [
                 'provider_note_id' => $event->providerNote->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -115,13 +113,13 @@ class UpdateProviderNoteMetrics
 
                 Log::info('Provider note metrics updated for archived note', [
                     'provider_note_id' => $providerNote->id,
-                    'provider_id' => $provider->id
+                    'provider_id' => $provider->id,
                 ]);
             }
         } catch (\Exception $e) {
             Log::error('Failed to update provider note metrics for archived note', [
                 'provider_note_id' => $event->providerNote->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -150,13 +148,13 @@ class UpdateProviderNoteMetrics
 
                 Log::info('Provider note metrics updated for deleted note', [
                     'provider_note_id' => $providerNote->id,
-                    'provider_id' => $provider->id
+                    'provider_id' => $provider->id,
                 ]);
             }
         } catch (\Exception $e) {
             Log::error('Failed to update provider note metrics for deleted note', [
                 'provider_note_id' => $event->providerNote->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -175,7 +173,7 @@ class UpdateProviderNoteMetrics
             'public_notes' => 0,
             'high_priority_notes' => 0,
             'urgent_notes' => 0,
-            'last_updated' => now()->toISOString()
+            'last_updated' => now()->toISOString(),
         ]);
 
         $metrics['total_notes'] += $increment;
@@ -213,7 +211,7 @@ class UpdateProviderNoteMetrics
         $activity = Cache::get($cacheKey, [
             'total_notes_created' => 0,
             'total_notes_updated' => 0,
-            'last_activity' => null
+            'last_activity' => null,
         ]);
 
         $activity['total_notes_created']++;
@@ -236,7 +234,7 @@ class UpdateProviderNoteMetrics
             'notes_archived' => 0,
             'notes_deleted' => 0,
             'unique_users' => [],
-            'unique_providers' => []
+            'unique_providers' => [],
         ]);
 
         $metrics['notes_created']++;
@@ -258,7 +256,7 @@ class UpdateProviderNoteMetrics
             'notes_archived' => 0,
             'notes_deleted' => 0,
             'unique_users' => [],
-            'unique_providers' => []
+            'unique_providers' => [],
         ]);
 
         $metrics['notes_archived']++;
@@ -280,7 +278,7 @@ class UpdateProviderNoteMetrics
             'notes_archived' => 0,
             'notes_deleted' => 0,
             'unique_users' => [],
-            'unique_providers' => []
+            'unique_providers' => [],
         ]);
 
         $metrics['notes_deleted']++;

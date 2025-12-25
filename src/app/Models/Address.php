@@ -2,15 +2,16 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
+use Fereydooni\Shopping\app\Enums\AddressType;
+use Fereydooni\Shopping\app\Traits\HasGeographicData;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Fereydooni\Shopping\app\Enums\AddressType;
-use Fereydooni\Shopping\app\Traits\HasGeographicData;
 
 class Address extends Model
 {
     use HasGeographicData;
+
     protected $fillable = [
         'user_id',
         'type',
@@ -48,30 +49,35 @@ class Address extends Model
     public function country(): BelongsTo
     {
         $countryModel = config('shopping.geographic_models.country_model', 'App\Models\Country');
+
         return $this->belongsTo($countryModel);
     }
 
     public function province(): BelongsTo
     {
         $provinceModel = config('shopping.geographic_models.province_model', 'App\Models\Province');
+
         return $this->belongsTo($provinceModel);
     }
 
     public function county(): BelongsTo
     {
         $countyModel = config('shopping.geographic_models.county_model', 'App\Models\County');
+
         return $this->belongsTo($countyModel);
     }
 
     public function city(): BelongsTo
     {
         $cityModel = config('shopping.geographic_models.city_model', 'App\Models\City');
+
         return $this->belongsTo($cityModel);
     }
 
     public function village(): BelongsTo
     {
         $villageModel = config('shopping.geographic_models.village_model', 'App\Models\Village');
+
         return $this->belongsTo($villageModel);
     }
 
@@ -87,7 +93,7 @@ class Address extends Model
 
     public function getFullNameAttribute(): string
     {
-        return trim($this->first_name . ' ' . $this->last_name);
+        return trim($this->first_name.' '.$this->last_name);
     }
 
     public function getFullAddressAttribute(): string
@@ -98,7 +104,7 @@ class Address extends Model
             $this->city?->name ?? $this->city,
             $this->state,
             $this->postal_code,
-            $this->country?->name ?? $this->country
+            $this->country?->name ?? $this->country,
         ];
 
         return implode(', ', array_filter($parts));
@@ -129,7 +135,7 @@ class Address extends Model
         if ($this->postal_code) {
             $cityState[] = $this->postal_code;
         }
-        if (!empty($cityState)) {
+        if (! empty($cityState)) {
             $lines[] = implode(', ', $cityState);
         }
 
@@ -138,11 +144,11 @@ class Address extends Model
         }
 
         if ($this->phone) {
-            $lines[] = 'Phone: ' . $this->phone;
+            $lines[] = 'Phone: '.$this->phone;
         }
 
         if ($this->email) {
-            $lines[] = 'Email: ' . $this->email;
+            $lines[] = 'Email: '.$this->email;
         }
 
         return implode("\n", $lines);

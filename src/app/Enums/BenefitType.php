@@ -14,7 +14,7 @@ enum BenefitType: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::HEALTH => 'Health Insurance',
             self::DENTAL => 'Dental Insurance',
             self::VISION => 'Vision Insurance',
@@ -27,7 +27,7 @@ enum BenefitType: string
 
     public function description(): string
     {
-        return match($this) {
+        return match ($this) {
             self::HEALTH => 'Medical, hospital, and prescription drug coverage',
             self::DENTAL => 'Dental care and oral health coverage',
             self::VISION => 'Eye care and vision correction coverage',
@@ -47,8 +47,8 @@ enum BenefitType: string
     {
         return array_reduce(self::cases(), function ($carry, $case) {
             $carry[$case->value] = $case->label();
+
             return $carry;
         }, []);
     }
 }
-

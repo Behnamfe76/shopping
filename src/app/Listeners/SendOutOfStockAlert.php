@@ -33,7 +33,7 @@ class SendOutOfStockAlert implements ShouldQueue
             'product_title' => $product->title,
             'sku' => $product->sku,
             'category_id' => $product->category_id,
-            'brand_id' => $product->brand_id
+            'brand_id' => $product->brand_id,
         ]);
 
         // Send urgent notification to inventory managers
@@ -92,7 +92,7 @@ class SendOutOfStockAlert implements ShouldQueue
     {
         Log::error('Failed to send out of stock alert', [
             'product_id' => $event->product->id,
-            'error' => $exception->getMessage()
+            'error' => $exception->getMessage(),
         ]);
     }
 }

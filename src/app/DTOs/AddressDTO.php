@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
-use Illuminate\Support\Carbon;
 use Fereydooni\Shopping\app\Enums\AddressType;
+use Illuminate\Support\Carbon;
+use Spatie\LaravelData\Data;
 
 class AddressDTO extends Data
 {
@@ -48,8 +48,7 @@ class AddressDTO extends Data
         public mixed $county_data = null,
         public mixed $city_data = null,
         public mixed $village_data = null,
-    ) {
-    }
+    ) {}
 
     public static function fromModel($address): static
     {
@@ -108,15 +107,15 @@ class AddressDTO extends Data
             'postal_code' => 'required|string|max:20',
             'phone' => 'nullable|string|max:20',
             'email' => 'nullable|email|max:255',
-            'type' => 'required|in:' . implode(',', array_column(AddressType::cases(), 'value')),
+            'type' => 'required|in:'.implode(',', array_column(AddressType::cases(), 'value')),
             'is_default' => 'boolean',
 
             // Geographic relationships
-            'country_id' => 'nullable|integer|exists:' . config('shopping.geographic_models.country_model', 'countries') . ',id',
-            'province_id' => 'nullable|integer|exists:' . config('shopping.geographic_models.province_model', 'provinces') . ',id',
-            'county_id' => 'nullable|integer|exists:' . config('shopping.geographic_models.county_model', 'counties') . ',id',
-            'city_id' => 'nullable|integer|exists:' . config('shopping.geographic_models.city_model', 'cities') . ',id',
-            'village_id' => 'nullable|integer|exists:' . config('shopping.geographic_models.village_model', 'villages') . ',id',
+            'country_id' => 'nullable|integer|exists:'.config('shopping.geographic_models.country_model', 'countries').',id',
+            'province_id' => 'nullable|integer|exists:'.config('shopping.geographic_models.province_model', 'provinces').',id',
+            'county_id' => 'nullable|integer|exists:'.config('shopping.geographic_models.county_model', 'counties').',id',
+            'city_id' => 'nullable|integer|exists:'.config('shopping.geographic_models.city_model', 'cities').',id',
+            'village_id' => 'nullable|integer|exists:'.config('shopping.geographic_models.village_model', 'villages').',id',
 
             // Legacy fields
             'full_name' => 'nullable|string|max:255',

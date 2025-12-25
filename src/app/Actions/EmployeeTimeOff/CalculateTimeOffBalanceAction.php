@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Actions\EmployeeTimeOff;
 
-use Illuminate\Support\Facades\Log;
-use Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeTimeOffRepositoryInterface;
 use Carbon\Carbon;
+use Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeTimeOffRepositoryInterface;
+use Illuminate\Support\Facades\Log;
 
 class CalculateTimeOffBalanceAction
 {
@@ -15,7 +15,7 @@ class CalculateTimeOffBalanceAction
         $this->repository = $repository;
     }
 
-    public function execute(int $employeeId, string $timeOffType = null, string $year = null): array
+    public function execute(int $employeeId, ?string $timeOffType = null, ?string $year = null): array
     {
         try {
             $year = $year ?? Carbon::now()->year;
@@ -59,13 +59,13 @@ class CalculateTimeOffBalanceAction
                 'period' => [
                     'start_date' => $startDate->toDateString(),
                     'end_date' => $endDate->toDateString(),
-                ]
+                ],
             ];
 
             Log::info('Time-off balance calculated successfully', [
                 'employee_id' => $employeeId,
                 'year' => $year,
-                'balance' => $balance
+                'balance' => $balance,
             ]);
 
             return $balance;
@@ -75,7 +75,7 @@ class CalculateTimeOffBalanceAction
                 'error' => $e->getMessage(),
                 'employee_id' => $employeeId,
                 'time_off_type' => $timeOffType,
-                'year' => $year
+                'year' => $year,
             ]);
             throw $e;
         }

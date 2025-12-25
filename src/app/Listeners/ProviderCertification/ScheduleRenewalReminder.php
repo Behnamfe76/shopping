@@ -3,13 +3,13 @@
 namespace App\Listeners\ProviderCertification;
 
 use App\Events\ProviderCertification\ProviderCertificationCreated;
-use App\Events\ProviderCertification\ProviderCertificationUpdated;
 use App\Events\ProviderCertification\ProviderCertificationRenewed;
+use App\Events\ProviderCertification\ProviderCertificationUpdated;
+use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Queue;
-use Carbon\Carbon;
 
 class ScheduleRenewalReminder implements ShouldQueue
 {
@@ -42,14 +42,14 @@ class ScheduleRenewalReminder implements ShouldQueue
             Log::info('Renewal reminders scheduled successfully', [
                 'event' => get_class($event),
                 'certification_id' => $certification->id,
-                'provider_id' => $certification->provider_id
+                'provider_id' => $certification->provider_id,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to schedule renewal reminders', [
                 'event' => get_class($event),
                 'certification_id' => $event->certification->id ?? null,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             throw $e;
@@ -61,7 +61,7 @@ class ScheduleRenewalReminder implements ShouldQueue
      */
     private function scheduleRemindersForNewCertification($certification): void
     {
-        if (!$this->shouldScheduleReminders($certification)) {
+        if (! $this->shouldScheduleReminders($certification)) {
             return;
         }
 
@@ -89,7 +89,7 @@ class ScheduleRenewalReminder implements ShouldQueue
     private function rescheduleRemindersForUpdatedCertification($certification, array $changes): void
     {
         // Only reschedule if expiry date changed
-        if (!isset($changes['expiry_date'])) {
+        if (! isset($changes['expiry_date'])) {
             return;
         }
 
@@ -143,11 +143,12 @@ class ScheduleRenewalReminder implements ShouldQueue
         try {
             $provider = $certification->provider;
 
-            if (!$provider) {
+            if (! $provider) {
                 Log::warning('Provider not found for renewal reminder', [
                     'certification_id' => $certification->id,
-                    'reminder_type' => $reminderType
+                    'reminder_type' => $reminderType,
                 ]);
+
                 return;
             }
 
@@ -194,14 +195,14 @@ class ScheduleRenewalReminder implements ShouldQueue
             Log::info('Renewal reminder sent successfully', [
                 'certification_id' => $certification->id,
                 'reminder_type' => $reminderType,
-                'provider_id' => $provider->id
+                'provider_id' => $provider->id,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to send renewal reminder', [
                 'certification_id' => $certification->id,
                 'reminder_type' => $reminderType,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -222,7 +223,7 @@ class ScheduleRenewalReminder implements ShouldQueue
         }
 
         // Don't schedule for non-recurring certifications if they're expired
-        if (!$certification->is_recurring && Carbon::parse($certification->expiry_date)->isPast()) {
+        if (! $certification->is_recurring && Carbon::parse($certification->expiry_date)->isPast()) {
             return false;
         }
 
@@ -237,7 +238,7 @@ class ScheduleRenewalReminder implements ShouldQueue
         // This would typically involve canceling queued jobs
         // For now, we'll just log the action
         Log::info('Canceling existing reminders for certification', [
-            'certification_id' => $certification->id
+            'certification_id' => $certification->id,
         ]);
     }
 
@@ -251,7 +252,7 @@ class ScheduleRenewalReminder implements ShouldQueue
         Log::info('Storing reminder schedule', [
             'certification_id' => $certification->id,
             'reminder_type' => $reminderType,
-            'scheduled_for' => $reminderDate->toISOString()
+            'scheduled_for' => $reminderDate->toISOString(),
         ]);
     }
 
@@ -265,7 +266,7 @@ class ScheduleRenewalReminder implements ShouldQueue
         Log::info('Marking reminder as sent', [
             'certification_id' => $certification->id,
             'reminder_type' => $reminderType,
-            'sent_at' => now()->toISOString()
+            'sent_at' => now()->toISOString(),
         ]);
     }
 
@@ -277,7 +278,7 @@ class ScheduleRenewalReminder implements ShouldQueue
         Log::error('Renewal reminder scheduling job failed', [
             'event' => get_class($event),
             'certification_id' => $event->certification->id ?? null,
-            'error' => $exception->getMessage()
+            'error' => $exception->getMessage(),
         ]);
     }
 }

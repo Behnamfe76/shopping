@@ -2,20 +2,20 @@
 
 namespace Fereydooni\Shopping\app\Services;
 
-use Fereydooni\Shopping\app\Repositories\Interfaces\TransactionRepositoryInterface;
-use Fereydooni\Shopping\app\Models\Transaction;
 use Fereydooni\Shopping\app\DTOs\TransactionDTO;
+use Fereydooni\Shopping\app\Models\Transaction;
+use Fereydooni\Shopping\app\Repositories\Interfaces\TransactionRepositoryInterface;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
-use Fereydooni\Shopping\app\Traits\HasTransactionOperations;
 use Fereydooni\Shopping\app\Traits\HasSearchOperations;
+use Fereydooni\Shopping\app\Traits\HasTransactionOperations;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
 
 class TransactionService
 {
-    use HasCrudOperations, HasTransactionOperations, HasSearchOperations;
+    use HasCrudOperations, HasSearchOperations, HasTransactionOperations;
 
     protected TransactionRepositoryInterface $repository;
 
@@ -39,7 +39,7 @@ class TransactionService
      */
     public function allDTO(): Collection
     {
-        return $this->all()->map(fn($transaction) => TransactionDTO::fromModel($transaction));
+        return $this->all()->map(fn ($transaction) => TransactionDTO::fromModel($transaction));
     }
 
     /**
@@ -61,7 +61,7 @@ class TransactionService
     /**
      * Get cursor paginated transactions
      */
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->repository->cursorPaginate($perPage, $cursor);
     }

@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ProviderRatingVote extends Model
@@ -47,12 +47,13 @@ class ProviderRatingVote extends Model
 
     public function isNotHelpful(): bool
     {
-        return !$this->is_helpful;
+        return ! $this->is_helpful;
     }
 
     public function toggle(): bool
     {
-        $this->update(['is_helpful' => !$this->is_helpful]);
+        $this->update(['is_helpful' => ! $this->is_helpful]);
+
         return $this->is_helpful;
     }
 }

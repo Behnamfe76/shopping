@@ -22,7 +22,7 @@ class NotifyWishlistPriceDrop implements ShouldQueue
         $product = $wishlist->product;
 
         // Check if customer has enabled price drop notifications
-        if (!$wishlist->price_drop_notification) {
+        if (! $wishlist->price_drop_notification) {
             return;
         }
 
@@ -53,7 +53,7 @@ class NotifyWishlistPriceDrop implements ShouldQueue
         // You can create a dedicated mailable class for this
         Mail::send('emails.wishlist.price-drop', $data, function ($message) use ($customer) {
             $message->to($customer->email)
-                    ->subject('Price Drop Alert - Item in Your Wishlist');
+                ->subject('Price Drop Alert - Item in Your Wishlist');
         });
     }
 
@@ -66,7 +66,7 @@ class NotifyWishlistPriceDrop implements ShouldQueue
         // For example, using Laravel's notification system
         $notificationData = [
             'title' => 'Price Drop Alert',
-            'message' => "The price of " . ($product ? $product->name : 'an item') . " in your wishlist has dropped!",
+            'message' => 'The price of '.($product ? $product->name : 'an item').' in your wishlist has dropped!',
             'data' => [
                 'product_id' => $product ? $product->id : null,
                 'old_price' => $event->oldPrice,

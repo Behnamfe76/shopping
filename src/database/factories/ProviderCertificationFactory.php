@@ -2,14 +2,14 @@
 
 namespace Fereydooni\Shopping\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Fereydooni\Shopping\App\Models\ProviderCertification;
-use Fereydooni\Shopping\App\Models\Provider;
-use Fereydooni\Shopping\App\Models\User;
+use Carbon\Carbon;
 use Fereydooni\Shopping\App\Enums\CertificationCategory;
 use Fereydooni\Shopping\App\Enums\CertificationStatus;
 use Fereydooni\Shopping\App\Enums\VerificationStatus;
-use Carbon\Carbon;
+use Fereydooni\Shopping\App\Models\Provider;
+use Fereydooni\Shopping\App\Models\ProviderCertification;
+use Fereydooni\Shopping\App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Fereydooni\Shopping\App\Models\ProviderCertification>
@@ -497,4 +497,4 @@ class ProviderCertificationFactory extends Factory
             'notes' => ['Additional documentation required for verification'],
         ]);
     }
-};
+}

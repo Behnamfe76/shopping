@@ -38,7 +38,7 @@ class SkillVerified extends Notification implements ShouldQueue
         $skillName = $this->skill->skill_name;
         $category = $this->skill->skill_category->label();
         $level = $this->skill->proficiency_level->label();
-        
+
         return (new MailMessage)
             ->subject("Skill Verified: {$skillName}")
             ->greeting("Hello {$notifiable->name},")
@@ -46,7 +46,7 @@ class SkillVerified extends Notification implements ShouldQueue
             ->line("Category: {$category}")
             ->line("Proficiency Level: {$level}")
             ->line("Years of Experience: {$this->skill->years_experience}")
-            ->action('View Your Skills', url("/profile/skills"))
+            ->action('View Your Skills', url('/profile/skills'))
             ->line('This skill is now part of your verified profile.');
     }
 

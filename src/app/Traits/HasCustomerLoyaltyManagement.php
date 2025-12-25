@@ -9,7 +9,7 @@ trait HasCustomerLoyaltyManagement
     /**
      * Add loyalty points to customer
      */
-    public function addLoyaltyPoints(Customer $customer, int $points, string $reason = null): bool
+    public function addLoyaltyPoints(Customer $customer, int $points, ?string $reason = null): bool
     {
         if ($points <= 0) {
             throw new \InvalidArgumentException('Points must be greater than zero.');
@@ -19,7 +19,7 @@ trait HasCustomerLoyaltyManagement
         $data = ['loyalty_points' => $newPoints];
 
         if ($reason) {
-            $data['notes'] = $customer->notes . "\nLoyalty points added: +{$points} ({$reason})";
+            $data['notes'] = $customer->notes."\nLoyalty points added: +{$points} ({$reason})";
         }
 
         $result = $this->repository->update($customer, $data);
@@ -34,7 +34,7 @@ trait HasCustomerLoyaltyManagement
     /**
      * Deduct loyalty points from customer
      */
-    public function deductLoyaltyPoints(Customer $customer, int $points, string $reason = null): bool
+    public function deductLoyaltyPoints(Customer $customer, int $points, ?string $reason = null): bool
     {
         if ($points <= 0) {
             throw new \InvalidArgumentException('Points must be greater than zero.');
@@ -48,7 +48,7 @@ trait HasCustomerLoyaltyManagement
         $data = ['loyalty_points' => $newPoints];
 
         if ($reason) {
-            $data['notes'] = $customer->notes . "\nLoyalty points deducted: -{$points} ({$reason})";
+            $data['notes'] = $customer->notes."\nLoyalty points deducted: -{$points} ({$reason})";
         }
 
         $result = $this->repository->update($customer, $data);
@@ -153,7 +153,7 @@ trait HasCustomerLoyaltyManagement
     /**
      * Fire loyalty points added event
      */
-    protected function fireLoyaltyPointsAddedEvent(Customer $customer, int $points, string $reason = null, int $newBalance = 0): void
+    protected function fireLoyaltyPointsAddedEvent(Customer $customer, int $points, ?string $reason = null, int $newBalance = 0): void
     {
         event(new \Fereydooni\Shopping\app\Events\Customer\LoyaltyPointsAdded($customer, $points, $reason, $newBalance));
     }
@@ -161,7 +161,7 @@ trait HasCustomerLoyaltyManagement
     /**
      * Fire loyalty points deducted event
      */
-    protected function fireLoyaltyPointsDeductedEvent(Customer $customer, int $points, string $reason = null, int $newBalance = 0): void
+    protected function fireLoyaltyPointsDeductedEvent(Customer $customer, int $points, ?string $reason = null, int $newBalance = 0): void
     {
         event(new \Fereydooni\Shopping\app\Events\Customer\LoyaltyPointsDeducted($customer, $points, $reason, $newBalance));
     }

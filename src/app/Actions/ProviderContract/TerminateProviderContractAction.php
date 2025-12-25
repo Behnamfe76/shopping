@@ -3,30 +3,26 @@
 namespace App\Actions\ProviderContract;
 
 use App\DTOs\ProviderContractDTO;
-use App\Models\ProviderContract;
 use App\Enums\ContractStatus;
+use App\Events\Provider\ProviderContractTerminated;
+use App\Models\ProviderContract;
+use App\Notifications\ProviderContract\ContractTerminated;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
-use App\Notifications\ProviderContract\ContractTerminated;
-use App\Events\Provider\ProviderContractTerminated;
 
 class TerminateProviderContractAction
 {
     /**
      * Execute the action to terminate a provider contract
-     *
-     * @param ProviderContract $contract
-     * @param string|null $reason
-     * @return ProviderContractDTO|null
      */
-    public function execute(ProviderContract $contract, string $reason = null): ?ProviderContractDTO
+    public function execute(ProviderContract $contract, ?string $reason = null): ?ProviderContractDTO
     {
         try {
             DB::beginTransaction();
 
             // Validate that the contract can be terminated
-            if (!$this->canTerminateContract($contract)) {
+            if (! $this->canTerminateContract($contract)) {
                 throw new \Exception('Contract cannot be terminated in its current state');
             }
 
@@ -54,7 +50,7 @@ class TerminateProviderContractAction
             Log::info('Provider contract terminated successfully', [
                 'contract_id' => $contract->id,
                 'termination_reason' => $reason,
-                'termination_date' => now()
+                'termination_date' => now(),
             ]);
 
             return $dto;
@@ -64,7 +60,7 @@ class TerminateProviderContractAction
 
             Log::error('Failed to terminate provider contract', [
                 'contract_id' => $contract->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             throw $e;
@@ -73,14 +69,11 @@ class TerminateProviderContractAction
 
     /**
      * Check if the contract can be terminated
-     *
-     * @param ProviderContract $contract
-     * @return bool
      */
     protected function canTerminateContract(ProviderContract $contract): bool
     {
         // Contract must be active or suspended
-        if (!in_array($contract->status, [ContractStatus::ACTIVE, ContractStatus::SUSPENDED])) {
+        if (! in_array($contract->status, [ContractStatus::ACTIVE, ContractStatus::SUSPENDED])) {
             return false;
         }
 
@@ -99,12 +92,8 @@ class TerminateProviderContractAction
 
     /**
      * Send notifications for contract termination
-     *
-     * @param ProviderContract $contract
-     * @param string|null $reason
-     * @return void
      */
-    protected function sendTerminationNotifications(ProviderContract $contract, string $reason = null): void
+    protected function sendTerminationNotifications(ProviderContract $contract, ?string $reason = null): void
     {
         try {
             // Notify provider
@@ -118,19 +107,15 @@ class TerminateProviderContractAction
         } catch (\Exception $e) {
             Log::warning('Failed to send contract termination notifications', [
                 'contract_id' => $contract->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
 
     /**
      * Notify contract stakeholders
-     *
-     * @param ProviderContract $contract
-     * @param string|null $reason
-     * @return void
      */
-    protected function notifyStakeholders(ProviderContract $contract, string $reason = null): void
+    protected function notifyStakeholders(ProviderContract $contract, ?string $reason = null): void
     {
         // This method can be extended to notify additional stakeholders
         // such as legal team, finance team, etc.
@@ -140,7 +125,7 @@ class TerminateProviderContractAction
             'contract_id' => $contract->id,
             'contract_type' => $contract->contract_type,
             'contract_value' => $contract->contract_value,
-            'termination_reason' => $reason
+            'termination_reason' => $reason,
         ]);
     }
 }

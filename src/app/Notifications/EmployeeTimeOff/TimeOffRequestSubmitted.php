@@ -33,14 +33,14 @@ class TimeOffRequestSubmitted extends Notification implements ShouldQueue
 
         return (new MailMessage)
             ->subject('New Time-Off Request Submitted')
-            ->greeting('Hello ' . $notifiable->name)
+            ->greeting('Hello '.$notifiable->name)
             ->line('A new time-off request has been submitted and requires your approval.')
-            ->line('**Employee:** ' . $employee->full_name)
-            ->line('**Type:** ' . ucfirst($this->timeOff->time_off_type))
-            ->line('**Dates:** ' . $startDate . ' to ' . $endDate)
-            ->line('**Total Days:** ' . $this->timeOff->total_days)
-            ->line('**Reason:** ' . $this->timeOff->reason)
-            ->action('Review Request', URL::to('/admin/time-off/' . $this->timeOff->id))
+            ->line('**Employee:** '.$employee->full_name)
+            ->line('**Type:** '.ucfirst($this->timeOff->time_off_type))
+            ->line('**Dates:** '.$startDate.' to '.$endDate)
+            ->line('**Total Days:** '.$this->timeOff->total_days)
+            ->line('**Reason:** '.$this->timeOff->reason)
+            ->action('Review Request', URL::to('/admin/time-off/'.$this->timeOff->id))
             ->line('Please review and approve or reject this request as soon as possible.')
             ->salutation('Best regards, HR System');
     }
@@ -56,8 +56,8 @@ class TimeOffRequestSubmitted extends Notification implements ShouldQueue
             'end_date' => $this->timeOff->end_date->toDateString(),
             'total_days' => $this->timeOff->total_days,
             'reason' => $this->timeOff->reason,
-            'message' => 'New time-off request submitted by ' . $this->timeOff->employee->full_name,
-            'action_url' => '/admin/time-off/' . $this->timeOff->id,
+            'message' => 'New time-off request submitted by '.$this->timeOff->employee->full_name,
+            'action_url' => '/admin/time-off/'.$this->timeOff->id,
         ];
     }
 }

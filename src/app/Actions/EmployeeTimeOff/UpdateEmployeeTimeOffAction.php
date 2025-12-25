@@ -2,14 +2,12 @@
 
 namespace Fereydooni\Shopping\app\Actions\EmployeeTimeOff;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
+use Exception;
 use Fereydooni\Shopping\app\DTOs\EmployeeTimeOffDTO;
 use Fereydooni\Shopping\app\Models\EmployeeTimeOff;
 use Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeTimeOffRepositoryInterface;
-use Fereydooni\Shopping\app\Enums\TimeOffStatus;
-use Exception;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class UpdateEmployeeTimeOffAction
 {
@@ -23,7 +21,7 @@ class UpdateEmployeeTimeOffAction
             DB::beginTransaction();
 
             // Check if request can be modified
-            if (!$this->canBeModified($timeOff)) {
+            if (! $this->canBeModified($timeOff)) {
                 throw new Exception('Time-off request cannot be modified in its current status.');
             }
 
@@ -38,14 +36,14 @@ class UpdateEmployeeTimeOffAction
             // Update the time-off request
             $updated = $this->repository->update($timeOff, $data);
 
-            if (!$updated) {
+            if (! $updated) {
                 throw new Exception('Failed to update time-off request.');
             }
 
             // Get updated DTO
             $updatedDTO = $this->repository->findDTO($timeOff->id);
 
-            if (!$updatedDTO) {
+            if (! $updatedDTO) {
                 throw new Exception('Failed to retrieve updated time-off request.');
             }
 
@@ -57,7 +55,7 @@ class UpdateEmployeeTimeOffAction
             Log::info('Time-off request updated successfully', [
                 'time_off_id' => $timeOff->id,
                 'employee_id' => $timeOff->employee_id,
-                'updated_by' => auth()->id() ?? 'system'
+                'updated_by' => auth()->id() ?? 'system',
             ]);
 
             return $updatedDTO;
@@ -66,7 +64,7 @@ class UpdateEmployeeTimeOffAction
             DB::rollBack();
             Log::error('Failed to update time-off request', [
                 'time_off_id' => $timeOff->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -96,7 +94,7 @@ class UpdateEmployeeTimeOffAction
         $validator = validator($data, $rules);
 
         if ($validator->fails()) {
-            throw new Exception('Validation failed: ' . $validator->errors()->first());
+            throw new Exception('Validation failed: '.$validator->errors()->first());
         }
     }
 

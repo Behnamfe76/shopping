@@ -2,11 +2,10 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
-use Illuminate\Validation\Rule;
-use Illuminate\Foundation\Http\FormRequest;
-use Fereydooni\Shopping\app\Models\ProductAttribute;
-use Fereydooni\Shopping\app\Enums\ProductAttributeType;
 use Fereydooni\Shopping\app\Enums\ProductAttributeInputType;
+use Fereydooni\Shopping\app\Enums\ProductAttributeType;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateProductAttributeRequest extends FormRequest
 {
@@ -29,11 +28,11 @@ class UpdateProductAttributeRequest extends FormRequest
             'name' => 'sometimes|required|string|max:255',
             'slug' => [
                 'nullable', 'string', 'max:255', 'regex:/^[a-z0-9-]+$/',
-            Rule::unique('product_attributes', 'slug')->ignore($this->productAttribute)
-        ],
+                Rule::unique('product_attributes', 'slug')->ignore($this->productAttribute),
+            ],
             'description' => 'nullable|string|max:1000',
-            'type' => 'sometimes|required|string|in:' . implode(',', array_column(ProductAttributeType::cases(), 'value')),
-            'input_type' => 'sometimes|required|string|in:' . implode(',', array_column(ProductAttributeInputType::cases(), 'value')),
+            'type' => 'sometimes|required|string|in:'.implode(',', array_column(ProductAttributeType::cases(), 'value')),
+            'input_type' => 'sometimes|required|string|in:'.implode(',', array_column(ProductAttributeInputType::cases(), 'value')),
             'is_required' => 'boolean',
             'is_searchable' => 'boolean',
             'is_filterable' => 'boolean',
@@ -114,9 +113,9 @@ class UpdateProductAttributeRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         // Generate slug if name is provided but slug is not
-        if ($this->has('name') && !$this->has('slug')) {
+        if ($this->has('name') && ! $this->has('slug')) {
             $this->merge([
-                'slug' => \Illuminate\Support\Str::slug($this->name)
+                'slug' => \Illuminate\Support\Str::slug($this->name),
             ]);
         }
 
@@ -132,4 +131,3 @@ class UpdateProductAttributeRequest extends FormRequest
         ]);
     }
 }
-

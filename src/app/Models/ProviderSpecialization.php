@@ -2,16 +2,14 @@
 
 namespace Fereydooni\Shopping\App\Models;
 
+use Fereydooni\Shopping\App\Enums\ProficiencyLevel;
+use Fereydooni\Shopping\App\Enums\SpecializationCategory;
+use Fereydooni\Shopping\App\Enums\VerificationStatus;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Builder;
-use Fereydooni\Shopping\App\Enums\SpecializationCategory;
-use Fereydooni\Shopping\App\Enums\ProficiencyLevel;
-use Fereydooni\Shopping\App\Enums\VerificationStatus;
-use Carbon\Carbon;
 
 class ProviderSpecialization extends Model
 {
@@ -180,8 +178,8 @@ class ProviderSpecialization extends Model
     {
         return $query->where(function ($q) use ($search) {
             $q->where('specialization_name', 'like', "%{$search}%")
-              ->orWhere('description', 'like', "%{$search}%")
-              ->orWhere('category', 'like', "%{$search}%");
+                ->orWhere('description', 'like', "%{$search}%")
+                ->orWhere('category', 'like', "%{$search}%");
         });
     }
 
@@ -336,8 +334,8 @@ class ProviderSpecialization extends Model
     {
         // Remove primary status from other specializations of the same provider
         static::where('provider_id', $this->provider_id)
-              ->where('id', '!=', $this->id)
-              ->update(['is_primary' => false]);
+            ->where('id', '!=', $this->id)
+            ->update(['is_primary' => false]);
 
         return $this->update(['is_primary' => true]);
     }
@@ -365,7 +363,7 @@ class ProviderSpecialization extends Model
     /**
      * Reject the specialization.
      */
-    public function reject(string $reason = null): bool
+    public function reject(?string $reason = null): bool
     {
         $notes = $this->notes ?? [];
         $notes[] = [
@@ -416,7 +414,7 @@ class ProviderSpecialization extends Model
      */
     public function getDaysSinceVerification(): ?int
     {
-        if (!$this->verified_at) {
+        if (! $this->verified_at) {
             return null;
         }
 
@@ -428,7 +426,7 @@ class ProviderSpecialization extends Model
      */
     public function needsRenewal(int $renewalThresholdDays = 365): bool
     {
-        if (!$this->verified_at) {
+        if (! $this->verified_at) {
             return false;
         }
 
@@ -454,7 +452,7 @@ class ProviderSpecialization extends Model
         static::creating(function ($specialization) {
             if ($specialization->is_primary) {
                 static::where('provider_id', $specialization->provider_id)
-                      ->update(['is_primary' => false]);
+                    ->update(['is_primary' => false]);
             }
         });
 
@@ -462,8 +460,8 @@ class ProviderSpecialization extends Model
         static::updating(function ($specialization) {
             if ($specialization->is_primary && $specialization->isDirty('is_primary')) {
                 static::where('provider_id', $specialization->provider_id)
-                      ->where('id', '!=', $specialization->id)
-                      ->update(['is_primary' => false]);
+                    ->where('id', '!=', $specialization->id)
+                    ->update(['is_primary' => false]);
             }
         });
     }

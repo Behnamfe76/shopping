@@ -3,13 +3,13 @@
 namespace Fereydooni\Shopping\app\Http\Controllers\Web;
 
 use Fereydooni\Shopping\app\Http\Controllers\Controller;
-use Fereydooni\Shopping\app\Services\EmployeeNoteService;
-use Fereydooni\Shopping\app\Models\EmployeeNote;
 use Fereydooni\Shopping\app\Models\Employee;
-use Illuminate\Http\Request;
+use Fereydooni\Shopping\app\Models\EmployeeNote;
+use Fereydooni\Shopping\app\Services\EmployeeNoteService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class EmployeeNoteController extends Controller
 {
@@ -26,7 +26,7 @@ class EmployeeNoteController extends Controller
     {
         $filters = $request->only(['search', 'type', 'priority', 'employee_id', 'is_private', 'is_archived']);
         $notes = $this->employeeNoteService->getEmployeeNotes(null, $filters);
-        
+
         return view('employee-notes.index', compact('notes', 'filters'));
     }
 
@@ -36,6 +36,7 @@ class EmployeeNoteController extends Controller
     public function create(): View
     {
         $employees = Employee::all();
+
         return view('employee-notes.create', compact('employees'));
     }
 
@@ -56,10 +57,10 @@ class EmployeeNoteController extends Controller
         ]);
 
         $validated['user_id'] = Auth::id();
-        
+
         try {
             $note = $this->employeeNoteService->createNote($validated);
-            
+
             // Handle file uploads
             if ($request->hasFile('attachments')) {
                 foreach ($request->file('attachments') as $attachment) {
@@ -67,11 +68,11 @@ class EmployeeNoteController extends Controller
                     $this->employeeNoteService->addAttachment($note->id, $path);
                 }
             }
-            
+
             return redirect()->route('employee-notes.show', $note->id)
                 ->with('success', 'Employee note created successfully.');
         } catch (\Exception $e) {
-            return back()->withInput()->withErrors(['error' => 'Failed to create employee note: ' . $e->getMessage()]);
+            return back()->withInput()->withErrors(['error' => 'Failed to create employee note: '.$e->getMessage()]);
         }
     }
 
@@ -89,6 +90,7 @@ class EmployeeNoteController extends Controller
     public function edit(EmployeeNote $employeeNote): View
     {
         $employees = Employee::all();
+
         return view('employee-notes.edit', compact('employeeNote', 'employees'));
     }
 
@@ -110,7 +112,7 @@ class EmployeeNoteController extends Controller
 
         try {
             $note = $this->employeeNoteService->updateNote($employeeNote->id, $validated);
-            
+
             // Handle file uploads
             if ($request->hasFile('attachments')) {
                 foreach ($request->file('attachments') as $attachment) {
@@ -118,11 +120,11 @@ class EmployeeNoteController extends Controller
                     $this->employeeNoteService->addAttachment($note->id, $path);
                 }
             }
-            
+
             return redirect()->route('employee-notes.show', $note->id)
                 ->with('success', 'Employee note updated successfully.');
         } catch (\Exception $e) {
-            return back()->withInput()->withErrors(['error' => 'Failed to update employee note: ' . $e->getMessage()]);
+            return back()->withInput()->withErrors(['error' => 'Failed to update employee note: '.$e->getMessage()]);
         }
     }
 
@@ -133,10 +135,11 @@ class EmployeeNoteController extends Controller
     {
         try {
             $this->employeeNoteService->deleteNote($employeeNote->id);
+
             return redirect()->route('employee-notes.index')
                 ->with('success', 'Employee note deleted successfully.');
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Failed to delete employee note: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'Failed to delete employee note: '.$e->getMessage()]);
         }
     }
 
@@ -146,6 +149,7 @@ class EmployeeNoteController extends Controller
     public function employeeNotes(Employee $employee): View
     {
         $notes = $this->employeeNoteService->getEmployeeNotes($employee->id);
+
         return view('employee-notes.employee', compact('employee', 'notes'));
     }
 
@@ -174,10 +178,10 @@ class EmployeeNoteController extends Controller
 
         $validated['employee_id'] = $employee->id;
         $validated['user_id'] = Auth::id();
-        
+
         try {
             $note = $this->employeeNoteService->createNote($validated);
-            
+
             // Handle file uploads
             if ($request->hasFile('attachments')) {
                 foreach ($request->file('attachments') as $attachment) {
@@ -185,11 +189,11 @@ class EmployeeNoteController extends Controller
                     $this->employeeNoteService->addAttachment($note->id, $path);
                 }
             }
-            
+
             return redirect()->route('employees.notes', $employee)
                 ->with('success', 'Employee note created successfully.');
         } catch (\Exception $e) {
-            return back()->withInput()->withErrors(['error' => 'Failed to create employee note: ' . $e->getMessage()]);
+            return back()->withInput()->withErrors(['error' => 'Failed to create employee note: '.$e->getMessage()]);
         }
     }
 
@@ -200,7 +204,7 @@ class EmployeeNoteController extends Controller
     {
         $query = $request->get('q');
         $notes = $this->employeeNoteService->searchEmployeeNotes(null, $query);
-        
+
         return view('employee-notes.search', compact('notes', 'query'));
     }
 
@@ -211,9 +215,10 @@ class EmployeeNoteController extends Controller
     {
         try {
             $this->employeeNoteService->archiveNote($employeeNote->id);
+
             return back()->with('success', 'Employee note archived successfully.');
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Failed to archive employee note: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'Failed to archive employee note: '.$e->getMessage()]);
         }
     }
 
@@ -224,9 +229,10 @@ class EmployeeNoteController extends Controller
     {
         try {
             $this->employeeNoteService->unarchiveNote($employeeNote->id);
+
             return back()->with('success', 'Employee note unarchived successfully.');
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Failed to unarchive employee note: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'Failed to unarchive employee note: '.$e->getMessage()]);
         }
     }
 
@@ -237,9 +243,10 @@ class EmployeeNoteController extends Controller
     {
         try {
             $this->employeeNoteService->makePrivate($employeeNote->id);
+
             return back()->with('success', 'Employee note made private successfully.');
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Failed to make employee note private: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'Failed to make employee note private: '.$e->getMessage()]);
         }
     }
 
@@ -250,9 +257,10 @@ class EmployeeNoteController extends Controller
     {
         try {
             $this->employeeNoteService->makePublic($employeeNote->id);
+
             return back()->with('success', 'Employee note made public successfully.');
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Failed to make employee note public: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'Failed to make employee note public: '.$e->getMessage()]);
         }
     }
 
@@ -268,9 +276,10 @@ class EmployeeNoteController extends Controller
 
         try {
             $this->employeeNoteService->addTags($employeeNote->id, $validated['tags']);
+
             return back()->with('success', 'Tags added successfully.');
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Failed to add tags: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'Failed to add tags: '.$e->getMessage()]);
         }
     }
 
@@ -286,9 +295,10 @@ class EmployeeNoteController extends Controller
 
         try {
             $this->employeeNoteService->removeTags($employeeNote->id, $validated['tags']);
+
             return back()->with('success', 'Tags removed successfully.');
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Failed to remove tags: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'Failed to remove tags: '.$e->getMessage()]);
         }
     }
 
@@ -304,9 +314,10 @@ class EmployeeNoteController extends Controller
         try {
             $path = $request->file('attachment')->store('employee-notes', 'public');
             $this->employeeNoteService->addAttachment($employeeNote->id, $path);
+
             return back()->with('success', 'Attachment added successfully.');
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Failed to add attachment: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'Failed to add attachment: '.$e->getMessage()]);
         }
     }
 
@@ -317,9 +328,10 @@ class EmployeeNoteController extends Controller
     {
         try {
             $this->employeeNoteService->removeAttachment($employeeNote->id, $attachment);
+
             return back()->with('success', 'Attachment removed successfully.');
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Failed to remove attachment: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'Failed to remove attachment: '.$e->getMessage()]);
         }
     }
 
@@ -329,6 +341,7 @@ class EmployeeNoteController extends Controller
     public function statistics(): View
     {
         $statistics = $this->employeeNoteService->getNoteStatistics(null);
+
         return view('employee-notes.statistics', compact('statistics'));
     }
 
@@ -338,6 +351,7 @@ class EmployeeNoteController extends Controller
     public function employeeStatistics(Employee $employee): View
     {
         $statistics = $this->employeeNoteService->getNoteStatistics($employee->id);
+
         return view('employee-notes.employee-statistics', compact('employee', 'statistics'));
     }
 
@@ -354,16 +368,16 @@ class EmployeeNoteController extends Controller
         try {
             $format = $request->get('format', 'json');
             $employeeId = $request->get('employee_id');
-            
+
             $data = $this->employeeNoteService->exportEmployeeNotes($employeeId, $format);
-            
-            $filename = 'employee-notes-' . date('Y-m-d') . '.' . $format;
-            
+
+            $filename = 'employee-notes-'.date('Y-m-d').'.'.$format;
+
             return response($data)
                 ->header('Content-Type', $this->getContentType($format))
-                ->header('Content-Disposition', 'attachment; filename="' . $filename . '"');
+                ->header('Content-Disposition', 'attachment; filename="'.$filename.'"');
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Failed to export notes: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'Failed to export notes: '.$e->getMessage()]);
         }
     }
 
@@ -382,12 +396,12 @@ class EmployeeNoteController extends Controller
             $format = $file->getClientOriginalExtension();
             $data = file_get_contents($file->getRealPath());
             $employeeId = $request->get('employee_id');
-            
+
             $this->employeeNoteService->importEmployeeNotes($employeeId, $data, $format);
-            
+
             return back()->with('success', 'Notes imported successfully.');
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Failed to import notes: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'Failed to import notes: '.$e->getMessage()]);
         }
     }
 
@@ -403,9 +417,10 @@ class EmployeeNoteController extends Controller
 
         try {
             $this->employeeNoteService->bulkArchiveNotes($request->get('note_ids'));
+
             return back()->with('success', 'Notes archived successfully.');
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Failed to archive notes: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'Failed to archive notes: '.$e->getMessage()]);
         }
     }
 
@@ -421,9 +436,10 @@ class EmployeeNoteController extends Controller
 
         try {
             $this->employeeNoteService->bulkDeleteNotes($request->get('note_ids'));
+
             return back()->with('success', 'Notes deleted successfully.');
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Failed to delete notes: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'Failed to delete notes: '.$e->getMessage()]);
         }
     }
 

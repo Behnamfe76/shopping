@@ -58,7 +58,7 @@ class ProductVariantSearchResource extends ResourceCollection
                 $highlighted['product_title'] = $this->highlightText($variant->product->title, $this->query);
             }
 
-            if (!empty($highlighted)) {
+            if (! empty($highlighted)) {
                 $terms[$variant->id] = $highlighted;
             }
         }
@@ -78,7 +78,7 @@ class ProductVariantSearchResource extends ResourceCollection
             return stripos($sku, $this->query) !== false;
         })->take(5)->toArray();
 
-        if (!empty($skuSuggestions)) {
+        if (! empty($skuSuggestions)) {
             $suggestions['skus'] = $skuSuggestions;
         }
 
@@ -87,7 +87,7 @@ class ProductVariantSearchResource extends ResourceCollection
             return $title && stripos($title, $this->query) !== false;
         })->take(5)->toArray();
 
-        if (!empty($titleSuggestions)) {
+        if (! empty($titleSuggestions)) {
             $suggestions['product_titles'] = $titleSuggestions;
         }
 
@@ -100,7 +100,7 @@ class ProductVariantSearchResource extends ResourceCollection
     private function highlightText(string $text, string $query): string
     {
         $highlighted = preg_replace(
-            '/(' . preg_quote($query, '/') . ')/i',
+            '/('.preg_quote($query, '/').')/i',
             '<mark>$1</mark>',
             $text
         );

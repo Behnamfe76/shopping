@@ -2,12 +2,12 @@
 
 namespace App\Traits;
 
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use App\Models\ProviderCommunication;
 use App\DTOs\ProviderCommunicationDTO;
+use App\Models\ProviderCommunication;
 use App\Services\ProviderCommunicationService;
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 trait HasProviderCommunicationOperations
 {
@@ -265,7 +265,7 @@ trait HasProviderCommunicationOperations
         $results = [
             'success' => 0,
             'failed' => 0,
-            'errors' => []
+            'errors' => [],
         ];
 
         foreach ($communicationsData as $id => $data) {
@@ -280,7 +280,7 @@ trait HasProviderCommunicationOperations
                 }
             } catch (Exception $e) {
                 $results['failed']++;
-                $results['errors'][] = "Failed to update communication {$id}: " . $e->getMessage();
+                $results['errors'][] = "Failed to update communication {$id}: ".$e->getMessage();
             }
         }
 
@@ -295,7 +295,7 @@ trait HasProviderCommunicationOperations
         $results = [
             'success' => 0,
             'failed' => 0,
-            'errors' => []
+            'errors' => [],
         ];
 
         foreach ($communicationIds as $id) {
@@ -310,7 +310,7 @@ trait HasProviderCommunicationOperations
                 }
             } catch (Exception $e) {
                 $results['failed']++;
-                $results['errors'][] = "Failed to delete communication {$id}: " . $e->getMessage();
+                $results['errors'][] = "Failed to delete communication {$id}: ".$e->getMessage();
             }
         }
 
@@ -322,7 +322,7 @@ trait HasProviderCommunicationOperations
      */
     protected function getCommunicationService(): ProviderCommunicationService
     {
-        if (!$this->communicationService) {
+        if (! $this->communicationService) {
             $this->communicationService = app(ProviderCommunicationService::class);
         }
 

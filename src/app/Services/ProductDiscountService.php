@@ -2,20 +2,20 @@
 
 namespace Fereydooni\Shopping\app\Services;
 
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Fereydooni\Shopping\app\Repositories\Interfaces\ProductDiscountRepositoryInterface;
-use Fereydooni\Shopping\app\Models\ProductDiscount;
 use Fereydooni\Shopping\app\DTOs\ProductDiscountDTO;
+use Fereydooni\Shopping\app\Models\ProductDiscount;
+use Fereydooni\Shopping\app\Repositories\Interfaces\ProductDiscountRepositoryInterface;
+use Fereydooni\Shopping\app\Traits\HasAnalyticsOperations;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
-use Fereydooni\Shopping\app\Traits\HasStatusToggle;
 use Fereydooni\Shopping\app\Traits\HasDateRangeManagement;
 use Fereydooni\Shopping\app\Traits\HasFinancialOperations;
-use Fereydooni\Shopping\app\Traits\HasAnalyticsOperations;
+use Fereydooni\Shopping\app\Traits\HasStatusToggle;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProductDiscountService
 {
-    use HasCrudOperations, HasStatusToggle, HasDateRangeManagement, HasFinancialOperations, HasAnalyticsOperations;
+    use HasAnalyticsOperations, HasCrudOperations, HasDateRangeManagement, HasFinancialOperations, HasStatusToggle;
 
     public function __construct(
         private ProductDiscountRepositoryInterface $repository
@@ -176,7 +176,7 @@ class ProductDiscountService
     {
         $bestDiscount = $this->getBestDiscount($productId, $quantity, $originalPrice * $quantity);
 
-        if (!$bestDiscount) {
+        if (! $bestDiscount) {
             return [
                 'discount_applied' => false,
                 'original_price' => $originalPrice,
@@ -211,7 +211,7 @@ class ProductDiscountService
             'expired_discounts' => $expiredDiscounts->count(),
             'recommendations' => [
                 'create_new_discount' => $currentDiscounts->isEmpty(),
-                'extend_expiring_discounts' => $currentDiscounts->filter(fn($d) => $d->end_date->diffInDays(now()) <= 7)->count(),
+                'extend_expiring_discounts' => $currentDiscounts->filter(fn ($d) => $d->end_date->diffInDays(now()) <= 7)->count(),
                 'cleanup_expired_discounts' => $expiredDiscounts->count(),
             ],
         ];

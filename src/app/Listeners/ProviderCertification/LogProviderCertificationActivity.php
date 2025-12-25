@@ -3,17 +3,17 @@
 namespace App\Listeners\ProviderCertification;
 
 use App\Events\ProviderCertification\ProviderCertificationCreated;
+use App\Events\ProviderCertification\ProviderCertificationExpired;
+use App\Events\ProviderCertification\ProviderCertificationRejected;
+use App\Events\ProviderCertification\ProviderCertificationRenewed;
+use App\Events\ProviderCertification\ProviderCertificationRevoked;
+use App\Events\ProviderCertification\ProviderCertificationSuspended;
 use App\Events\ProviderCertification\ProviderCertificationUpdated;
 use App\Events\ProviderCertification\ProviderCertificationVerified;
-use App\Events\ProviderCertification\ProviderCertificationRejected;
-use App\Events\ProviderCertification\ProviderCertificationExpired;
-use App\Events\ProviderCertification\ProviderCertificationRenewed;
-use App\Events\ProviderCertification\ProviderCertificationSuspended;
-use App\Events\ProviderCertification\ProviderCertificationRevoked;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class LogProviderCertificationActivity implements ShouldQueue
 {
@@ -87,7 +87,7 @@ class LogProviderCertificationActivity implements ShouldQueue
             Log::error('Failed to log provider certification activity', [
                 'event' => get_class($event),
                 'certification_id' => $event->certification->id ?? null,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -137,7 +137,7 @@ class LogProviderCertificationActivity implements ShouldQueue
         Log::error('Provider certification activity logging job failed', [
             'event' => get_class($event),
             'certification_id' => $event->certification->id ?? null,
-            'error' => $exception->getMessage()
+            'error' => $exception->getMessage(),
         ]);
     }
 }

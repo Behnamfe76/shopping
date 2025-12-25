@@ -52,7 +52,7 @@ enum ProficiencyLevel: string
     {
         return array_combine(
             self::values(),
-            array_map(fn($case) => $case->label(), self::cases())
+            array_map(fn ($case) => $case->label(), self::cases())
         );
     }
 

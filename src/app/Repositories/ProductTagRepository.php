@@ -2,14 +2,12 @@
 
 namespace Fereydooni\Shopping\app\Repositories;
 
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Eloquent\Collection;
-use Fereydooni\Shopping\app\Models\ProductTag;
 use Fereydooni\Shopping\app\DTOs\ProductTagDTO;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Fereydooni\Shopping\app\Traits\AppliesQueryParameters;
+use Fereydooni\Shopping\app\Models\ProductTag;
 use Fereydooni\Shopping\app\Repositories\Interfaces\ProductTagRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ProductTagRepository implements ProductTagRepositoryInterface
 {
@@ -28,6 +26,7 @@ class ProductTagRepository implements ProductTagRepositoryInterface
     public function findDTO(int $id): ?ProductTagDTO
     {
         $tag = $this->find($id);
+
         return $tag ? ProductTagDTO::fromModel($tag) : null;
     }
 
@@ -39,6 +38,7 @@ class ProductTagRepository implements ProductTagRepositoryInterface
     public function findBySlugDTO(string $slug): ?ProductTagDTO
     {
         $tag = $this->findBySlug($slug);
+
         return $tag ? ProductTagDTO::fromModel($tag) : null;
     }
 
@@ -50,6 +50,7 @@ class ProductTagRepository implements ProductTagRepositoryInterface
     public function findByNameDTO(string $name): ?ProductTagDTO
     {
         $tag = $this->findByName($name);
+
         return $tag ? ProductTagDTO::fromModel($tag) : null;
     }
 
@@ -60,7 +61,7 @@ class ProductTagRepository implements ProductTagRepositoryInterface
 
     public function findActiveDTO(): Collection
     {
-        return $this->findActive()->map(fn($tag) => ProductTagDTO::fromModel($tag));
+        return $this->findActive()->map(fn ($tag) => ProductTagDTO::fromModel($tag));
     }
 
     public function findFeatured(): Collection
@@ -70,7 +71,7 @@ class ProductTagRepository implements ProductTagRepositoryInterface
 
     public function findFeaturedDTO(): Collection
     {
-        return $this->findFeatured()->map(fn($tag) => ProductTagDTO::fromModel($tag));
+        return $this->findFeatured()->map(fn ($tag) => ProductTagDTO::fromModel($tag));
     }
 
     public function findByUsageCount(int $minCount): Collection
@@ -80,7 +81,7 @@ class ProductTagRepository implements ProductTagRepositoryInterface
 
     public function findByUsageCountDTO(int $minCount): Collection
     {
-        return $this->findByUsageCount($minCount)->map(fn($tag) => ProductTagDTO::fromModel($tag));
+        return $this->findByUsageCount($minCount)->map(fn ($tag) => ProductTagDTO::fromModel($tag));
     }
 
     public function findPopular(int $limit = 10): Collection
@@ -90,7 +91,7 @@ class ProductTagRepository implements ProductTagRepositoryInterface
 
     public function findPopularDTO(int $limit = 10): Collection
     {
-        return $this->findPopular($limit)->map(fn($tag) => ProductTagDTO::fromModel($tag));
+        return $this->findPopular($limit)->map(fn ($tag) => ProductTagDTO::fromModel($tag));
     }
 
     public function findRecent(int $limit = 10): Collection
@@ -100,7 +101,7 @@ class ProductTagRepository implements ProductTagRepositoryInterface
 
     public function findRecentDTO(int $limit = 10): Collection
     {
-        return $this->findRecent($limit)->map(fn($tag) => ProductTagDTO::fromModel($tag));
+        return $this->findRecent($limit)->map(fn ($tag) => ProductTagDTO::fromModel($tag));
     }
 
     public function findByColor(string $color): Collection
@@ -110,7 +111,7 @@ class ProductTagRepository implements ProductTagRepositoryInterface
 
     public function findByColorDTO(string $color): Collection
     {
-        return $this->findByColor($color)->map(fn($tag) => ProductTagDTO::fromModel($tag));
+        return $this->findByColor($color)->map(fn ($tag) => ProductTagDTO::fromModel($tag));
     }
 
     public function findByIcon(string $icon): Collection
@@ -120,7 +121,7 @@ class ProductTagRepository implements ProductTagRepositoryInterface
 
     public function findByIconDTO(string $icon): Collection
     {
-        return $this->findByIcon($icon)->map(fn($tag) => ProductTagDTO::fromModel($tag));
+        return $this->findByIcon($icon)->map(fn ($tag) => ProductTagDTO::fromModel($tag));
     }
 
     public function create(array $data): ProductTag
@@ -132,7 +133,7 @@ class ProductTagRepository implements ProductTagRepositoryInterface
     {
         $data['created_by'] = request()->user()->id;
         $tag = $this->create($data);
-        
+
         return ProductTagDTO::fromModel($tag);
     }
 
@@ -148,12 +149,12 @@ class ProductTagRepository implements ProductTagRepositoryInterface
 
     public function toggleActive(ProductTag $tag): bool
     {
-        return $tag->update(['is_active' => !$tag->is_active]);
+        return $tag->update(['is_active' => ! $tag->is_active]);
     }
 
     public function toggleFeatured(ProductTag $tag): bool
     {
-        return $tag->update(['is_featured' => !$tag->is_featured]);
+        return $tag->update(['is_featured' => ! $tag->is_featured]);
     }
 
     public function incrementUsage(ProductTag $tag): bool
@@ -196,7 +197,7 @@ class ProductTagRepository implements ProductTagRepositoryInterface
 
     public function searchDTO(string $query): Collection
     {
-        return $this->search($query)->map(fn($tag) => ProductTagDTO::fromModel($tag));
+        return $this->search($query)->map(fn ($tag) => ProductTagDTO::fromModel($tag));
     }
 
     public function getTagNames(): Collection
@@ -223,7 +224,8 @@ class ProductTagRepository implements ProductTagRepositoryInterface
     {
         $rules = ProductTagDTO::rules();
         $validator = validator($data, $rules);
-        return !$validator->fails();
+
+        return ! $validator->fails();
     }
 
     public function isNameUnique(string $name, ?int $excludeId = null): bool
@@ -232,7 +234,8 @@ class ProductTagRepository implements ProductTagRepositoryInterface
         if ($excludeId) {
             $query->where('id', '!=', $excludeId);
         }
-        return !$query->exists();
+
+        return ! $query->exists();
     }
 
     public function isSlugUnique(string $slug, ?int $excludeId = null): bool
@@ -241,7 +244,8 @@ class ProductTagRepository implements ProductTagRepositoryInterface
         if ($excludeId) {
             $query->where('id', '!=', $excludeId);
         }
-        return !$query->exists();
+
+        return ! $query->exists();
     }
 
     public function generateSlug(string $name): string
@@ -252,6 +256,7 @@ class ProductTagRepository implements ProductTagRepositoryInterface
     public function getTagUsage(int $tagId): int
     {
         $tag = $this->find($tagId);
+
         return $tag ? $tag->usage_count : 0;
     }
 
@@ -266,7 +271,7 @@ class ProductTagRepository implements ProductTagRepositoryInterface
     public function getTagAnalytics(int $tagId): array
     {
         $tag = $this->find($tagId);
-        if (!$tag) {
+        if (! $tag) {
             return [];
         }
 
@@ -282,11 +287,12 @@ class ProductTagRepository implements ProductTagRepositoryInterface
     public function getTagAnalyticsByProduct(int $tagId): array
     {
         $tag = $this->find($tagId);
-        if (!$tag) {
+        if (! $tag) {
             return [];
         }
 
         $products = $tag->products;
+
         return [
             'total_products' => $products->count(),
             'products' => $products->pluck('id')->toArray(),
@@ -308,7 +314,7 @@ class ProductTagRepository implements ProductTagRepositoryInterface
         $tag1 = $this->find($tagId1);
         $tag2 = $this->find($tagId2);
 
-        if (!$tag1 || !$tag2) {
+        if (! $tag1 || ! $tag2) {
             return [];
         }
 
@@ -344,7 +350,7 @@ class ProductTagRepository implements ProductTagRepositoryInterface
     public function getTagPerformance(int $tagId): array
     {
         $tag = $this->find($tagId);
-        if (!$tag) {
+        if (! $tag) {
             return [];
         }
 
@@ -386,6 +392,7 @@ class ProductTagRepository implements ProductTagRepositoryInterface
         foreach ($tagData as $data) {
             $tags->push($this->create($data));
         }
+
         return $tags;
     }
 
@@ -400,6 +407,7 @@ class ProductTagRepository implements ProductTagRepositoryInterface
                 }
             }
         }
+
         return true;
     }
 
@@ -415,17 +423,18 @@ class ProductTagRepository implements ProductTagRepositoryInterface
 
     public function exportTags(): array
     {
-        return $this->all()->map(fn($tag) => ProductTagDTO::fromModel($tag)->toArray())->toArray();
+        return $this->all()->map(fn ($tag) => ProductTagDTO::fromModel($tag)->toArray())->toArray();
     }
 
     public function syncTags(int $productId, array $tagIds): bool
     {
         $product = \Fereydooni\Shopping\app\Models\Product::find($productId);
-        if (!$product) {
+        if (! $product) {
             return false;
         }
 
         $product->tags()->sync($tagIds);
+
         return true;
     }
 
@@ -434,7 +443,7 @@ class ProductTagRepository implements ProductTagRepositoryInterface
         $tag1 = $this->find($tagId1);
         $tag2 = $this->find($tagId2);
 
-        if (!$tag1 || !$tag2) {
+        if (! $tag1 || ! $tag2) {
             return false;
         }
 
@@ -453,7 +462,7 @@ class ProductTagRepository implements ProductTagRepositoryInterface
     public function splitTags(int $tagId, array $newTagNames): bool
     {
         $tag = $this->find($tagId);
-        if (!$tag) {
+        if (! $tag) {
             return false;
         }
 
@@ -487,11 +496,12 @@ class ProductTagRepository implements ProductTagRepositoryInterface
     public function getTagRelated(int $tagId): Collection
     {
         $tag = $this->find($tagId);
-        if (!$tag) {
+        if (! $tag) {
             return collect();
         }
 
         $productIds = $tag->products->pluck('id');
+
         return ProductTag::whereHas('products', function ($query) use ($productIds) {
             $query->whereIn('product_id', $productIds);
         })->where('id', '!=', $tagId)->get();
@@ -539,6 +549,7 @@ class ProductTagRepository implements ProductTagRepositoryInterface
         $score += $tag->usage_count * 10;
         $score += $tag->is_active ? 50 : 0;
         $score += $tag->is_featured ? 100 : 0;
+
         return $score;
     }
 }

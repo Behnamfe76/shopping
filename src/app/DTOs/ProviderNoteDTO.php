@@ -2,27 +2,24 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Fereydooni\Shopping\app\Models\ProviderNote;
 use Fereydooni\Shopping\app\Models\Provider;
+use Fereydooni\Shopping\app\Models\ProviderNote;
 use Fereydooni\Shopping\app\Models\User;
-use Spatie\LaravelData\Data;
+use Spatie\LaravelData\Attributes\Validation\ArrayType;
+use Spatie\LaravelData\Attributes\Validation\Date;
+use Spatie\LaravelData\Attributes\Validation\Exists;
+use Spatie\LaravelData\Attributes\Validation\In;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\Min;
+use Spatie\LaravelData\Attributes\Validation\Nullable;
 use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\In;
-use Spatie\LaravelData\Attributes\Validation\BooleanType;
-use Spatie\LaravelData\Attributes\Validation\ArrayType;
-use Spatie\LaravelData\Attributes\Validation\Nullable;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
-use Spatie\LaravelData\Attributes\Validation\Exists;
-use Spatie\LaravelData\Attributes\Validation\Date;
-use Illuminate\Support\Carbon;
+use Spatie\LaravelData\Data;
 
 class ProviderNoteDTO extends Data
 {
     public function __construct(
-        public ?int $id = null,
+        public ?int $id,
         #[Required, Exists('providers', 'id')]
         public int $provider_id,
         #[Required, Exists('users', 'id')]
@@ -50,8 +47,7 @@ class ProviderNoteDTO extends Data
         // Relationships
         public ?Provider $provider = null,
         public ?User $user = null,
-    ) {
-    }
+    ) {}
 
     public static function fromModel(ProviderNote $providerNote): self
     {
@@ -63,7 +59,7 @@ class ProviderNoteDTO extends Data
             content: $providerNote->content ?? $providerNote->note ?? '',
             note_type: $providerNote->note_type ?? $providerNote->type ?? 'general',
             priority: $providerNote->priority ?? 'medium',
-            is_private: $providerNote->is_private ?? !($providerNote->is_public ?? true),
+            is_private: $providerNote->is_private ?? ! ($providerNote->is_public ?? true),
             is_archived: $providerNote->is_archived ?? false,
             tags: $providerNote->tags ?? null,
             attachments: $providerNote->attachments ?? null,
@@ -143,22 +139,22 @@ class ProviderNoteDTO extends Data
 
     public function isPublic(): bool
     {
-        return !$this->is_private;
+        return ! $this->is_private;
     }
 
     public function isActive(): bool
     {
-        return !$this->is_archived;
+        return ! $this->is_archived;
     }
 
     public function hasTags(): bool
     {
-        return !empty($this->tags);
+        return ! empty($this->tags);
     }
 
     public function hasAttachments(): bool
     {
-        return !empty($this->attachments);
+        return ! empty($this->attachments);
     }
 
     public function getTagCount(): int

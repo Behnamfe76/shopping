@@ -2,17 +2,18 @@
 
 namespace Fereydooni\Shopping\App\Notifications\ProviderSpecialization;
 
+use Fereydooni\Shopping\App\Models\ProviderSpecialization;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Fereydooni\Shopping\App\Models\ProviderSpecialization;
 
 class SpecializationRejected extends Notification implements ShouldQueue
 {
     use Queueable;
 
     public $specialization;
+
     public $reason;
 
     /**
@@ -47,7 +48,7 @@ class SpecializationRejected extends Notification implements ShouldQueue
             $message->line("Reason: {$this->reason}");
         }
 
-        $message->line("Please review the feedback and make necessary adjustments before resubmitting.")
+        $message->line('Please review the feedback and make necessary adjustments before resubmitting.')
             ->action('Update Specialization', url("/provider/specializations/{$this->specialization->id}/edit"))
             ->line('If you have any questions, please contact our support team.');
 

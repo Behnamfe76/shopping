@@ -2,13 +2,13 @@
 
 namespace Fereydooni\Shopping\app\Repositories;
 
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Fereydooni\Shopping\app\Models\Category;
-use Illuminate\Database\Eloquent\Collection;
 use Fereydooni\Shopping\app\DTOs\CategoryDTO;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Fereydooni\Shopping\app\Models\Category;
 use Fereydooni\Shopping\app\Repositories\Interfaces\CategoryRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 
 class CategoryRepository implements CategoryRepositoryInterface
 {
@@ -18,9 +18,10 @@ class CategoryRepository implements CategoryRepositoryInterface
     {
         $select = '*';
         $columns = request()->get('columns', []);
-        if (!empty($columns)) {
+        if (! empty($columns)) {
             $select = $columns;
         }
+
         return $this->model
             ->select($select)
             ->limit(250)
@@ -31,7 +32,7 @@ class CategoryRepository implements CategoryRepositoryInterface
     {
         $select = '*';
         $columns = request()->get('columns', []);
-        if (!empty($columns)) {
+        if (! empty($columns)) {
             $select = $columns;
         }
 
@@ -53,7 +54,7 @@ class CategoryRepository implements CategoryRepositoryInterface
         return $this->model->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->model->cursorPaginate($perPage, ['*'], 'id', $cursor);
     }
@@ -71,12 +72,14 @@ class CategoryRepository implements CategoryRepositoryInterface
     public function findDTO(int $id): ?CategoryDTO
     {
         $category = $this->find($id);
+
         return $category ? CategoryDTO::fromModel($category) : null;
     }
 
     public function findBySlugDTO(string $slug): ?CategoryDTO
     {
         $category = $this->findBySlug($slug);
+
         return $category ? CategoryDTO::fromModel($category) : null;
     }
 
@@ -88,6 +91,7 @@ class CategoryRepository implements CategoryRepositoryInterface
     public function createAndReturnDTO(array $data): CategoryDTO
     {
         $category = $this->create($data);
+
         return CategoryDTO::fromModel($category);
     }
 
@@ -99,6 +103,7 @@ class CategoryRepository implements CategoryRepositoryInterface
     public function updateAndReturnDTO(Category $category, array $data): ?CategoryDTO
     {
         $updated = $this->update($category, $data);
+
         return $updated ? CategoryDTO::fromModel($category->fresh()) : null;
     }
 
@@ -209,12 +214,12 @@ class CategoryRepository implements CategoryRepositoryInterface
      */
     private function isDescendant(int $categoryId, ?int $potentialAncestorId): bool
     {
-        if (!$potentialAncestorId) {
+        if (! $potentialAncestorId) {
             return false;
         }
 
         $category = $this->model->find($categoryId);
-        if (!$category) {
+        if (! $category) {
             return false;
         }
 

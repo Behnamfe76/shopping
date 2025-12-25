@@ -2,22 +2,22 @@
 
 namespace App\DTOs;
 
-use App\Models\EmployeePerformanceReview;
 use App\Models\Employee;
+use App\Models\EmployeePerformanceReview;
 use App\Models\User;
-use Spatie\LaravelData\Data;
 use Carbon\Carbon;
+use Spatie\LaravelData\Data;
 
 class EmployeePerformanceReviewDTO extends Data
 {
     public function __construct(
-        public ?int $id = null,
+        public ?int $id,
         public int $employee_id,
         public int $reviewer_id,
         public string $review_period_start,
         public string $review_period_end,
         public string $review_date,
-        public ?string $next_review_date = null,
+        public ?string $next_review_date,
         public float $overall_rating,
         public float $performance_score,
         public ?array $goals_achieved = [],
@@ -38,8 +38,7 @@ class EmployeePerformanceReviewDTO extends Data
         public ?Employee $employee = null,
         public ?User $reviewer = null,
         public ?User $approver = null,
-    ) {
-    }
+    ) {}
 
     public static function fromModel(EmployeePerformanceReview $model): self
     {
@@ -154,7 +153,7 @@ class EmployeePerformanceReviewDTO extends Data
 
     public function canBeSubmitted(): bool
     {
-        return $this->isDraft() && !empty($this->overall_rating) && !empty($this->performance_score);
+        return $this->isDraft() && ! empty($this->overall_rating) && ! empty($this->performance_score);
     }
 
     public function canBeApproved(): bool

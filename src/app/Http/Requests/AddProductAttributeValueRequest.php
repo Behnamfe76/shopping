@@ -3,7 +3,6 @@
 namespace Fereydooni\Shopping\app\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Fereydooni\Shopping\app\Models\ProductAttribute;
 
 class AddProductAttributeValueRequest extends FormRequest
 {
@@ -13,6 +12,7 @@ class AddProductAttributeValueRequest extends FormRequest
     public function authorize(): bool
     {
         $attribute = $this->route('attribute');
+
         return $this->user()->can('manageValues', $attribute);
     }
 
@@ -52,4 +52,3 @@ class AddProductAttributeValueRequest extends FormRequest
         ];
     }
 }
-

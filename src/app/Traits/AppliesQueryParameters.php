@@ -3,7 +3,8 @@
 namespace Fereydooni\Shopping\app\Traits;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\DB; // Add this line
+
+// Add this line
 
 trait AppliesQueryParameters
 {
@@ -25,9 +26,10 @@ trait AppliesQueryParameters
                 }
             }
         }
-        
+
         return $query;
     }
+
     protected function applySearch(Builder $query): Builder
     {
         $searchableFields = $this->searchableFields ?? [];
@@ -45,7 +47,7 @@ trait AppliesQueryParameters
             $wordMatching = $searchOptions['word_matching'] ?? false;
             $multipleTermsLogic = $searchOptions['multiple_terms_logic'] ?? 'or'; // Default to OR
 
-            $dbDriver = config('database.connections.' . config('database.default') . '.driver');
+            $dbDriver = config('database.connections.'.config('database.default').'.driver');
 
             $searchTerms = preg_split('/\\s+\//', $searchTerm, -1, PREG_SPLIT_NO_EMPTY);
 
@@ -88,7 +90,7 @@ trait AppliesQueryParameters
                             case 'partial':
                             default:
                                 // For partial match, adjust term for wildcards if not whole word matching
-                                if (!$wordMatching) {
+                                if (! $wordMatching) {
                                     $currentTerm = "%{$term}%";
                                 }
                                 $this->applyCaseSensitiveWhere($q, $whereMethod, $field, $currentOperator, $currentTerm, $caseSensitive, $dbDriver);
@@ -110,7 +112,7 @@ trait AppliesQueryParameters
         if ($dbDriver === 'pgsql') {
             if ($caseSensitive) {
                 $q->{$whereMethod}($field, $operator, $term); // PostgreSQL LIKE is case-sensitive by default (unless C locale)
-            } else if (!$caseSensitive && $operator !== 'like') {
+            } elseif (! $caseSensitive && $operator !== 'like') {
                 $q->{$whereMethod}($field, $operator, $term);
             } else {
                 $q->{$whereMethod}($field, 'ilike', $term); // PostgreSQL ILIKE is case-insensitive
@@ -129,6 +131,7 @@ trait AppliesQueryParameters
     {
         $sortBy = request()->get('sort_by', $defaultSortBy);
         $sortDirection = request()->get('sort_direction', $defaultSortDirection);
+
         return $query->orderBy($sortBy, $sortDirection);
     }
 }

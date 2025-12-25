@@ -2,21 +2,16 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
-use Fereydooni\Shopping\app\Models\UserSubscription;
-use Fereydooni\Shopping\app\Services\UserSubscriptionService;
-use Fereydooni\Shopping\app\Http\Requests\StoreUserSubscriptionRequest;
-use Fereydooni\Shopping\app\Http\Requests\UpdateUserSubscriptionRequest;
 use Fereydooni\Shopping\app\Http\Requests\ActivateUserSubscriptionRequest;
 use Fereydooni\Shopping\app\Http\Requests\CancelUserSubscriptionRequest;
 use Fereydooni\Shopping\app\Http\Requests\SearchUserSubscriptionRequest;
-use Fereydooni\Shopping\app\Http\Resources\UserSubscriptionResource;
-use Fereydooni\Shopping\app\Http\Resources\UserSubscriptionCollection;
-use Fereydooni\Shopping\app\Http\Resources\UserSubscriptionSearchResource;
-use Fereydooni\Shopping\app\Http\Resources\UserSubscriptionStatisticsResource;
+use Fereydooni\Shopping\app\Http\Requests\StoreUserSubscriptionRequest;
+use Fereydooni\Shopping\app\Http\Requests\UpdateUserSubscriptionRequest;
+use Fereydooni\Shopping\app\Models\UserSubscription;
+use Fereydooni\Shopping\app\Services\UserSubscriptionService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class UserSubscriptionController extends Controller
 {
@@ -107,7 +102,7 @@ class UserSubscriptionController extends Controller
         $data = $request->validated();
         $updatedUserSubscription = $this->userSubscriptionService->updateUserSubscription($userSubscription->id, $data);
 
-        if (!$updatedUserSubscription) {
+        if (! $updatedUserSubscription) {
             return back()->with('error', 'Failed to update user subscription.');
         }
 
@@ -125,7 +120,7 @@ class UserSubscriptionController extends Controller
 
         $deleted = $this->userSubscriptionService->deleteUserSubscription($userSubscription->id);
 
-        if (!$deleted) {
+        if (! $deleted) {
             return back()->with('error', 'Failed to delete user subscription.');
         }
 
@@ -143,7 +138,7 @@ class UserSubscriptionController extends Controller
 
         $activated = $this->userSubscriptionService->activateUserSubscription($userSubscription->id);
 
-        if (!$activated) {
+        if (! $activated) {
             return back()->with('error', 'Failed to activate user subscription.');
         }
 
@@ -160,7 +155,7 @@ class UserSubscriptionController extends Controller
         $reason = $request->get('reason');
         $cancelled = $this->userSubscriptionService->cancelUserSubscription($userSubscription->id, $reason);
 
-        if (!$cancelled) {
+        if (! $cancelled) {
             return back()->with('error', 'Failed to cancel user subscription.');
         }
 
@@ -176,7 +171,7 @@ class UserSubscriptionController extends Controller
 
         $renewed = $this->userSubscriptionService->renewUserSubscription($userSubscription->id);
 
-        if (!$renewed) {
+        if (! $renewed) {
             return back()->with('error', 'Failed to renew user subscription.');
         }
 
@@ -193,7 +188,7 @@ class UserSubscriptionController extends Controller
         $reason = $request->get('reason');
         $paused = $this->userSubscriptionService->pauseUserSubscription($userSubscription->id, $reason);
 
-        if (!$paused) {
+        if (! $paused) {
             return back()->with('error', 'Failed to pause user subscription.');
         }
 
@@ -209,7 +204,7 @@ class UserSubscriptionController extends Controller
 
         $resumed = $this->userSubscriptionService->resumeUserSubscription($userSubscription->id);
 
-        if (!$resumed) {
+        if (! $resumed) {
             return back()->with('error', 'Failed to resume user subscription.');
         }
 

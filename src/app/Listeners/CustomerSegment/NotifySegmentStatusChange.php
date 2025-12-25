@@ -32,7 +32,7 @@ class NotifySegmentStatusChange implements ShouldQueue
                 $this->handleSegmentDeactivated($event);
             }
         } catch (\Exception $e) {
-            Log::error('Error notifying segment status change: ' . $e->getMessage());
+            Log::error('Error notifying segment status change: '.$e->getMessage());
         }
     }
 
@@ -42,9 +42,9 @@ class NotifySegmentStatusChange implements ShouldQueue
     private function handleSegmentActivated(CustomerSegmentActivated $event): void
     {
         $segment = $event->segment;
-        
+
         Log::info("Segment activated: {$segment->name}");
-        
+
         // Here you would typically send notifications
         // For example:
         // - Send email notification to segment owner
@@ -59,9 +59,9 @@ class NotifySegmentStatusChange implements ShouldQueue
     private function handleSegmentDeactivated(CustomerSegmentDeactivated $event): void
     {
         $segment = $event->segment;
-        
+
         Log::info("Segment deactivated: {$segment->name}");
-        
+
         // Here you would typically send notifications
         // For example:
         // - Send email notification to segment owner

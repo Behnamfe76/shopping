@@ -2,13 +2,12 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\DB;
-use Fereydooni\Shopping\app\Models\CustomerSegment;
 use Fereydooni\Shopping\app\DTOs\CustomerSegmentDTO;
-use Fereydooni\Shopping\app\Enums\SegmentType;
-use Fereydooni\Shopping\app\Enums\SegmentStatus;
 use Fereydooni\Shopping\app\Enums\SegmentPriority;
+use Fereydooni\Shopping\app\Enums\SegmentStatus;
+use Fereydooni\Shopping\app\Enums\SegmentType;
+use Fereydooni\Shopping\app\Models\CustomerSegment;
+use Illuminate\Database\Eloquent\Collection;
 
 trait HasCustomerSegmentOperations
 {
@@ -21,6 +20,7 @@ trait HasCustomerSegmentOperations
     public function findByNameDTO(string $name): ?CustomerSegmentDTO
     {
         $segment = $this->findByName($name);
+
         return $segment ? $this->dtoClass::fromModel($segment) : null;
     }
 
@@ -32,7 +32,8 @@ trait HasCustomerSegmentOperations
     public function findByTypeDTO(SegmentType $type): Collection
     {
         $segments = $this->findByType($type);
-        return $segments->map(fn($segment) => $this->dtoClass::fromModel($segment));
+
+        return $segments->map(fn ($segment) => $this->dtoClass::fromModel($segment));
     }
 
     public function findByStatus(SegmentStatus $status): Collection
@@ -43,7 +44,8 @@ trait HasCustomerSegmentOperations
     public function findByStatusDTO(SegmentStatus $status): Collection
     {
         $segments = $this->findByStatus($status);
-        return $segments->map(fn($segment) => $this->dtoClass::fromModel($segment));
+
+        return $segments->map(fn ($segment) => $this->dtoClass::fromModel($segment));
     }
 
     public function findByPriority(SegmentPriority $priority): Collection
@@ -54,7 +56,8 @@ trait HasCustomerSegmentOperations
     public function findByPriorityDTO(SegmentPriority $priority): Collection
     {
         $segments = $this->findByPriority($priority);
-        return $segments->map(fn($segment) => $this->dtoClass::fromModel($segment));
+
+        return $segments->map(fn ($segment) => $this->dtoClass::fromModel($segment));
     }
 
     public function findAutomatic(): Collection
@@ -65,7 +68,8 @@ trait HasCustomerSegmentOperations
     public function findAutomaticDTO(): Collection
     {
         $segments = $this->findAutomatic();
-        return $segments->map(fn($segment) => $this->dtoClass::fromModel($segment));
+
+        return $segments->map(fn ($segment) => $this->dtoClass::fromModel($segment));
     }
 
     public function findManual(): Collection
@@ -76,7 +80,8 @@ trait HasCustomerSegmentOperations
     public function findManualDTO(): Collection
     {
         $segments = $this->findManual();
-        return $segments->map(fn($segment) => $this->dtoClass::fromModel($segment));
+
+        return $segments->map(fn ($segment) => $this->dtoClass::fromModel($segment));
     }
 
     public function findDynamic(): Collection
@@ -87,7 +92,8 @@ trait HasCustomerSegmentOperations
     public function findDynamicDTO(): Collection
     {
         $segments = $this->findDynamic();
-        return $segments->map(fn($segment) => $this->dtoClass::fromModel($segment));
+
+        return $segments->map(fn ($segment) => $this->dtoClass::fromModel($segment));
     }
 
     public function findStatic(): Collection
@@ -98,18 +104,20 @@ trait HasCustomerSegmentOperations
     public function findStaticDTO(): Collection
     {
         $segments = $this->findStatic();
-        return $segments->map(fn($segment) => $this->dtoClass::fromModel($segment));
+
+        return $segments->map(fn ($segment) => $this->dtoClass::fromModel($segment));
     }
 
-    public function findByCustomerCount(int $minCount, int $maxCount = null): Collection
+    public function findByCustomerCount(int $minCount, ?int $maxCount = null): Collection
     {
         return $this->model::byCustomerCount($minCount, $maxCount)->get();
     }
 
-    public function findByCustomerCountDTO(int $minCount, int $maxCount = null): Collection
+    public function findByCustomerCountDTO(int $minCount, ?int $maxCount = null): Collection
     {
         $segments = $this->findByCustomerCount($minCount, $maxCount);
-        return $segments->map(fn($segment) => $this->dtoClass::fromModel($segment));
+
+        return $segments->map(fn ($segment) => $this->dtoClass::fromModel($segment));
     }
 
     public function findByLastCalculatedDate(string $startDate, string $endDate): Collection
@@ -120,7 +128,8 @@ trait HasCustomerSegmentOperations
     public function findByLastCalculatedDateDTO(string $startDate, string $endDate): Collection
     {
         $segments = $this->findByLastCalculatedDate($startDate, $endDate);
-        return $segments->map(fn($segment) => $this->dtoClass::fromModel($segment));
+
+        return $segments->map(fn ($segment) => $this->dtoClass::fromModel($segment));
     }
 
     public function findNeedsRecalculation(int $daysAgo = 7): Collection
@@ -131,7 +140,8 @@ trait HasCustomerSegmentOperations
     public function findNeedsRecalculationDTO(int $daysAgo = 7): Collection
     {
         $segments = $this->findNeedsRecalculation($daysAgo);
-        return $segments->map(fn($segment) => $this->dtoClass::fromModel($segment));
+
+        return $segments->map(fn ($segment) => $this->dtoClass::fromModel($segment));
     }
 
     public function findByTag(string $tag): Collection
@@ -142,7 +152,8 @@ trait HasCustomerSegmentOperations
     public function findByTagDTO(string $tag): Collection
     {
         $segments = $this->findByTag($tag);
-        return $segments->map(fn($segment) => $this->dtoClass::fromModel($segment));
+
+        return $segments->map(fn ($segment) => $this->dtoClass::fromModel($segment));
     }
 
     // Segment analytics and statistics
@@ -222,6 +233,7 @@ trait HasCustomerSegmentOperations
                 'color' => $type->color(),
             ];
         }
+
         return $stats;
     }
 
@@ -235,6 +247,7 @@ trait HasCustomerSegmentOperations
                 'color' => $status->color(),
             ];
         }
+
         return $stats;
     }
 
@@ -248,6 +261,7 @@ trait HasCustomerSegmentOperations
                 'color' => $priority->color(),
             ];
         }
+
         return $stats;
     }
 
@@ -260,7 +274,8 @@ trait HasCustomerSegmentOperations
     public function getRecentSegmentsDTO(int $limit = 10): Collection
     {
         $segments = $this->getRecentSegments($limit);
-        return $segments->map(fn($segment) => $this->dtoClass::fromModel($segment));
+
+        return $segments->map(fn ($segment) => $this->dtoClass::fromModel($segment));
     }
 
     public function getSegmentsByCustomerCount(int $minCount, int $maxCount): Collection
@@ -271,7 +286,8 @@ trait HasCustomerSegmentOperations
     public function getSegmentsByCustomerCountDTO(int $minCount, int $maxCount): Collection
     {
         $segments = $this->getSegmentsByCustomerCount($minCount, $maxCount);
-        return $segments->map(fn($segment) => $this->dtoClass::fromModel($segment));
+
+        return $segments->map(fn ($segment) => $this->dtoClass::fromModel($segment));
     }
 
     public function getSegmentsByLastCalculated(int $daysAgo): Collection
@@ -282,7 +298,8 @@ trait HasCustomerSegmentOperations
     public function getSegmentsByLastCalculatedDTO(int $daysAgo): Collection
     {
         $segments = $this->getSegmentsByLastCalculated($daysAgo);
-        return $segments->map(fn($segment) => $this->dtoClass::fromModel($segment));
+
+        return $segments->map(fn ($segment) => $this->dtoClass::fromModel($segment));
     }
 
     // Overlap detection
@@ -299,7 +316,8 @@ trait HasCustomerSegmentOperations
     public function getOverlappingSegmentsDTO(CustomerSegment $segment): Collection
     {
         $segments = $this->getOverlappingSegments($segment);
-        return $segments->map(fn($segment) => $this->dtoClass::fromModel($segment));
+
+        return $segments->map(fn ($segment) => $this->dtoClass::fromModel($segment));
     }
 
     // Search by criteria
@@ -321,14 +339,15 @@ trait HasCustomerSegmentOperations
     public function searchByCriteriaDTO(array $criteria): Collection
     {
         $segments = $this->searchByCriteria($criteria);
-        return $segments->map(fn($segment) => $this->dtoClass::fromModel($segment));
+
+        return $segments->map(fn ($segment) => $this->dtoClass::fromModel($segment));
     }
 
     // Utility methods
     protected function validateSegmentCriteria(array $criteria): bool
     {
         // Basic validation - in a real implementation, you would have more complex validation
-        return is_array($criteria) && !empty($criteria);
+        return is_array($criteria) && ! empty($criteria);
     }
 
     protected function validateSegmentConditions(array $conditions): bool
@@ -343,10 +362,10 @@ trait HasCustomerSegmentOperations
         // In a real implementation, you would compare actual customer lists
         $customers1 = $segment1->customers->pluck('id')->toArray();
         $customers2 = $segment2->customers->pluck('id')->toArray();
-        
+
         $intersection = array_intersect($customers1, $customers2);
         $union = array_unique(array_merge($customers1, $customers2));
-        
+
         return count($union) > 0 ? count($intersection) / count($union) : 0.0;
     }
 }

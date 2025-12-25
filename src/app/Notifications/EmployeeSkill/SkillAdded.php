@@ -41,7 +41,7 @@ class SkillAdded extends Notification implements ShouldQueue
         $skillName = $this->skill->skill_name;
         $category = $this->skill->skill_category->label();
         $level = $this->skill->proficiency_level->label();
-        
+
         return (new MailMessage)
             ->subject("New Skill Added: {$skillName}")
             ->greeting("Hello {$notifiable->name},")
@@ -70,7 +70,7 @@ class SkillAdded extends Notification implements ShouldQueue
             'skill_category' => $this->skill->skill_category->value,
             'proficiency_level' => $this->skill->proficiency_level->value,
             'years_experience' => $this->skill->years_experience,
-            'message' => "New skill '{$this->skill->skill_name}' added to " . ($this->skill->employee->full_name ?? 'employee'),
+            'message' => "New skill '{$this->skill->skill_name}' added to ".($this->skill->employee->full_name ?? 'employee'),
             'timestamp' => now()->toISOString(),
         ];
     }

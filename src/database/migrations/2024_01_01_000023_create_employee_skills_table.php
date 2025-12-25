@@ -22,14 +22,14 @@ return new class extends Migration
                 'tools',
                 'methodologies',
                 'certifications',
-                'other'
+                'other',
             ]);
             $table->enum('proficiency_level', [
                 'beginner',
                 'intermediate',
                 'advanced',
                 'expert',
-                'master'
+                'master',
             ]);
             $table->unsignedInteger('years_experience')->default(0);
             $table->boolean('certification_required')->default(false);

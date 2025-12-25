@@ -2,17 +2,18 @@
 
 namespace Fereydooni\Shopping\Notifications\EmployeeTraining;
 
+use Fereydooni\Shopping\Models\EmployeeTraining;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Fereydooni\Shopping\Models\EmployeeTraining;
 
 class TrainingExpiringReminder extends Notification implements ShouldQueue
 {
     use Queueable;
 
     public EmployeeTraining $training;
+
     public int $daysUntilExpiry;
 
     /**
@@ -40,15 +41,15 @@ class TrainingExpiringReminder extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         $urgency = $this->daysUntilExpiry <= 7 ? 'URGENT' : 'Reminder';
-        $subject = $urgency . ': Training Expiring Soon - ' . $this->training->training_name;
+        $subject = $urgency.': Training Expiring Soon - '.$this->training->training_name;
 
         $message = (new MailMessage)
             ->subject($subject)
-            ->greeting('Hello ' . $notifiable->name . ',')
+            ->greeting('Hello '.$notifiable->name.',')
             ->line('Your training certification is expiring soon.')
-            ->line('Training: ' . $this->training->training_name)
-            ->line('Expiry Date: ' . $this->training->expiry_date->format('M d, Y'))
-            ->line('Days Remaining: ' . $this->daysUntilExpiry . ' days');
+            ->line('Training: '.$this->training->training_name)
+            ->line('Expiry Date: '.$this->training->expiry_date->format('M d, Y'))
+            ->line('Days Remaining: '.$this->daysUntilExpiry.' days');
 
         if ($this->training->is_mandatory) {
             $message->line('This is a mandatory training. Failure to renew may affect your employment status.');
@@ -59,7 +60,7 @@ class TrainingExpiringReminder extends Notification implements ShouldQueue
         }
 
         return $message
-            ->action('View Training Details', url('/training/' . $this->training->id))
+            ->action('View Training Details', url('/training/'.$this->training->id))
             ->line('Please take action to renew your certification before it expires.')
             ->line('Thank you for your attention to this matter.');
     }
@@ -81,9 +82,9 @@ class TrainingExpiringReminder extends Notification implements ShouldQueue
             'is_mandatory' => $this->training->is_mandatory,
             'is_renewable' => $this->training->is_renewable,
             'urgency' => $urgency,
-            'message' => 'Training expiring in ' . $this->daysUntilExpiry . ' days: ' . $this->training->training_name,
-            'action_url' => '/training/' . $this->training->id,
-            'type' => 'training_expiring_reminder'
+            'message' => 'Training expiring in '.$this->daysUntilExpiry.' days: '.$this->training->training_name,
+            'action_url' => '/training/'.$this->training->id,
+            'type' => 'training_expiring_reminder',
         ];
     }
 }

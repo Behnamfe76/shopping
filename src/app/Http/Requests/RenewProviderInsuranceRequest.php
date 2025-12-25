@@ -2,9 +2,8 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 use Fereydooni\Shopping\app\Enums\InsuranceStatus;
+use Illuminate\Foundation\Http\FormRequest;
 
 class RenewProviderInsuranceRequest extends FormRequest
 {
@@ -25,34 +24,34 @@ class RenewProviderInsuranceRequest extends FormRequest
             'start_date' => [
                 'required',
                 'date',
-                'after:today'
+                'after:today',
             ],
             'end_date' => [
                 'required',
                 'date',
-                'after:start_date'
+                'after:start_date',
             ],
             'coverage_amount' => [
                 'sometimes',
                 'numeric',
                 'min:0',
-                'max:999999999.99'
+                'max:999999999.99',
             ],
             'provider_name' => [
                 'sometimes',
                 'string',
-                'max:255'
+                'max:255',
             ],
             'policy_number' => [
                 'sometimes',
                 'string',
-                'max:100'
+                'max:100',
             ],
             'notes' => [
                 'nullable',
                 'string',
-                'max:1000'
-            ]
+                'max:1000',
+            ],
         ];
     }
 
@@ -68,7 +67,7 @@ class RenewProviderInsuranceRequest extends FormRequest
             'end_date.after' => 'End date must be after start date.',
             'coverage_amount.numeric' => 'Coverage amount must be a number.',
             'coverage_amount.min' => 'Coverage amount must be at least 0.',
-            'notes.max' => 'Notes cannot exceed 1000 characters.'
+            'notes.max' => 'Notes cannot exceed 1000 characters.',
         ];
     }
 
@@ -83,7 +82,7 @@ class RenewProviderInsuranceRequest extends FormRequest
             'coverage_amount' => 'coverage amount',
             'provider_name' => 'insurance provider name',
             'policy_number' => 'policy number',
-            'notes' => 'notes'
+            'notes' => 'notes',
         ];
     }
 
@@ -93,7 +92,7 @@ class RenewProviderInsuranceRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         // Set default status to active for renewal
-        if (!$this->has('status')) {
+        if (! $this->has('status')) {
             $this->merge(['status' => InsuranceStatus::ACTIVE]);
         }
     }

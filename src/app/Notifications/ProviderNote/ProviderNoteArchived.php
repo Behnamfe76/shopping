@@ -46,12 +46,12 @@ class ProviderNoteArchived extends Notification implements ShouldQueue
             ->line("A provider note has been archived for {$provider->name}.")
             ->line("**Note Title:** {$this->providerNote->title}")
             ->line("**Archived By:** {$archiver->name}")
-            ->line("**Archived At:** " . $this->providerNote->updated_at->format('M j, Y g:i A'));
+            ->line('**Archived At:** '.$this->providerNote->updated_at->format('M j, Y g:i A'));
 
         // Add note details
-        $mailMessage->line("**Note Type:** " . ucfirst($this->providerNote->note_type))
-            ->line("**Priority:** " . ucfirst($this->providerNote->priority))
-            ->line("**Content Preview:** " . substr($this->providerNote->content, 0, 100) . "...");
+        $mailMessage->line('**Note Type:** '.ucfirst($this->providerNote->note_type))
+            ->line('**Priority:** '.ucfirst($this->providerNote->priority))
+            ->line('**Content Preview:** '.substr($this->providerNote->content, 0, 100).'...');
 
         // Add action button
         $mailMessage->action('View Provider Note', URL::to("/providers/{$provider->id}/notes/{$this->providerNote->id}"))
@@ -80,11 +80,11 @@ class ProviderNoteArchived extends Notification implements ShouldQueue
             'note_title' => $this->providerNote->title,
             'note_type' => $this->providerNote->note_type,
             'priority' => $this->providerNote->priority,
-            'content_preview' => substr($this->providerNote->content, 0, 100) . "...",
+            'content_preview' => substr($this->providerNote->content, 0, 100).'...',
             'archived_at' => $this->providerNote->updated_at->toISOString(),
             'action_url' => "/providers/{$provider->id}/notes/{$this->providerNote->id}",
             'icon' => 'archive',
-            'color' => 'orange'
+            'color' => 'orange',
         ];
     }
 

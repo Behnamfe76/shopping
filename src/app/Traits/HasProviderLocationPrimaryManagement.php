@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
+use Exception;
 use Fereydooni\Shopping\app\Models\ProviderLocation;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Exception;
 
 trait HasProviderLocationPrimaryManagement
 {
@@ -27,10 +27,12 @@ trait HasProviderLocationPrimaryManagement
             $location->update(['is_primary' => true]);
 
             DB::commit();
+
             return true;
         } catch (Exception $e) {
             DB::rollBack();
-            Log::error("Failed to set primary location for location ID {$location->id}: " . $e->getMessage());
+            Log::error("Failed to set primary location for location ID {$location->id}: ".$e->getMessage());
+
             return false;
         }
     }
@@ -41,14 +43,16 @@ trait HasProviderLocationPrimaryManagement
     public function unsetPrimaryLocation(ProviderLocation $location): bool
     {
         try {
-            if (!$location->is_primary) {
+            if (! $location->is_primary) {
                 return true; // Already not primary
             }
 
             $location->update(['is_primary' => false]);
+
             return true;
         } catch (Exception $e) {
-            Log::error("Failed to unset primary location for location ID {$location->id}: " . $e->getMessage());
+            Log::error("Failed to unset primary location for location ID {$location->id}: ".$e->getMessage());
+
             return false;
         }
     }
@@ -64,7 +68,8 @@ trait HasProviderLocationPrimaryManagement
                 ->with(['provider'])
                 ->first();
         } catch (Exception $e) {
-            Log::error("Failed to get primary location for provider ID {$providerId}: " . $e->getMessage());
+            Log::error("Failed to get primary location for provider ID {$providerId}: ".$e->getMessage());
+
             return null;
         }
     }
@@ -79,7 +84,8 @@ trait HasProviderLocationPrimaryManagement
                 ->where('is_primary', true)
                 ->exists();
         } catch (Exception $e) {
-            Log::error("Failed to check primary location for provider ID {$providerId}: " . $e->getMessage());
+            Log::error("Failed to check primary location for provider ID {$providerId}: ".$e->getMessage());
+
             return false;
         }
     }
@@ -91,9 +97,11 @@ trait HasProviderLocationPrimaryManagement
     {
         try {
             $location->update(['is_active' => true]);
+
             return true;
         } catch (Exception $e) {
-            Log::error("Failed to activate location ID {$location->id}: " . $e->getMessage());
+            Log::error("Failed to activate location ID {$location->id}: ".$e->getMessage());
+
             return false;
         }
     }
@@ -110,9 +118,11 @@ trait HasProviderLocationPrimaryManagement
             }
 
             $location->update(['is_active' => false]);
+
             return true;
         } catch (Exception $e) {
-            Log::error("Failed to deactivate location ID {$location->id}: " . $e->getMessage());
+            Log::error("Failed to deactivate location ID {$location->id}: ".$e->getMessage());
+
             return false;
         }
     }
@@ -144,7 +154,8 @@ trait HasProviderLocationPrimaryManagement
                 return $this->activateLocation($location);
             }
         } catch (Exception $e) {
-            Log::error("Failed to toggle status for location ID {$location->id}: " . $e->getMessage());
+            Log::error("Failed to toggle status for location ID {$location->id}: ".$e->getMessage());
+
             return false;
         }
     }
@@ -159,7 +170,8 @@ trait HasProviderLocationPrimaryManagement
                 ->with(['provider'])
                 ->get();
         } catch (Exception $e) {
-            Log::error('Failed to get all primary locations: ' . $e->getMessage());
+            Log::error('Failed to get all primary locations: '.$e->getMessage());
+
             return collect();
         }
     }
@@ -172,7 +184,8 @@ trait HasProviderLocationPrimaryManagement
         try {
             return ProviderLocation::where('is_primary', true)->count();
         } catch (Exception $e) {
-            Log::error('Failed to get primary location count: ' . $e->getMessage());
+            Log::error('Failed to get primary location count: '.$e->getMessage());
+
             return 0;
         }
     }
@@ -187,7 +200,8 @@ trait HasProviderLocationPrimaryManagement
                 ->where('is_primary', true)
                 ->count();
         } catch (Exception $e) {
-            Log::error("Failed to get primary location count for provider ID {$providerId}: " . $e->getMessage());
+            Log::error("Failed to get primary location count for provider ID {$providerId}: ".$e->getMessage());
+
             return 0;
         }
     }
@@ -215,7 +229,8 @@ trait HasProviderLocationPrimaryManagement
 
             return true;
         } catch (Exception $e) {
-            Log::error("Failed to ensure single primary location for provider ID {$providerId}: " . $e->getMessage());
+            Log::error("Failed to ensure single primary location for provider ID {$providerId}: ".$e->getMessage());
+
             return false;
         }
     }
@@ -236,7 +251,8 @@ trait HasProviderLocationPrimaryManagement
                 ->with(['provider'])
                 ->get();
         } catch (Exception $e) {
-            Log::error('Failed to get locations needing primary status: ' . $e->getMessage());
+            Log::error('Failed to get locations needing primary status: '.$e->getMessage());
+
             return collect();
         }
     }
@@ -259,7 +275,8 @@ trait HasProviderLocationPrimaryManagement
 
             return true;
         } catch (Exception $e) {
-            Log::error('Failed to auto-assign primary locations: ' . $e->getMessage());
+            Log::error('Failed to auto-assign primary locations: '.$e->getMessage());
+
             return false;
         }
     }

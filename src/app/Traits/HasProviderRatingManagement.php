@@ -90,9 +90,15 @@ trait HasProviderRatingManagement
         $totalRating = $qualityRating + $deliveryRating + $communicationRating;
         $count = 0;
 
-        if ($qualityRating > 0) $count++;
-        if ($deliveryRating > 0) $count++;
-        if ($communicationRating > 0) $count++;
+        if ($qualityRating > 0) {
+            $count++;
+        }
+        if ($deliveryRating > 0) {
+            $count++;
+        }
+        if ($communicationRating > 0) {
+            $count++;
+        }
 
         return $count > 0 ? round($totalRating / $count, 2) : 0;
     }
@@ -170,16 +176,16 @@ trait HasProviderRatingManagement
                 'min' => 0,
                 'max' => 0,
                 'count' => 0,
-                'distribution' => []
+                'distribution' => [],
             ];
         }
 
         $distribution = [
-            '5.0' => $ratings->filter(fn($r) => $r >= 4.5)->count(),
-            '4.0' => $ratings->filter(fn($r) => $r >= 3.5 && $r < 4.5)->count(),
-            '3.0' => $ratings->filter(fn($r) => $r >= 2.5 && $r < 3.5)->count(),
-            '2.0' => $ratings->filter(fn($r) => $r >= 1.5 && $r < 2.5)->count(),
-            '1.0' => $ratings->filter(fn($r) => $r < 1.5)->count(),
+            '5.0' => $ratings->filter(fn ($r) => $r >= 4.5)->count(),
+            '4.0' => $ratings->filter(fn ($r) => $r >= 3.5 && $r < 4.5)->count(),
+            '3.0' => $ratings->filter(fn ($r) => $r >= 2.5 && $r < 3.5)->count(),
+            '2.0' => $ratings->filter(fn ($r) => $r >= 1.5 && $r < 2.5)->count(),
+            '1.0' => $ratings->filter(fn ($r) => $r < 1.5)->count(),
         ];
 
         return [
@@ -187,7 +193,7 @@ trait HasProviderRatingManagement
             'min' => $ratings->min(),
             'max' => $ratings->max(),
             'count' => $ratings->count(),
-            'distribution' => $distribution
+            'distribution' => $distribution,
         ];
     }
 
@@ -197,9 +203,9 @@ trait HasProviderRatingManagement
     public function getProvidersNeedingRatingReview(): Collection
     {
         return $this->providerRepository->search('')
-            ->where(function($query) {
+            ->where(function ($query) {
                 $query->where('rating', '<', 3.0)
-                      ->orWhereNull('rating');
+                    ->orWhereNull('rating');
             })
             ->get();
     }

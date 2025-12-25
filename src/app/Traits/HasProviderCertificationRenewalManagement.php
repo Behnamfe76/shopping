@@ -2,12 +2,12 @@
 
 namespace App\Traits;
 
-use App\Models\ProviderCertification;
 use App\Enums\CertificationStatus;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
+use App\Models\ProviderCertification;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 trait HasProviderCertificationRenewalManagement
 {
@@ -60,6 +60,7 @@ trait HasProviderCertificationRenewalManagement
                 'certification_id' => $certification->id,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -71,7 +72,7 @@ trait HasProviderCertificationRenewalManagement
         ProviderCertification $certification,
         int $days = 30
     ): bool {
-        if (!$certification->expiry_date) {
+        if (! $certification->expiry_date) {
             return false;
         }
 
@@ -86,7 +87,7 @@ trait HasProviderCertificationRenewalManagement
      */
     public function isCertificationExpired(ProviderCertification $certification): bool
     {
-        if (!$certification->expiry_date) {
+        if (! $certification->expiry_date) {
             return false;
         }
 
@@ -117,6 +118,7 @@ trait HasProviderCertificationRenewalManagement
                 'certification_id' => $certification->id,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -142,6 +144,7 @@ trait HasProviderCertificationRenewalManagement
                 'certification_id' => $certification->id,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -317,7 +320,7 @@ trait HasProviderCertificationRenewalManagement
     {
         $nextExpiring = $this->getNextExpiringCertification();
 
-        if (!$nextExpiring || !$nextExpiring->expiry_date) {
+        if (! $nextExpiring || ! $nextExpiring->expiry_date) {
             return null;
         }
 

@@ -41,13 +41,13 @@ class SendInsuranceExpirationNotification implements ShouldQueue
             Log::info('Insurance expiration notifications sent successfully', [
                 'insurance_id' => $providerInsurance->id,
                 'expiration_date' => $expirationDate,
-                'notification_data' => $notificationData
+                'notification_data' => $notificationData,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to send insurance expiration notifications', [
                 'insurance_id' => $event->providerInsurance->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -59,7 +59,7 @@ class SendInsuranceExpirationNotification implements ShouldQueue
     {
         // Implementation for email notification
         Log::info('Email notification sent for insurance expiration', [
-            'insurance_id' => $providerInsurance->id
+            'insurance_id' => $providerInsurance->id,
         ]);
     }
 
@@ -70,7 +70,7 @@ class SendInsuranceExpirationNotification implements ShouldQueue
     {
         // Implementation for SMS notification
         Log::info('SMS notification sent for insurance expiration', [
-            'insurance_id' => $providerInsurance->id
+            'insurance_id' => $providerInsurance->id,
         ]);
     }
 
@@ -81,7 +81,7 @@ class SendInsuranceExpirationNotification implements ShouldQueue
     {
         // Implementation for in-app notification
         Log::info('In-app notification sent for insurance expiration', [
-            'insurance_id' => $providerInsurance->id
+            'insurance_id' => $providerInsurance->id,
         ]);
     }
 }

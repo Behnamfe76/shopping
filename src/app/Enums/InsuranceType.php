@@ -2,8 +2,6 @@
 
 namespace Fereydooni\Shopping\App\Enums;
 
-use Illuminate\Support\Collection;
-
 enum InsuranceType: string
 {
     case GENERAL_LIABILITY = 'general_liability';

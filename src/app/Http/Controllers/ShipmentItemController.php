@@ -2,19 +2,17 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
-use Fereydooni\Shopping\app\Models\Shipment;
-use Fereydooni\Shopping\app\Models\ShipmentItem;
+use Fereydooni\Shopping\app\Http\Requests\SearchShipmentItemRequest;
 use Fereydooni\Shopping\app\Http\Requests\StoreShipmentItemRequest;
 use Fereydooni\Shopping\app\Http\Requests\UpdateShipmentItemRequest;
-use Fereydooni\Shopping\app\Http\Requests\SearchShipmentItemRequest;
-use Fereydooni\Shopping\app\Http\Resources\ShipmentItemResource;
 use Fereydooni\Shopping\app\Http\Resources\ShipmentItemCollection;
-use Fereydooni\Shopping\app\Http\Resources\ShipmentItemSearchResource;
+use Fereydooni\Shopping\app\Models\Shipment;
+use Fereydooni\Shopping\app\Models\ShipmentItem;
 use Fereydooni\Shopping\app\Services\ShipmentItemService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class ShipmentItemController extends Controller
 {

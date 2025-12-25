@@ -3,11 +3,8 @@
 namespace Fereydooni\Shopping\app\Events;
 
 use Fereydooni\Shopping\app\Models\Product;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -16,7 +13,9 @@ class ProductLowStock
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public Product $product;
+
     public int $currentStock;
+
     public int $threshold;
 
     /**

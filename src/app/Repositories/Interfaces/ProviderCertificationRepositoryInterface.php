@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\App\Repositories\Interfaces;
 
+use Fereydooni\Shopping\App\DTOs\ProviderCertificationDTO;
+use Fereydooni\Shopping\App\Models\ProviderCertification;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Fereydooni\Shopping\App\Models\ProviderCertification;
-use Fereydooni\Shopping\App\DTOs\ProviderCertificationDTO;
 
 interface ProviderCertificationRepositoryInterface
 {
@@ -29,7 +29,7 @@ interface ProviderCertificationRepositoryInterface
     /**
      * Get cursor paginated provider certifications.
      */
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator;
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator;
 
     /**
      * Find provider certification by ID.
@@ -279,12 +279,12 @@ interface ProviderCertificationRepositoryInterface
     /**
      * Suspend provider certification.
      */
-    public function suspend(ProviderCertification $certification, string $reason = null): bool;
+    public function suspend(ProviderCertification $certification, ?string $reason = null): bool;
 
     /**
      * Revoke provider certification.
      */
-    public function revoke(ProviderCertification $certification, string $reason = null): bool;
+    public function revoke(ProviderCertification $certification, ?string $reason = null): bool;
 
     /**
      * Renew provider certification.
@@ -299,7 +299,7 @@ interface ProviderCertificationRepositoryInterface
     /**
      * Reject provider certification.
      */
-    public function reject(ProviderCertification $certification, string $reason = null): bool;
+    public function reject(ProviderCertification $certification, ?string $reason = null): bool;
 
     /**
      * Update provider certification status.
@@ -444,7 +444,7 @@ interface ProviderCertificationRepositoryInterface
     /**
      * Get certification trends.
      */
-    public function getCertificationTrends(string $startDate = null, string $endDate = null): array;
+    public function getCertificationTrends(?string $startDate = null, ?string $endDate = null): array;
 
     /**
      * Get most popular certifications.

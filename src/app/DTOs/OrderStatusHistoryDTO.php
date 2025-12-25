@@ -2,13 +2,9 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\MapName;
-use Spatie\LaravelData\Attributes\WithTransformer;
-use Spatie\LaravelData\Transformers\DateTimeTransformer;
-use Illuminate\Support\Carbon;
 use Fereydooni\Shopping\app\Enums\OrderStatus;
-use Fereydooni\Shopping\app\Models\OrderStatusHistory;
+use Illuminate\Support\Carbon;
+use Spatie\LaravelData\Data;
 
 class OrderStatusHistoryDTO extends Data
 {
@@ -31,8 +27,7 @@ class OrderStatusHistoryDTO extends Data
         public ?Carbon $updated_at = null,
         public ?array $order = null,
         public ?array $changed_by_user = null,
-    ) {
-    }
+    ) {}
 
     public static function fromModel($history): static
     {
@@ -62,8 +57,8 @@ class OrderStatusHistoryDTO extends Data
     {
         return [
             'order_id' => 'required|integer|exists:orders,id',
-            'old_status' => 'nullable|string|in:' . implode(',', array_column(OrderStatus::cases(), 'value')),
-            'new_status' => 'required|string|in:' . implode(',', array_column(OrderStatus::cases(), 'value')),
+            'old_status' => 'nullable|string|in:'.implode(',', array_column(OrderStatus::cases(), 'value')),
+            'new_status' => 'required|string|in:'.implode(',', array_column(OrderStatus::cases(), 'value')),
             'changed_by' => 'required|integer|exists:users,id',
             'changed_at' => 'required|date',
             'note' => 'nullable|string|max:1000',
@@ -124,7 +119,7 @@ class OrderStatusHistoryDTO extends Data
      */
     public function isUserChange(): bool
     {
-        return !$this->is_system_change;
+        return ! $this->is_system_change;
     }
 
     /**
@@ -132,7 +127,7 @@ class OrderStatusHistoryDTO extends Data
      */
     public function getChangeTypeLabel(): ?string
     {
-        return match($this->change_type) {
+        return match ($this->change_type) {
             'manual' => 'Manual Change',
             'automatic' => 'Automatic Change',
             'system' => 'System Change',
@@ -147,7 +142,7 @@ class OrderStatusHistoryDTO extends Data
      */
     public function getChangeCategoryLabel(): ?string
     {
-        return match($this->change_category) {
+        return match ($this->change_category) {
             'payment' => 'Payment Related',
             'shipping' => 'Shipping Related',
             'cancellation' => 'Cancellation',

@@ -24,72 +24,72 @@ class SearchLocationRequest extends FormRequest
                 'required',
                 'string',
                 'min:2',
-                'max:255'
+                'max:255',
             ],
             'limit' => [
                 'integer',
                 'min:1',
-                'max:100'
+                'max:100',
             ],
             'provider_id' => [
                 'nullable',
                 'integer',
-                'exists:providers,id'
+                'exists:providers,id',
             ],
             'location_type' => [
                 'nullable',
                 'string',
-                'in:headquarters,warehouse,store,office,factory,distribution_center,retail_outlet,service_center,other'
+                'in:headquarters,warehouse,store,office,factory,distribution_center,retail_outlet,service_center,other',
             ],
             'country' => [
                 'nullable',
                 'string',
-                'size:2'
+                'size:2',
             ],
             'state' => [
                 'nullable',
                 'string',
-                'max:100'
+                'max:100',
             ],
             'city' => [
                 'nullable',
                 'string',
-                'max:100'
+                'max:100',
             ],
             'is_active' => [
                 'nullable',
-                'boolean'
+                'boolean',
             ],
             'has_coordinates' => [
                 'nullable',
-                'boolean'
+                'boolean',
             ],
             'sort_by' => [
                 'nullable',
                 'string',
-                'in:name,address,city,state,country,created_at,updated_at'
+                'in:name,address,city,state,country,created_at,updated_at',
             ],
             'sort_order' => [
                 'nullable',
                 'string',
-                'in:asc,desc'
+                'in:asc,desc',
             ],
             'radius' => [
                 'nullable',
                 'numeric',
                 'min:0.1',
-                'max:1000'
+                'max:1000',
             ],
             'latitude' => [
                 'nullable',
                 'numeric',
-                'between:-90,90'
+                'between:-90,90',
             ],
             'longitude' => [
                 'nullable',
                 'numeric',
-                'between:-180,180'
-            ]
+                'between:-180,180',
+            ],
         ];
     }
 
@@ -115,7 +115,7 @@ class SearchLocationRequest extends FormRequest
             'radius.min' => 'Radius must be at least 0.1.',
             'radius.max' => 'Radius cannot exceed 1000.',
             'latitude.between' => 'Latitude must be between -90 and 90.',
-            'longitude.between' => 'Longitude must be between -180 and 180.'
+            'longitude.between' => 'Longitude must be between -180 and 180.',
         ];
     }
 
@@ -138,7 +138,7 @@ class SearchLocationRequest extends FormRequest
             'sort_order' => 'sort order',
             'radius' => 'search radius',
             'latitude' => 'latitude',
-            'longitude' => 'longitude'
+            'longitude' => 'longitude',
         ];
     }
 
@@ -179,24 +179,24 @@ class SearchLocationRequest extends FormRequest
         }
 
         // Set default values
-        if (!$this->has('limit')) {
+        if (! $this->has('limit')) {
             $data['limit'] = 20;
         }
 
-        if (!$this->has('sort_by')) {
+        if (! $this->has('sort_by')) {
             $data['sort_by'] = 'created_at';
         }
 
-        if (!$this->has('sort_order')) {
+        if (! $this->has('sort_order')) {
             $data['sort_order'] = 'desc';
         }
 
-        if (!$this->has('radius')) {
+        if (! $this->has('radius')) {
             $data['radius'] = 10;
         }
 
         // Merge the processed data
-        if (!empty($data)) {
+        if (! empty($data)) {
             $this->merge($data);
         }
     }

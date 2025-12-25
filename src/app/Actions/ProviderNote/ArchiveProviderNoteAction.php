@@ -3,8 +3,8 @@
 namespace Fereydooni\Shopping\app\Actions\ProviderNote;
 
 use Fereydooni\Shopping\app\DTOs\ProviderNoteDTO;
-use Fereydooni\Shopping\app\Repositories\Interfaces\ProviderNoteRepositoryInterface;
 use Fereydooni\Shopping\app\Models\ProviderNote;
+use Fereydooni\Shopping\app\Repositories\Interfaces\ProviderNoteRepositoryInterface;
 use Illuminate\Support\Facades\Log;
 
 class ArchiveProviderNoteAction
@@ -17,21 +17,21 @@ class ArchiveProviderNoteAction
     {
         try {
             // Check if note can be archived
-            if (!$this->canArchiveNote($providerNote)) {
+            if (! $this->canArchiveNote($providerNote)) {
                 throw new \Exception('Provider note cannot be archived');
             }
 
             // Archive the note
             $archived = $this->providerNoteRepository->archive($providerNote);
 
-            if (!$archived) {
+            if (! $archived) {
                 throw new \Exception('Failed to archive provider note');
             }
 
             // Get the updated DTO
             $providerNoteDTO = $this->providerNoteRepository->findDTO($providerNote->id);
 
-            if (!$providerNoteDTO) {
+            if (! $providerNoteDTO) {
                 throw new \Exception('Failed to retrieve archived provider note');
             }
 

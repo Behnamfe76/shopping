@@ -2,12 +2,8 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\MapName;
-use Spatie\LaravelData\Attributes\WithTransformer;
-use Spatie\LaravelData\Transformers\DateTimeTransformer;
 use Illuminate\Support\Carbon;
-use Fereydooni\Shopping\app\Models\OrderItem;
+use Spatie\LaravelData\Data;
 
 class OrderItemDTO extends Data
 {
@@ -38,8 +34,7 @@ class OrderItemDTO extends Data
         public ?array $product = null,
         public ?array $variant = null,
         public ?array $shipment_items = null,
-    ) {
-    }
+    ) {}
 
     public static function fromModel($orderItem): static
     {

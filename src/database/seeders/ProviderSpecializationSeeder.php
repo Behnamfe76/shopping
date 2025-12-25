@@ -2,14 +2,13 @@
 
 namespace Fereydooni\Shopping\database\seeders;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use Fereydooni\Shopping\App\Models\ProviderSpecialization;
-use Fereydooni\Shopping\App\Models\Provider;
-use Fereydooni\Shopping\App\Models\User;
-use Fereydooni\Shopping\App\Enums\SpecializationCategory;
 use Fereydooni\Shopping\App\Enums\ProficiencyLevel;
+use Fereydooni\Shopping\App\Enums\SpecializationCategory;
 use Fereydooni\Shopping\App\Enums\VerificationStatus;
+use Fereydooni\Shopping\App\Models\Provider;
+use Fereydooni\Shopping\App\Models\ProviderSpecialization;
+use Fereydooni\Shopping\App\Models\User;
+use Illuminate\Database\Seeder;
 
 class ProviderSpecializationSeeder extends Seeder
 {
@@ -22,6 +21,7 @@ class ProviderSpecializationSeeder extends Seeder
         $providers = Provider::all();
         if ($providers->isEmpty()) {
             $this->command->warn('No providers found. Skipping specialization seeding.');
+
             return;
         }
 
@@ -29,6 +29,7 @@ class ProviderSpecializationSeeder extends Seeder
         $users = User::all();
         if ($users->isEmpty()) {
             $this->command->warn('No users found. Skipping specialization seeding.');
+
             return;
         }
 
@@ -52,7 +53,7 @@ class ProviderSpecializationSeeder extends Seeder
         $hasPrimary = false;
 
         for ($i = 0; $i < $specializationCount; $i++) {
-            $isPrimary = !$hasPrimary && ($i === 0 || rand(0, 1));
+            $isPrimary = ! $hasPrimary && ($i === 0 || rand(0, 1));
             if ($isPrimary) {
                 $hasPrimary = true;
             }
@@ -145,7 +146,7 @@ class ProviderSpecializationSeeder extends Seeder
             'Cybersecurity', 'Cloud Computing', 'DevOps Engineering', 'UI/UX Design',
             'Project Management', 'Business Analysis', 'Digital Marketing', 'Content Creation',
             'Graphic Design', 'Video Production', 'Photography', 'Consulting',
-            'Training & Education', 'Research & Development', 'Quality Assurance', 'Technical Writing'
+            'Training & Education', 'Research & Development', 'Quality Assurance', 'Technical Writing',
         ];
 
         return $names[array_rand($names)];
@@ -164,7 +165,7 @@ class ProviderSpecializationSeeder extends Seeder
             'Extensive experience in solving challenging technical and business problems.',
             'Skilled professional with strong analytical and problem-solving abilities.',
             'Expert in optimizing processes and improving efficiency.',
-            'Dedicated professional committed to continuous learning and improvement.'
+            'Dedicated professional committed to continuous learning and improvement.',
         ];
 
         return $descriptions[array_rand($descriptions)];
@@ -190,12 +191,13 @@ class ProviderSpecializationSeeder extends Seeder
             'Certified Teacher',
             'Certified Personal Trainer',
             'Certified Real Estate Agent',
-            'Certified Insurance Agent'
+            'Certified Insurance Agent',
         ];
 
         // 70% chance of having certifications
         if (rand(1, 10) <= 7) {
             $count = rand(1, 3);
+
             return array_rand(array_flip($certifications), $count);
         }
 
@@ -243,12 +245,13 @@ class ProviderSpecializationSeeder extends Seeder
             'Technical expertise in modern tools',
             'Proven track record of success',
             'Continuous learning mindset',
-            'Quality-driven professional'
+            'Quality-driven professional',
         ];
 
         // 30% chance of having notes
         if (rand(1, 10) <= 3) {
             $count = rand(1, 2);
+
             return array_rand(array_flip($notes), $count);
         }
 

@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\App\Notifications\ProviderSpecialization;
 
+use Fereydooni\Shopping\App\Models\ProviderSpecialization;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Fereydooni\Shopping\App\Models\ProviderSpecialization;
 
 class SpecializationAdded extends Notification implements ShouldQueue
 {

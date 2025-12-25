@@ -2,9 +2,8 @@
 
 namespace Fereydooni\Shopping\database\seeders;
 
-use Illuminate\Database\Seeder;
 use Fereydooni\Shopping\app\Models\Category;
-use Illuminate\Support\Str;
+use Illuminate\Database\Seeder;
 
 class CategorySeeder extends Seeder
 {

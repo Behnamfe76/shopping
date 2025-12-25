@@ -3,11 +3,8 @@
 namespace Fereydooni\Shopping\app\Events;
 
 use Fereydooni\Shopping\app\Models\EmployeePerformanceReview;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -41,6 +38,7 @@ class EmployeePerformanceReviewUpdated
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public EmployeePerformanceReview $review;
+
     public array $changes;
 
     public function __construct(EmployeePerformanceReview $review, array $changes = [])
@@ -109,6 +107,7 @@ class EmployeePerformanceReviewApproved
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public EmployeePerformanceReview $review;
+
     public int $approvedBy;
 
     public function __construct(EmployeePerformanceReview $review, int $approvedBy)
@@ -133,7 +132,9 @@ class EmployeePerformanceReviewRejected
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public EmployeePerformanceReview $review;
+
     public int $rejectedBy;
+
     public ?string $reason;
 
     public function __construct(EmployeePerformanceReview $review, int $rejectedBy, ?string $reason = null)
@@ -159,6 +160,7 @@ class EmployeePerformanceReviewAssigned
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public EmployeePerformanceReview $review;
+
     public int $reviewerId;
 
     public function __construct(EmployeePerformanceReview $review, int $reviewerId)
@@ -183,6 +185,7 @@ class EmployeePerformanceReviewScheduled
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public EmployeePerformanceReview $review;
+
     public string $reviewDate;
 
     public function __construct(EmployeePerformanceReview $review, string $reviewDate)
@@ -229,6 +232,7 @@ class EmployeePerformanceReviewReminderSent
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public EmployeePerformanceReview $review;
+
     public string $reminderType;
 
     public function __construct(EmployeePerformanceReview $review, string $reminderType = 'general')

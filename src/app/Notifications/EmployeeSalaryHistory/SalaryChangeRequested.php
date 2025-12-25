@@ -3,9 +3,9 @@
 namespace App\Notifications\EmployeeSalaryHistory;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
 class SalaryChangeRequested extends Notification implements ShouldQueue
 {
@@ -28,10 +28,10 @@ class SalaryChangeRequested extends Notification implements ShouldQueue
         return (new MailMessage)
             ->subject('Salary Change Request Requires Approval')
             ->line('A new salary change request has been submitted and requires your approval.')
-            ->line('Employee: ' . $this->salaryHistory->employee->name)
-            ->line('Change Type: ' . $this->salaryHistory->change_type->label())
-            ->line('Amount: $' . number_format($this->salaryHistory->change_amount, 2))
-            ->action('Review Request', url('/salary-changes/' . $this->salaryHistory->id))
+            ->line('Employee: '.$this->salaryHistory->employee->name)
+            ->line('Change Type: '.$this->salaryHistory->change_type->label())
+            ->line('Amount: $'.number_format($this->salaryHistory->change_amount, 2))
+            ->action('Review Request', url('/salary-changes/'.$this->salaryHistory->id))
             ->line('Please review and take appropriate action.');
     }
 

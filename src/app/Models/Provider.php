@@ -2,14 +2,14 @@
 
 namespace Fereydooni\Shopping\App\Models;
 
+use Carbon\Carbon;
+use Fereydooni\Shopping\App\Enums\ProviderStatus;
+use Fereydooni\Shopping\App\Enums\ProviderType;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Fereydooni\Shopping\App\Enums\ProviderStatus;
-use Fereydooni\Shopping\App\Enums\ProviderType;
-use Carbon\Carbon;
 
 class Provider extends Model
 {
@@ -167,34 +167,34 @@ class Provider extends Model
     public function scopeTopRated($query, $limit = 10)
     {
         return $query->whereNotNull('rating')
-                    ->orderBy('rating', 'desc')
-                    ->limit($limit);
+            ->orderBy('rating', 'desc')
+            ->limit($limit);
     }
 
     public function scopeTopSpenders($query, $limit = 10)
     {
         return $query->orderBy('total_spent', 'desc')
-                    ->limit($limit);
+            ->limit($limit);
     }
 
     public function scopeMostReliable($query, $limit = 10)
     {
         return $query->whereNotNull('quality_rating')
-                    ->orderBy('quality_rating', 'desc')
-                    ->limit($limit);
+            ->orderBy('quality_rating', 'desc')
+            ->limit($limit);
     }
 
     public function scopeNewest($query, $limit = 10)
     {
         return $query->orderBy('created_at', 'desc')
-                    ->limit($limit);
+            ->limit($limit);
     }
 
     public function scopeLongestServing($query, $limit = 10)
     {
         return $query->whereNotNull('contract_start_date')
-                    ->orderBy('contract_start_date', 'asc')
-                    ->limit($limit);
+            ->orderBy('contract_start_date', 'asc')
+            ->limit($limit);
     }
 
     // Accessors
@@ -230,7 +230,7 @@ class Provider extends Model
 
     public function getContractExpiresInDaysAttribute(): ?int
     {
-        if (!$this->contract_end_date) {
+        if (! $this->contract_end_date) {
             return null;
         }
 
@@ -311,10 +311,10 @@ class Provider extends Model
         return $this->update(['status' => ProviderStatus::INACTIVE]);
     }
 
-    public function suspend(string $reason = null): bool
+    public function suspend(?string $reason = null): bool
     {
-        $this->contact_notes = ($this->contact_notes ? $this->contact_notes . "\n" : '') .
-                               "Suspended on " . now()->format('Y-m-d H:i:s') .
+        $this->contact_notes = ($this->contact_notes ? $this->contact_notes."\n" : '').
+                               'Suspended on '.now()->format('Y-m-d H:i:s').
                                ($reason ? " - Reason: {$reason}" : '');
 
         return $this->update(['status' => ProviderStatus::SUSPENDED]);
@@ -325,10 +325,10 @@ class Provider extends Model
         return $this->update(['status' => ProviderStatus::ACTIVE]);
     }
 
-    public function blacklist(string $reason = null): bool
+    public function blacklist(?string $reason = null): bool
     {
-        $this->contact_notes = ($this->contact_notes ? $this->contact_notes . "\n" : '') .
-                               "Blacklisted on " . now()->format('Y-m-d H:i:s') .
+        $this->contact_notes = ($this->contact_notes ? $this->contact_notes."\n" : '').
+                               'Blacklisted on '.now()->format('Y-m-d H:i:s').
                                ($reason ? " - Reason: {$reason}" : '');
 
         return $this->update(['status' => ProviderStatus::BLACKLISTED]);
@@ -372,13 +372,14 @@ class Provider extends Model
     public function extendContract(string $newEndDate): bool
     {
         $date = Carbon::parse($newEndDate);
+
         return $this->update(['contract_end_date' => $date]);
     }
 
-    public function terminateContract(string $reason = null): bool
+    public function terminateContract(?string $reason = null): bool
     {
-        $this->contact_notes = ($this->contact_notes ? $this->contact_notes . "\n" : '') .
-                               "Contract terminated on " . now()->format('Y-m-d H:i:s') .
+        $this->contact_notes = ($this->contact_notes ? $this->contact_notes."\n" : '').
+                               'Contract terminated on '.now()->format('Y-m-d H:i:s').
                                ($reason ? " - Reason: {$reason}" : '');
 
         return $this->update(['contract_end_date' => now()]);

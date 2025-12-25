@@ -2,21 +2,21 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Fereydooni\Shopping\app\Enums\Gender;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Fereydooni\Shopping\app\Enums\CustomerType;
-use Fereydooni\Unixtime\HasTimestampEquivalents;
 use Fereydooni\Shopping\app\Enums\CustomerStatus;
+use Fereydooni\Shopping\app\Enums\CustomerType;
+use Fereydooni\Shopping\app\Enums\Gender;
 use Fereydooni\Shopping\app\Traits\HasUniqueColumn;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Fereydooni\Unixtime\HasTimestampEquivalents;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Customer extends Model
 {
-    use SoftDeletes;
-    use HasUniqueColumn;
     use HasTimestampEquivalents;
+    use HasUniqueColumn;
+    use SoftDeletes;
 
     protected $uniqueColumnField = 'customer_number';
 
@@ -54,7 +54,7 @@ class Customer extends Model
 
     protected $uniqueColumnSignature = [
         'length' => 15,
-        'type'   => 'alphanumeric',
+        'type' => 'alphanumeric',
         'prefix' => 'CUST-',
         'suffix' => '',
     ];
@@ -154,7 +154,7 @@ class Customer extends Model
     // Accessors
     public function getFullNameAttribute(): string
     {
-        return trim($this->first_name . ' ' . $this->last_name);
+        return trim($this->first_name.' '.$this->last_name);
     }
 
     public function getDisplayNameAttribute(): string
@@ -162,6 +162,7 @@ class Customer extends Model
         if ($this->company_name && $this->customer_type->hasBusinessFields()) {
             return $this->company_name;
         }
+
         return $this->full_name;
     }
 
@@ -210,6 +211,7 @@ class Customer extends Model
     public function addLoyaltyPoints(int $points): bool
     {
         $this->loyalty_points += $points;
+
         return $this->save();
     }
 
@@ -217,8 +219,10 @@ class Customer extends Model
     {
         if ($this->loyalty_points >= $points) {
             $this->loyalty_points -= $points;
+
             return $this->save();
         }
+
         return false;
     }
 }

@@ -2,14 +2,13 @@
 
 namespace Fereydooni\Shopping\App\Models;
 
+use Fereydooni\Shopping\App\Enums\ProviderPaymentMethod;
+use Fereydooni\Shopping\App\Enums\ProviderPaymentStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Fereydooni\Shopping\App\Enums\ProviderPaymentStatus;
-use Fereydooni\Shopping\App\Enums\ProviderPaymentMethod;
-use Carbon\Carbon;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ProviderPayment extends Model
 {
@@ -218,7 +217,7 @@ class ProviderPayment extends Model
      */
     public function isReconciled(): bool
     {
-        return !is_null($this->reconciled_at);
+        return ! is_null($this->reconciled_at);
     }
 
     /**
@@ -274,7 +273,7 @@ class ProviderPayment extends Model
      */
     public function getFormattedAmountAttribute(): string
     {
-        return $this->currency . ' ' . number_format($this->amount, 2);
+        return $this->currency.' '.number_format($this->amount, 2);
     }
 
     /**
@@ -318,7 +317,7 @@ class ProviderPayment extends Model
         $date = now()->format('Ymd');
         $random = strtoupper(substr(md5(uniqid()), 0, 6));
 
-        return $prefix . $date . $random;
+        return $prefix.$date.$random;
     }
 
     /**
@@ -326,6 +325,6 @@ class ProviderPayment extends Model
      */
     public static function isPaymentNumberUnique(string $paymentNumber): bool
     {
-        return !static::where('payment_number', $paymentNumber)->exists();
+        return ! static::where('payment_number', $paymentNumber)->exists();
     }
 }

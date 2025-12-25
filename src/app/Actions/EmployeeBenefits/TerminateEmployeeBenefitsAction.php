@@ -2,13 +2,13 @@
 
 namespace Fereydooni\Shopping\app\Actions\EmployeeBenefits;
 
-use Fereydooni\Shopping\app\DTOs\EmployeeBenefitsDTO;
-use Fereydooni\Shopping\app\Models\EmployeeBenefits;
 use App\Repositories\EmployeeBenefitsRepository;
+use Exception;
+use Fereydooni\Shopping\app\DTOs\EmployeeBenefitsDTO;
 use Fereydooni\Shopping\app\Events\EmployeeBenefits\EmployeeBenefitsTerminated;
+use Fereydooni\Shopping\app\Models\EmployeeBenefits;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Exception;
 
 class TerminateEmployeeBenefitsAction
 {
@@ -16,7 +16,7 @@ class TerminateEmployeeBenefitsAction
         private EmployeeBenefitsRepository $repository
     ) {}
 
-    public function execute(EmployeeBenefits $benefit, string $endDate = null, string $reason = null): EmployeeBenefitsDTO
+    public function execute(EmployeeBenefits $benefit, ?string $endDate = null, ?string $reason = null): EmployeeBenefitsDTO
     {
         try {
             DB::beginTransaction();
@@ -32,10 +32,10 @@ class TerminateEmployeeBenefitsAction
                 'status' => 'terminated',
                 'end_date' => $endDate,
                 'is_active' => false,
-                'notes' => $reason ? ($benefit->notes . "\nTermination Reason: " . $reason) : $benefit->notes
+                'notes' => $reason ? ($benefit->notes."\nTermination Reason: ".$reason) : $benefit->notes,
             ]);
 
-            if (!$updated) {
+            if (! $updated) {
                 throw new Exception('Failed to terminate employee benefits');
             }
 
@@ -59,7 +59,7 @@ class TerminateEmployeeBenefitsAction
             DB::rollBack();
             Log::error('Failed to terminate employee benefits', [
                 'error' => $e->getMessage(),
-                'benefit_id' => $benefit->id
+                'benefit_id' => $benefit->id,
             ]);
             throw $e;
         }
@@ -68,7 +68,7 @@ class TerminateEmployeeBenefitsAction
     private function validateTerminationPermissions(EmployeeBenefits $benefit): void
     {
         // Check if benefit is active and enrolled
-        if ($benefit->status->value !== 'enrolled' || !$benefit->is_active) {
+        if ($benefit->status->value !== 'enrolled' || ! $benefit->is_active) {
             throw new Exception('Only active and enrolled benefits can be terminated');
         }
 
@@ -78,19 +78,19 @@ class TerminateEmployeeBenefitsAction
         }
     }
 
-    private function recordTerminationReason(EmployeeBenefits $benefit, string $reason = null): void
+    private function recordTerminationReason(EmployeeBenefits $benefit, ?string $reason = null): void
     {
         if ($reason) {
             $currentNotes = $benefit->notes ?? '';
-            $terminationNote = "\nTermination Date: " . \now()->format('Y-m-d') . "\nReason: " . $reason;
+            $terminationNote = "\nTermination Date: ".\now()->format('Y-m-d')."\nReason: ".$reason;
 
             $this->repository->update($benefit, [
-                'notes' => $currentNotes . $terminationNote
+                'notes' => $currentNotes.$terminationNote,
             ]);
         }
     }
 
-    private function sendTerminationNotifications(EmployeeBenefits $benefit, string $reason = null): void
+    private function sendTerminationNotifications(EmployeeBenefits $benefit, ?string $reason = null): void
     {
         // Send notification to employee
         // Send notification to HR

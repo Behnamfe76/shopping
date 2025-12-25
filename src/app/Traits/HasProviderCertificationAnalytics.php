@@ -2,13 +2,11 @@
 
 namespace App\Traits;
 
-use App\Models\ProviderCertification;
 use App\Enums\CertificationCategory;
 use App\Enums\CertificationStatus;
 use App\Enums\CertificationVerificationStatus;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 trait HasProviderCertificationAnalytics
 {
@@ -123,7 +121,7 @@ trait HasProviderCertificationAnalytics
     /**
      * Get certification trends over time
      */
-    public function getCertificationTrends(string $startDate = null, string $endDate = null): array
+    public function getCertificationTrends(?string $startDate = null, ?string $endDate = null): array
     {
         $startDate = $startDate ? Carbon::parse($startDate) : Carbon::now()->subYear();
         $endDate = $endDate ? Carbon::parse($endDate) : Carbon::now();
@@ -311,7 +309,7 @@ trait HasProviderCertificationAnalytics
             $recommendations[] = [
                 'type' => 'renewal_reminder',
                 'priority' => 'high',
-                'message' => 'You have ' . $expiringSoon->count() . ' certification(s) expiring within 30 days.',
+                'message' => 'You have '.$expiringSoon->count().' certification(s) expiring within 30 days.',
                 'action' => 'Review and renew expiring certifications',
                 'count' => $expiringSoon->count(),
             ];
@@ -325,7 +323,7 @@ trait HasProviderCertificationAnalytics
             $recommendations[] = [
                 'type' => 'verification_needed',
                 'priority' => 'medium',
-                'message' => 'You have ' . $unverified . ' unverified certification(s).',
+                'message' => 'You have '.$unverified.' unverified certification(s).',
                 'action' => 'Submit verification documents',
                 'count' => $unverified,
             ];
@@ -337,7 +335,7 @@ trait HasProviderCertificationAnalytics
             $recommendations[] = [
                 'type' => 'expired_certifications',
                 'priority' => 'high',
-                'message' => 'You have ' . $expired->count() . ' expired certification(s).',
+                'message' => 'You have '.$expired->count().' expired certification(s).',
                 'action' => 'Renew or replace expired certifications',
                 'count' => $expired->count(),
             ];

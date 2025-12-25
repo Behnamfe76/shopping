@@ -41,6 +41,7 @@ trait HasEmployeeEmergencyContactStatusManagement
                 'contact_id' => $contact->id,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -65,6 +66,7 @@ trait HasEmployeeEmergencyContactStatusManagement
                 'contact_id' => $contact->id,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -99,6 +101,7 @@ trait HasEmployeeEmergencyContactStatusManagement
                 'contact_id' => $contact->id,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -128,6 +131,7 @@ trait HasEmployeeEmergencyContactStatusManagement
                 'contact_id' => $contact->id,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }

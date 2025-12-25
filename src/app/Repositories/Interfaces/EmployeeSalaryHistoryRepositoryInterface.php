@@ -2,12 +2,12 @@
 
 namespace App\Repositories\Interfaces;
 
-use App\Models\EmployeeSalaryHistory;
 use App\DTOs\EmployeeSalaryHistoryDTO;
+use App\Models\EmployeeSalaryHistory;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
 
 interface EmployeeSalaryHistoryRepositoryInterface
 {
@@ -29,7 +29,7 @@ interface EmployeeSalaryHistoryRepositoryInterface
     /**
      * Get cursor paginated salary history records
      */
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator;
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator;
 
     /**
      * Find salary history by ID
@@ -184,7 +184,7 @@ interface EmployeeSalaryHistoryRepositoryInterface
     /**
      * Reject salary change
      */
-    public function reject(EmployeeSalaryHistory $salaryHistory, int $rejectedBy, string $reason = null): bool;
+    public function reject(EmployeeSalaryHistory $salaryHistory, int $rejectedBy, ?string $reason = null): bool;
 
     /**
      * Get employee salary history count
@@ -199,12 +199,12 @@ interface EmployeeSalaryHistoryRepositoryInterface
     /**
      * Get employee total salary increase
      */
-    public function getEmployeeTotalSalaryIncrease(int $employeeId, string $startDate = null, string $endDate = null): float;
+    public function getEmployeeTotalSalaryIncrease(int $employeeId, ?string $startDate = null, ?string $endDate = null): float;
 
     /**
      * Get employee total salary decrease
      */
-    public function getEmployeeTotalSalaryDecrease(int $employeeId, string $startDate = null, string $endDate = null): float;
+    public function getEmployeeTotalSalaryDecrease(int $employeeId, ?string $startDate = null, ?string $endDate = null): float;
 
     /**
      * Get employee average salary change
@@ -239,12 +239,12 @@ interface EmployeeSalaryHistoryRepositoryInterface
     /**
      * Get total salary increase
      */
-    public function getTotalSalaryIncrease(string $startDate = null, string $endDate = null): float;
+    public function getTotalSalaryIncrease(?string $startDate = null, ?string $endDate = null): float;
 
     /**
      * Get total salary decrease
      */
-    public function getTotalSalaryDecrease(string $startDate = null, string $endDate = null): float;
+    public function getTotalSalaryDecrease(?string $startDate = null, ?string $endDate = null): float;
 
     /**
      * Get average salary change
@@ -259,17 +259,17 @@ interface EmployeeSalaryHistoryRepositoryInterface
     /**
      * Get salary change statistics
      */
-    public function getSalaryChangeStatistics(string $startDate = null, string $endDate = null): array;
+    public function getSalaryChangeStatistics(?string $startDate = null, ?string $endDate = null): array;
 
     /**
      * Get department salary statistics
      */
-    public function getDepartmentSalaryStatistics(int $departmentId, string $startDate = null, string $endDate = null): array;
+    public function getDepartmentSalaryStatistics(int $departmentId, ?string $startDate = null, ?string $endDate = null): array;
 
     /**
      * Get company salary statistics
      */
-    public function getCompanySalaryStatistics(string $startDate = null, string $endDate = null): array;
+    public function getCompanySalaryStatistics(?string $startDate = null, ?string $endDate = null): array;
 
     /**
      * Search salary history
@@ -304,7 +304,7 @@ interface EmployeeSalaryHistoryRepositoryInterface
     /**
      * Get salary trends
      */
-    public function getSalaryTrends(string $startDate = null, string $endDate = null): array;
+    public function getSalaryTrends(?string $startDate = null, ?string $endDate = null): array;
 
     /**
      * Get salary comparison between two employees

@@ -2,15 +2,13 @@
 
 namespace Fereydooni\Shopping\App\Models;
 
+use Fereydooni\Shopping\App\Enums\Country;
+use Fereydooni\Shopping\App\Enums\LocationType;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Builder;
-use Fereydooni\Shopping\App\Enums\LocationType;
-use Fereydooni\Shopping\App\Enums\Country;
-use Carbon\Carbon;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ProviderLocation extends Model
 {
@@ -167,11 +165,11 @@ class ProviderLocation extends Model
     {
         return $query->where(function ($q) use ($search) {
             $q->where('location_name', 'like', "%{$search}%")
-              ->orWhere('address', 'like', "%{$search}%")
-              ->orWhere('city', 'like', "%{$search}%")
-              ->orWhere('state', 'like', "%{$search}%")
-              ->orWhere('contact_person', 'like', "%{$search}%")
-              ->orWhere('notes', 'like', "%{$search}%");
+                ->orWhere('address', 'like', "%{$search}%")
+                ->orWhere('city', 'like', "%{$search}%")
+                ->orWhere('state', 'like', "%{$search}%")
+                ->orWhere('contact_person', 'like', "%{$search}%")
+                ->orWhere('notes', 'like', "%{$search}%");
         });
     }
 
@@ -239,7 +237,7 @@ class ProviderLocation extends Model
 
     public function getDistanceFrom(float $latitude, float $longitude): ?float
     {
-        if (!$this->hasCoordinates()) {
+        if (! $this->hasCoordinates()) {
             return null;
         }
 
@@ -249,6 +247,7 @@ class ProviderLocation extends Model
     public function getDistanceInKm(float $latitude, float $longitude): ?float
     {
         $miles = $this->getDistanceFrom($latitude, $longitude);
+
         return $miles ? $miles * 1.609344 : null;
     }
 
@@ -260,13 +259,15 @@ class ProviderLocation extends Model
     public function getOperatingHoursForDay(string $day): ?array
     {
         $day = strtolower($day);
+
         return $this->operating_hours[$day] ?? null;
     }
 
     public function isOpenOnDay(string $day): bool
     {
         $day = strtolower($day);
-        return isset($this->operating_hours[$day]) && !empty($this->operating_hours[$day]);
+
+        return isset($this->operating_hours[$day]) && ! empty($this->operating_hours[$day]);
     }
 
     public function getFormattedPhone(): string
@@ -278,7 +279,7 @@ class ProviderLocation extends Model
         }
 
         if (strlen($phone) === 10) {
-            return '+1' . $phone;
+            return '+1'.$phone;
         }
 
         return $phone;
@@ -297,7 +298,7 @@ class ProviderLocation extends Model
         }
 
         if (strlen($phone) === 10) {
-            return '+1' . $phone;
+            return '+1'.$phone;
         }
 
         return $phone;

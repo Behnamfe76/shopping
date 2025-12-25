@@ -2,13 +2,12 @@
 
 namespace Fereydooni\Shopping\Actions\EmployeeTraining;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
-use Fereydooni\Shopping\Models\EmployeeTraining;
 use Fereydooni\Shopping\DTOs\EmployeeTrainingDTO;
 use Fereydooni\Shopping\Enums\TrainingStatus;
+use Fereydooni\Shopping\Models\EmployeeTraining;
 use Fereydooni\Shopping\Repositories\Interfaces\EmployeeTrainingRepositoryInterface;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class CreateEmployeeTrainingAction
 {
@@ -34,7 +33,7 @@ class CreateEmployeeTrainingAction
         $data = $this->setDefaultValues($data);
 
         // Calculate total hours if not provided
-        if (!isset($data['total_hours']) && isset($data['hours_completed'])) {
+        if (! isset($data['total_hours']) && isset($data['hours_completed'])) {
             $data['total_hours'] = $data['hours_completed'];
         }
 
@@ -104,7 +103,7 @@ class CreateEmployeeTrainingAction
         try {
             // Send notification to employee
             // $training->employee->notify(new TrainingAssigned($training));
-            
+
             // Send notification to manager if applicable
             // if ($training->employee->manager) {
             //     $training->employee->manager->notify(new EmployeeTrainingAssigned($training));
@@ -114,7 +113,7 @@ class CreateEmployeeTrainingAction
         } catch (\Exception $e) {
             Log::warning('Failed to send training notifications', [
                 'training_id' => $training->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }

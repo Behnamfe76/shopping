@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\database\seeders;
 
-use Illuminate\Database\Seeder;
-use Fereydooni\Shopping\app\Models\EmployeeEmergencyContact;
-use Fereydooni\Shopping\app\Models\Employee;
 use Fereydooni\Shopping\app\Enums\Relationship;
+use Fereydooni\Shopping\app\Models\Employee;
+use Fereydooni\Shopping\app\Models\EmployeeEmergencyContact;
 use Fereydooni\Shopping\database\factories\EmployeeEmergencyContactFactory;
+use Illuminate\Database\Seeder;
 
 class EmployeeEmergencyContactSeeder extends Seeder
 {
@@ -64,7 +64,7 @@ class EmployeeEmergencyContactSeeder extends Seeder
 
         for ($i = 0; $i < $contactCount; $i++) {
             $relationship = $this->getRandomRelationship($relationships, $relationshipWeights);
-            $isPrimary = !$hasPrimary && ($i === 0 || $this->faker->boolean(20));
+            $isPrimary = ! $hasPrimary && ($i === 0 || $this->faker->boolean(20));
 
             if ($isPrimary) {
                 $hasPrimary = true;
@@ -76,7 +76,7 @@ class EmployeeEmergencyContactSeeder extends Seeder
         }
 
         // If no primary contact was created, make the first one primary
-        if (!$hasPrimary && $contactCount > 0) {
+        if (! $hasPrimary && $contactCount > 0) {
             $firstContact = EmployeeEmergencyContact::where('employee_id', $employee->id)->first();
             if ($firstContact) {
                 $firstContact->setAsPrimary();
@@ -158,6 +158,7 @@ class EmployeeEmergencyContactSeeder extends Seeder
 
         if ($employees->isEmpty()) {
             $this->command->warn('No employees found for sample scenarios.');
+
             return;
         }
 

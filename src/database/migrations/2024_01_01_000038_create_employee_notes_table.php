@@ -23,13 +23,13 @@ return new class extends Migration
                 'training',
                 'goal',
                 'feedback',
-                'other'
+                'other',
             ])->default('general');
             $table->enum('priority', [
                 'low',
                 'medium',
                 'high',
-                'urgent'
+                'urgent',
             ])->default('medium');
             $table->boolean('is_private')->default(false);
             $table->boolean('is_archived')->default(false);
@@ -55,4 +55,3 @@ return new class extends Migration
         Schema::dropIfExists('employee_notes');
     }
 };
-

@@ -222,7 +222,7 @@ class ProviderInvoiceSeeder extends Seeder
                 ->for($provider)
                 ->state([
                     'due_date' => $dueSoonDate,
-                    'status' => 'sent'
+                    'status' => 'sent',
                 ])
                 ->create();
         }
@@ -234,7 +234,7 @@ class ProviderInvoiceSeeder extends Seeder
                 ->sent()
                 ->for($provider)
                 ->state([
-                    'attachments' => ['invoice.pdf', 'receipt.pdf', 'contract.pdf']
+                    'attachments' => ['invoice.pdf', 'receipt.pdf', 'contract.pdf'],
                 ])
                 ->create();
         }
@@ -246,10 +246,9 @@ class ProviderInvoiceSeeder extends Seeder
                 ->sent()
                 ->for($provider)
                 ->state([
-                    'notes' => 'This invoice includes additional services and materials as requested by the client.'
+                    'notes' => 'This invoice includes additional services and materials as requested by the client.',
                 ])
                 ->create();
         }
     }
 }
-

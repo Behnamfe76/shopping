@@ -65,7 +65,7 @@ class TransactionSearchResource extends JsonResource
      */
     private function getSearchHighlights($transaction, ?string $query): array
     {
-        if (!$query) {
+        if (! $query) {
             return [];
         }
 
@@ -106,7 +106,7 @@ class TransactionSearchResource extends JsonResource
     private function highlightText(string $text, string $query): string
     {
         $highlighted = preg_replace(
-            '/(' . preg_quote($query, '/') . ')/i',
+            '/('.preg_quote($query, '/').')/i',
             '<mark>$1</mark>',
             $text
         );
@@ -119,7 +119,7 @@ class TransactionSearchResource extends JsonResource
      */
     private function calculateRelevanceScore($transaction, ?string $query): float
     {
-        if (!$query) {
+        if (! $query) {
             return 0.0;
         }
 
@@ -207,6 +207,6 @@ class TransactionSearchResource extends JsonResource
      */
     private function formatAmount(float $amount, string $currency): string
     {
-        return number_format($amount, 2) . ' ' . strtoupper($currency);
+        return number_format($amount, 2).' '.strtoupper($currency);
     }
 }

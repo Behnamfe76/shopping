@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\Actions\EmployeeTraining;
 
+use Fereydooni\Shopping\DTOs\EmployeeTrainingDTO;
+use Fereydooni\Shopping\Enums\TrainingStatus;
+use Fereydooni\Shopping\Models\EmployeeTraining;
+use Fereydooni\Shopping\Repositories\Interfaces\EmployeeTrainingRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Fereydooni\Shopping\Models\EmployeeTraining;
-use Fereydooni\Shopping\DTOs\EmployeeTrainingDTO;
-use Fereydooni\Shopping\Repositories\Interfaces\EmployeeTrainingRepositoryInterface;
-use Fereydooni\Shopping\Enums\TrainingStatus;
 
 class FailEmployeeTrainingAction
 {
@@ -26,7 +26,7 @@ class FailEmployeeTrainingAction
             // Mark training as failed
             $failed = $this->repository->fail($training, $reason);
 
-            if (!$failed) {
+            if (! $failed) {
                 throw new \Exception('Failed to mark employee training as failed');
             }
 
@@ -48,7 +48,7 @@ class FailEmployeeTrainingAction
             Log::error('Failed to mark employee training as failed', [
                 'training_id' => $training->id,
                 'error' => $e->getMessage(),
-                'reason' => $reason
+                'reason' => $reason,
             ]);
             throw $e;
         }
@@ -95,7 +95,7 @@ class FailEmployeeTrainingAction
     private function handleRetakeLogic(EmployeeTraining $training): void
     {
         // Check if training allows retakes
-        if (!$this->allowsRetake($training)) {
+        if (! $this->allowsRetake($training)) {
             return;
         }
 
@@ -105,7 +105,7 @@ class FailEmployeeTrainingAction
             'training_type' => $training->training_type,
             'training_name' => $training->training_name,
             'provider' => $training->provider,
-            'description' => $training->description . ' (Retake)',
+            'description' => $training->description.' (Retake)',
             'start_date' => now()->addDays(7), // Allow 7 days before retake
             'end_date' => now()->addDays(30), // 30 days to complete retake
             'total_hours' => $training->total_hours,
@@ -118,7 +118,7 @@ class FailEmployeeTrainingAction
             'training_method' => $training->training_method,
             'materials' => $training->materials,
             'notes' => "Retake of training ID: {$training->id}. Original failure reason: {$training->failure_reason}",
-            'status' => TrainingStatus::NOT_STARTED
+            'status' => TrainingStatus::NOT_STARTED,
         ];
 
         // Create retake training
@@ -136,10 +136,10 @@ class FailEmployeeTrainingAction
         // - Company policy
         // - Previous retake attempts
         // - Time since last attempt
-        
+
         // For now, allow retakes for most trainings except some certifications
         $noRetakeTypes = ['compliance', 'safety'];
-        
-        return !in_array($training->training_type, $noRetakeTypes);
+
+        return ! in_array($training->training_type, $noRetakeTypes);
     }
 }

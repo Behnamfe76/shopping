@@ -3,32 +3,31 @@
 namespace Fereydooni\Shopping\app\Services;
 
 use Attribute;
-use Illuminate\Support\Facades\DB;
-use Fereydooni\Shopping\app\Models\Product;
 use Fereydooni\Shopping\app\DTOs\ProductDTO;
+use Fereydooni\Shopping\app\Models\Product;
 use Fereydooni\Shopping\app\Models\ProductAttribute;
-use Illuminate\Database\Eloquent\Collection;
-use Fereydooni\Shopping\app\Traits\HasStatusToggle;
-use Fereydooni\Shopping\app\Traits\HasSeoOperations;
+use Fereydooni\Shopping\app\Repositories\Interfaces\ProductRepositoryInterface;
+use Fereydooni\Shopping\app\Traits\HasAnalyticsOperations;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
-use Fereydooni\Shopping\app\Traits\HasSlugGeneration;
+use Fereydooni\Shopping\app\Traits\HasInventoryManagement;
 use Fereydooni\Shopping\app\Traits\HasMediaOperations;
 use Fereydooni\Shopping\app\Traits\HasSearchOperations;
-use Fereydooni\Shopping\app\Traits\HasAnalyticsOperations;
-use Fereydooni\Shopping\app\Traits\HasInventoryManagement;
-use Fereydooni\Shopping\app\Repositories\Interfaces\ProductRepositoryInterface;
+use Fereydooni\Shopping\app\Traits\HasSeoOperations;
+use Fereydooni\Shopping\app\Traits\HasSlugGeneration;
+use Fereydooni\Shopping\app\Traits\HasStatusToggle;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
 
 class ProductService
 {
-    use HasCrudOperations;
-    use HasStatusToggle;
-    use HasSearchOperations;
-    use HasSlugGeneration;
-    use HasMediaOperations;
-    use HasInventoryManagement;
-    use HasSeoOperations;
     use HasAnalyticsOperations;
-
+    use HasCrudOperations;
+    use HasInventoryManagement;
+    use HasMediaOperations;
+    use HasSearchOperations;
+    use HasSeoOperations;
+    use HasSlugGeneration;
+    use HasStatusToggle;
 
     public function __construct(
         private ProductRepositoryInterface $repository
@@ -58,13 +57,13 @@ class ProductService
 
                 foreach ($data['product_single_variants'] as $variantData) {
                     $attributeValue = $attribute->values()
-                        ->where('value', 'ilike', '%' . $variantData['variant_name'] . '%')
+                        ->where('value', 'ilike', '%'.$variantData['variant_name'].'%')
                         ->first();
 
                     // If not found, create it
-                    if (!$attributeValue) {
+                    if (! $attributeValue) {
                         $attributeValue = $attribute->values()->create([
-                            'value' => $variantData['variant_name']
+                            'value' => $variantData['variant_name'],
                         ]);
                     }
 
@@ -84,7 +83,7 @@ class ProductService
                         'attribute_value_id' => $attributeValue->id,
                     ]);
                 }
-            } else if ($data['has_variant'] === 'more_than_one' && isset($data['product_multiple_variants'])) {
+            } elseif ($data['has_variant'] === 'more_than_one' && isset($data['product_multiple_variants'])) {
 
                 foreach ($data['product_multiple_variants'] as $variantSet) {
 
@@ -101,13 +100,13 @@ class ProductService
                     foreach ($data['product_multi_attributes'] as $multiAttr) {
                         $attribute = ProductAttribute::where('slug', $multiAttr)->firstOrFail();
                         $attributeValue = $attribute->values()
-                            ->where('value', 'ilike', $variantSet[$multiAttr]['variant_name'] . '%')
+                            ->where('value', 'ilike', $variantSet[$multiAttr]['variant_name'].'%')
                             ->first();
 
                         // If not found, create it
-                        if (!$attributeValue) {
+                        if (! $attributeValue) {
                             $attributeValue = $attribute->values()->create([
-                                'value' => $variantSet[$multiAttr]['variant_name']
+                                'value' => $variantSet[$multiAttr]['variant_name'],
                             ]);
                         }
                         $variant->values()->create([
@@ -166,7 +165,7 @@ class ProductService
             $product->update($productData);
 
             // === 2. Sync tags ===
-            if (!empty($data['product_tags']) && is_array($data['product_tags'])) {
+            if (! empty($data['product_tags']) && is_array($data['product_tags'])) {
                 $product->tags()->sync($data['product_tags']);
             }
 
@@ -178,7 +177,7 @@ class ProductService
                     $variant->values()->delete();
                 });
                 $product->variants()->delete();
-            } elseif ($variantMode === 'one' && !empty($data['product_single_variants'])) {
+            } elseif ($variantMode === 'one' && ! empty($data['product_single_variants'])) {
 
                 // ➤ Single attribute variant mode
                 // Clean up any existing multi-variants or mismatched single-variants
@@ -198,7 +197,7 @@ class ProductService
                         ->where('value', 'ilike', $variantName)
                         ->first();
 
-                    if (!$attributeValue) {
+                    if (! $attributeValue) {
                         $attributeValue = $attribute->values()->create([
                             'value' => $variantName,
                         ]);
@@ -207,7 +206,7 @@ class ProductService
                     $variant = $product->variants()->updateOrCreate(
                         [
                             'product_id' => $product->id,
-                            'name' => $variantName
+                            'name' => $variantName,
                         ],
                         [
                             'description' => $variantData['variant_description'] ?? null,
@@ -246,7 +245,7 @@ class ProductService
                     ->whereNotIn('name', $processedVariantNames)
                     ->delete();
 
-            } elseif ($variantMode === 'more_than_one' && !empty($data['product_multiple_variants'])) {
+            } elseif ($variantMode === 'more_than_one' && ! empty($data['product_multiple_variants'])) {
 
                 // ➤ Multi-attribute variant mode
                 // Clean up any existing single-variants
@@ -265,13 +264,13 @@ class ProductService
                             $variantNameParts[] = $variantSet[$multiAttr]['variant_name'];
                         }
                     }
-                    $variantName = implode(' - ', $variantNameParts) ?: "Variant " . ($index + 1);
+                    $variantName = implode(' - ', $variantNameParts) ?: 'Variant '.($index + 1);
 
                     // Use a combination of product_id and name to identify the variant
                     $variant = $product->variants()->updateOrCreate(
                         [
                             'product_id' => $product->id,
-                            'name' => $variantName
+                            'name' => $variantName,
                         ],
                         [
                             'description' => $variantSet['variant_description'] ?? null,
@@ -292,13 +291,15 @@ class ProductService
                         $processedAttributeIds[] = $attribute->id;
 
                         $variantName = $variantSet[$multiAttr]['variant_name'] ?? null;
-                        if (!$variantName) continue;
+                        if (! $variantName) {
+                            continue;
+                        }
 
                         $attributeValue = $attribute->values()
                             ->where('value', 'ilike', $variantName)
                             ->first();
 
-                        if (!$attributeValue) {
+                        if (! $attributeValue) {
                             $attributeValue = $attribute->values()->create([
                                 'value' => $variantName,
                             ]);

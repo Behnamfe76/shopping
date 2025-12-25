@@ -2,16 +2,15 @@
 
 namespace Fereydooni\Shopping\App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Builder;
+use Carbon\Carbon;
 use Fereydooni\Shopping\App\Enums\CertificationCategory;
 use Fereydooni\Shopping\App\Enums\CertificationStatus;
 use Fereydooni\Shopping\App\Enums\VerificationStatus;
-use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ProviderCertification extends Model
 {
@@ -135,7 +134,7 @@ class ProviderCertification extends Model
     public function scopeExpiringSoon(Builder $query, int $days = 30): void
     {
         $query->where('expiry_date', '<=', Carbon::now()->addDays($days))
-              ->where('status', CertificationStatus::ACTIVE);
+            ->where('status', CertificationStatus::ACTIVE);
     }
 
     /**
@@ -255,7 +254,7 @@ class ProviderCertification extends Model
      */
     public function isExpiringSoon(int $days = 30): bool
     {
-        if (!$this->expiry_date || $this->isExpired()) {
+        if (! $this->expiry_date || $this->isExpired()) {
             return false;
         }
 
@@ -267,7 +266,7 @@ class ProviderCertification extends Model
      */
     public function needsRenewal(): bool
     {
-        if (!$this->is_recurring || !$this->expiry_date) {
+        if (! $this->is_recurring || ! $this->expiry_date) {
             return false;
         }
 
@@ -279,7 +278,7 @@ class ProviderCertification extends Model
      */
     public function daysUntilExpiration(): ?int
     {
-        if (!$this->expiry_date) {
+        if (! $this->expiry_date) {
             return null;
         }
 
@@ -291,7 +290,7 @@ class ProviderCertification extends Model
      */
     public function daysSinceIssue(): ?int
     {
-        if (!$this->issue_date) {
+        if (! $this->issue_date) {
             return null;
         }
 
@@ -303,7 +302,7 @@ class ProviderCertification extends Model
      */
     public function getAgeInYears(): ?float
     {
-        if (!$this->issue_date) {
+        if (! $this->issue_date) {
             return null;
         }
 
@@ -387,11 +386,11 @@ class ProviderCertification extends Model
      */
     public function getAttachmentUrl(): ?string
     {
-        if (!$this->attachment_path) {
+        if (! $this->attachment_path) {
             return null;
         }
 
-        return asset('storage/' . $this->attachment_path);
+        return asset('storage/'.$this->attachment_path);
     }
 
     /**
@@ -399,7 +398,7 @@ class ProviderCertification extends Model
      */
     public function hasAttachment(): bool
     {
-        return !empty($this->attachment_path);
+        return ! empty($this->attachment_path);
     }
 
     /**
@@ -415,6 +414,6 @@ class ProviderCertification extends Model
      */
     public function hasVerificationUrl(): bool
     {
-        return !empty($this->verification_url);
+        return ! empty($this->verification_url);
     }
 }

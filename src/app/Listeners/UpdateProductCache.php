@@ -2,9 +2,6 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
-use Fereydooni\Shopping\app\Events\ProductCreated;
-use Fereydooni\Shopping\app\Events\ProductUpdated;
-use Fereydooni\Shopping\app\Events\ProductDeleted;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Cache;
@@ -37,7 +34,7 @@ class UpdateProductCache implements ShouldQueue
 
         Log::info('Product cache updated', [
             'product_id' => $product->id,
-            'event' => get_class($event)
+            'event' => get_class($event),
         ]);
     }
 
@@ -103,7 +100,7 @@ class UpdateProductCache implements ShouldQueue
     {
         Log::error('Failed to update product cache', [
             'product_id' => $event->product->id,
-            'error' => $exception->getMessage()
+            'error' => $exception->getMessage(),
         ]);
     }
 }

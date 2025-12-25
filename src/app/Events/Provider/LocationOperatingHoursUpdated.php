@@ -2,25 +2,27 @@
 
 namespace Fereydooni\Shopping\app\Events\Provider;
 
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Queue\SerializesModels;
 use Fereydooni\Shopping\app\Models\ProviderLocation;
 use Fereydooni\Shopping\app\Models\User;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class LocationOperatingHoursUpdated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public ProviderLocation $providerLocation;
+
     public ?User $user;
+
     public array $oldOperatingHours;
+
     public array $newOperatingHours;
+
     public array $operatingHoursData;
+
     public ?string $updateReason;
 
     /**
@@ -49,7 +51,7 @@ class LocationOperatingHoursUpdated
             'changes_summary' => $this->generateChangesSummary(),
             'update_reason' => $updateReason,
             'operating_hours_changed' => $this->operatingHoursChanged(),
-            'updated_at' => now()->toISOString()
+            'updated_at' => now()->toISOString(),
         ];
     }
 
@@ -98,7 +100,7 @@ class LocationOperatingHoursUpdated
                 $summary[$day] = [
                     'old' => $this->formatDayHours($oldHours),
                     'new' => $this->formatDayHours($newHours),
-                    'change_type' => $this->determineChangeType($oldHours, $newHours)
+                    'change_type' => $this->determineChangeType($oldHours, $newHours),
                 ];
             }
         }
@@ -111,7 +113,7 @@ class LocationOperatingHoursUpdated
      */
     protected function formatDayHours(?array $hours): string
     {
-        if (!$hours) {
+        if (! $hours) {
             return 'Not specified';
         }
 
@@ -124,6 +126,7 @@ class LocationOperatingHoursUpdated
             if (isset($hours['notes'])) {
                 $formatted .= " ({$hours['notes']})";
             }
+
             return $formatted;
         }
 
@@ -177,11 +180,11 @@ class LocationOperatingHoursUpdated
      */
     protected function determineChangeType(?array $oldHours, ?array $newHours): string
     {
-        if (is_null($oldHours) && !is_null($newHours)) {
+        if (is_null($oldHours) && ! is_null($newHours)) {
             return 'added';
         }
 
-        if (!is_null($oldHours) && is_null($newHours)) {
+        if (! is_null($oldHours) && is_null($newHours)) {
             return 'removed';
         }
 
@@ -192,15 +195,15 @@ class LocationOperatingHoursUpdated
         $oldClosed = $oldHours['is_closed'] ?? false;
         $newClosed = $newHours['is_closed'] ?? false;
 
-        if ($oldClosed && !$newClosed) {
+        if ($oldClosed && ! $newClosed) {
             return 'opened';
         }
 
-        if (!$oldClosed && $newClosed) {
+        if (! $oldClosed && $newClosed) {
             return 'closed';
         }
 
-        if (!$oldClosed && !$newClosed) {
+        if (! $oldClosed && ! $newClosed) {
             return 'hours_modified';
         }
 
@@ -212,7 +215,7 @@ class LocationOperatingHoursUpdated
      */
     protected function operatingHoursChanged(): bool
     {
-        return !empty($this->generateChangesSummary());
+        return ! empty($this->generateChangesSummary());
     }
 
     /**
@@ -223,7 +226,7 @@ class LocationOperatingHoursUpdated
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('provider.' . $this->providerLocation->provider_id),
+            new PrivateChannel('provider.'.$this->providerLocation->provider_id),
             new PrivateChannel('admin.provider-locations'),
         ];
     }
@@ -241,7 +244,7 @@ class LocationOperatingHoursUpdated
             'operating_hours_data' => $this->operatingHoursData,
             'user_id' => $this->user?->id,
             'user_name' => $this->user?->name,
-            'timestamp' => now()->toISOString()
+            'timestamp' => now()->toISOString(),
         ];
     }
 
@@ -263,6 +266,7 @@ class LocationOperatingHoursUpdated
                 return true;
             }
         }
+
         return false;
     }
 
@@ -276,6 +280,7 @@ class LocationOperatingHoursUpdated
                 return true;
             }
         }
+
         return false;
     }
 
@@ -289,6 +294,7 @@ class LocationOperatingHoursUpdated
                 return true;
             }
         }
+
         return false;
     }
 
@@ -302,6 +308,7 @@ class LocationOperatingHoursUpdated
                 return true;
             }
         }
+
         return false;
     }
 
@@ -315,6 +322,7 @@ class LocationOperatingHoursUpdated
                 return true;
             }
         }
+
         return false;
     }
 

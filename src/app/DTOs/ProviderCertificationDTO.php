@@ -2,26 +2,26 @@
 
 namespace Fereydooni\Shopping\App\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Required;
-use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
-use Spatie\LaravelData\Attributes\Validation\BooleanType;
-use Spatie\LaravelData\Attributes\Validation\Date;
-use Spatie\LaravelData\Attributes\Validation\Nullable;
-use Spatie\LaravelData\Attributes\Validation\Url;
-use Spatie\LaravelData\Attributes\Validation\Max;
-use Spatie\LaravelData\Attributes\Validation\Min;
-use Spatie\LaravelData\Attributes\Validation\In;
-use Spatie\LaravelData\Attributes\Validation\ArrayType;
-use Spatie\LaravelData\Attributes\Validation\DateFormat;
-use Spatie\LaravelData\Attributes\WithTransformer;
-use Spatie\LaravelData\Transformers\DateTimeTransformer;
-use Fereydooni\Shopping\App\Models\ProviderCertification;
+use Carbon\Carbon;
 use Fereydooni\Shopping\App\Enums\CertificationCategory;
 use Fereydooni\Shopping\App\Enums\CertificationStatus;
 use Fereydooni\Shopping\App\Enums\VerificationStatus;
-use Carbon\Carbon;
+use Fereydooni\Shopping\App\Models\ProviderCertification;
+use Spatie\LaravelData\Attributes\Validation\ArrayType;
+use Spatie\LaravelData\Attributes\Validation\BooleanType;
+use Spatie\LaravelData\Attributes\Validation\Date;
+use Spatie\LaravelData\Attributes\Validation\DateFormat;
+use Spatie\LaravelData\Attributes\Validation\In;
+use Spatie\LaravelData\Attributes\Validation\IntegerType;
+use Spatie\LaravelData\Attributes\Validation\Max;
+use Spatie\LaravelData\Attributes\Validation\Min;
+use Spatie\LaravelData\Attributes\Validation\Nullable;
+use Spatie\LaravelData\Attributes\Validation\Required;
+use Spatie\LaravelData\Attributes\Validation\StringType;
+use Spatie\LaravelData\Attributes\Validation\Url;
+use Spatie\LaravelData\Attributes\WithTransformer;
+use Spatie\LaravelData\Data;
+use Spatie\LaravelData\Transformers\DateTimeTransformer;
 
 class ProviderCertificationDTO extends Data
 {
@@ -42,7 +42,7 @@ class ProviderCertificationDTO extends Data
         public CertificationCategory $category,
 
         #[Nullable, StringType, Max(1000)]
-        public ?string $description = null,
+        public ?string $description,
 
         #[Required, Date, DateFormat('Y-m-d')]
         public Carbon $issue_date,
@@ -94,8 +94,7 @@ class ProviderCertificationDTO extends Data
 
         #[Nullable, IntegerType, Min(1)]
         public ?int $id = null,
-    ) {
-    }
+    ) {}
 
     /**
      * Create DTO from ProviderCertification model.
@@ -139,7 +138,7 @@ class ProviderCertificationDTO extends Data
             'certification_name' => ['required', 'string', 'max:255'],
             'certification_number' => ['required', 'string', 'max:100', 'unique:provider_certifications,certification_number'],
             'issuing_organization' => ['required', 'string', 'max:255'],
-            'category' => ['required', 'string', 'in:' . implode(',', array_column(CertificationCategory::cases(), 'value'))],
+            'category' => ['required', 'string', 'in:'.implode(',', array_column(CertificationCategory::cases(), 'value'))],
             'description' => ['nullable', 'string', 'max:1000'],
             'issue_date' => ['required', 'date', 'date_format:Y-m-d', 'before_or_equal:today'],
             'expiry_date' => ['nullable', 'date', 'date_format:Y-m-d', 'after:issue_date'],
@@ -162,7 +161,7 @@ class ProviderCertificationDTO extends Data
     public static function updateRules(int $certificationId): array
     {
         $rules = self::rules();
-        $rules['certification_number'] = ['required', 'string', 'max:100', 'unique:provider_certifications,certification_number,' . $certificationId];
+        $rules['certification_number'] = ['required', 'string', 'max:100', 'unique:provider_certifications,certification_number,'.$certificationId];
 
         return $rules;
     }
@@ -221,7 +220,7 @@ class ProviderCertificationDTO extends Data
      */
     public function isExpiringSoon(int $days = 30): bool
     {
-        if (!$this->expiry_date || $this->isExpired()) {
+        if (! $this->expiry_date || $this->isExpired()) {
             return false;
         }
 
@@ -233,7 +232,7 @@ class ProviderCertificationDTO extends Data
      */
     public function needsRenewal(): bool
     {
-        if (!$this->is_recurring || !$this->expiry_date) {
+        if (! $this->is_recurring || ! $this->expiry_date) {
             return false;
         }
 
@@ -245,7 +244,7 @@ class ProviderCertificationDTO extends Data
      */
     public function daysUntilExpiration(): ?int
     {
-        if (!$this->expiry_date) {
+        if (! $this->expiry_date) {
             return null;
         }
 
@@ -257,7 +256,7 @@ class ProviderCertificationDTO extends Data
      */
     public function daysSinceIssue(): ?int
     {
-        if (!$this->issue_date) {
+        if (! $this->issue_date) {
             return null;
         }
 
@@ -269,7 +268,7 @@ class ProviderCertificationDTO extends Data
      */
     public function getAgeInYears(): ?float
     {
-        if (!$this->issue_date) {
+        if (! $this->issue_date) {
             return null;
         }
 
@@ -353,11 +352,11 @@ class ProviderCertificationDTO extends Data
      */
     public function getAttachmentUrl(): ?string
     {
-        if (!$this->attachment_path) {
+        if (! $this->attachment_path) {
             return null;
         }
 
-        return asset('storage/' . $this->attachment_path);
+        return asset('storage/'.$this->attachment_path);
     }
 
     /**
@@ -365,7 +364,7 @@ class ProviderCertificationDTO extends Data
      */
     public function hasAttachment(): bool
     {
-        return !empty($this->attachment_path);
+        return ! empty($this->attachment_path);
     }
 
     /**
@@ -373,7 +372,7 @@ class ProviderCertificationDTO extends Data
      */
     public function hasVerificationUrl(): bool
     {
-        return !empty($this->verification_url);
+        return ! empty($this->verification_url);
     }
 
     /**

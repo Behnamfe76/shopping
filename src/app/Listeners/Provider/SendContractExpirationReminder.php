@@ -25,7 +25,7 @@ class SendContractExpirationReminder implements ShouldQueue
     public function handleProviderContractExtended(ProviderContractExtended $event): void
     {
         // Send contract extension confirmation
-        \Log::info('Contract extension confirmation sent for provider: ' . $event->provider->id);
+        \Log::info('Contract extension confirmation sent for provider: '.$event->provider->id);
     }
 
     /**
@@ -34,7 +34,7 @@ class SendContractExpirationReminder implements ShouldQueue
     public function handleProviderContractTerminated(ProviderContractTerminated $event): void
     {
         // Send contract termination notification
-        \Log::info('Contract termination notification sent for provider: ' . $event->provider->id . ' Reason: ' . $event->reason);
+        \Log::info('Contract termination notification sent for provider: '.$event->provider->id.' Reason: '.$event->reason);
     }
 
     /**

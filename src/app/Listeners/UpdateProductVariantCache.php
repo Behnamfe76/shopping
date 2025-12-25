@@ -4,9 +4,6 @@ namespace Fereydooni\Shopping\app\Listeners;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Fereydooni\Shopping\app\Events\ProductVariantCreated;
-use Fereydooni\Shopping\app\Events\ProductVariantUpdated;
-use Fereydooni\Shopping\app\Events\ProductVariantDeleted;
 
 class UpdateProductVariantCache implements ShouldQueue
 {

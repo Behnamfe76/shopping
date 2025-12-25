@@ -13,7 +13,9 @@ class EmployeeBenefitsNotifications extends Notification implements ShouldQueue
     use Queueable;
 
     protected EmployeeBenefits $benefit;
+
     protected string $type;
+
     protected array $data;
 
     /**
@@ -39,7 +41,7 @@ class EmployeeBenefitsNotifications extends Notification implements ShouldQueue
      */
     public function toMail(object $notifiable): MailMessage
     {
-        return match($this->type) {
+        return match ($this->type) {
             'enrollment_created' => $this->getEnrollmentCreatedMail($notifiable),
             'enrollment_approved' => $this->getEnrollmentApprovedMail($notifiable),
             'enrollment_terminated' => $this->getEnrollmentTerminatedMail($notifiable),
@@ -79,13 +81,13 @@ class EmployeeBenefitsNotifications extends Notification implements ShouldQueue
             ->subject('New Employee Benefits Enrollment Created')
             ->greeting("Hello {$notifiable->name},")
             ->line("A new employee benefits enrollment has been created for {$employeeName}.")
-            ->line("**Benefit Details:**")
+            ->line('**Benefit Details:**')
             ->line("- **Type:** {$this->benefit->benefit_type}")
             ->line("- **Name:** {$this->benefit->benefit_name}")
             ->line("- **Provider:** {$this->benefit->provider}")
             ->line("- **Status:** {$this->benefit->status}")
             ->line("- **Effective Date:** {$this->benefit->effective_date}")
-            ->action('Review Enrollment', url('/admin/employee-benefits/' . $this->benefit->id))
+            ->action('Review Enrollment', url('/admin/employee-benefits/'.$this->benefit->id))
             ->line('Please review and approve this enrollment as needed.')
             ->salutation('Best regards, HR System');
     }
@@ -101,13 +103,13 @@ class EmployeeBenefitsNotifications extends Notification implements ShouldQueue
         return (new MailMessage)
             ->subject('Your Benefits Enrollment Has Been Approved')
             ->greeting("Hello {$notifiable->name},")
-            ->line("Great news! Your benefits enrollment has been approved and is now active.")
-            ->line("**Enrollment Details:**")
+            ->line('Great news! Your benefits enrollment has been approved and is now active.')
+            ->line('**Enrollment Details:**')
             ->line("- **Benefit Type:** {$this->benefit->benefit_type}")
             ->line("- **Benefit Name:** {$this->benefit->benefit_name}")
             ->line("- **Provider:** {$this->benefit->provider}")
             ->line("- **Effective Date:** {$this->benefit->effective_date}")
-            ->action('View Benefits Details', url('/employee/benefits/' . $this->benefit->id))
+            ->action('View Benefits Details', url('/employee/benefits/'.$this->benefit->id))
             ->line('Your benefits will be effective from the effective date listed above.')
             ->salutation('Best regards, HR Team');
     }
@@ -124,8 +126,8 @@ class EmployeeBenefitsNotifications extends Notification implements ShouldQueue
         return (new MailMessage)
             ->subject('Your Benefits Enrollment Has Been Terminated')
             ->greeting("Hello {$notifiable->name},")
-            ->line("Your benefits enrollment has been terminated.")
-            ->line("**Termination Details:**")
+            ->line('Your benefits enrollment has been terminated.')
+            ->line('**Termination Details:**')
             ->line("- **Benefit Type:** {$this->benefit->benefit_type}")
             ->line("- **Benefit Name:** {$this->benefit->benefit_name}")
             ->line("- **Provider:** {$this->benefit->provider}")
@@ -150,15 +152,15 @@ class EmployeeBenefitsNotifications extends Notification implements ShouldQueue
         return (new MailMessage)
             ->subject('Your Benefits Are Expiring Soon')
             ->greeting("Hello {$notifiable->name},")
-            ->line("This is a reminder that your benefits enrollment will expire soon.")
-            ->line("**Expiring Benefits Details:**")
+            ->line('This is a reminder that your benefits enrollment will expire soon.')
+            ->line('**Expiring Benefits Details:**')
             ->line("- **Benefit Type:** {$this->benefit->benefit_type}")
             ->line("- **Benefit Name:** {$this->benefit->benefit_name}")
             ->line("- **Provider:** {$this->benefit->provider}")
             ->line("- **Days Until Expiry:** {$daysUntilExpiry} days")
             ->line('**Action Required:**')
             ->line('- Please review your renewal options before the expiration date.')
-            ->action('Review Benefits', url('/employee/benefits/' . $this->benefit->id))
+            ->action('Review Benefits', url('/employee/benefits/'.$this->benefit->id))
             ->line('Don\'t let your coverage lapse - take action today!')
             ->salutation('Best regards, HR Team');
     }
@@ -175,13 +177,13 @@ class EmployeeBenefitsNotifications extends Notification implements ShouldQueue
         return (new MailMessage)
             ->subject('Benefits Renewal Notice')
             ->greeting("Hello {$notifiable->name},")
-            ->line("Your benefits enrollment is eligible for renewal.")
-            ->line("**Renewal Details:**")
+            ->line('Your benefits enrollment is eligible for renewal.')
+            ->line('**Renewal Details:**')
             ->line("- **Benefit Type:** {$this->benefit->benefit_type}")
             ->line("- **Benefit Name:** {$this->benefit->benefit_name}")
             ->line("- **Provider:** {$this->benefit->provider}")
             ->line("- **Renewal Deadline:** {$renewalDeadline}")
-            ->action('Renew Benefits', url('/employee/benefits/' . $this->benefit->id . '/renew'))
+            ->action('Renew Benefits', url('/employee/benefits/'.$this->benefit->id.'/renew'))
             ->line('Please complete your renewal by the deadline to avoid any coverage gaps.')
             ->salutation('Best regards, HR Team');
     }
@@ -198,22 +200,22 @@ class EmployeeBenefitsNotifications extends Notification implements ShouldQueue
         $message = (new MailMessage)
             ->subject('Your Benefits Costs Have Changed')
             ->greeting("Hello {$notifiable->name},")
-            ->line("Your benefits costs have been updated.")
-            ->line("**Benefit Details:**")
+            ->line('Your benefits costs have been updated.')
+            ->line('**Benefit Details:**')
             ->line("- **Benefit Type:** {$this->benefit->benefit_type}")
             ->line("- **Benefit Name:** {$this->benefit->benefit_name}")
             ->line("- **Provider:** {$this->benefit->provider}");
 
         if (isset($changes['premium_amount'])) {
-            $message->line("- **Monthly Premium:** $" . number_format($this->benefit->premium_amount, 2));
+            $message->line('- **Monthly Premium:** $'.number_format($this->benefit->premium_amount, 2));
         }
 
         if (isset($changes['employee_contribution'])) {
-            $message->line("- **Your Monthly Contribution:** $" . number_format($this->benefit->employee_contribution, 2));
+            $message->line('- **Your Monthly Contribution:** $'.number_format($this->benefit->employee_contribution, 2));
         }
 
-        $message->line('**Effective Date:** ' . now()->toDateString())
-            ->action('View Benefits Details', url('/employee/benefits/' . $this->benefit->id))
+        $message->line('**Effective Date:** '.now()->toDateString())
+            ->action('View Benefits Details', url('/employee/benefits/'.$this->benefit->id))
             ->line('Contact HR if you have questions about these changes.')
             ->salutation('Best regards, HR Team');
 
@@ -228,8 +230,8 @@ class EmployeeBenefitsNotifications extends Notification implements ShouldQueue
         return (new MailMessage)
             ->subject('Employee Benefits Notification')
             ->greeting("Hello {$notifiable->name},")
-            ->line("You have a notification regarding your employee benefits.")
-            ->action('View Details', url('/employee/benefits/' . $this->benefit->id))
+            ->line('You have a notification regarding your employee benefits.')
+            ->action('View Details', url('/employee/benefits/'.$this->benefit->id))
             ->salutation('Best regards, HR Team');
     }
 
@@ -238,6 +240,6 @@ class EmployeeBenefitsNotifications extends Notification implements ShouldQueue
      */
     public function getDatabaseType(): string
     {
-        return 'employee_benefits_' . $this->type;
+        return 'employee_benefits_'.$this->type;
     }
 }

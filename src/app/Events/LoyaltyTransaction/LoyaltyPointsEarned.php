@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Events\LoyaltyTransaction;
 
+use Fereydooni\Shopping\app\Models\LoyaltyTransaction;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Fereydooni\Shopping\app\Models\LoyaltyTransaction;
 
 class LoyaltyPointsEarned
 {

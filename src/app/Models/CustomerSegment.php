@@ -2,16 +2,16 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
+use Fereydooni\Shopping\app\Enums\SegmentPriority;
+use Fereydooni\Shopping\app\Enums\SegmentStatus;
+use Fereydooni\Shopping\app\Enums\SegmentType;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Carbon;
-use Fereydooni\Shopping\app\Enums\SegmentType;
-use Fereydooni\Shopping\app\Enums\SegmentStatus;
-use Fereydooni\Shopping\app\Enums\SegmentPriority;
 
 class CustomerSegment extends Model
 {
@@ -151,18 +151,18 @@ class CustomerSegment extends Model
     {
         return $query->where(function ($q) use ($daysAgo) {
             $q->whereNull('last_calculated_at')
-              ->orWhere('last_calculated_at', '<', Carbon::now()->subDays($daysAgo));
+                ->orWhere('last_calculated_at', '<', Carbon::now()->subDays($daysAgo));
         });
     }
 
-    public function scopeByCustomerCount($query, int $minCount, int $maxCount = null)
+    public function scopeByCustomerCount($query, int $minCount, ?int $maxCount = null)
     {
         $query->where('customer_count', '>=', $minCount);
-        
+
         if ($maxCount) {
             $query->where('customer_count', '<=', $maxCount);
         }
-        
+
         return $query;
     }
 
@@ -175,7 +175,7 @@ class CustomerSegment extends Model
     {
         return $query->where(function ($q) use ($search) {
             $q->where('name', 'like', "%{$search}%")
-              ->orWhere('description', 'like', "%{$search}%");
+                ->orWhere('description', 'like', "%{$search}%");
         });
     }
 
@@ -212,7 +212,7 @@ class CustomerSegment extends Model
 
     public function getNeedsRecalculationAttribute(): bool
     {
-        if (!$this->last_calculated_at) {
+        if (! $this->last_calculated_at) {
             return true;
         }
 
@@ -226,7 +226,7 @@ class CustomerSegment extends Model
 
     public function getLastCalculatedFormattedAttribute(): string
     {
-        return $this->last_calculated_at 
+        return $this->last_calculated_at
             ? $this->last_calculated_at->diffForHumans()
             : 'Never';
     }
@@ -247,12 +247,12 @@ class CustomerSegment extends Model
         if (is_string($value)) {
             $value = json_decode($value, true);
         }
-        
+
         if (is_array($value)) {
             $value = array_filter(array_map('trim', $value));
             $value = array_unique($value);
         }
-        
+
         $this->attributes['tags'] = json_encode($value ?: []);
     }
 
@@ -286,7 +286,7 @@ class CustomerSegment extends Model
     {
         return $this->update([
             'is_dynamic' => true,
-            'is_static' => false
+            'is_static' => false,
         ]);
     }
 
@@ -294,7 +294,7 @@ class CustomerSegment extends Model
     {
         return $this->update([
             'is_static' => true,
-            'is_dynamic' => false
+            'is_dynamic' => false,
         ]);
     }
 
@@ -307,25 +307,25 @@ class CustomerSegment extends Model
     {
         return $this->update([
             'customer_count' => $count,
-            'last_calculated_at' => now()
+            'last_calculated_at' => now(),
         ]);
     }
 
-    public function addCustomer(int $customerId, int $userId = null): bool
+    public function addCustomer(int $customerId, ?int $userId = null): bool
     {
         $pivotData = [
             'added_at' => now(),
-            'added_by' => $userId
+            'added_by' => $userId,
         ];
 
         return $this->customers()->attach($customerId, $pivotData);
     }
 
-    public function removeCustomer(int $customerId, int $userId = null): bool
+    public function removeCustomer(int $customerId, ?int $userId = null): bool
     {
         $pivotData = [
             'removed_at' => now(),
-            'removed_by' => $userId
+            'removed_by' => $userId,
         ];
 
         return $this->customers()->updateExistingPivot($customerId, $pivotData);
@@ -344,17 +344,20 @@ class CustomerSegment extends Model
     public function addTag(string $tag): bool
     {
         $tags = $this->tags ?: [];
-        if (!in_array($tag, $tags)) {
+        if (! in_array($tag, $tags)) {
             $tags[] = $tag;
+
             return $this->update(['tags' => $tags]);
         }
+
         return true;
     }
 
     public function removeTag(string $tag): bool
     {
         $tags = $this->tags ?: [];
-        $tags = array_filter($tags, fn($t) => $t !== $tag);
+        $tags = array_filter($tags, fn ($t) => $t !== $tag);
+
         return $this->update(['tags' => array_values($tags)]);
     }
 

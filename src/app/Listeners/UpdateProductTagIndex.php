@@ -3,9 +3,9 @@
 namespace Fereydooni\Shopping\app\Listeners;
 
 use Fereydooni\Shopping\app\Events\ProductTagCreated;
-use Fereydooni\Shopping\app\Events\ProductTagUpdated;
 use Fereydooni\Shopping\app\Events\ProductTagDeleted;
 use Fereydooni\Shopping\app\Events\ProductTagStatusChanged;
+use Fereydooni\Shopping\app\Events\ProductTagUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
@@ -39,7 +39,7 @@ class UpdateProductTagIndex implements ShouldQueue
         try {
             $tag = $event->tag ?? null;
 
-            if (!$tag) {
+            if (! $tag) {
                 return;
             }
 
@@ -60,7 +60,7 @@ class UpdateProductTagIndex implements ShouldQueue
 
             Log::info('Product tag index updated', [
                 'tag_id' => $tag->id,
-                'event' => get_class($event)
+                'event' => get_class($event),
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to update product tag index', [

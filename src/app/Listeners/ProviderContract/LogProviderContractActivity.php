@@ -3,12 +3,12 @@
 namespace Fereydooni\Shopping\app\Listeners\ProviderContract;
 
 use Fereydooni\Shopping\app\Events\Provider\ProviderContractCreated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderContractUpdated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderContractSigned;
-use Fereydooni\Shopping\app\Events\Provider\ProviderContractRenewed;
-use Fereydooni\Shopping\app\Events\Provider\ProviderContractTerminated;
 use Fereydooni\Shopping\app\Events\Provider\ProviderContractExpiring;
 use Fereydooni\Shopping\app\Events\Provider\ProviderContractExtended;
+use Fereydooni\Shopping\app\Events\Provider\ProviderContractRenewed;
+use Fereydooni\Shopping\app\Events\Provider\ProviderContractSigned;
+use Fereydooni\Shopping\app\Events\Provider\ProviderContractTerminated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderContractUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
@@ -28,7 +28,7 @@ class LogProviderContractActivity implements ShouldQueue
             Log::error('Failed to log provider contract activity', [
                 'event' => get_class($event),
                 'error' => $e->getMessage(),
-                'contract_id' => $event->contract->id ?? null
+                'contract_id' => $event->contract->id ?? null,
             ]);
         }
     }
@@ -78,7 +78,7 @@ class LogProviderContractActivity implements ShouldQueue
             'contract_type' => $contract->contract_type,
             'status' => $contract->status,
             'user_id' => auth()->id(),
-            'timestamp' => now()
+            'timestamp' => now(),
         ]);
     }
 
@@ -92,7 +92,7 @@ class LogProviderContractActivity implements ShouldQueue
             'provider_id' => $provider->id,
             'changes' => $changes,
             'user_id' => auth()->id(),
-            'timestamp' => now()
+            'timestamp' => now(),
         ]);
     }
 
@@ -106,7 +106,7 @@ class LogProviderContractActivity implements ShouldQueue
             'provider_id' => $provider->id,
             'signed_by' => auth()->id(),
             'signed_at' => now(),
-            'timestamp' => now()
+            'timestamp' => now(),
         ]);
     }
 
@@ -120,7 +120,7 @@ class LogProviderContractActivity implements ShouldQueue
             'provider_id' => $provider->id,
             'renewal_date' => now(),
             'user_id' => auth()->id(),
-            'timestamp' => now()
+            'timestamp' => now(),
         ]);
     }
 
@@ -134,7 +134,7 @@ class LogProviderContractActivity implements ShouldQueue
             'provider_id' => $provider->id,
             'termination_date' => now(),
             'user_id' => auth()->id(),
-            'timestamp' => now()
+            'timestamp' => now(),
         ]);
     }
 
@@ -148,7 +148,7 @@ class LogProviderContractActivity implements ShouldQueue
             'provider_id' => $provider->id,
             'days_until_expiry' => $daysUntilExpiry,
             'end_date' => $contract->end_date,
-            'timestamp' => now()
+            'timestamp' => now(),
         ]);
     }
 
@@ -162,7 +162,7 @@ class LogProviderContractActivity implements ShouldQueue
             'provider_id' => $provider->id,
             'new_end_date' => $contract->end_date,
             'user_id' => auth()->id(),
-            'timestamp' => now()
+            'timestamp' => now(),
         ]);
     }
 }

@@ -2,10 +2,10 @@
 
 namespace Fereydooni\Shopping\app\Listeners\Provider;
 
-use Fereydooni\Shopping\app\Events\Provider\ProviderRatingUpdated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderQualityRatingUpdated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderDeliveryRatingUpdated;
 use Fereydooni\Shopping\app\Events\Provider\ProviderCommunicationRatingUpdated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderDeliveryRatingUpdated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderQualityRatingUpdated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderRatingUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
@@ -27,7 +27,7 @@ class UpdateProviderScore implements ShouldQueue
     public function handleProviderRatingUpdated(ProviderRatingUpdated $event): void
     {
         // Update provider overall score when rating changes
-        \Log::info('Provider score updated for rating change: ' . $event->provider->id);
+        \Log::info('Provider score updated for rating change: '.$event->provider->id);
     }
 
     /**
@@ -36,7 +36,7 @@ class UpdateProviderScore implements ShouldQueue
     public function handleProviderQualityRatingUpdated(ProviderQualityRatingUpdated $event): void
     {
         // Update provider quality score when quality rating changes
-        \Log::info('Provider quality score updated for: ' . $event->provider->id);
+        \Log::info('Provider quality score updated for: '.$event->provider->id);
     }
 
     /**
@@ -45,7 +45,7 @@ class UpdateProviderScore implements ShouldQueue
     public function handleProviderDeliveryRatingUpdated(ProviderDeliveryRatingUpdated $event): void
     {
         // Update provider delivery score when delivery rating changes
-        \Log::info('Provider delivery score updated for: ' . $event->provider->id);
+        \Log::info('Provider delivery score updated for: '.$event->provider->id);
     }
 
     /**
@@ -54,6 +54,6 @@ class UpdateProviderScore implements ShouldQueue
     public function handleProviderCommunicationRatingUpdated(ProviderCommunicationRatingUpdated $event): void
     {
         // Update provider communication score when communication rating changes
-        \Log::info('Provider communication score updated for: ' . $event->provider->id);
+        \Log::info('Provider communication score updated for: '.$event->provider->id);
     }
 }

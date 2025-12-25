@@ -2,8 +2,6 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
-use Fereydooni\Shopping\app\Events\ProductCreated;
-use Fereydooni\Shopping\app\Events\ProductUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
@@ -38,7 +36,7 @@ class ProcessProductMedia implements ShouldQueue
 
         Log::info('Product media processed', [
             'product_id' => $product->id,
-            'event' => get_class($event)
+            'event' => get_class($event),
         ]);
     }
 
@@ -97,7 +95,7 @@ class ProcessProductMedia implements ShouldQueue
     {
         Log::error('Failed to process product media', [
             'product_id' => $event->product->id,
-            'error' => $exception->getMessage()
+            'error' => $exception->getMessage(),
         ]);
     }
 }

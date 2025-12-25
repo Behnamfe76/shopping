@@ -11,7 +11,7 @@ enum SegmentPriority: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::LOW => 'Low',
             self::NORMAL => 'Normal',
             self::HIGH => 'High',
@@ -21,7 +21,7 @@ enum SegmentPriority: string
 
     public function color(): string
     {
-        return match($this) {
+        return match ($this) {
             self::LOW => 'gray',
             self::NORMAL => 'blue',
             self::HIGH => 'orange',
@@ -31,7 +31,7 @@ enum SegmentPriority: string
 
     public function description(): string
     {
-        return match($this) {
+        return match ($this) {
             self::LOW => 'Low priority segment with minimal impact',
             self::NORMAL => 'Standard priority segment',
             self::HIGH => 'High priority segment requiring attention',
@@ -41,7 +41,7 @@ enum SegmentPriority: string
 
     public function value(): int
     {
-        return match($this) {
+        return match ($this) {
             self::LOW => 1,
             self::NORMAL => 2,
             self::HIGH => 3,

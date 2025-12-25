@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Http\Resources;
 
+use Fereydooni\Shopping\app\DTOs\CategoryDTO;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Fereydooni\Shopping\app\DTOs\CategoryDTO;
 
 class CategoryResource extends JsonResource
 {
@@ -22,7 +22,7 @@ class CategoryResource extends JsonResource
             'slug' => $category->slug,
             'parent_id' => $category->parent_id,
             'description' => $category->description,
-            'status' => __('categories.statuses.' . $category->status->value),
+            'status' => __('categories.statuses.'.$category->status->value),
             'status_label' => $category->status->label(),
             'sort_order' => $category->sort_order,
             'is_default' => $category->is_default,
@@ -49,7 +49,7 @@ class CategoryResource extends JsonResource
                 'name' => $category->parent->name,
                 'slug' => $category->parent->slug,
             ];
-        }else{
+        } else {
             $data['parent'] = [
                 'name' => __('resources/categories.messages.no_parent'),
             ];

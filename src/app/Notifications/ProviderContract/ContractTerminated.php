@@ -41,16 +41,16 @@ class ContractTerminated extends Notification implements ShouldQueue
 
         return (new MailMessage)
             ->subject('Provider Contract Terminated')
-            ->greeting('Hello ' . $notifiable->name)
+            ->greeting('Hello '.$notifiable->name)
             ->line('A provider contract has been terminated.')
             ->line('Contract Details:')
-            ->line('- Contract Number: ' . $this->contract->contract_number)
-            ->line('- Provider: ' . $provider->name)
-            ->line('- Contract Type: ' . ucfirst($this->contract->contract_type))
-            ->line('- Termination Date: ' . $this->contract->termination_date->format('M d, Y'))
-            ->line('- Termination Reason: ' . ($this->contract->termination_reason ?? 'Not specified'))
+            ->line('- Contract Number: '.$this->contract->contract_number)
+            ->line('- Provider: '.$provider->name)
+            ->line('- Contract Type: '.ucfirst($this->contract->contract_type))
+            ->line('- Termination Date: '.$this->contract->termination_date->format('M d, Y'))
+            ->line('- Termination Reason: '.($this->contract->termination_reason ?? 'Not specified'))
             ->line('- Status: Terminated')
-            ->action('View Contract', url('/provider-contracts/' . $this->contract->id))
+            ->action('View Contract', url('/provider-contracts/'.$this->contract->id))
             ->line('Please review the termination details and take necessary actions.');
     }
 
@@ -68,8 +68,8 @@ class ContractTerminated extends Notification implements ShouldQueue
             'status' => 'terminated',
             'termination_date' => $this->contract->termination_date,
             'termination_reason' => $this->contract->termination_reason,
-            'message' => 'Provider contract terminated: ' . $this->contract->contract_number,
-            'type' => 'contract_terminated'
+            'message' => 'Provider contract terminated: '.$this->contract->contract_number,
+            'type' => 'contract_terminated',
         ];
     }
 }

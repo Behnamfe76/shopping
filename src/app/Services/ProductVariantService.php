@@ -2,31 +2,30 @@
 
 namespace Fereydooni\Shopping\app\Services;
 
-use Fereydooni\Shopping\app\Repositories\Interfaces\ProductVariantRepositoryInterface;
-use Fereydooni\Shopping\app\Models\ProductVariant;
 use Fereydooni\Shopping\app\DTOs\ProductVariantDTO;
+use Fereydooni\Shopping\app\Models\ProductVariant;
+use Fereydooni\Shopping\app\Repositories\Interfaces\ProductVariantRepositoryInterface;
+use Fereydooni\Shopping\app\Traits\HasAnalyticsOperations;
+use Fereydooni\Shopping\app\Traits\HasBulkOperations;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
-use Fereydooni\Shopping\app\Traits\HasStatusToggle;
 use Fereydooni\Shopping\app\Traits\HasInventoryManagement;
 use Fereydooni\Shopping\app\Traits\HasPricingOperations;
-use Fereydooni\Shopping\app\Traits\HasBulkOperations;
-use Fereydooni\Shopping\app\Traits\HasAnalyticsOperations;
+use Fereydooni\Shopping\app\Traits\HasStatusToggle;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProductVariantService
 {
+    use HasAnalyticsOperations;
+    use HasBulkOperations;
     use HasCrudOperations;
-    use HasStatusToggle;
     use HasInventoryManagement;
     use HasPricingOperations;
-    use HasBulkOperations;
-    use HasAnalyticsOperations;
+    use HasStatusToggle;
 
     public function __construct(
         private ProductVariantRepositoryInterface $repository
-    ) {
-    }
+    ) {}
 
     // Basic CRUD operations
     public function all(): Collection
@@ -196,7 +195,7 @@ class ProductVariantService
         return $this->repository->releaseStock($variant, $quantity);
     }
 
-    public function adjustStock(ProductVariant $variant, int $quantity, string $reason = null): bool
+    public function adjustStock(ProductVariant $variant, int $quantity, ?string $reason = null): bool
     {
         return $this->repository->adjustStock($variant, $quantity, $reason);
     }

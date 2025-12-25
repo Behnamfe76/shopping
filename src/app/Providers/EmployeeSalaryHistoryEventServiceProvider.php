@@ -2,19 +2,19 @@
 
 namespace App\Providers;
 
-use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use App\Events\EmployeeSalaryHistory\EmployeeSalaryHistoryCreated;
-use App\Events\EmployeeSalaryHistory\EmployeeSalaryHistoryUpdated;
 use App\Events\EmployeeSalaryHistory\EmployeeSalaryHistoryApproved;
-use App\Events\EmployeeSalaryHistory\EmployeeSalaryHistoryRejected;
+use App\Events\EmployeeSalaryHistory\EmployeeSalaryHistoryCreated;
 use App\Events\EmployeeSalaryHistory\EmployeeSalaryHistoryProcessed;
+use App\Events\EmployeeSalaryHistory\EmployeeSalaryHistoryRejected;
 use App\Events\EmployeeSalaryHistory\EmployeeSalaryHistoryRetroactive;
+use App\Events\EmployeeSalaryHistory\EmployeeSalaryHistoryUpdated;
+use App\Listeners\EmployeeSalaryHistory\LogSalaryHistoryActivity;
+use App\Listeners\EmployeeSalaryHistory\ProcessRetroactivePayroll;
 use App\Listeners\EmployeeSalaryHistory\SendSalaryHistoryNotification;
 use App\Listeners\EmployeeSalaryHistory\UpdateEmployeeSalaryRecord;
-use App\Listeners\EmployeeSalaryHistory\LogSalaryHistoryActivity;
 use App\Listeners\EmployeeSalaryHistory\UpdatePayrollRecords;
 use App\Listeners\EmployeeSalaryHistory\UpdateSalaryMetrics;
-use App\Listeners\EmployeeSalaryHistory\ProcessRetroactivePayroll;
+use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EmployeeSalaryHistoryEventServiceProvider extends ServiceProvider
 {

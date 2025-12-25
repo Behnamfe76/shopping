@@ -3,16 +3,16 @@
 namespace App\Listeners;
 
 use App\Events\ProviderInsuranceCreated;
-use App\Events\ProviderInsuranceUpdated;
 use App\Events\ProviderInsuranceDeleted;
-use App\Events\ProviderInsuranceVerified;
+use App\Events\ProviderInsuranceDocumentUploaded;
 use App\Events\ProviderInsuranceExpired;
 use App\Events\ProviderInsuranceRenewed;
-use App\Events\ProviderInsuranceDocumentUploaded;
+use App\Events\ProviderInsuranceUpdated;
+use App\Events\ProviderInsuranceVerified;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class LogInsuranceActivity implements ShouldQueue
 {
@@ -85,7 +85,7 @@ class LogInsuranceActivity implements ShouldQueue
     /**
      * Log insurance activity
      */
-    private function logActivity(string $action, $providerInsurance, $userId = null, array $details = [], string $reason = null): void
+    private function logActivity(string $action, $providerInsurance, $userId = null, array $details = [], ?string $reason = null): void
     {
         try {
             $activityData = [
@@ -97,7 +97,7 @@ class LogInsuranceActivity implements ShouldQueue
                 'reason' => $reason,
                 'ip_address' => request()->ip(),
                 'user_agent' => request()->userAgent(),
-                'created_at' => now()
+                'created_at' => now(),
             ];
 
             // Log to database
@@ -109,14 +109,14 @@ class LogInsuranceActivity implements ShouldQueue
                 'provider_id' => $providerInsurance->provider_id,
                 'user_id' => $userId,
                 'details' => $details,
-                'reason' => $reason
+                'reason' => $reason,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to log insurance activity', [
                 'action' => $action,
                 'insurance_id' => $providerInsurance->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }

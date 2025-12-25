@@ -2,15 +2,14 @@
 
 namespace Fereydooni\Shopping\app\Repositories;
 
+use Fereydooni\Shopping\app\DTOs\ProductAttributeValueDTO;
+use Fereydooni\Shopping\app\Models\ProductAttributeValue;
+use Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeValueRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
-use Fereydooni\Shopping\app\Models\ProductAttributeValue;
-use Fereydooni\Shopping\app\DTOs\ProductAttributeValueDTO;
-use Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeValueRepositoryInterface;
 
 class ProductAttributeValueRepository implements ProductAttributeValueRepositoryInterface
 {
@@ -29,7 +28,7 @@ class ProductAttributeValueRepository implements ProductAttributeValueRepository
         return ProductAttributeValue::with('attribute')->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return ProductAttributeValue::with('attribute')->cursorPaginate($perPage, ['*'], 'cursor', $cursor);
     }
@@ -42,12 +41,13 @@ class ProductAttributeValueRepository implements ProductAttributeValueRepository
     public function findDTO(int $id): ?ProductAttributeValueDTO
     {
         $value = $this->find($id);
+
         return $value ? ProductAttributeValueDTO::fromModel($value) : null;
     }
 
     public function create(array $data): ProductAttributeValue
     {
-        if (!isset($data['slug']) && isset($data['value'])) {
+        if (! isset($data['slug']) && isset($data['value'])) {
             $data['slug'] = $this->generateSlug($data['value']);
         }
 
@@ -57,12 +57,13 @@ class ProductAttributeValueRepository implements ProductAttributeValueRepository
     public function createAndReturnDTO(array $data): ProductAttributeValueDTO
     {
         $value = $this->create($data);
+
         return ProductAttributeValueDTO::fromModel($value);
     }
 
     public function update(ProductAttributeValue $value, array $data): bool
     {
-        if (isset($data['value']) && !isset($data['slug'])) {
+        if (isset($data['value']) && ! isset($data['slug'])) {
             $data['slug'] = $this->generateSlug($data['value']);
         }
 
@@ -72,6 +73,7 @@ class ProductAttributeValueRepository implements ProductAttributeValueRepository
     public function updateAndReturnDTO(ProductAttributeValue $value, array $data): ?ProductAttributeValueDTO
     {
         $updated = $this->update($value, $data);
+
         return $updated ? ProductAttributeValueDTO::fromModel($value->fresh()) : null;
     }
 
@@ -107,6 +109,7 @@ class ProductAttributeValueRepository implements ProductAttributeValueRepository
     public function findByAttributeIdAndValueDTO(int $attributeId, string $value): ?ProductAttributeValueDTO
     {
         $value = $this->findByAttributeIdAndValue($attributeId, $value);
+
         return $value ? ProductAttributeValueDTO::fromModel($value) : null;
     }
 
@@ -136,6 +139,7 @@ class ProductAttributeValueRepository implements ProductAttributeValueRepository
     public function findBySlugDTO(string $slug): ?ProductAttributeValueDTO
     {
         $value = $this->findBySlug($slug);
+
         return $value ? ProductAttributeValueDTO::fromModel($value) : null;
     }
 
@@ -230,12 +234,12 @@ class ProductAttributeValueRepository implements ProductAttributeValueRepository
     // Status management
     public function toggleActive(ProductAttributeValue $value): bool
     {
-        return $value->update(['is_active' => !$value->is_active]);
+        return $value->update(['is_active' => ! $value->is_active]);
     }
 
     public function toggleDefault(ProductAttributeValue $value): bool
     {
-        return $value->update(['is_default' => !$value->is_default]);
+        return $value->update(['is_default' => ! $value->is_default]);
     }
 
     public function setDefault(ProductAttributeValue $value): bool
@@ -302,8 +306,8 @@ class ProductAttributeValueRepository implements ProductAttributeValueRepository
     {
         return ProductAttributeValue::where(function ($q) use ($query) {
             $q->where('value', 'like', "%{$query}%")
-              ->orWhere('slug', 'like', "%{$query}%")
-              ->orWhere('description', 'like', "%{$query}%");
+                ->orWhere('slug', 'like', "%{$query}%")
+                ->orWhere('description', 'like', "%{$query}%");
         })->with('attribute')->get();
     }
 
@@ -319,8 +323,8 @@ class ProductAttributeValueRepository implements ProductAttributeValueRepository
         return ProductAttributeValue::where('attribute_id', $attributeId)
             ->where(function ($q) use ($query) {
                 $q->where('value', 'like', "%{$query}%")
-                  ->orWhere('slug', 'like', "%{$query}%")
-                  ->orWhere('description', 'like', "%{$query}%");
+                    ->orWhere('slug', 'like', "%{$query}%")
+                    ->orWhere('description', 'like', "%{$query}%");
             })->with('attribute')->get();
     }
 
@@ -396,7 +400,8 @@ class ProductAttributeValueRepository implements ProductAttributeValueRepository
     {
         $rules = ProductAttributeValueDTO::rules();
         $validator = validator($data, $rules, ProductAttributeValueDTO::messages());
-        return !$validator->fails();
+
+        return ! $validator->fails();
     }
 
     public function generateSlug(string $value): string
@@ -405,8 +410,8 @@ class ProductAttributeValueRepository implements ProductAttributeValueRepository
         $originalSlug = $slug;
         $counter = 1;
 
-        while (!$this->isSlugUnique($slug)) {
-            $slug = $originalSlug . '-' . $counter;
+        while (! $this->isSlugUnique($slug)) {
+            $slug = $originalSlug.'-'.$counter;
             $counter++;
         }
 
@@ -421,7 +426,7 @@ class ProductAttributeValueRepository implements ProductAttributeValueRepository
             $query->where('id', '!=', $excludeId);
         }
 
-        return !$query->exists();
+        return ! $query->exists();
     }
 
     public function isValueUnique(int $attributeId, string $value, ?int $excludeId = null): bool
@@ -433,13 +438,14 @@ class ProductAttributeValueRepository implements ProductAttributeValueRepository
             $query->where('id', '!=', $excludeId);
         }
 
-        return !$query->exists();
+        return ! $query->exists();
     }
 
     // Usage tracking
     public function getValueUsage(int $valueId): int
     {
         $value = ProductAttributeValue::find($valueId);
+
         return $value ? $value->usage_count : 0;
     }
 
@@ -478,7 +484,7 @@ class ProductAttributeValueRepository implements ProductAttributeValueRepository
     public function getValueAnalytics(int $valueId): array
     {
         $value = ProductAttributeValue::find($valueId);
-        if (!$value) {
+        if (! $value) {
             return [];
         }
 
@@ -510,6 +516,7 @@ class ProductAttributeValueRepository implements ProductAttributeValueRepository
     public function getValueVariants(int $valueId): Collection
     {
         $value = ProductAttributeValue::find($valueId);
+
         return $value ? $value->variants : collect();
     }
 
@@ -521,6 +528,7 @@ class ProductAttributeValueRepository implements ProductAttributeValueRepository
     public function getValueProducts(int $valueId): Collection
     {
         $value = ProductAttributeValue::find($valueId);
+
         return $value ? $value->variants()->with('product')->get()->pluck('product') : collect();
     }
 
@@ -532,6 +540,7 @@ class ProductAttributeValueRepository implements ProductAttributeValueRepository
     public function getValueCategories(int $valueId): Collection
     {
         $value = ProductAttributeValue::find($valueId);
+
         return $value ? $value->variants()->with('product.category')->get()->pluck('product.category') : collect();
     }
 
@@ -543,6 +552,7 @@ class ProductAttributeValueRepository implements ProductAttributeValueRepository
     public function getValueBrands(int $valueId): Collection
     {
         $value = ProductAttributeValue::find($valueId);
+
         return $value ? $value->variants()->with('product.brand')->get()->pluck('product.brand') : collect();
     }
 
@@ -555,24 +565,26 @@ class ProductAttributeValueRepository implements ProductAttributeValueRepository
     public function assignToVariant(int $valueId, int $variantId): bool
     {
         $value = ProductAttributeValue::find($valueId);
-        if (!$value) {
+        if (! $value) {
             return false;
         }
 
         $value->variants()->syncWithoutDetaching([$variantId]);
         $this->incrementUsage($valueId);
+
         return true;
     }
 
     public function removeFromVariant(int $valueId, int $variantId): bool
     {
         $value = ProductAttributeValue::find($valueId);
-        if (!$value) {
+        if (! $value) {
             return false;
         }
 
         $value->variants()->detach($variantId);
         $this->decrementUsage($valueId);
+
         return true;
     }
 

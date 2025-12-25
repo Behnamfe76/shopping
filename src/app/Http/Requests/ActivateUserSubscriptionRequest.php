@@ -3,7 +3,6 @@
 namespace Fereydooni\Shopping\app\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Fereydooni\Shopping\app\Models\UserSubscription;
 
 class ActivateUserSubscriptionRequest extends FormRequest
 {
@@ -13,6 +12,7 @@ class ActivateUserSubscriptionRequest extends FormRequest
     public function authorize(): bool
     {
         $userSubscription = $this->route('userSubscription');
+
         return $this->user()->can('activate', $userSubscription);
     }
 
@@ -44,7 +44,7 @@ class ActivateUserSubscriptionRequest extends FormRequest
         $userSubscription = $this->route('userSubscription');
 
         // Validate that the subscription can be activated
-        if ($userSubscription && !in_array($userSubscription->status->value, ['trialing', 'paused', 'expired'])) {
+        if ($userSubscription && ! in_array($userSubscription->status->value, ['trialing', 'paused', 'expired'])) {
             $this->validator->errors()->add('status', 'Subscription cannot be activated from current status.');
         }
     }

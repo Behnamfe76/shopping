@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Fereydooni\Shopping\app\Models\Address;
 use Fereydooni\Shopping\app\Enums\AddressType;
+use Fereydooni\Shopping\app\Models\Address;
+use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateAddressRequest extends FormRequest
 {
@@ -14,6 +14,7 @@ class UpdateAddressRequest extends FormRequest
     public function authorize(): bool
     {
         $address = $this->route('address');
+
         return $this->user()->can('update', $address);
     }
 
@@ -34,7 +35,7 @@ class UpdateAddressRequest extends FormRequest
             'country' => 'sometimes|required|string|max:255',
             'phone' => 'sometimes|required|string|max:20',
             'email' => 'nullable|email|max:255',
-            'type' => 'sometimes|required|in:' . implode(',', array_column(AddressType::cases(), 'value')),
+            'type' => 'sometimes|required|in:'.implode(',', array_column(AddressType::cases(), 'value')),
             'is_default' => 'boolean',
         ];
     }
@@ -95,17 +96,17 @@ class UpdateAddressRequest extends FormRequest
             $address = $this->route('address');
 
             // Check if user owns the address (for non-admin users)
-            if (!$this->user()->can('address.update.any') && $address->user_id !== $this->user()->id) {
+            if (! $this->user()->can('address.update.any') && $address->user_id !== $this->user()->id) {
                 $validator->errors()->add('authorization', 'You can only update your own addresses.');
             }
 
             // Check type-specific permissions
             if ($this->has('type')) {
                 $newType = $this->get('type');
-                if ($newType === 'billing' && !$this->user()->can('address.update.billing')) {
+                if ($newType === 'billing' && ! $this->user()->can('address.update.billing')) {
                     $validator->errors()->add('type', 'You do not have permission to update billing addresses.');
                 }
-                if ($newType === 'shipping' && !$this->user()->can('address.update.shipping')) {
+                if ($newType === 'shipping' && ! $this->user()->can('address.update.shipping')) {
                     $validator->errors()->add('type', 'You do not have permission to update shipping addresses.');
                 }
             }

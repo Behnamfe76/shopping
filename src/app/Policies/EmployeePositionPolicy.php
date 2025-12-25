@@ -2,8 +2,8 @@
 
 namespace Fereydooni\Shopping\app\Policies;
 
-use Fereydooni\Shopping\app\Models\EmployeePosition;
 use App\Models\User;
+use Fereydooni\Shopping\app\Models\EmployeePosition;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class EmployeePositionPolicy
@@ -77,7 +77,7 @@ class EmployeePositionPolicy
         }
 
         // Check basic edit permission
-        if (!$user->can('employee-position.edit')) {
+        if (! $user->can('employee-position.edit')) {
             return false;
         }
 
@@ -116,7 +116,7 @@ class EmployeePositionPolicy
         }
 
         // Check basic delete permission
-        if (!$user->can('employee-position.delete')) {
+        if (! $user->can('employee-position.delete')) {
             return false;
         }
 

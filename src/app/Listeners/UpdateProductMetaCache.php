@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
+use Fereydooni\Shopping\app\Events\ProductMetaCreated;
+use Fereydooni\Shopping\app\Events\ProductMetaDeleted;
+use Fereydooni\Shopping\app\Events\ProductMetaUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Fereydooni\Shopping\app\Events\ProductMetaCreated;
-use Fereydooni\Shopping\app\Events\ProductMetaUpdated;
-use Fereydooni\Shopping\app\Events\ProductMetaDeleted;
 use Illuminate\Support\Facades\Cache;
 
 class UpdateProductMetaCache implements ShouldQueue

@@ -2,25 +2,24 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
-use Illuminate\Routing\Controller;
+use Exception;
+use Fereydooni\Shopping\app\Http\Requests\RenewProviderInsuranceRequest;
+use Fereydooni\Shopping\app\Http\Requests\SearchProviderInsuranceRequest;
 use Fereydooni\Shopping\app\Http\Requests\StoreProviderInsuranceRequest;
 use Fereydooni\Shopping\app\Http\Requests\UpdateProviderInsuranceRequest;
-use Fereydooni\Shopping\app\Http\Requests\VerifyProviderInsuranceRequest;
-use Fereydooni\Shopping\app\Http\Requests\RenewProviderInsuranceRequest;
 use Fereydooni\Shopping\app\Http\Requests\UploadInsuranceDocumentRequest;
-use Fereydooni\Shopping\app\Http\Requests\SearchProviderInsuranceRequest;
-use Fereydooni\Shopping\app\Http\Resources\ProviderInsuranceResource;
+use Fereydooni\Shopping\app\Http\Requests\VerifyProviderInsuranceRequest;
 use Fereydooni\Shopping\app\Http\Resources\ProviderInsuranceCollection;
+use Fereydooni\Shopping\app\Http\Resources\ProviderInsuranceResource;
 use Fereydooni\Shopping\app\Http\Resources\ProviderInsuranceSearchResource;
 use Fereydooni\Shopping\app\Http\Resources\ProviderInsuranceStatisticsResource;
 use Fereydooni\Shopping\app\Services\ProviderInsuranceService;
-use Fereydooni\Shopping\app\DTOs\ProviderInsuranceDTO;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Exception;
 
 class ProviderInsuranceController extends Controller
 {
@@ -42,7 +41,8 @@ class ProviderInsuranceController extends Controller
 
             return ProviderInsuranceCollection::collection($providerInsurance);
         } catch (Exception $e) {
-            Log::error('Error fetching provider insurance list: ' . $e->getMessage());
+            Log::error('Error fetching provider insurance list: '.$e->getMessage());
+
             return response()->json(['error' => 'Failed to fetch provider insurance list'], 500);
         }
     }
@@ -58,10 +58,11 @@ class ProviderInsuranceController extends Controller
 
             return response()->json([
                 'message' => 'Provider insurance created successfully',
-                'data' => new ProviderInsuranceResource($providerInsurance)
+                'data' => new ProviderInsuranceResource($providerInsurance),
             ], 201);
         } catch (Exception $e) {
-            Log::error('Error creating provider insurance: ' . $e->getMessage());
+            Log::error('Error creating provider insurance: '.$e->getMessage());
+
             return response()->json(['error' => 'Failed to create provider insurance'], 500);
         }
     }
@@ -74,15 +75,16 @@ class ProviderInsuranceController extends Controller
         try {
             $providerInsurance = $this->providerInsuranceService->findDTO($id);
 
-            if (!$providerInsurance) {
+            if (! $providerInsurance) {
                 return response()->json(['error' => 'Provider insurance not found'], 404);
             }
 
             return response()->json([
-                'data' => new ProviderInsuranceResource($providerInsurance)
+                'data' => new ProviderInsuranceResource($providerInsurance),
             ]);
         } catch (Exception $e) {
-            Log::error('Error fetching provider insurance: ' . $e->getMessage());
+            Log::error('Error fetching provider insurance: '.$e->getMessage());
+
             return response()->json(['error' => 'Failed to fetch provider insurance'], 500);
         }
     }
@@ -95,23 +97,24 @@ class ProviderInsuranceController extends Controller
         try {
             $providerInsurance = $this->providerInsuranceService->find($id);
 
-            if (!$providerInsurance) {
+            if (! $providerInsurance) {
                 return response()->json(['error' => 'Provider insurance not found'], 404);
             }
 
             $data = $request->validated();
             $updated = $this->providerInsuranceService->updateAndReturnDTO($providerInsurance, $data);
 
-            if (!$updated) {
+            if (! $updated) {
                 return response()->json(['error' => 'Failed to update provider insurance'], 500);
             }
 
             return response()->json([
                 'message' => 'Provider insurance updated successfully',
-                'data' => new ProviderInsuranceResource($updated)
+                'data' => new ProviderInsuranceResource($updated),
             ]);
         } catch (Exception $e) {
-            Log::error('Error updating provider insurance: ' . $e->getMessage());
+            Log::error('Error updating provider insurance: '.$e->getMessage());
+
             return response()->json(['error' => 'Failed to update provider insurance'], 500);
         }
     }
@@ -124,19 +127,20 @@ class ProviderInsuranceController extends Controller
         try {
             $providerInsurance = $this->providerInsuranceService->find($id);
 
-            if (!$providerInsurance) {
+            if (! $providerInsurance) {
                 return response()->json(['error' => 'Provider insurance not found'], 404);
             }
 
             $deleted = $this->providerInsuranceService->delete($providerInsurance);
 
-            if (!$deleted) {
+            if (! $deleted) {
                 return response()->json(['error' => 'Failed to delete provider insurance'], 500);
             }
 
             return response()->json(['message' => 'Provider insurance deleted successfully']);
         } catch (Exception $e) {
-            Log::error('Error deleting provider insurance: ' . $e->getMessage());
+            Log::error('Error deleting provider insurance: '.$e->getMessage());
+
             return response()->json(['error' => 'Failed to delete provider insurance'], 500);
         }
     }
@@ -158,7 +162,8 @@ class ProviderInsuranceController extends Controller
 
             return ProviderInsuranceSearchResource::collection($results);
         } catch (Exception $e) {
-            Log::error('Error searching provider insurance: ' . $e->getMessage());
+            Log::error('Error searching provider insurance: '.$e->getMessage());
+
             return response()->json(['error' => 'Failed to search provider insurance'], 500);
         }
     }
@@ -178,10 +183,11 @@ class ProviderInsuranceController extends Controller
             }
 
             return response()->json([
-                'data' => new ProviderInsuranceStatisticsResource($analytics)
+                'data' => new ProviderInsuranceStatisticsResource($analytics),
             ]);
         } catch (Exception $e) {
-            Log::error('Error fetching provider insurance statistics: ' . $e->getMessage());
+            Log::error('Error fetching provider insurance statistics: '.$e->getMessage());
+
             return response()->json(['error' => 'Failed to fetch statistics'], 500);
         }
     }
@@ -194,7 +200,7 @@ class ProviderInsuranceController extends Controller
         try {
             $providerInsurance = $this->providerInsuranceService->find($id);
 
-            if (!$providerInsurance) {
+            if (! $providerInsurance) {
                 return response()->json(['error' => 'Provider insurance not found'], 404);
             }
 
@@ -205,13 +211,14 @@ class ProviderInsuranceController extends Controller
                 $data['notes'] ?? null
             );
 
-            if (!$verified) {
+            if (! $verified) {
                 return response()->json(['error' => 'Failed to verify provider insurance'], 500);
             }
 
             return response()->json(['message' => 'Provider insurance verified successfully']);
         } catch (Exception $e) {
-            Log::error('Error verifying provider insurance: ' . $e->getMessage());
+            Log::error('Error verifying provider insurance: '.$e->getMessage());
+
             return response()->json(['error' => 'Failed to verify provider insurance'], 500);
         }
     }
@@ -224,12 +231,12 @@ class ProviderInsuranceController extends Controller
         try {
             $request->validate([
                 'rejected_by' => 'required|integer|exists:users,id',
-                'reason' => 'required|string|max:1000'
+                'reason' => 'required|string|max:1000',
             ]);
 
             $providerInsurance = $this->providerInsuranceService->find($id);
 
-            if (!$providerInsurance) {
+            if (! $providerInsurance) {
                 return response()->json(['error' => 'Provider insurance not found'], 404);
             }
 
@@ -239,13 +246,14 @@ class ProviderInsuranceController extends Controller
                 $request->reason
             );
 
-            if (!$rejected) {
+            if (! $rejected) {
                 return response()->json(['error' => 'Failed to reject provider insurance'], 500);
             }
 
             return response()->json(['message' => 'Provider insurance rejected successfully']);
         } catch (Exception $e) {
-            Log::error('Error rejecting provider insurance: ' . $e->getMessage());
+            Log::error('Error rejecting provider insurance: '.$e->getMessage());
+
             return response()->json(['error' => 'Failed to reject provider insurance'], 500);
         }
     }
@@ -258,20 +266,21 @@ class ProviderInsuranceController extends Controller
         try {
             $providerInsurance = $this->providerInsuranceService->find($id);
 
-            if (!$providerInsurance) {
+            if (! $providerInsurance) {
                 return response()->json(['error' => 'Provider insurance not found'], 404);
             }
 
             $data = $request->validated();
             $renewed = $this->providerInsuranceService->renew($providerInsurance, $data);
 
-            if (!$renewed) {
+            if (! $renewed) {
                 return response()->json(['error' => 'Failed to renew provider insurance'], 500);
             }
 
             return response()->json(['message' => 'Provider insurance renewed successfully']);
         } catch (Exception $e) {
-            Log::error('Error renewing provider insurance: ' . $e->getMessage());
+            Log::error('Error renewing provider insurance: '.$e->getMessage());
+
             return response()->json(['error' => 'Failed to renew provider insurance'], 500);
         }
     }
@@ -284,7 +293,7 @@ class ProviderInsuranceController extends Controller
         try {
             $providerInsurance = $this->providerInsuranceService->find($id);
 
-            if (!$providerInsurance) {
+            if (! $providerInsurance) {
                 return response()->json(['error' => 'Provider insurance not found'], 404);
             }
 
@@ -293,16 +302,17 @@ class ProviderInsuranceController extends Controller
 
             $uploaded = $this->providerInsuranceService->addDocument($providerInsurance, $documentPath);
 
-            if (!$uploaded) {
+            if (! $uploaded) {
                 return response()->json(['error' => 'Failed to upload document'], 500);
             }
 
             return response()->json([
                 'message' => 'Document uploaded successfully',
-                'document_path' => $documentPath
+                'document_path' => $documentPath,
             ]);
         } catch (Exception $e) {
-            Log::error('Error uploading insurance document: ' . $e->getMessage());
+            Log::error('Error uploading insurance document: '.$e->getMessage());
+
             return response()->json(['error' => 'Failed to upload document'], 500);
         }
     }
@@ -314,18 +324,18 @@ class ProviderInsuranceController extends Controller
     {
         try {
             $request->validate([
-                'document_path' => 'required|string'
+                'document_path' => 'required|string',
             ]);
 
             $providerInsurance = $this->providerInsuranceService->find($id);
 
-            if (!$providerInsurance) {
+            if (! $providerInsurance) {
                 return response()->json(['error' => 'Provider insurance not found'], 404);
             }
 
             $removed = $this->providerInsuranceService->removeDocument($providerInsurance, $request->document_path);
 
-            if (!$removed) {
+            if (! $removed) {
                 return response()->json(['error' => 'Failed to remove document'], 500);
             }
 
@@ -336,7 +346,8 @@ class ProviderInsuranceController extends Controller
 
             return response()->json(['message' => 'Document removed successfully']);
         } catch (Exception $e) {
-            Log::error('Error removing insurance document: ' . $e->getMessage());
+            Log::error('Error removing insurance document: '.$e->getMessage());
+
             return response()->json(['error' => 'Failed to remove document'], 500);
         }
     }
@@ -359,7 +370,8 @@ class ProviderInsuranceController extends Controller
 
             return ProviderInsuranceResource::collection($expiring);
         } catch (Exception $e) {
-            Log::error('Error fetching expiring insurance: ' . $e->getMessage());
+            Log::error('Error fetching expiring insurance: '.$e->getMessage());
+
             return response()->json(['error' => 'Failed to fetch expiring insurance'], 500);
         }
     }
@@ -381,7 +393,8 @@ class ProviderInsuranceController extends Controller
 
             return ProviderInsuranceResource::collection($pending);
         } catch (Exception $e) {
-            Log::error('Error fetching pending verification: ' . $e->getMessage());
+            Log::error('Error fetching pending verification: '.$e->getMessage());
+
             return response()->json(['error' => 'Failed to fetch pending verification'], 500);
         }
     }
@@ -394,19 +407,20 @@ class ProviderInsuranceController extends Controller
         try {
             $providerInsurance = $this->providerInsuranceService->find($id);
 
-            if (!$providerInsurance) {
+            if (! $providerInsurance) {
                 return response()->json(['error' => 'Provider insurance not found'], 404);
             }
 
             $activated = $this->providerInsuranceService->activate($providerInsurance);
 
-            if (!$activated) {
+            if (! $activated) {
                 return response()->json(['error' => 'Failed to activate provider insurance'], 500);
             }
 
             return response()->json(['message' => 'Provider insurance activated successfully']);
         } catch (Exception $e) {
-            Log::error('Error activating provider insurance: ' . $e->getMessage());
+            Log::error('Error activating provider insurance: '.$e->getMessage());
+
             return response()->json(['error' => 'Failed to activate provider insurance'], 500);
         }
     }
@@ -419,19 +433,20 @@ class ProviderInsuranceController extends Controller
         try {
             $providerInsurance = $this->providerInsuranceService->find($id);
 
-            if (!$providerInsurance) {
+            if (! $providerInsurance) {
                 return response()->json(['error' => 'Provider insurance not found'], 404);
             }
 
             $deactivated = $this->providerInsuranceService->deactivate($providerInsurance);
 
-            if (!$deactivated) {
+            if (! $deactivated) {
                 return response()->json(['error' => 'Failed to deactivate provider insurance'], 500);
             }
 
             return response()->json(['message' => 'Provider insurance deactivated successfully']);
         } catch (Exception $e) {
-            Log::error('Error deactivating provider insurance: ' . $e->getMessage());
+            Log::error('Error deactivating provider insurance: '.$e->getMessage());
+
             return response()->json(['error' => 'Failed to deactivate provider insurance'], 500);
         }
     }
@@ -443,24 +458,25 @@ class ProviderInsuranceController extends Controller
     {
         try {
             $request->validate([
-                'reason' => 'nullable|string|max:1000'
+                'reason' => 'nullable|string|max:1000',
             ]);
 
             $providerInsurance = $this->providerInsuranceService->find($id);
 
-            if (!$providerInsurance) {
+            if (! $providerInsurance) {
                 return response()->json(['error' => 'Provider insurance not found'], 404);
             }
 
             $cancelled = $this->providerInsuranceService->cancel($providerInsurance, $request->reason);
 
-            if (!$cancelled) {
+            if (! $cancelled) {
                 return response()->json(['error' => 'Failed to cancel provider insurance'], 500);
             }
 
             return response()->json(['message' => 'Provider insurance cancelled successfully']);
         } catch (Exception $e) {
-            Log::error('Error cancelling provider insurance: ' . $e->getMessage());
+            Log::error('Error cancelling provider insurance: '.$e->getMessage());
+
             return response()->json(['error' => 'Failed to cancel provider insurance'], 500);
         }
     }
@@ -472,24 +488,25 @@ class ProviderInsuranceController extends Controller
     {
         try {
             $request->validate([
-                'reason' => 'nullable|string|max:1000'
+                'reason' => 'nullable|string|max:1000',
             ]);
 
             $providerInsurance = $this->providerInsuranceService->find($id);
 
-            if (!$providerInsurance) {
+            if (! $providerInsurance) {
                 return response()->json(['error' => 'Provider insurance not found'], 404);
             }
 
             $suspended = $this->providerInsuranceService->suspend($providerInsurance, $request->reason);
 
-            if (!$suspended) {
+            if (! $suspended) {
                 return response()->json(['error' => 'Failed to suspend provider insurance'], 500);
             }
 
             return response()->json(['message' => 'Provider insurance suspended successfully']);
         } catch (Exception $e) {
-            Log::error('Error suspending provider insurance: ' . $e->getMessage());
+            Log::error('Error suspending provider insurance: '.$e->getMessage());
+
             return response()->json(['error' => 'Failed to suspend provider insurance'], 500);
         }
     }

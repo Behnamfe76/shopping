@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Fereydooni\Shopping\app\Models\CustomerNote;
-use Fereydooni\Shopping\app\Models\Customer;
-use Fereydooni\Shopping\app\Models\User;
-use Fereydooni\Shopping\app\Enums\CustomerNoteType;
 use Fereydooni\Shopping\app\Enums\CustomerNotePriority;
+use Fereydooni\Shopping\app\Enums\CustomerNoteType;
+use Fereydooni\Shopping\app\Models\Customer;
+use Fereydooni\Shopping\app\Models\CustomerNote;
+use Fereydooni\Shopping\app\Models\User;
+use Illuminate\Database\Seeder;
 
 class CustomerNoteSeeder extends Seeder
 {
@@ -21,6 +21,7 @@ class CustomerNoteSeeder extends Seeder
 
         if ($customers->isEmpty() || $users->isEmpty()) {
             $this->command->warn('No customers or users found. Skipping customer note seeding.');
+
             return;
         }
 
@@ -89,10 +90,10 @@ class CustomerNoteSeeder extends Seeder
         foreach ($customers as $customer) {
             // Create 2-5 notes per customer
             $noteCount = rand(2, 5);
-            
+
             for ($i = 0; $i < $noteCount; $i++) {
                 $noteData = $sampleNotes[array_rand($sampleNotes)];
-                
+
                 CustomerNote::create([
                     'customer_id' => $customer->id,
                     'user_id' => $users->random()->id,

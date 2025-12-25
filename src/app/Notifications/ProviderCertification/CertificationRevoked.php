@@ -14,6 +14,7 @@ class CertificationRevoked extends Notification implements ShouldQueue
     use Queueable;
 
     public $certification;
+
     public $reason;
 
     /**
@@ -45,48 +46,48 @@ class CertificationRevoked extends Notification implements ShouldQueue
 
         $url = URL::route('provider.certifications.show', [
             'provider' => $provider->id,
-            'certification' => $certification->id
+            'certification' => $certification->id,
         ]);
 
         $mailMessage = (new MailMessage)
-            ->subject('CRITICAL: Certification Revoked - ' . $certification->certification_name)
-            ->greeting('Hello ' . $provider->name . ',')
+            ->subject('CRITICAL: Certification Revoked - '.$certification->certification_name)
+            ->greeting('Hello '.$provider->name.',')
             ->line('**CRITICAL NOTICE:** Your certification has been permanently revoked.')
             ->line('**Certification Details:**')
-            ->line('• **Name:** ' . $certification->certification_name)
-            ->line('• **Number:** ' . $certification->certification_number)
-            ->line('• **Issuing Organization:** ' . $certification->issuing_organization)
-            ->line('• **Category:** ' . ucfirst(str_replace('_', ' ', $certification->category)))
-            ->line('• **Status:** ' . ucfirst($certification->status))
-            ->line('• **Verification Status:** ' . ucfirst(str_replace('_', ' ', $certification->verification_status)));
+            ->line('• **Name:** '.$certification->certification_name)
+            ->line('• **Number:** '.$certification->certification_number)
+            ->line('• **Issuing Organization:** '.$certification->issuing_organization)
+            ->line('• **Category:** '.ucfirst(str_replace('_', ' ', $certification->category)))
+            ->line('• **Status:** '.ucfirst($certification->status))
+            ->line('• **Verification Status:** '.ucfirst(str_replace('_', ' ', $certification->verification_status)));
 
         if ($this->reason) {
             $mailMessage->line('**Revocation Reason:**')
-                       ->line($this->reason);
+                ->line($this->reason);
         }
 
         $mailMessage->line('**Immediate Action Required:**')
-                   ->line('1. **IMMEDIATELY STOP** providing services that require this certification')
-                   ->line('2. Notify all current clients about this revocation')
-                   ->line('3. Review any ongoing contracts that may be affected')
-                   ->line('4. Contact our compliance team for immediate guidance')
-                   ->line('5. Consider legal implications and professional liability')
-                   ->action('View Certification', $url)
-                   ->line('**What This Means:**')
-                   ->line('• Your certification is permanently invalid')
-                   ->line('• You cannot provide services requiring this certification')
-                   ->line('• This may result in contract termination')
-                   ->line('• Your professional reputation is severely impacted')
-                   ->line('• Legal and regulatory consequences may apply')
-                   ->line('**Next Steps:**')
-                   ->line('• Contact our support team immediately')
-                   ->line('• Understand the full implications of this revocation')
-                   ->line('• Consider alternative certification options')
-                   ->line('• Review your professional liability insurance')
-                   ->line('• Consult with legal counsel if necessary')
-                   ->line('This is a serious matter that requires immediate attention.')
-                   ->line('We\'re here to help you understand the situation and explore your options.')
-                   ->salutation('Best regards,<br>' . config('app.name') . ' Compliance Team');
+            ->line('1. **IMMEDIATELY STOP** providing services that require this certification')
+            ->line('2. Notify all current clients about this revocation')
+            ->line('3. Review any ongoing contracts that may be affected')
+            ->line('4. Contact our compliance team for immediate guidance')
+            ->line('5. Consider legal implications and professional liability')
+            ->action('View Certification', $url)
+            ->line('**What This Means:**')
+            ->line('• Your certification is permanently invalid')
+            ->line('• You cannot provide services requiring this certification')
+            ->line('• This may result in contract termination')
+            ->line('• Your professional reputation is severely impacted')
+            ->line('• Legal and regulatory consequences may apply')
+            ->line('**Next Steps:**')
+            ->line('• Contact our support team immediately')
+            ->line('• Understand the full implications of this revocation')
+            ->line('• Consider alternative certification options')
+            ->line('• Review your professional liability insurance')
+            ->line('• Consult with legal counsel if necessary')
+            ->line('This is a serious matter that requires immediate attention.')
+            ->line('We\'re here to help you understand the situation and explore your options.')
+            ->salutation('Best regards,<br>'.config('app.name').' Compliance Team');
 
         return $mailMessage;
     }
@@ -108,10 +109,10 @@ class CertificationRevoked extends Notification implements ShouldQueue
             'status' => $this->certification->status,
             'verification_status' => $this->certification->verification_status,
             'revocation_reason' => $this->reason,
-            'message' => 'Your certification "' . $this->certification->certification_name . '" has been permanently revoked.',
+            'message' => 'Your certification "'.$this->certification->certification_name.'" has been permanently revoked.',
             'action_url' => URL::route('provider.certifications.show', [
                 'provider' => $notifiable->id,
-                'certification' => $this->certification->id
+                'certification' => $this->certification->id,
             ]),
             'created_at' => now()->toISOString(),
         ];
@@ -143,9 +144,9 @@ class CertificationRevoked extends Notification implements ShouldQueue
         return [
             'provider_certification',
             'certification_revoked',
-            'provider_' . $this->certification->provider_id,
-            'certification_' . $this->certification->id,
-            'urgency_critical'
+            'provider_'.$this->certification->provider_id,
+            'certification_'.$this->certification->id,
+            'urgency_critical',
         ];
     }
 }

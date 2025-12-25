@@ -2,8 +2,8 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
-use Fereydooni\Shopping\app\Models\Customer;
 use Fereydooni\Shopping\app\Enums\CustomerStatus;
+use Fereydooni\Shopping\app\Models\Customer;
 use Illuminate\Database\Eloquent\Collection;
 
 trait HasCustomerStatusManagement
@@ -27,7 +27,7 @@ trait HasCustomerStatusManagement
     /**
      * Suspend customer
      */
-    public function suspendCustomer(Customer $customer, string $reason = null): bool
+    public function suspendCustomer(Customer $customer, ?string $reason = null): bool
     {
         return $this->changeStatus($customer, CustomerStatus::SUSPENDED, $reason);
     }
@@ -108,10 +108,10 @@ trait HasCustomerStatusManagement
             CustomerStatus::ACTIVE,
             CustomerStatus::INACTIVE,
             CustomerStatus::SUSPENDED,
-            CustomerStatus::PENDING
+            CustomerStatus::PENDING,
         ];
 
-        if (!in_array($newStatus, $validStatuses)) {
+        if (! in_array($newStatus, $validStatuses)) {
             $validator->errors()->add('status', 'Invalid customer status.');
         }
 
@@ -138,7 +138,7 @@ trait HasCustomerStatusManagement
     /**
      * Fire customer status changed event
      */
-    protected function fireCustomerStatusChangedEvent(Customer $customer, string $newStatus, string $reason = null): void
+    protected function fireCustomerStatusChangedEvent(Customer $customer, string $newStatus, ?string $reason = null): void
     {
         switch ($newStatus) {
             case CustomerStatus::ACTIVE:
@@ -158,7 +158,7 @@ trait HasCustomerStatusManagement
     /**
      * Add status change note
      */
-    protected function addCustomerStatusChangeNote(Customer $customer, string $newStatus, string $reason = null): string
+    protected function addCustomerStatusChangeNote(Customer $customer, string $newStatus, ?string $reason = null): string
     {
         $timestamp = now()->format('Y-m-d H:i:s');
         $oldStatus = $customer->status;
@@ -170,6 +170,7 @@ trait HasCustomerStatusManagement
         }
 
         $currentNotes = $customer->notes ?? '';
-        return $currentNotes ? $currentNotes . "\n" . $note : $note;
+
+        return $currentNotes ? $currentNotes."\n".$note : $note;
     }
 }

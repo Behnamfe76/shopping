@@ -2,14 +2,14 @@
 
 namespace Fereydooni\Shopping\App\Actions\ProviderPayment;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Event;
 use Fereydooni\Shopping\App\DTOs\ProviderPaymentDTO;
+use Fereydooni\Shopping\App\Enums\ProviderPaymentStatus;
+use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentCompleted;
 use Fereydooni\Shopping\App\Models\ProviderPayment;
 use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderPaymentRepositoryInterface;
-use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentCompleted;
-use Fereydooni\Shopping\App\Enums\ProviderPaymentStatus;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
 
 class CompleteProviderPaymentAction
 {
@@ -34,7 +34,7 @@ class CompleteProviderPaymentAction
             // Update payment status to completed
             $updated = $this->repository->complete($payment);
 
-            if (!$updated) {
+            if (! $updated) {
                 throw new \Exception('Failed to complete provider payment');
             }
 
@@ -56,7 +56,7 @@ class CompleteProviderPaymentAction
                 'payment_id' => $payment->id,
                 'provider_id' => $payment->provider_id,
                 'amount' => $payment->amount,
-                'completed_at' => now()
+                'completed_at' => now(),
             ]);
 
             return ProviderPaymentDTO::fromModel($payment);
@@ -66,7 +66,7 @@ class CompleteProviderPaymentAction
 
             Log::error('Failed to complete provider payment', [
                 'error' => $e->getMessage(),
-                'payment_id' => $payment->id
+                'payment_id' => $payment->id,
             ]);
 
             throw $e;
@@ -117,7 +117,7 @@ class CompleteProviderPaymentAction
 
         Log::info('Updating invoice records for completed payment', [
             'payment_id' => $payment->id,
-            'invoice_id' => $payment->invoice_id
+            'invoice_id' => $payment->invoice_id,
         ]);
     }
 
@@ -134,7 +134,7 @@ class CompleteProviderPaymentAction
 
         Log::info('Sending completion notifications', [
             'payment_id' => $payment->id,
-            'provider_id' => $payment->provider_id
+            'provider_id' => $payment->provider_id,
         ]);
     }
 }

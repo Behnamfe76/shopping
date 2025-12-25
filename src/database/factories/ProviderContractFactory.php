@@ -2,10 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Enums\ContractStatus;
+use App\Enums\ContractType;
 use App\Models\Provider;
 use App\Models\ProviderContract;
-use App\Enums\ContractType;
-use App\Enums\ContractStatus;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -33,8 +33,8 @@ class ProviderContractFactory extends Factory
         $status = $this->faker->randomElement(ContractStatus::cases());
 
         // Generate contract number
-        $contractNumber = 'CONTRACT-' . strtoupper($contractType->value) . '-' .
-                         $this->faker->numberBetween(1000, 9999) . '-' .
+        $contractNumber = 'CONTRACT-'.strtoupper($contractType->value).'-'.
+                         $this->faker->numberBetween(1000, 9999).'-'.
                          $startDate->format('Y');
 
         // Determine if contract should be signed
@@ -228,7 +228,7 @@ class ProviderContractFactory extends Factory
 
         for ($i = 0; $i < $numAttachments; $i++) {
             $attachments[] = [
-                'name' => $this->faker->words(3, true) . '.' . $this->faker->randomElement($attachmentTypes),
+                'name' => $this->faker->words(3, true).'.'.$this->faker->randomElement($attachmentTypes),
                 'type' => $this->faker->randomElement($attachmentTypes),
                 'size' => $this->faker->numberBetween(100, 10000),
                 'uploaded_at' => $this->faker->dateTimeThisYear()->format('Y-m-d H:i:s'),
@@ -333,4 +333,4 @@ class ProviderContractFactory extends Factory
             ]),
         ]);
     }
-};
+}

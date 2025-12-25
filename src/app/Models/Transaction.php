@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
+use Fereydooni\Shopping\app\Enums\TransactionStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Fereydooni\Shopping\app\Enums\TransactionStatus;
 
 class Transaction extends Model
 {

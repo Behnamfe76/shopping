@@ -2,16 +2,16 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
-use Illuminate\Support\Facades\DB;
-use Fereydooni\Shopping\app\Models\LoyaltyTransaction;
 use Fereydooni\Shopping\app\Enums\LoyaltyTransactionStatus;
+use Fereydooni\Shopping\app\Models\LoyaltyTransaction;
+use Illuminate\Support\Facades\DB;
 
 trait HasLoyaltyTransactionStatusManagement
 {
     /**
      * Reverse a loyalty transaction
      */
-    public function reverse(LoyaltyTransaction $transaction, string $reason = null): bool
+    public function reverse(LoyaltyTransaction $transaction, ?string $reason = null): bool
     {
         return DB::transaction(function () use ($transaction, $reason) {
             // Update the transaction status
@@ -75,7 +75,7 @@ trait HasLoyaltyTransactionStatusManagement
     /**
      * Mark transaction as failed
      */
-    public function markAsFailed(LoyaltyTransaction $transaction, string $reason = null): bool
+    public function markAsFailed(LoyaltyTransaction $transaction, ?string $reason = null): bool
     {
         return DB::transaction(function () use ($transaction, $reason) {
             $transaction->update([
@@ -176,7 +176,7 @@ trait HasLoyaltyTransactionStatusManagement
     protected function updateCustomerLoyaltyPoints(int $customerId, int $pointsChange): void
     {
         $customer = \Fereydooni\Shopping\app\Models\Customer::find($customerId);
-        
+
         if ($customer) {
             $customer->increment('loyalty_points', $pointsChange);
         }
@@ -187,9 +187,9 @@ trait HasLoyaltyTransactionStatusManagement
      */
     public function canReverse(LoyaltyTransaction $transaction): bool
     {
-        return $transaction->status === LoyaltyTransactionStatus::COMPLETED 
-            && !$transaction->is_expired
-            && !$transaction->is_reversed;
+        return $transaction->status === LoyaltyTransactionStatus::COMPLETED
+            && ! $transaction->is_expired
+            && ! $transaction->is_reversed;
     }
 
     /**
@@ -197,7 +197,7 @@ trait HasLoyaltyTransactionStatusManagement
      */
     public function canExpire(LoyaltyTransaction $transaction): bool
     {
-        return $transaction->status === LoyaltyTransactionStatus::COMPLETED 
+        return $transaction->status === LoyaltyTransactionStatus::COMPLETED
             && $transaction->is_expired;
     }
 

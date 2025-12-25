@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Fereydooni\Shopping\app\Models\Employee;
 use Fereydooni\Shopping\app\Enums\EmployeeStatus;
 use Fereydooni\Shopping\app\Enums\EmploymentType;
 use Fereydooni\Shopping\app\Enums\Gender;
+use Fereydooni\Shopping\app\Models\Employee;
+use Illuminate\Foundation\Http\FormRequest;
 
 class StoreEmployeeRequest extends FormRequest
 {
@@ -31,10 +31,10 @@ class StoreEmployeeRequest extends FormRequest
             'email' => ['required', 'email', 'max:255', 'unique:employees,email'],
             'phone' => ['nullable', 'string', 'max:20'],
             'date_of_birth' => ['nullable', 'date', 'before:today'],
-            'gender' => ['nullable', 'string', 'in:' . implode(',', array_column(Gender::cases(), 'value'))],
+            'gender' => ['nullable', 'string', 'in:'.implode(',', array_column(Gender::cases(), 'value'))],
             'hire_date' => ['required', 'date', 'before_or_equal:today'],
-            'status' => ['nullable', 'string', 'in:' . implode(',', array_column(EmployeeStatus::cases(), 'value'))],
-            'employment_type' => ['required', 'string', 'in:' . implode(',', array_column(EmploymentType::cases(), 'value'))],
+            'status' => ['nullable', 'string', 'in:'.implode(',', array_column(EmployeeStatus::cases(), 'value'))],
+            'employment_type' => ['required', 'string', 'in:'.implode(',', array_column(EmploymentType::cases(), 'value'))],
             'department' => ['required', 'string', 'max:100'],
             'position' => ['required', 'string', 'max:100'],
             'manager_id' => ['nullable', 'integer', 'exists:employees,id'],
@@ -82,19 +82,19 @@ class StoreEmployeeRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
-        if (!$this->has('status')) {
+        if (! $this->has('status')) {
             $this->merge(['status' => EmployeeStatus::PENDING->value]);
         }
 
-        if (!$this->has('hire_date')) {
+        if (! $this->has('hire_date')) {
             $this->merge(['hire_date' => now()->format('Y-m-d')]);
         }
 
-        if (!$this->has('employment_type')) {
+        if (! $this->has('employment_type')) {
             $this->merge(['employment_type' => EmploymentType::FULL_TIME->value]);
         }
 
-        if (!$this->has('benefits_enrolled')) {
+        if (! $this->has('benefits_enrolled')) {
             $this->merge(['benefits_enrolled' => false]);
         }
     }

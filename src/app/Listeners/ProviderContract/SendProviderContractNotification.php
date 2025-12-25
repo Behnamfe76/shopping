@@ -3,12 +3,12 @@
 namespace Fereydooni\Shopping\app\Listeners\ProviderContract;
 
 use Fereydooni\Shopping\app\Events\Provider\ProviderContractCreated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderContractUpdated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderContractSigned;
-use Fereydooni\Shopping\app\Events\Provider\ProviderContractRenewed;
-use Fereydooni\Shopping\app\Events\Provider\ProviderContractTerminated;
 use Fereydooni\Shopping\app\Events\Provider\ProviderContractExpiring;
 use Fereydooni\Shopping\app\Events\Provider\ProviderContractExtended;
+use Fereydooni\Shopping\app\Events\Provider\ProviderContractRenewed;
+use Fereydooni\Shopping\app\Events\Provider\ProviderContractSigned;
+use Fereydooni\Shopping\app\Events\Provider\ProviderContractTerminated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderContractUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
@@ -28,7 +28,7 @@ class SendProviderContractNotification implements ShouldQueue
             Log::error('Failed to send provider contract notification', [
                 'event' => get_class($event),
                 'error' => $e->getMessage(),
-                'contract_id' => $event->contract->id ?? null
+                'contract_id' => $event->contract->id ?? null,
             ]);
         }
     }
@@ -74,7 +74,7 @@ class SendProviderContractNotification implements ShouldQueue
         // Send notification to provider and relevant stakeholders
         Log::info('Provider contract created notification sent', [
             'contract_id' => $contract->id,
-            'provider_id' => $provider->id
+            'provider_id' => $provider->id,
         ]);
     }
 
@@ -86,7 +86,7 @@ class SendProviderContractNotification implements ShouldQueue
         // Send notification about contract signing
         Log::info('Provider contract signed notification sent', [
             'contract_id' => $contract->id,
-            'provider_id' => $provider->id
+            'provider_id' => $provider->id,
         ]);
     }
 
@@ -98,7 +98,7 @@ class SendProviderContractNotification implements ShouldQueue
         // Send notification about contract renewal
         Log::info('Provider contract renewed notification sent', [
             'contract_id' => $contract->id,
-            'provider_id' => $provider->id
+            'provider_id' => $provider->id,
         ]);
     }
 
@@ -110,7 +110,7 @@ class SendProviderContractNotification implements ShouldQueue
         // Send notification about contract termination
         Log::info('Provider contract terminated notification sent', [
             'contract_id' => $contract->id,
-            'provider_id' => $provider->id
+            'provider_id' => $provider->id,
         ]);
     }
 
@@ -123,7 +123,7 @@ class SendProviderContractNotification implements ShouldQueue
         Log::info('Provider contract expiring reminder sent', [
             'contract_id' => $contract->id,
             'provider_id' => $provider->id,
-            'days_until_expiry' => $daysUntilExpiry
+            'days_until_expiry' => $daysUntilExpiry,
         ]);
     }
 
@@ -135,7 +135,7 @@ class SendProviderContractNotification implements ShouldQueue
         // Send notification about contract extension
         Log::info('Provider contract extended notification sent', [
             'contract_id' => $contract->id,
-            'provider_id' => $provider->id
+            'provider_id' => $provider->id,
         ]);
     }
 
@@ -148,7 +148,7 @@ class SendProviderContractNotification implements ShouldQueue
         Log::info('Provider contract updated notification sent', [
             'contract_id' => $contract->id,
             'provider_id' => $provider->id,
-            'changes' => $changes
+            'changes' => $changes,
         ]);
     }
 }

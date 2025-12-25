@@ -2,8 +2,8 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Fereydooni\Shopping\app\DTOs\BrandDTO;
+use Illuminate\Foundation\Http\FormRequest;
 
 class StoreBrandRequest extends FormRequest
 {
@@ -62,9 +62,9 @@ class StoreBrandRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         // Generate slug if not provided
-        if (!$this->has('slug') || empty($this->slug)) {
+        if (! $this->has('slug') || empty($this->slug)) {
             $this->merge([
-                'slug' => \Illuminate\Support\Str::slug($this->name)
+                'slug' => \Illuminate\Support\Str::slug($this->name),
             ]);
         }
 

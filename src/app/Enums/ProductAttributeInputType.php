@@ -122,4 +122,3 @@ enum ProductAttributeInputType: string
         return $this === self::CUSTOM;
     }
 }
-

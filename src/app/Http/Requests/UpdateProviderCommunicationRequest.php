@@ -21,13 +21,13 @@ class UpdateProviderCommunicationRequest extends FormRequest
                 'email', 'phone', 'chat', 'sms', 'video_call', 'in_person',
                 'support_ticket', 'complaint', 'inquiry', 'order_update',
                 'payment_notification', 'quality_issue', 'delivery_update',
-                'contract_discussion', 'general'
+                'contract_discussion', 'general',
             ])],
             'subject' => ['sometimes', 'string', 'max:255'],
             'message' => ['sometimes', 'string', 'max:10000'],
             'direction' => ['sometimes', 'string', Rule::in(['inbound', 'outbound'])],
             'status' => ['sometimes', 'string', Rule::in([
-                'draft', 'sent', 'delivered', 'read', 'replied', 'closed', 'archived', 'failed'
+                'draft', 'sent', 'delivered', 'read', 'replied', 'closed', 'archived', 'failed',
             ])],
             'priority' => ['sometimes', 'string', Rule::in(['low', 'normal', 'high', 'urgent'])],
             'is_urgent' => ['sometimes', 'boolean'],

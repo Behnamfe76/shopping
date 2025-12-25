@@ -17,7 +17,7 @@ enum RatingCategory: string
 
     public function getDescription(): string
     {
-        return match($this) {
+        return match ($this) {
             self::OVERALL => 'Overall Rating',
             self::QUALITY => 'Quality Rating',
             self::SERVICE => 'Service Rating',
@@ -33,7 +33,7 @@ enum RatingCategory: string
 
     public function getIcon(): string
     {
-        return match($this) {
+        return match ($this) {
             self::OVERALL => '⭐',
             self::QUALITY => '🏆',
             self::SERVICE => '🛎️',

@@ -26,6 +26,7 @@ trait HasProviderCommunicationThreadManagement
     {
         try {
             $communication->update(['thread_id' => $threadId]);
+
             return true;
         } catch (\Exception $e) {
             return false;
@@ -124,7 +125,7 @@ trait HasProviderCommunicationThreadManagement
             ProviderCommunication::where('thread_id', $threadId)
                 ->update([
                     'is_archived' => true,
-                    'status' => 'archived'
+                    'status' => 'archived',
                 ]);
 
             return true;

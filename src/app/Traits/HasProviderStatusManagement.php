@@ -4,9 +4,9 @@ namespace App\Traits;
 
 use Fereydooni\Shopping\App\Enums\ProviderStatus;
 use Fereydooni\Shopping\App\Models\Provider;
+use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderRepositoryInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderRepositoryInterface;
 
 trait HasProviderStatusManagement
 {
@@ -31,11 +31,11 @@ trait HasProviderStatusManagement
     /**
      * Suspend a provider
      */
-    public function suspendProvider(Provider $provider, string $reason = null): bool
+    public function suspendProvider(Provider $provider, ?string $reason = null): bool
     {
         return $this->providerRepository->update($provider, [
             'status' => ProviderStatus::SUSPENDED,
-            'suspension_reason' => $reason
+            'suspension_reason' => $reason,
         ]);
     }
 
@@ -46,18 +46,18 @@ trait HasProviderStatusManagement
     {
         return $this->providerRepository->update($provider, [
             'status' => ProviderStatus::ACTIVE,
-            'suspension_reason' => null
+            'suspension_reason' => null,
         ]);
     }
 
     /**
      * Blacklist a provider
      */
-    public function blacklistProvider(Provider $provider, string $reason = null): bool
+    public function blacklistProvider(Provider $provider, ?string $reason = null): bool
     {
         return $this->providerRepository->update($provider, [
             'status' => ProviderStatus::BLACKLISTED,
-            'blacklist_reason' => $reason
+            'blacklist_reason' => $reason,
         ]);
     }
 
@@ -68,7 +68,7 @@ trait HasProviderStatusManagement
     {
         return $this->providerRepository->update($provider, [
             'status' => ProviderStatus::INACTIVE,
-            'blacklist_reason' => null
+            'blacklist_reason' => null,
         ]);
     }
 
@@ -91,11 +91,11 @@ trait HasProviderStatusManagement
     /**
      * Reject pending provider
      */
-    public function rejectProvider(Provider $provider, string $reason = null): bool
+    public function rejectProvider(Provider $provider, ?string $reason = null): bool
     {
         return $this->providerRepository->update($provider, [
             'status' => ProviderStatus::INACTIVE,
-            'rejection_reason' => $reason
+            'rejection_reason' => $reason,
         ]);
     }
 
@@ -268,7 +268,7 @@ trait HasProviderStatusManagement
     {
         return $this->whereIn('status', [
             ProviderStatus::PENDING,
-            ProviderStatus::SUSPENDED
+            ProviderStatus::SUSPENDED,
         ])->get();
     }
 
@@ -278,6 +278,7 @@ trait HasProviderStatusManagement
     public function getProvidersWithExpiringContracts(int $daysAhead = 30): Collection
     {
         $expiryDate = now()->addDays($daysAhead);
+
         return $this->where('contract_end_date', '<=', $expiryDate)
             ->where('status', ProviderStatus::ACTIVE)
             ->get();

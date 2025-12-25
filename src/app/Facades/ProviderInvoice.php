@@ -2,20 +2,20 @@
 
 namespace Fereydooni\Shopping\App\Facades;
 
+use Fereydooni\Shopping\App\Actions\ProviderInvoice\CalculateInvoiceMetricsAction;
 use Fereydooni\Shopping\App\Actions\ProviderInvoice\CreateProviderInvoiceAction;
-use Fereydooni\Shopping\App\Actions\ProviderInvoice\UpdateProviderInvoiceAction;
-use Fereydooni\Shopping\App\Actions\ProviderInvoice\SendProviderInvoiceAction;
 use Fereydooni\Shopping\App\Actions\ProviderInvoice\MarkInvoiceAsPaidAction;
 use Fereydooni\Shopping\App\Actions\ProviderInvoice\ProcessOverdueInvoicesAction;
-use Fereydooni\Shopping\App\Actions\ProviderInvoice\CalculateInvoiceMetricsAction;
-use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderInvoiceRepositoryInterface;
-use Fereydooni\Shopping\App\Models\ProviderInvoice;
+use Fereydooni\Shopping\App\Actions\ProviderInvoice\SendProviderInvoiceAction;
+use Fereydooni\Shopping\App\Actions\ProviderInvoice\UpdateProviderInvoiceAction;
 use Fereydooni\Shopping\App\DTOs\ProviderInvoiceDTO;
-use Illuminate\Support\Facades\Facade;
-use Illuminate\Support\Collection;
+use Fereydooni\Shopping\App\Models\ProviderInvoice;
+use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderInvoiceRepositoryInterface;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Facade;
 
 /**
  * ProviderInvoice Facade
@@ -63,7 +63,7 @@ class ProviderInvoice extends Facade
     /**
      * Mark an invoice as paid
      */
-    public static function markAsPaid(ProviderInvoice $invoice, string $paymentDate = null): ProviderInvoiceDTO
+    public static function markAsPaid(ProviderInvoice $invoice, ?string $paymentDate = null): ProviderInvoiceDTO
     {
         return app(MarkInvoiceAsPaidAction::class)->execute($invoice, $paymentDate);
     }
@@ -111,7 +111,7 @@ class ProviderInvoice extends Facade
     /**
      * Get cursor paginated invoices
      */
-    public static function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public static function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return app(ProviderInvoiceRepositoryInterface::class)->cursorPaginate($perPage, $cursor);
     }
@@ -271,7 +271,7 @@ class ProviderInvoice extends Facade
     /**
      * Get invoice trends
      */
-    public static function getTrends(string $startDate = null, string $endDate = null): array
+    public static function getTrends(?string $startDate = null, ?string $endDate = null): array
     {
         return app(ProviderInvoiceRepositoryInterface::class)->getInvoiceTrends($startDate, $endDate);
     }
@@ -319,7 +319,7 @@ class ProviderInvoice extends Facade
     /**
      * Get total invoiced amount
      */
-    public static function getTotalInvoicedAmount(string $startDate = null, string $endDate = null): float
+    public static function getTotalInvoicedAmount(?string $startDate = null, ?string $endDate = null): float
     {
         return app(ProviderInvoiceRepositoryInterface::class)->getTotalInvoicedAmount($startDate, $endDate);
     }
@@ -327,7 +327,7 @@ class ProviderInvoice extends Facade
     /**
      * Get total paid amount
      */
-    public static function getTotalPaidAmount(string $startDate = null, string $endDate = null): float
+    public static function getTotalPaidAmount(?string $startDate = null, ?string $endDate = null): float
     {
         return app(ProviderInvoiceRepositoryInterface::class)->getTotalPaidAmount($startDate, $endDate);
     }
@@ -383,7 +383,7 @@ class ProviderInvoice extends Facade
     /**
      * Cancel invoice
      */
-    public static function cancel(ProviderInvoice $invoice, string $reason = null): bool
+    public static function cancel(ProviderInvoice $invoice, ?string $reason = null): bool
     {
         return app(ProviderInvoiceRepositoryInterface::class)->cancel($invoice, $reason);
     }
@@ -391,7 +391,7 @@ class ProviderInvoice extends Facade
     /**
      * Dispute invoice
      */
-    public static function dispute(ProviderInvoice $invoice, string $reason = null): bool
+    public static function dispute(ProviderInvoice $invoice, ?string $reason = null): bool
     {
         return app(ProviderInvoiceRepositoryInterface::class)->dispute($invoice, $reason);
     }
@@ -420,4 +420,3 @@ class ProviderInvoice extends Facade
         return app(ProviderInvoiceRepositoryInterface::class)->extendDueDate($invoice, $newDueDate);
     }
 }
-

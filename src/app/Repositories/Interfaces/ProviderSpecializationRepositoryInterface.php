@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\App\Repositories\Interfaces;
 
+use Fereydooni\Shopping\App\DTOs\ProviderSpecializationDTO;
+use Fereydooni\Shopping\App\Models\ProviderSpecialization;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Fereydooni\Shopping\App\Models\ProviderSpecialization;
-use Fereydooni\Shopping\App\DTOs\ProviderSpecializationDTO;
 
 interface ProviderSpecializationRepositoryInterface
 {
@@ -29,7 +29,7 @@ interface ProviderSpecializationRepositoryInterface
     /**
      * Get cursor paginated specializations.
      */
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator;
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator;
 
     /**
      * Find specialization by ID.
@@ -244,7 +244,7 @@ interface ProviderSpecializationRepositoryInterface
     /**
      * Reject a specialization.
      */
-    public function reject(ProviderSpecialization $specialization, string $reason = null): bool;
+    public function reject(ProviderSpecialization $specialization, ?string $reason = null): bool;
 
     /**
      * Get specialization count for a provider.
@@ -374,7 +374,7 @@ interface ProviderSpecializationRepositoryInterface
     /**
      * Get specialization trends.
      */
-    public function getSpecializationTrends(string $startDate = null, string $endDate = null): array;
+    public function getSpecializationTrends(?string $startDate = null, ?string $endDate = null): array;
 
     /**
      * Get most popular specializations.

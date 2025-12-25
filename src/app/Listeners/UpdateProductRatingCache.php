@@ -2,9 +2,6 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
-use Fereydooni\Shopping\app\Events\ProductReviewCreated;
-use Fereydooni\Shopping\app\Events\ProductReviewUpdated;
-use Fereydooni\Shopping\app\Events\ProductReviewDeleted;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Cache;
@@ -39,7 +36,7 @@ class UpdateProductRatingCache implements ShouldQueue
         Log::info('Product rating cache updated', [
             'review_id' => $review->id,
             'product_id' => $productId,
-            'rating' => $review->rating
+            'rating' => $review->rating,
         ]);
     }
 
@@ -53,7 +50,7 @@ class UpdateProductRatingCache implements ShouldQueue
             "product_average_rating_{$productId}",
             "product_rating_count_{$productId}",
             "product_rating_distribution_{$productId}",
-            "product_rating_summary_{$productId}"
+            "product_rating_summary_{$productId}",
         ];
 
         foreach ($cacheKeys as $key) {
@@ -70,7 +67,7 @@ class UpdateProductRatingCache implements ShouldQueue
             "product_stats_{$productId}",
             "product_review_summary_{$productId}",
             "product_rating_analytics_{$productId}",
-            "product_performance_{$productId}"
+            "product_performance_{$productId}",
         ];
 
         foreach ($cacheKeys as $key) {
@@ -85,7 +82,7 @@ class UpdateProductRatingCache implements ShouldQueue
     {
         Log::error('Failed to update product rating cache', [
             'review_id' => $event->review->id,
-            'error' => $exception->getMessage()
+            'error' => $exception->getMessage(),
         ]);
     }
 }

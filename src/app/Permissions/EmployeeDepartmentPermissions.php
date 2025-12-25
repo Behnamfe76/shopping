@@ -127,7 +127,7 @@ class EmployeeDepartmentPermissions
             'employee-department.view-sensitive',
             'employee-department.manage-budget',
             'employee-department.manage-hierarchy',
-            'employee-department.audit'
+            'employee-department.audit',
         ];
     }
 
@@ -141,37 +141,37 @@ class EmployeeDepartmentPermissions
                 'employee-department.view',
                 'employee-department.create',
                 'employee-department.edit',
-                'employee-department.delete'
+                'employee-department.delete',
             ],
             'Manager Management' => [
-                'employee-department.assign-manager'
+                'employee-department.assign-manager',
             ],
             'Structure Management' => [
                 'employee-department.move',
-                'employee-department.hierarchy-management'
+                'employee-department.hierarchy-management',
             ],
             'Access Control' => [
                 'employee-department.view-own',
                 'employee-department.view-team',
                 'employee-department.view-all',
-                'employee-department.view-sensitive'
+                'employee-department.view-sensitive',
             ],
             'Administration' => [
                 'employee-department.manage-all',
                 'employee-department.manage-budget',
-                'employee-department.manage-hierarchy'
+                'employee-department.manage-hierarchy',
             ],
             'Data Management' => [
                 'employee-department.export',
-                'employee-department.import'
+                'employee-department.import',
             ],
             'Analytics' => [
                 'employee-department.statistics',
-                'employee-department.audit'
+                'employee-department.audit',
             ],
             'Financial' => [
-                'employee-department.budget-management'
-            ]
+                'employee-department.budget-management',
+            ],
         ];
     }
 
@@ -192,30 +192,30 @@ class EmployeeDepartmentPermissions
                 'employee-department.hierarchy-management',
                 'employee-department.statistics',
                 'employee-department.export',
-                'employee-department.import'
+                'employee-department.import',
             ],
             'department-manager' => [
                 'employee-department.view',
                 'employee-department.view-own',
                 'employee-department.view-team',
-                'employee-department.statistics'
+                'employee-department.statistics',
             ],
             'finance-manager' => [
                 'employee-department.view',
                 'employee-department.view-all',
                 'employee-department.budget-management',
                 'employee-department.statistics',
-                'employee-department.export'
+                'employee-department.export',
             ],
             'employee' => [
-                'employee-department.view-own'
+                'employee-department.view-own',
             ],
             'auditor' => [
                 'employee-department.view',
                 'employee-department.view-all',
                 'employee-department.audit',
-                'employee-department.export'
-            ]
+                'employee-department.export',
+            ],
         ];
     }
 
@@ -273,16 +273,18 @@ class EmployeeDepartmentPermissions
                 default:
                     Log::warning('Unknown permission action', [
                         'action' => $action,
-                        'user_id' => $user->id ?? 'unknown'
+                        'user_id' => $user->id ?? 'unknown',
                     ]);
+
                     return false;
             }
         } catch (\Exception $e) {
             Log::error('Error checking permission', [
                 'action' => $action,
                 'user_id' => $user->id ?? 'unknown',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -305,8 +307,9 @@ class EmployeeDepartmentPermissions
         } catch (\Exception $e) {
             Log::error('Error getting user permissions', [
                 'user_id' => $user->id ?? 'unknown',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return [];
         }
     }
@@ -322,7 +325,7 @@ class EmployeeDepartmentPermissions
                 'employee-department.create',
                 'employee-department.edit',
                 'employee-department.delete',
-                'employee-department.manage-all'
+                'employee-department.manage-all',
             ];
 
             foreach ($permissions as $permission) {
@@ -335,8 +338,9 @@ class EmployeeDepartmentPermissions
         } catch (\Exception $e) {
             Log::error('Error checking department permissions', [
                 'user_id' => $user->id ?? 'unknown',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -365,7 +369,7 @@ class EmployeeDepartmentPermissions
             'employee-department.view-sensitive' => 'View sensitive department information',
             'employee-department.manage-budget' => 'Full budget management access',
             'employee-department.manage-hierarchy' => 'Full hierarchy management access',
-            'employee-department.audit' => 'Audit department activities and changes'
+            'employee-department.audit' => 'Audit department activities and changes',
         ];
 
         return $descriptions[$permission] ?? 'Unknown permission';

@@ -40,15 +40,15 @@ class InvoiceSent extends Notification implements ShouldQueue
         $provider = $this->invoice->provider;
 
         return (new MailMessage)
-            ->subject('Provider Invoice Sent - ' . $this->invoice->invoice_number)
-            ->greeting('Hello ' . ($notifiable->name ?? 'Team Member'))
+            ->subject('Provider Invoice Sent - '.$this->invoice->invoice_number)
+            ->greeting('Hello '.($notifiable->name ?? 'Team Member'))
             ->line('A provider invoice has been sent successfully.')
-            ->line('Invoice Number: ' . $this->invoice->invoice_number)
-            ->line('Provider: ' . ($provider->name ?? 'Unknown Provider'))
-            ->line('Amount: $' . number_format($this->invoice->total_amount, 2))
-            ->line('Due Date: ' . $this->invoice->due_date->format('M d, Y'))
-            ->line('Sent Date: ' . $this->invoice->sent_at->format('M d, Y H:i'))
-            ->action('View Invoice', url('/provider-invoices/' . $this->invoice->id))
+            ->line('Invoice Number: '.$this->invoice->invoice_number)
+            ->line('Provider: '.($provider->name ?? 'Unknown Provider'))
+            ->line('Amount: $'.number_format($this->invoice->total_amount, 2))
+            ->line('Due Date: '.$this->invoice->due_date->format('M d, Y'))
+            ->line('Sent Date: '.$this->invoice->sent_at->format('M d, Y H:i'))
+            ->action('View Invoice', url('/provider-invoices/'.$this->invoice->id))
             ->line('The invoice has been sent to the provider and is now awaiting payment.');
     }
 
@@ -69,7 +69,7 @@ class InvoiceSent extends Notification implements ShouldQueue
             'sent_date' => $this->invoice->sent_at->toISOString(),
             'status' => $this->invoice->status,
             'type' => 'invoice_sent',
-            'message' => 'Provider invoice sent: ' . $this->invoice->invoice_number
+            'message' => 'Provider invoice sent: '.$this->invoice->invoice_number,
         ];
     }
 
@@ -81,4 +81,3 @@ class InvoiceSent extends Notification implements ShouldQueue
         return $this->toArray($notifiable);
     }
 }
-

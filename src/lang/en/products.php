@@ -23,6 +23,6 @@ return [
         'physical' => 'Physical',
         'digital' => 'Digital',
         'subscription' => 'Subscription',
-    ]
+    ],
 
 ];

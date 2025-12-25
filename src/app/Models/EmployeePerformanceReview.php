@@ -2,14 +2,12 @@
 
 namespace App\Models;
 
-use App\Enums\EmployeePerformanceReviewStatus;
 use App\Enums\EmployeePerformanceReviewRating;
+use App\Enums\EmployeePerformanceReviewStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Carbon\Carbon;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class EmployeePerformanceReview extends Model
 {
@@ -103,7 +101,7 @@ class EmployeePerformanceReview extends Model
     public function scopeByReviewPeriod($query, string $startDate, string $endDate)
     {
         return $query->whereBetween('review_period_start', [$startDate, $endDate])
-                    ->orWhereBetween('review_period_end', [$startDate, $endDate]);
+            ->orWhereBetween('review_period_end', [$startDate, $endDate]);
     }
 
     public function scopePendingApproval($query)
@@ -126,9 +124,10 @@ class EmployeePerformanceReview extends Model
         return $query->where('status', 'overdue');
     }
 
-    public function scopeUpcoming($query, string $date = null)
+    public function scopeUpcoming($query, ?string $date = null)
     {
         $date = $date ?: now()->toDateString();
+
         return $query->where('next_review_date', '>=', $date);
     }
 
@@ -167,7 +166,7 @@ class EmployeePerformanceReview extends Model
 
     public function getDaysUntilNextReviewAttribute(): int
     {
-        if (!$this->next_review_date) {
+        if (! $this->next_review_date) {
             return 0;
         }
 
@@ -207,7 +206,7 @@ class EmployeePerformanceReview extends Model
 
     public function canBeSubmitted(): bool
     {
-        return $this->isDraft() && !empty($this->overall_rating) && !empty($this->performance_score);
+        return $this->isDraft() && ! empty($this->overall_rating) && ! empty($this->performance_score);
     }
 
     public function canBeApproved(): bool
@@ -229,7 +228,7 @@ class EmployeePerformanceReview extends Model
 
     public function submit(): bool
     {
-        if (!$this->canBeSubmitted()) {
+        if (! $this->canBeSubmitted()) {
             return false;
         }
 
@@ -243,17 +242,18 @@ class EmployeePerformanceReview extends Model
 
     public function submitForApproval(): bool
     {
-        if (!$this->isSubmitted()) {
+        if (! $this->isSubmitted()) {
             return false;
         }
 
         $this->update(['status' => 'pending_approval']);
+
         return true;
     }
 
     public function approve(int $approvedBy): bool
     {
-        if (!$this->canBeApproved()) {
+        if (! $this->canBeApproved()) {
             return false;
         }
 
@@ -267,16 +267,16 @@ class EmployeePerformanceReview extends Model
         return true;
     }
 
-    public function reject(int $rejectedBy, string $reason = null): bool
+    public function reject(int $rejectedBy, ?string $reason = null): bool
     {
-        if (!$this->canBeRejected()) {
+        if (! $this->canBeRejected()) {
             return false;
         }
 
         $this->update([
             'status' => 'rejected',
             'is_approved' => false,
-            'reviewer_comments' => $reason ? $this->reviewer_comments . "\n\nRejection Reason: " . $reason : $this->reviewer_comments,
+            'reviewer_comments' => $reason ? $this->reviewer_comments."\n\nRejection Reason: ".$reason : $this->reviewer_comments,
         ]);
 
         return true;
@@ -289,6 +289,7 @@ class EmployeePerformanceReview extends Model
         }
 
         $this->update(['status' => 'overdue']);
+
         return true;
     }
 
@@ -338,15 +339,15 @@ class EmployeePerformanceReview extends Model
     public static function calculateAverageRating(int $employeeId): float
     {
         return static::where('employee_id', $employeeId)
-                    ->where('status', 'approved')
-                    ->avg('overall_rating') ?? 0.0;
+            ->where('status', 'approved')
+            ->avg('overall_rating') ?? 0.0;
     }
 
     public static function getOverdueReviews(): \Illuminate\Database\Eloquent\Collection
     {
         return static::where('next_review_date', '<', now())
-                    ->whereNotIn('status', ['approved', 'rejected'])
-                    ->get();
+            ->whereNotIn('status', ['approved', 'rejected'])
+            ->get();
     }
 
     public static function getPendingApprovalCount(): int
@@ -354,7 +355,7 @@ class EmployeePerformanceReview extends Model
         return static::where('status', 'pending_approval')->count();
     }
 
-    public static function getCompletedReviewsCount(string $startDate = null, string $endDate = null): int
+    public static function getCompletedReviewsCount(?string $startDate = null, ?string $endDate = null): int
     {
         $query = static::whereIn('status', ['approved', 'rejected']);
 

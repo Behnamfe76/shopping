@@ -3,9 +3,9 @@
 namespace Fereydooni\Shopping\app\Contracts;
 
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
 
 interface QueryDriverInterface
 {
@@ -47,7 +47,7 @@ interface QueryDriverInterface
     /**
      * Apply sorting to the query
      */
-    public function applySorting($query, array $sortOptions = [], string $model);
+    public function applySorting($query, array $sortOptions, string $model);
 
     /**
      * Check if this driver supports the given model

@@ -13,6 +13,7 @@ class RatingHelpfulVote extends Notification implements ShouldQueue
     use Queueable;
 
     public ProviderRating $rating;
+
     public bool $isHelpful;
 
     /**

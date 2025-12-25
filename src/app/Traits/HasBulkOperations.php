@@ -35,7 +35,7 @@ trait HasBulkOperations
             if (isset($item['id'])) {
                 $model = $this->find($item['id']);
                 if ($model && $this->validateBulkData($item)) {
-                    if (!$this->update($model, $item)) {
+                    if (! $this->update($model, $item)) {
                         $success = false;
                     }
                 }
@@ -61,7 +61,8 @@ trait HasBulkOperations
         if (method_exists($this, 'getValidationRules')) {
             $rules = $this->getValidationRules();
             $validator = Validator::make($data, $rules);
-            return !$validator->fails();
+
+            return ! $validator->fails();
         }
 
         return true;
@@ -77,9 +78,11 @@ trait HasBulkOperations
         try {
             $result = $operation();
             DB::commit();
+
             return $result;
         } catch (\Exception $e) {
             DB::rollBack();
+
             return false;
         }
     }

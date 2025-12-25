@@ -21,11 +21,11 @@ class SearchCommunicationRequest extends FormRequest
                 'email', 'phone', 'chat', 'sms', 'video_call', 'in_person',
                 'support_ticket', 'complaint', 'inquiry', 'order_update',
                 'payment_notification', 'quality_issue', 'delivery_update',
-                'contract_discussion', 'general'
+                'contract_discussion', 'general',
             ])],
             'direction' => ['sometimes', 'string', Rule::in(['inbound', 'outbound'])],
             'status' => ['sometimes', 'string', Rule::in([
-                'draft', 'sent', 'delivered', 'read', 'replied', 'closed', 'archived', 'failed'
+                'draft', 'sent', 'delivered', 'read', 'replied', 'closed', 'archived', 'failed',
             ])],
             'priority' => ['sometimes', 'string', Rule::in(['low', 'normal', 'high', 'urgent'])],
             'is_urgent' => ['sometimes', 'boolean'],
@@ -35,7 +35,7 @@ class SearchCommunicationRequest extends FormRequest
             'per_page' => ['sometimes', 'integer', 'min:1', 'max:100'],
             'sort_by' => ['sometimes', 'string', Rule::in([
                 'created_at', 'updated_at', 'sent_at', 'read_at', 'replied_at',
-                'priority', 'status', 'subject', 'communication_type'
+                'priority', 'status', 'subject', 'communication_type',
             ])],
             'sort_direction' => ['sometimes', 'string', Rule::in(['asc', 'desc'])],
         ];

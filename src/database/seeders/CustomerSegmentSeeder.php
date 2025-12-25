@@ -26,27 +26,27 @@ class CustomerSegmentSeeder extends Seeder
                     [
                         'field' => 'total_spent',
                         'operator' => 'greater_than',
-                        'value' => 1000
+                        'value' => 1000,
                     ],
                     [
                         'field' => 'purchase_frequency',
                         'operator' => 'greater_than',
-                        'value' => 5
-                    ]
+                        'value' => 5,
+                    ],
                 ],
                 'conditions' => [
                     [
                         'type' => 'purchase_frequency',
-                        'value' => 5
-                    ]
+                        'value' => 5,
+                    ],
                 ],
                 'is_automatic' => true,
                 'is_dynamic' => true,
                 'metadata' => [
                     'target_audience' => 'Premium customers',
-                    'marketing_strategy' => 'VIP treatment'
+                    'marketing_strategy' => 'VIP treatment',
                 ],
-                'tags' => ['premium', 'high-value', 'vip']
+                'tags' => ['premium', 'high-value', 'vip'],
             ],
             [
                 'name' => 'New Customers',
@@ -58,22 +58,22 @@ class CustomerSegmentSeeder extends Seeder
                     [
                         'field' => 'created_at',
                         'operator' => 'greater_than',
-                        'value' => now()->subDays(30)->toDateString()
-                    ]
+                        'value' => now()->subDays(30)->toDateString(),
+                    ],
                 ],
                 'conditions' => [
                     [
                         'type' => 'registration_date',
-                        'value' => 30
-                    ]
+                        'value' => 30,
+                    ],
                 ],
                 'is_automatic' => true,
                 'is_dynamic' => true,
                 'metadata' => [
                     'target_audience' => 'New users',
-                    'marketing_strategy' => 'Onboarding'
+                    'marketing_strategy' => 'Onboarding',
                 ],
-                'tags' => ['new', 'onboarding', 'welcome']
+                'tags' => ['new', 'onboarding', 'welcome'],
             ],
             [
                 'name' => 'Inactive Customers',
@@ -85,22 +85,22 @@ class CustomerSegmentSeeder extends Seeder
                     [
                         'field' => 'last_purchase_date',
                         'operator' => 'less_than',
-                        'value' => now()->subDays(90)->toDateString()
-                    ]
+                        'value' => now()->subDays(90)->toDateString(),
+                    ],
                 ],
                 'conditions' => [
                     [
                         'type' => 'inactivity_period',
-                        'value' => 90
-                    ]
+                        'value' => 90,
+                    ],
                 ],
                 'is_automatic' => true,
                 'is_dynamic' => true,
                 'metadata' => [
                     'target_audience' => 'Inactive users',
-                    'marketing_strategy' => 'Re-engagement'
+                    'marketing_strategy' => 'Re-engagement',
                 ],
-                'tags' => ['inactive', 're-engagement', 'winback']
+                'tags' => ['inactive', 're-engagement', 'winback'],
             ],
             [
                 'name' => 'Premium Subscribers',
@@ -112,22 +112,22 @@ class CustomerSegmentSeeder extends Seeder
                     [
                         'field' => 'subscription_type',
                         'operator' => 'equals',
-                        'value' => 'premium'
-                    ]
+                        'value' => 'premium',
+                    ],
                 ],
                 'conditions' => [
                     [
                         'type' => 'subscription_status',
-                        'value' => 'active'
-                    ]
+                        'value' => 'active',
+                    ],
                 ],
                 'is_automatic' => true,
                 'is_dynamic' => true,
                 'metadata' => [
                     'target_audience' => 'Premium subscribers',
-                    'marketing_strategy' => 'Exclusive content'
+                    'marketing_strategy' => 'Exclusive content',
                 ],
-                'tags' => ['premium', 'subscription', 'exclusive']
+                'tags' => ['premium', 'subscription', 'exclusive'],
             ],
             [
                 'name' => 'US Customers',
@@ -139,22 +139,22 @@ class CustomerSegmentSeeder extends Seeder
                     [
                         'field' => 'country',
                         'operator' => 'equals',
-                        'value' => 'US'
-                    ]
+                        'value' => 'US',
+                    ],
                 ],
                 'conditions' => [
                     [
                         'type' => 'location',
-                        'value' => 'US'
-                    ]
+                        'value' => 'US',
+                    ],
                 ],
                 'is_automatic' => true,
                 'is_dynamic' => false,
                 'metadata' => [
                     'target_audience' => 'US customers',
-                    'marketing_strategy' => 'Local promotions'
+                    'marketing_strategy' => 'Local promotions',
                 ],
-                'tags' => ['us', 'geographic', 'local']
+                'tags' => ['us', 'geographic', 'local'],
             ],
             [
                 'name' => 'Young Adults',
@@ -166,22 +166,22 @@ class CustomerSegmentSeeder extends Seeder
                     [
                         'field' => 'age',
                         'operator' => 'between',
-                        'value' => [18, 25]
-                    ]
+                        'value' => [18, 25],
+                    ],
                 ],
                 'conditions' => [
                     [
                         'type' => 'age_range',
-                        'value' => [18, 25]
-                    ]
+                        'value' => [18, 25],
+                    ],
                 ],
                 'is_automatic' => true,
                 'is_dynamic' => false,
                 'metadata' => [
                     'target_audience' => 'Young adults',
-                    'marketing_strategy' => 'Trendy products'
+                    'marketing_strategy' => 'Trendy products',
                 ],
-                'tags' => ['young', 'demographic', 'trendy']
+                'tags' => ['young', 'demographic', 'trendy'],
             ],
             [
                 'name' => 'Mobile Users',
@@ -193,22 +193,22 @@ class CustomerSegmentSeeder extends Seeder
                     [
                         'field' => 'device_type',
                         'operator' => 'equals',
-                        'value' => 'mobile'
-                    ]
+                        'value' => 'mobile',
+                    ],
                 ],
                 'conditions' => [
                     [
                         'type' => 'device_preference',
-                        'value' => 'mobile'
-                    ]
+                        'value' => 'mobile',
+                    ],
                 ],
                 'is_automatic' => true,
                 'is_dynamic' => true,
                 'metadata' => [
                     'target_audience' => 'Mobile users',
-                    'marketing_strategy' => 'Mobile-first experience'
+                    'marketing_strategy' => 'Mobile-first experience',
                 ],
-                'tags' => ['mobile', 'device', 'responsive']
+                'tags' => ['mobile', 'device', 'responsive'],
             ],
             [
                 'name' => 'Loyalty Members',
@@ -220,22 +220,22 @@ class CustomerSegmentSeeder extends Seeder
                     [
                         'field' => 'loyalty_points',
                         'operator' => 'greater_than',
-                        'value' => 1000
-                    ]
+                        'value' => 1000,
+                    ],
                 ],
                 'conditions' => [
                     [
                         'type' => 'loyalty_tier',
-                        'value' => 'gold'
-                    ]
+                        'value' => 'gold',
+                    ],
                 ],
                 'is_automatic' => true,
                 'is_dynamic' => true,
                 'metadata' => [
                     'target_audience' => 'Loyal customers',
-                    'marketing_strategy' => 'Rewards program'
+                    'marketing_strategy' => 'Rewards program',
                 ],
-                'tags' => ['loyalty', 'rewards', 'gold']
+                'tags' => ['loyalty', 'rewards', 'gold'],
             ],
             [
                 'name' => 'Abandoned Cart',
@@ -247,22 +247,22 @@ class CustomerSegmentSeeder extends Seeder
                     [
                         'field' => 'cart_status',
                         'operator' => 'equals',
-                        'value' => 'abandoned'
-                    ]
+                        'value' => 'abandoned',
+                    ],
                 ],
                 'conditions' => [
                     [
                         'type' => 'cart_abandonment',
-                        'value' => true
-                    ]
+                        'value' => true,
+                    ],
                 ],
                 'is_automatic' => true,
                 'is_dynamic' => true,
                 'metadata' => [
                     'target_audience' => 'Cart abandoners',
-                    'marketing_strategy' => 'Recovery campaigns'
+                    'marketing_strategy' => 'Recovery campaigns',
                 ],
-                'tags' => ['abandoned', 'cart', 'recovery']
+                'tags' => ['abandoned', 'cart', 'recovery'],
             ],
             [
                 'name' => 'Seasonal Buyers',
@@ -274,23 +274,23 @@ class CustomerSegmentSeeder extends Seeder
                     [
                         'field' => 'seasonal_purchase_pattern',
                         'operator' => 'contains',
-                        'value' => 'holiday'
-                    ]
+                        'value' => 'holiday',
+                    ],
                 ],
                 'conditions' => [
                     [
                         'type' => 'seasonal_behavior',
-                        'value' => 'holiday'
-                    ]
+                        'value' => 'holiday',
+                    ],
                 ],
                 'is_automatic' => true,
                 'is_dynamic' => true,
                 'metadata' => [
                     'target_audience' => 'Seasonal shoppers',
-                    'marketing_strategy' => 'Seasonal promotions'
+                    'marketing_strategy' => 'Seasonal promotions',
                 ],
-                'tags' => ['seasonal', 'holiday', 'promotions']
-            ]
+                'tags' => ['seasonal', 'holiday', 'promotions'],
+            ],
         ];
 
         foreach ($segments as $segmentData) {

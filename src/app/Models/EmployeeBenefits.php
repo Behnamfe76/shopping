@@ -2,16 +2,16 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Fereydooni\Shopping\app\Enums\BenefitType;
+use Carbon\Carbon;
 use Fereydooni\Shopping\app\Enums\BenefitStatus;
+use Fereydooni\Shopping\app\Enums\BenefitType;
 use Fereydooni\Shopping\app\Enums\CoverageLevel;
 use Fereydooni\Shopping\app\Enums\NetworkType;
-use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class EmployeeBenefits extends Model
 {
@@ -143,9 +143,10 @@ class EmployeeBenefits extends Model
     public function scopeExpiringSoon($query, $days = 30)
     {
         $expiryDate = Carbon::now()->addDays($days);
+
         return $query->where('end_date', '<=', $expiryDate)
-                    ->where('end_date', '>', Carbon::now())
-                    ->where('status', BenefitStatus::ENROLLED);
+            ->where('end_date', '>', Carbon::now())
+            ->where('status', BenefitStatus::ENROLLED);
     }
 
     /**
@@ -161,7 +162,7 @@ class EmployeeBenefits extends Model
      */
     public function isExpiringSoon(int $days = 30): bool
     {
-        if (!$this->end_date) {
+        if (! $this->end_date) {
             return false;
         }
 
@@ -175,7 +176,7 @@ class EmployeeBenefits extends Model
     {
         return in_array($this->status, [
             BenefitStatus::PENDING,
-            BenefitStatus::ENROLLED
+            BenefitStatus::ENROLLED,
         ]);
     }
 
@@ -194,7 +195,7 @@ class EmployeeBenefits extends Model
     {
         return in_array($this->status, [
             BenefitStatus::PENDING,
-            BenefitStatus::ENROLLED
+            BenefitStatus::ENROLLED,
         ]);
     }
 
@@ -235,7 +236,7 @@ class EmployeeBenefits extends Model
      */
     public function getDaysUntilExpiration(): ?int
     {
-        if (!$this->end_date) {
+        if (! $this->end_date) {
             return null;
         }
 
@@ -271,11 +272,11 @@ class EmployeeBenefits extends Model
         parent::boot();
 
         static::creating(function ($benefit) {
-            if (!$benefit->enrollment_date) {
+            if (! $benefit->enrollment_date) {
                 $benefit->enrollment_date = Carbon::now();
             }
 
-            if (!$benefit->effective_date) {
+            if (! $benefit->effective_date) {
                 $benefit->effective_date = Carbon::now();
             }
         });

@@ -13,6 +13,7 @@ class BenefitsEnrollmentTerminated extends Notification implements ShouldQueue
     use Queueable;
 
     protected EmployeeBenefits $benefit;
+
     protected ?string $reason;
 
     /**
@@ -44,12 +45,12 @@ class BenefitsEnrollmentTerminated extends Notification implements ShouldQueue
         return (new MailMessage)
             ->subject('Your Benefits Enrollment Has Been Terminated')
             ->greeting("Hello {$notifiable->name},")
-            ->line("Your benefits enrollment has been terminated.")
-            ->line("**Termination Details:**")
+            ->line('Your benefits enrollment has been terminated.')
+            ->line('**Termination Details:**')
             ->line("- **Benefit Type:** {$this->benefit->benefit_type}")
             ->line("- **Benefit Name:** {$this->benefit->benefit_name}")
             ->line("- **Provider:** {$this->benefit->provider}")
-            ->line("- **Termination Date:** " . now()->toDateString())
+            ->line('- **Termination Date:** '.now()->toDateString())
             ->line("- **End Date:** {$this->benefit->end_date}")
             ->when($this->reason, function ($message) {
                 return $message->line("- **Reason:** {$this->reason}");
@@ -85,7 +86,7 @@ class BenefitsEnrollmentTerminated extends Notification implements ShouldQueue
             'termination_date' => now()->toDateString(),
             'reason' => $this->reason,
             'created_at' => now()->toISOString(),
-            'action_url' => '/contact/hr'
+            'action_url' => '/contact/hr',
         ];
     }
 

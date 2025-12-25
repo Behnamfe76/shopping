@@ -2,12 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Facades;
 
-use Illuminate\Support\Facades\Facade;
-use Fereydooni\Shopping\app\Services\ProductReviewService;
-use Fereydooni\Shopping\app\Models\ProductReview;
 use Fereydooni\Shopping\app\DTOs\ProductReviewDTO;
+use Fereydooni\Shopping\app\Models\ProductReview;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static Collection all()

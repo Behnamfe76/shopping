@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
 use Fereydooni\Shopping\app\Models\Product;
 use Illuminate\Support\Carbon;
+use Spatie\LaravelData\Data;
 
 class ProductDTO extends Data
 {
@@ -50,8 +50,7 @@ class ProductDTO extends Data
         public ?Carbon $created_at = null,
         public ?Carbon $updated_at = null,
         public ?int $id = null,
-    ) {
-    }
+    ) {}
 
     public static function fromModel(Product $product): self
     {

@@ -2,18 +2,18 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
+use Fereydooni\Shopping\app\Enums\CustomerNotePriority;
+use Fereydooni\Shopping\app\Enums\CustomerNoteType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Config;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Fereydooni\Shopping\app\Enums\CustomerNoteType;
-use Fereydooni\Shopping\app\Enums\CustomerNotePriority;
-use Illuminate\Support\Facades\Config;
 
 class CustomerNote extends Model implements HasMedia
 {
-    use SoftDeletes, InteractsWithMedia;
+    use InteractsWithMedia, SoftDeletes;
 
     protected $fillable = [
         'customer_id',
@@ -105,8 +105,8 @@ class CustomerNote extends Model implements HasMedia
     {
         return $query->where(function ($q) use ($search) {
             $q->where('title', 'like', "%{$search}%")
-              ->orWhere('content', 'like', "%{$search}%")
-              ->orWhereJsonContains('tags', $search);
+                ->orWhere('content', 'like', "%{$search}%")
+                ->orWhereJsonContains('tags', $search);
         });
     }
 
@@ -123,17 +123,17 @@ class CustomerNote extends Model implements HasMedia
 
     public function getIsPublicAttribute(): bool
     {
-        return !$this->is_private;
+        return ! $this->is_private;
     }
 
     public function getHasTagsAttribute(): bool
     {
-        return !empty($this->tags);
+        return ! empty($this->tags);
     }
 
     public function getHasAttachmentsAttribute(): bool
     {
-        return !empty($this->attachments);
+        return ! empty($this->attachments);
     }
 
     public function getTagCountAttribute(): int
@@ -170,17 +170,20 @@ class CustomerNote extends Model implements HasMedia
     public function addTag(string $tag): bool
     {
         $tags = $this->tags ?? [];
-        if (!in_array($tag, $tags)) {
+        if (! in_array($tag, $tags)) {
             $tags[] = $tag;
+
             return $this->update(['tags' => $tags]);
         }
+
         return true;
     }
 
     public function removeTag(string $tag): bool
     {
         $tags = $this->tags ?? [];
-        $tags = array_filter($tags, fn($t) => $t !== $tag);
+        $tags = array_filter($tags, fn ($t) => $t !== $tag);
+
         return $this->update(['tags' => array_values($tags)]);
     }
 
@@ -192,7 +195,7 @@ class CustomerNote extends Model implements HasMedia
     public function canBeViewedBy(int $userId): bool
     {
         // Public notes can be viewed by anyone
-        if (!$this->is_private) {
+        if (! $this->is_private) {
             return true;
         }
 

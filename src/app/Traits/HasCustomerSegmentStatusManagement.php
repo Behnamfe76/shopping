@@ -2,10 +2,10 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
-use Illuminate\Support\Facades\DB;
-use Fereydooni\Shopping\app\Models\CustomerSegment;
-use Fereydooni\Shopping\app\Enums\SegmentStatus;
 use Fereydooni\Shopping\app\Enums\SegmentPriority;
+use Fereydooni\Shopping\app\Enums\SegmentStatus;
+use Fereydooni\Shopping\app\Models\CustomerSegment;
+use Illuminate\Support\Facades\DB;
 
 trait HasCustomerSegmentStatusManagement
 {
@@ -15,12 +15,12 @@ trait HasCustomerSegmentStatusManagement
         return DB::transaction(function () use ($segment) {
             $oldStatus = $segment->status;
             $result = $segment->activate();
-            
+
             if ($result) {
                 // Log the status change
                 $this->logStatusChange($segment, 'activated', $oldStatus, $segment->status);
             }
-            
+
             return $result;
         });
     }
@@ -30,12 +30,12 @@ trait HasCustomerSegmentStatusManagement
         return DB::transaction(function () use ($segment) {
             $oldStatus = $segment->status;
             $result = $segment->deactivate();
-            
+
             if ($result) {
                 // Log the status change
                 $this->logStatusChange($segment, 'deactivated', $oldStatus, $segment->status);
             }
-            
+
             return $result;
         });
     }
@@ -45,12 +45,12 @@ trait HasCustomerSegmentStatusManagement
         return DB::transaction(function () use ($segment) {
             $oldStatus = $segment->status;
             $result = $segment->archive();
-            
+
             if ($result) {
                 // Log the status change
                 $this->logStatusChange($segment, 'archived', $oldStatus, $segment->status);
             }
-            
+
             return $result;
         });
     }
@@ -60,12 +60,12 @@ trait HasCustomerSegmentStatusManagement
         return DB::transaction(function () use ($segment) {
             $oldValue = $segment->is_automatic;
             $result = $segment->makeAutomatic();
-            
+
             if ($result) {
                 // Log the change
                 $this->logPropertyChange($segment, 'made_automatic', ['is_automatic' => $oldValue], ['is_automatic' => true]);
             }
-            
+
             return $result;
         });
     }
@@ -75,12 +75,12 @@ trait HasCustomerSegmentStatusManagement
         return DB::transaction(function () use ($segment) {
             $oldValue = $segment->is_automatic;
             $result = $segment->makeManual();
-            
+
             if ($result) {
                 // Log the change
                 $this->logPropertyChange($segment, 'made_manual', ['is_automatic' => $oldValue], ['is_automatic' => false]);
             }
-            
+
             return $result;
         });
     }
@@ -90,19 +90,19 @@ trait HasCustomerSegmentStatusManagement
         return DB::transaction(function () use ($segment) {
             $oldValues = [
                 'is_dynamic' => $segment->is_dynamic,
-                'is_static' => $segment->is_static
+                'is_static' => $segment->is_static,
             ];
-            
+
             $result = $segment->makeDynamic();
-            
+
             if ($result) {
                 // Log the change
                 $this->logPropertyChange($segment, 'made_dynamic', $oldValues, [
                     'is_dynamic' => true,
-                    'is_static' => false
+                    'is_static' => false,
                 ]);
             }
-            
+
             return $result;
         });
     }
@@ -112,19 +112,19 @@ trait HasCustomerSegmentStatusManagement
         return DB::transaction(function () use ($segment) {
             $oldValues = [
                 'is_dynamic' => $segment->is_dynamic,
-                'is_static' => $segment->is_static
+                'is_static' => $segment->is_static,
             ];
-            
+
             $result = $segment->makeStatic();
-            
+
             if ($result) {
                 // Log the change
                 $this->logPropertyChange($segment, 'made_static', $oldValues, [
                     'is_dynamic' => false,
-                    'is_static' => true
+                    'is_static' => true,
                 ]);
             }
-            
+
             return $result;
         });
     }
@@ -134,15 +134,15 @@ trait HasCustomerSegmentStatusManagement
         return DB::transaction(function () use ($segment, $priority) {
             $oldPriority = $segment->priority;
             $result = $segment->setPriority($priority);
-            
+
             if ($result) {
                 // Log the priority change
-                $this->logPropertyChange($segment, 'priority_changed', 
-                    ['priority' => $oldPriority->value], 
+                $this->logPropertyChange($segment, 'priority_changed',
+                    ['priority' => $oldPriority->value],
                     ['priority' => $priority->value]
                 );
             }
-            
+
             return $result;
         });
     }
@@ -151,7 +151,7 @@ trait HasCustomerSegmentStatusManagement
     public function validateStatusChange(CustomerSegment $segment, SegmentStatus $newStatus): bool
     {
         $currentStatus = $segment->status;
-        
+
         // Define allowed status transitions
         $allowedTransitions = [
             SegmentStatus::DRAFT->value => [SegmentStatus::ACTIVE->value, SegmentStatus::ARCHIVED->value],
@@ -159,9 +159,9 @@ trait HasCustomerSegmentStatusManagement
             SegmentStatus::INACTIVE->value => [SegmentStatus::ACTIVE->value, SegmentStatus::ARCHIVED->value],
             SegmentStatus::ARCHIVED->value => [SegmentStatus::DRAFT->value],
         ];
-        
+
         $allowedNextStatuses = $allowedTransitions[$currentStatus->value] ?? [];
-        
+
         return in_array($newStatus->value, $allowedNextStatuses);
     }
 
@@ -183,7 +183,7 @@ trait HasCustomerSegmentStatusManagement
     public function canMakeAutomatic(CustomerSegment $segment): bool
     {
         // Only manual segments can be made automatic
-        return !$segment->is_automatic && $segment->type->isAutomatic();
+        return ! $segment->is_automatic && $segment->type->isAutomatic();
     }
 
     public function canMakeManual(CustomerSegment $segment): bool
@@ -233,7 +233,7 @@ trait HasCustomerSegmentStatusManagement
             \Fereydooni\Shopping\app\Models\CustomerSegmentHistory::logAction(
                 $segment,
                 $action,
-                "Segment property changed: " . implode(', ', array_keys($newValues)),
+                'Segment property changed: '.implode(', ', array_keys($newValues)),
                 $oldValues,
                 $newValues,
                 auth()->id() ?? null
@@ -244,7 +244,7 @@ trait HasCustomerSegmentStatusManagement
     // Status change tracking
     public function getStatusChangeHistory(CustomerSegment $segment): array
     {
-        if (!class_exists('Fereydooni\Shopping\app\Models\CustomerSegmentHistory')) {
+        if (! class_exists('Fereydooni\Shopping\app\Models\CustomerSegmentHistory')) {
             return [];
         }
 
@@ -258,6 +258,7 @@ trait HasCustomerSegmentStatusManagement
     public function getLastStatusChange(CustomerSegment $segment): ?array
     {
         $history = $this->getStatusChangeHistory($segment);
+
         return $history[0] ?? null;
     }
 

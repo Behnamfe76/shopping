@@ -2,12 +2,11 @@
 
 namespace Fereydooni\Shopping\App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Carbon\Carbon;
 
 class ProviderInvoice extends Model
 {
@@ -105,6 +104,6 @@ class ProviderInvoice extends Model
      */
     public function isOverdue(): bool
     {
-        return $this->due_date->isPast() && !$this->isFullyPaid();
+        return $this->due_date->isPast() && ! $this->isFullyPaid();
     }
 }

@@ -18,7 +18,7 @@ enum CommunicationStatus: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::DRAFT => 'Draft',
             self::SCHEDULED => 'Scheduled',
             self::SENDING => 'Sending',
@@ -35,7 +35,7 @@ enum CommunicationStatus: string
 
     public function description(): string
     {
-        return match($this) {
+        return match ($this) {
             self::DRAFT => 'Communication is in draft state',
             self::SCHEDULED => 'Communication is scheduled for future delivery',
             self::SENDING => 'Communication is currently being sent',
@@ -82,7 +82,7 @@ enum CommunicationStatus: string
 
     public static function toArray(): array
     {
-        return array_map(fn($case) => [
+        return array_map(fn ($case) => [
             'value' => $case->value,
             'label' => $case->label(),
             'description' => $case->description(),

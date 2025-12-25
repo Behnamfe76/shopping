@@ -3,24 +3,20 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RenewProviderInsuranceRequest;
+use App\Http\Requests\SearchProviderInsuranceRequest;
 use App\Http\Requests\StoreProviderInsuranceRequest;
 use App\Http\Requests\UpdateProviderInsuranceRequest;
-use App\Http\Requests\VerifyProviderInsuranceRequest;
-use App\Http\Requests\RenewProviderInsuranceRequest;
 use App\Http\Requests\UploadInsuranceDocumentRequest;
-use App\Http\Requests\SearchProviderInsuranceRequest;
-use App\Http\Resources\ProviderInsuranceResource;
-use App\Http\Resources\ProviderInsuranceCollection;
-use App\Http\Resources\ProviderInsuranceSearchResource;
-use App\Http\Resources\ProviderInsuranceStatisticsResource;
+use App\Http\Requests\VerifyProviderInsuranceRequest;
 use App\Models\ProviderInsurance;
 use App\Services\ProviderInsuranceService;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
 
 /**
  * ProviderInsurance Controller for Web Interface
@@ -55,8 +51,8 @@ class ProviderInsuranceController extends Controller
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('policy_number', 'like', "%{$search}%")
-                  ->orWhere('provider_name', 'like', "%{$search}%")
-                  ->orWhere('notes', 'like', "%{$search}%");
+                    ->orWhere('provider_name', 'like', "%{$search}%")
+                    ->orWhere('notes', 'like', "%{$search}%");
             });
         }
 
@@ -73,8 +69,8 @@ class ProviderInsuranceController extends Controller
         }
 
         $providerInsurance = $query->with(['provider', 'verifiedBy'])
-                                  ->orderBy('created_at', 'desc')
-                                  ->paginate($perPage);
+            ->orderBy('created_at', 'desc')
+            ->paginate($perPage);
 
         return view('provider-insurance.index', compact('providerInsurance', 'search', 'status', 'insuranceType', 'verificationStatus'));
     }
@@ -107,7 +103,7 @@ class ProviderInsuranceController extends Controller
         $providerInsurance = $this->service->create($data);
 
         return redirect()->route('provider-insurance.show', $providerInsurance)
-                        ->with('success', 'Provider insurance created successfully.');
+            ->with('success', 'Provider insurance created successfully.');
     }
 
     /**
@@ -150,7 +146,7 @@ class ProviderInsuranceController extends Controller
         $this->service->update($providerInsurance, $data);
 
         return redirect()->route('provider-insurance.show', $providerInsurance)
-                        ->with('success', 'Provider insurance updated successfully.');
+            ->with('success', 'Provider insurance updated successfully.');
     }
 
     /**
@@ -168,7 +164,7 @@ class ProviderInsuranceController extends Controller
         $this->service->delete($providerInsurance);
 
         return redirect()->route('provider-insurance.index')
-                        ->with('success', 'Provider insurance deleted successfully.');
+            ->with('success', 'Provider insurance deleted successfully.');
     }
 
     /**
@@ -185,7 +181,7 @@ class ProviderInsuranceController extends Controller
         );
 
         return redirect()->route('provider-insurance.show', $providerInsurance)
-                        ->with('success', 'Provider insurance verified successfully.');
+            ->with('success', 'Provider insurance verified successfully.');
     }
 
     /**
@@ -194,7 +190,7 @@ class ProviderInsuranceController extends Controller
     public function reject(Request $request, ProviderInsurance $providerInsurance): RedirectResponse
     {
         $request->validate([
-            'reason' => 'required|string|max:1000'
+            'reason' => 'required|string|max:1000',
         ]);
 
         $this->service->reject(
@@ -204,7 +200,7 @@ class ProviderInsuranceController extends Controller
         );
 
         return redirect()->route('provider-insurance.show', $providerInsurance)
-                        ->with('success', 'Provider insurance rejected successfully.');
+            ->with('success', 'Provider insurance rejected successfully.');
     }
 
     /**
@@ -217,7 +213,7 @@ class ProviderInsuranceController extends Controller
         $this->service->renew($providerInsurance, $data);
 
         return redirect()->route('provider-insurance.show', $providerInsurance)
-                        ->with('success', 'Provider insurance renewed successfully.');
+            ->with('success', 'Provider insurance renewed successfully.');
     }
 
     /**
@@ -228,7 +224,7 @@ class ProviderInsuranceController extends Controller
         $this->service->activate($providerInsurance);
 
         return redirect()->route('provider-insurance.show', $providerInsurance)
-                        ->with('success', 'Provider insurance activated successfully.');
+            ->with('success', 'Provider insurance activated successfully.');
     }
 
     /**
@@ -239,7 +235,7 @@ class ProviderInsuranceController extends Controller
         $this->service->deactivate($providerInsurance);
 
         return redirect()->route('provider-insurance.show', $providerInsurance)
-                        ->with('success', 'Provider insurance deactivated successfully.');
+            ->with('success', 'Provider insurance deactivated successfully.');
     }
 
     /**
@@ -250,7 +246,7 @@ class ProviderInsuranceController extends Controller
         $this->service->expire($providerInsurance);
 
         return redirect()->route('provider-insurance.show', $providerInsurance)
-                        ->with('success', 'Provider insurance expired successfully.');
+            ->with('success', 'Provider insurance expired successfully.');
     }
 
     /**
@@ -259,13 +255,13 @@ class ProviderInsuranceController extends Controller
     public function cancel(Request $request, ProviderInsurance $providerInsurance): RedirectResponse
     {
         $request->validate([
-            'reason' => 'required|string|max:1000'
+            'reason' => 'required|string|max:1000',
         ]);
 
         $this->service->cancel($providerInsurance, $request->reason);
 
         return redirect()->route('provider-insurance.show', $providerInsurance)
-                        ->with('success', 'Provider insurance cancelled successfully.');
+            ->with('success', 'Provider insurance cancelled successfully.');
     }
 
     /**
@@ -274,13 +270,13 @@ class ProviderInsuranceController extends Controller
     public function suspend(Request $request, ProviderInsurance $providerInsurance): RedirectResponse
     {
         $request->validate([
-            'reason' => 'required|string|max:1000'
+            'reason' => 'required|string|max:1000',
         ]);
 
         $this->service->suspend($providerInsurance, $request->reason);
 
         return redirect()->route('provider-insurance.show', $providerInsurance)
-                        ->with('success', 'Provider insurance suspended successfully.');
+            ->with('success', 'Provider insurance suspended successfully.');
     }
 
     /**
@@ -294,7 +290,7 @@ class ProviderInsuranceController extends Controller
         $this->service->addDocument($providerInsurance, $path);
 
         return redirect()->route('provider-insurance.show', $providerInsurance)
-                        ->with('success', 'Document uploaded successfully.');
+            ->with('success', 'Document uploaded successfully.');
     }
 
     /**
@@ -303,7 +299,7 @@ class ProviderInsuranceController extends Controller
     public function removeDocument(Request $request, ProviderInsurance $providerInsurance): RedirectResponse
     {
         $request->validate([
-            'document_path' => 'required|string'
+            'document_path' => 'required|string',
         ]);
 
         $documentPath = $request->document_path;
@@ -314,7 +310,7 @@ class ProviderInsuranceController extends Controller
         $this->service->removeDocument($providerInsurance, $documentPath);
 
         return redirect()->route('provider-insurance.show', $providerInsurance)
-                        ->with('success', 'Document removed successfully.');
+            ->with('success', 'Document removed successfully.');
     }
 
     /**
@@ -410,7 +406,7 @@ class ProviderInsuranceController extends Controller
         $request->validate([
             'action' => 'required|string|in:activate,deactivate,expire,verify,reject',
             'ids' => 'required|array',
-            'ids.*' => 'integer|exists:provider_insurance,id'
+            'ids.*' => 'integer|exists:provider_insurance,id',
         ]);
 
         $action = $request->action;
@@ -442,7 +438,7 @@ class ProviderInsuranceController extends Controller
 
                 $successCount++;
             } catch (\Exception $e) {
-                $errors[] = "ID {$id}: " . $e->getMessage();
+                $errors[] = "ID {$id}: ".$e->getMessage();
             }
         }
 
@@ -450,7 +446,7 @@ class ProviderInsuranceController extends Controller
             'success' => true,
             'message' => "{$action} operation completed on {$successCount} records",
             'success_count' => $successCount,
-            'errors' => $errors
+            'errors' => $errors,
         ]);
     }
 }

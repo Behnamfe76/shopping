@@ -10,9 +10,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Validation\ValidationException;
 
 class CustomerWishlistController extends Controller
 {
@@ -56,7 +53,7 @@ class CustomerWishlistController extends Controller
 
         return response()->json([
             'message' => 'Wishlist item created successfully',
-            'data' => CustomerWishlistDTO::fromModel($wishlist)
+            'data' => CustomerWishlistDTO::fromModel($wishlist),
         ], 201);
     }
 
@@ -68,7 +65,7 @@ class CustomerWishlistController extends Controller
         $this->authorize('view', $customerWishlist);
 
         return response()->json([
-            'data' => CustomerWishlistDTO::fromModel($customerWishlist)
+            'data' => CustomerWishlistDTO::fromModel($customerWishlist),
         ]);
     }
 
@@ -90,13 +87,13 @@ class CustomerWishlistController extends Controller
 
         $updated = $this->wishlistService->update($customerWishlist, $validated);
 
-        if (!$updated) {
+        if (! $updated) {
             return response()->json(['message' => 'Failed to update wishlist'], 500);
         }
 
         return response()->json([
             'message' => 'Wishlist updated successfully',
-            'data' => CustomerWishlistDTO::fromModel($customerWishlist->fresh())
+            'data' => CustomerWishlistDTO::fromModel($customerWishlist->fresh()),
         ]);
     }
 
@@ -109,7 +106,7 @@ class CustomerWishlistController extends Controller
 
         $deleted = $this->wishlistService->delete($customerWishlist);
 
-        if (!$deleted) {
+        if (! $deleted) {
             return response()->json(['message' => 'Failed to delete wishlist'], 500);
         }
 
@@ -125,7 +122,7 @@ class CustomerWishlistController extends Controller
 
         $updated = $this->wishlistService->makePublic($customerWishlist);
 
-        if (!$updated) {
+        if (! $updated) {
             return response()->json(['message' => 'Failed to make wishlist public'], 500);
         }
 
@@ -141,7 +138,7 @@ class CustomerWishlistController extends Controller
 
         $updated = $this->wishlistService->makePrivate($customerWishlist);
 
-        if (!$updated) {
+        if (! $updated) {
             return response()->json(['message' => 'Failed to make wishlist private'], 500);
         }
 
@@ -161,7 +158,7 @@ class CustomerWishlistController extends Controller
 
         $updated = $this->wishlistService->setPriority($customerWishlist, $validated['priority']);
 
-        if (!$updated) {
+        if (! $updated) {
             return response()->json(['message' => 'Failed to set wishlist priority'], 500);
         }
 
@@ -177,7 +174,7 @@ class CustomerWishlistController extends Controller
 
         $updated = $this->wishlistService->markAsNotified($customerWishlist);
 
-        if (!$updated) {
+        if (! $updated) {
             return response()->json(['message' => 'Failed to mark wishlist as notified'], 500);
         }
 
@@ -197,7 +194,7 @@ class CustomerWishlistController extends Controller
 
         $updated = $this->wishlistService->updateCurrentPrice($customerWishlist, $validated['current_price']);
 
-        if (!$updated) {
+        if (! $updated) {
             return response()->json(['message' => 'Failed to update wishlist price'], 500);
         }
 
@@ -215,7 +212,7 @@ class CustomerWishlistController extends Controller
 
         return response()->json([
             'has_price_drop' => $hasPriceDrop,
-            'message' => $hasPriceDrop ? 'Price drop detected' : 'No price drop detected'
+            'message' => $hasPriceDrop ? 'Price drop detected' : 'No price drop detected',
         ]);
     }
 
@@ -229,7 +226,7 @@ class CustomerWishlistController extends Controller
         $wishlist = $this->wishlistService->findByCustomerId($customerId);
 
         return response()->json([
-            'data' => $wishlist->map(fn($item) => CustomerWishlistDTO::fromModel($item))
+            'data' => $wishlist->map(fn ($item) => CustomerWishlistDTO::fromModel($item)),
         ]);
     }
 
@@ -252,13 +249,13 @@ class CustomerWishlistController extends Controller
 
         $wishlist = $this->wishlistService->addToWishlist($customerId, $validated['product_id'], $validated);
 
-        if (!$wishlist) {
+        if (! $wishlist) {
             return response()->json(['message' => 'Failed to add product to wishlist'], 500);
         }
 
         return response()->json([
             'message' => 'Product added to wishlist successfully',
-            'data' => CustomerWishlistDTO::fromModel($wishlist)
+            'data' => CustomerWishlistDTO::fromModel($wishlist),
         ], 201);
     }
 
@@ -268,8 +265,8 @@ class CustomerWishlistController extends Controller
     public function removeFromCustomerWishlist(int $customerId, int $productId): JsonResponse
     {
         $wishlist = $this->wishlistService->findByCustomerAndProduct($customerId, $productId);
-        
-        if (!$wishlist) {
+
+        if (! $wishlist) {
             return response()->json(['message' => 'Wishlist item not found'], 404);
         }
 
@@ -277,7 +274,7 @@ class CustomerWishlistController extends Controller
 
         $removed = $this->wishlistService->removeFromWishlist($customerId, $productId);
 
-        if (!$removed) {
+        if (! $removed) {
             return response()->json(['message' => 'Failed to remove product from wishlist'], 500);
         }
 
@@ -293,7 +290,7 @@ class CustomerWishlistController extends Controller
 
         $cleared = $this->wishlistService->clearWishlist($customerId);
 
-        if (!$cleared) {
+        if (! $cleared) {
             return response()->json(['message' => 'Failed to clear wishlist'], 500);
         }
 
@@ -310,7 +307,7 @@ class CustomerWishlistController extends Controller
         $export = $this->wishlistService->exportWishlist($customerId);
 
         return response()->json([
-            'data' => $export
+            'data' => $export,
         ]);
     }
 
@@ -334,7 +331,7 @@ class CustomerWishlistController extends Controller
 
         $imported = $this->wishlistService->importWishlist($customerId, $validated['wishlist_items']);
 
-        if (!$imported) {
+        if (! $imported) {
             return response()->json(['message' => 'Failed to import wishlist'], 500);
         }
 
@@ -354,7 +351,7 @@ class CustomerWishlistController extends Controller
 
         $duplicated = $this->wishlistService->duplicateWishlist($customerId, $validated['target_customer_id']);
 
-        if (!$duplicated) {
+        if (! $duplicated) {
             return response()->json(['message' => 'Failed to duplicate wishlist'], 500);
         }
 
@@ -371,7 +368,7 @@ class CustomerWishlistController extends Controller
         $recommendations = $this->wishlistService->getWishlistRecommendations($customerId);
 
         return response()->json([
-            'data' => $recommendations
+            'data' => $recommendations,
         ]);
     }
 
@@ -385,7 +382,7 @@ class CustomerWishlistController extends Controller
         $analytics = $this->wishlistService->getWishlistAnalytics($customerId);
 
         return response()->json([
-            'data' => $analytics
+            'data' => $analytics,
         ]);
     }
 
@@ -415,7 +412,7 @@ class CustomerWishlistController extends Controller
         $stats = $this->wishlistService->getWishlistStats();
 
         return response()->json([
-            'data' => $stats
+            'data' => $stats,
         ]);
     }
 
@@ -430,7 +427,7 @@ class CustomerWishlistController extends Controller
         $products = $this->wishlistService->getMostWishlistedProducts($limit);
 
         return response()->json([
-            'data' => $products
+            'data' => $products,
         ]);
     }
 
@@ -444,7 +441,7 @@ class CustomerWishlistController extends Controller
         $priceDrops = $this->wishlistService->findWithPriceDrops();
 
         return response()->json([
-            'data' => $priceDrops->map(fn($item) => CustomerWishlistDTO::fromModel($item))
+            'data' => $priceDrops->map(fn ($item) => CustomerWishlistDTO::fromModel($item)),
         ]);
     }
 }

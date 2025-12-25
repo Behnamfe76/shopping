@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\App\Listeners\ProviderPayment;
 
+use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentCompleted;
+use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentReconciled;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
-use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentCompleted;
-use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentReconciled;
 
 class ProcessPaymentReconciliation implements ShouldQueue
 {
@@ -29,14 +29,14 @@ class ProcessPaymentReconciliation implements ShouldQueue
 
             Log::info('Payment reconciliation processed successfully', [
                 'payment_id' => $payment->id,
-                'event_type' => get_class($event)
+                'event_type' => get_class($event),
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to process payment reconciliation', [
                 'error' => $e->getMessage(),
                 'event_type' => get_class($event),
-                'payment_id' => $event->payment->id ?? 'unknown'
+                'payment_id' => $event->payment->id ?? 'unknown',
             ]);
         }
     }
@@ -55,7 +55,7 @@ class ProcessPaymentReconciliation implements ShouldQueue
         Log::info('Preparing payment for reconciliation', [
             'payment_id' => $payment->id,
             'amount' => $payment->amount,
-            'currency' => $payment->currency
+            'currency' => $payment->currency,
         ]);
     }
 
@@ -73,7 +73,7 @@ class ProcessPaymentReconciliation implements ShouldQueue
         Log::info('Finalizing payment reconciliation', [
             'payment_id' => $payment->id,
             'reconciled_at' => $payment->reconciled_at,
-            'reconciliation_notes' => $payment->reconciliation_notes
+            'reconciliation_notes' => $payment->reconciliation_notes,
         ]);
     }
 }

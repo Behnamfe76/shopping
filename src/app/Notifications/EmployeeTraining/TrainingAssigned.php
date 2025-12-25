@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\Notifications\EmployeeTraining;
 
+use Fereydooni\Shopping\Models\EmployeeTraining;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Fereydooni\Shopping\Models\EmployeeTraining;
 
 class TrainingAssigned extends Notification implements ShouldQueue
 {
@@ -38,16 +38,16 @@ class TrainingAssigned extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('New Training Assigned: ' . $this->training->training_name)
-            ->greeting('Hello ' . $notifiable->name . ',')
+            ->subject('New Training Assigned: '.$this->training->training_name)
+            ->greeting('Hello '.$notifiable->name.',')
             ->line('You have been assigned a new training program.')
-            ->line('Training: ' . $this->training->training_name)
-            ->line('Type: ' . $this->training->training_type)
-            ->line('Provider: ' . $this->training->provider)
-            ->line('Start Date: ' . $this->training->start_date->format('M d, Y'))
-            ->line('End Date: ' . $this->training->end_date->format('M d, Y'))
-            ->line('Total Hours: ' . $this->training->total_hours . ' hours')
-            ->line('Method: ' . $this->training->training_method)
+            ->line('Training: '.$this->training->training_name)
+            ->line('Type: '.$this->training->training_type)
+            ->line('Provider: '.$this->training->provider)
+            ->line('Start Date: '.$this->training->start_date->format('M d, Y'))
+            ->line('End Date: '.$this->training->end_date->format('M d, Y'))
+            ->line('Total Hours: '.$this->training->total_hours.' hours')
+            ->line('Method: '.$this->training->training_method)
             ->when($this->training->is_mandatory, function ($message) {
                 return $message->line('This is a mandatory training that must be completed.');
             })
@@ -55,9 +55,9 @@ class TrainingAssigned extends Notification implements ShouldQueue
                 return $message->line('This training provides certification upon completion.');
             })
             ->when($this->training->description, function ($message) {
-                return $message->line('Description: ' . $this->training->description);
+                return $message->line('Description: '.$this->training->description);
             })
-            ->action('View Training Details', url('/training/' . $this->training->id))
+            ->action('View Training Details', url('/training/'.$this->training->id))
             ->line('Please review the training details and start the training when ready.')
             ->line('Thank you for your commitment to professional development!');
     }
@@ -80,9 +80,9 @@ class TrainingAssigned extends Notification implements ShouldQueue
             'training_method' => $this->training->training_method,
             'is_mandatory' => $this->training->is_mandatory,
             'is_certification' => $this->training->is_certification,
-            'message' => 'New training assigned: ' . $this->training->training_name,
-            'action_url' => '/training/' . $this->training->id,
-            'type' => 'training_assigned'
+            'message' => 'New training assigned: '.$this->training->training_name,
+            'action_url' => '/training/'.$this->training->id,
+            'type' => 'training_assigned',
         ];
     }
 }

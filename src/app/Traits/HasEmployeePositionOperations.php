@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
-use Illuminate\Support\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Log;
-use Fereydooni\Shopping\app\Models\EmployeePosition;
 use Fereydooni\Shopping\app\DTOs\EmployeePositionDTO;
+use Fereydooni\Shopping\app\Models\EmployeePosition;
 use Fereydooni\Shopping\app\Repositories\Interfaces\EmployeePositionRepositoryInterface;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 trait HasEmployeePositionOperations
 {
@@ -20,6 +20,7 @@ trait HasEmployeePositionOperations
             return app(EmployeePositionRepositoryInterface::class)->all();
         } catch (\Exception $e) {
             Log::error('Failed to get all positions', ['error' => $e->getMessage()]);
+
             return collect();
         }
     }
@@ -31,11 +32,13 @@ trait HasEmployeePositionOperations
     {
         try {
             $positions = $this->getAllPositions();
+
             return $positions->map(function ($position) {
                 return EmployeePositionDTO::fromModel($position);
             });
         } catch (\Exception $e) {
             Log::error('Failed to get all positions as DTOs', ['error' => $e->getMessage()]);
+
             return collect();
         }
     }
@@ -49,6 +52,7 @@ trait HasEmployeePositionOperations
             return app(EmployeePositionRepositoryInterface::class)->paginate($perPage);
         } catch (\Exception $e) {
             Log::error('Failed to paginate positions', ['error' => $e->getMessage(), 'perPage' => $perPage]);
+
             return new LengthAwarePaginator(collect(), 0, $perPage);
         }
     }
@@ -62,6 +66,7 @@ trait HasEmployeePositionOperations
             return app(EmployeePositionRepositoryInterface::class)->find($id);
         } catch (\Exception $e) {
             Log::error('Failed to find position', ['error' => $e->getMessage(), 'id' => $id]);
+
             return null;
         }
     }
@@ -75,6 +80,7 @@ trait HasEmployeePositionOperations
             return app(EmployeePositionRepositoryInterface::class)->findDTO($id);
         } catch (\Exception $e) {
             Log::error('Failed to find position as DTO', ['error' => $e->getMessage(), 'id' => $id]);
+
             return null;
         }
     }
@@ -88,6 +94,7 @@ trait HasEmployeePositionOperations
             return app(EmployeePositionRepositoryInterface::class)->findByTitle($title);
         } catch (\Exception $e) {
             Log::error('Failed to find position by title', ['error' => $e->getMessage(), 'title' => $title]);
+
             return null;
         }
     }
@@ -101,6 +108,7 @@ trait HasEmployeePositionOperations
             return app(EmployeePositionRepositoryInterface::class)->findByCode($code);
         } catch (\Exception $e) {
             Log::error('Failed to find position by code', ['error' => $e->getMessage(), 'code' => $code]);
+
             return null;
         }
     }
@@ -117,6 +125,7 @@ trait HasEmployeePositionOperations
             return app(EmployeePositionRepositoryInterface::class)->create($data);
         } catch (\Exception $e) {
             Log::error('Failed to create position', ['error' => $e->getMessage(), 'data' => $data]);
+
             return null;
         }
     }
@@ -130,6 +139,7 @@ trait HasEmployeePositionOperations
             return app(EmployeePositionRepositoryInterface::class)->createAndReturnDTO($data);
         } catch (\Exception $e) {
             Log::error('Failed to create position as DTO', ['error' => $e->getMessage(), 'data' => $data]);
+
             return null;
         }
     }
@@ -146,6 +156,7 @@ trait HasEmployeePositionOperations
             return app(EmployeePositionRepositoryInterface::class)->update($position, $data);
         } catch (\Exception $e) {
             Log::error('Failed to update position', ['error' => $e->getMessage(), 'id' => $position->id, 'data' => $data]);
+
             return false;
         }
     }
@@ -159,6 +170,7 @@ trait HasEmployeePositionOperations
             return app(EmployeePositionRepositoryInterface::class)->updateAndReturnDTO($position, $data);
         } catch (\Exception $e) {
             Log::error('Failed to update position as DTO', ['error' => $e->getMessage(), 'id' => $position->id, 'data' => $data]);
+
             return null;
         }
     }
@@ -172,6 +184,7 @@ trait HasEmployeePositionOperations
             return app(EmployeePositionRepositoryInterface::class)->delete($position);
         } catch (\Exception $e) {
             Log::error('Failed to delete position', ['error' => $e->getMessage(), 'id' => $position->id]);
+
             return false;
         }
     }
@@ -185,6 +198,7 @@ trait HasEmployeePositionOperations
             return app(EmployeePositionRepositoryInterface::class)->searchPositions($query);
         } catch (\Exception $e) {
             Log::error('Failed to search positions', ['error' => $e->getMessage(), 'query' => $query]);
+
             return collect();
         }
     }
@@ -198,6 +212,7 @@ trait HasEmployeePositionOperations
             return app(EmployeePositionRepositoryInterface::class)->searchPositionsDTO($query);
         } catch (\Exception $e) {
             Log::error('Failed to search positions as DTOs', ['error' => $e->getMessage(), 'query' => $query]);
+
             return collect();
         }
     }
@@ -211,6 +226,7 @@ trait HasEmployeePositionOperations
             return app(EmployeePositionRepositoryInterface::class)->findByDepartmentId($departmentId);
         } catch (\Exception $e) {
             Log::error('Failed to get positions by department', ['error' => $e->getMessage(), 'department_id' => $departmentId]);
+
             return collect();
         }
     }
@@ -224,6 +240,7 @@ trait HasEmployeePositionOperations
             return app(EmployeePositionRepositoryInterface::class)->findByLevel($level);
         } catch (\Exception $e) {
             Log::error('Failed to get positions by level', ['error' => $e->getMessage(), 'level' => $level]);
+
             return collect();
         }
     }
@@ -237,6 +254,7 @@ trait HasEmployeePositionOperations
             return app(EmployeePositionRepositoryInterface::class)->findByStatus($status);
         } catch (\Exception $e) {
             Log::error('Failed to get positions by status', ['error' => $e->getMessage(), 'status' => $status]);
+
             return collect();
         }
     }
@@ -250,6 +268,7 @@ trait HasEmployeePositionOperations
             return app(EmployeePositionRepositoryInterface::class)->findActive();
         } catch (\Exception $e) {
             Log::error('Failed to get active positions', ['error' => $e->getMessage()]);
+
             return collect();
         }
     }
@@ -263,6 +282,7 @@ trait HasEmployeePositionOperations
             return app(EmployeePositionRepositoryInterface::class)->findHiring();
         } catch (\Exception $e) {
             Log::error('Failed to get hiring positions', ['error' => $e->getMessage()]);
+
             return collect();
         }
     }
@@ -276,6 +296,7 @@ trait HasEmployeePositionOperations
             return app(EmployeePositionRepositoryInterface::class)->findRemote();
         } catch (\Exception $e) {
             Log::error('Failed to get remote positions', ['error' => $e->getMessage()]);
+
             return collect();
         }
     }
@@ -289,6 +310,7 @@ trait HasEmployeePositionOperations
             return app(EmployeePositionRepositoryInterface::class)->getTotalPositionCount();
         } catch (\Exception $e) {
             Log::error('Failed to get total position count', ['error' => $e->getMessage()]);
+
             return 0;
         }
     }
@@ -302,6 +324,7 @@ trait HasEmployeePositionOperations
             return app(EmployeePositionRepositoryInterface::class)->getPositionStatistics();
         } catch (\Exception $e) {
             Log::error('Failed to get position statistics', ['error' => $e->getMessage()]);
+
             return [];
         }
     }
@@ -314,7 +337,7 @@ trait HasEmployeePositionOperations
         $requiredFields = ['title', 'code', 'department_id', 'level', 'is_active', 'status', 'is_remote', 'is_travel_required'];
 
         foreach ($requiredFields as $field) {
-            if (!isset($data[$field])) {
+            if (! isset($data[$field])) {
                 throw new \InvalidArgumentException("Missing required field: {$field}");
             }
         }
@@ -335,7 +358,7 @@ trait HasEmployeePositionOperations
 
         // Validate travel percentage if travel is required
         if (isset($data['is_travel_required']) && $data['is_travel_required']) {
-            if (!isset($data['travel_percentage']) || $data['travel_percentage'] <= 0) {
+            if (! isset($data['travel_percentage']) || $data['travel_percentage'] <= 0) {
                 throw new \InvalidArgumentException('Travel percentage is required when travel is required');
             }
         }
@@ -362,7 +385,7 @@ trait HasEmployeePositionOperations
 
         // Validate travel percentage if travel is required
         if (isset($data['is_travel_required']) && $data['is_travel_required']) {
-            if (!isset($data['travel_percentage']) || $data['travel_percentage'] <= 0) {
+            if (! isset($data['travel_percentage']) || $data['travel_percentage'] <= 0) {
                 throw new \InvalidArgumentException('Travel percentage is required when travel is required');
             }
         }
@@ -401,6 +424,7 @@ trait HasEmployeePositionOperations
             return app(EmployeePositionRepositoryInterface::class)->getTotalPositionCountByStatus($status);
         } catch (\Exception $e) {
             Log::error('Failed to get positions count by status', ['error' => $e->getMessage(), 'status' => $status]);
+
             return 0;
         }
     }
@@ -414,6 +438,7 @@ trait HasEmployeePositionOperations
             return app(EmployeePositionRepositoryInterface::class)->getTotalPositionCountByLevel($level);
         } catch (\Exception $e) {
             Log::error('Failed to get positions count by level', ['error' => $e->getMessage(), 'level' => $level]);
+
             return 0;
         }
     }
@@ -427,6 +452,7 @@ trait HasEmployeePositionOperations
             return app(EmployeePositionRepositoryInterface::class)->getTotalPositionCountByDepartment($departmentId);
         } catch (\Exception $e) {
             Log::error('Failed to get positions count by department', ['error' => $e->getMessage(), 'department_id' => $departmentId]);
+
             return 0;
         }
     }

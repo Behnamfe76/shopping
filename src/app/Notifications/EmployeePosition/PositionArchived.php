@@ -5,15 +5,16 @@ namespace App\Notifications\EmployeePosition;
 use App\Models\EmployeePosition;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\BroadcastMessage;
 
 class PositionArchived extends Notification implements ShouldQueue
 {
     use Queueable;
 
     public EmployeePosition $position;
+
     public array $archiveDetails;
 
     /**
@@ -38,28 +39,28 @@ class PositionArchived extends Notification implements ShouldQueue
      */
     public function toMail($notifiable): MailMessage
     {
-        $url = url('/positions/' . $this->position->id);
+        $url = url('/positions/'.$this->position->id);
 
         $mailMessage = (new MailMessage)
-            ->subject('Position Archived: ' . $this->position->title)
-            ->greeting('Hello ' . $notifiable->name)
+            ->subject('Position Archived: '.$this->position->title)
+            ->greeting('Hello '.$notifiable->name)
             ->line('A position has been archived and this may affect your role or department.');
 
-        $mailMessage->line('Position: ' . $this->position->title)
-            ->line('Department: ' . $this->position->department?->name)
-            ->line('Level: ' . $this->position->level->label())
-            ->line('Archive Reason: ' . ($this->archiveDetails['reason'] ?? 'No reason specified'));
+        $mailMessage->line('Position: '.$this->position->title)
+            ->line('Department: '.$this->position->department?->name)
+            ->line('Level: '.$this->position->level->label())
+            ->line('Archive Reason: '.($this->archiveDetails['reason'] ?? 'No reason specified'));
 
         if (isset($this->archiveDetails['replacement_position_id'])) {
-            $mailMessage->line('Replacement Position: Available (ID: ' . $this->archiveDetails['replacement_position_id'] . ')');
+            $mailMessage->line('Replacement Position: Available (ID: '.$this->archiveDetails['replacement_position_id'].')');
         }
 
         if (isset($this->archiveDetails['affected_employees_count']) && $this->archiveDetails['affected_employees_count'] > 0) {
-            $mailMessage->line('Affected Employees: ' . $this->archiveDetails['affected_employees_count'] . ' employee(s)');
+            $mailMessage->line('Affected Employees: '.$this->archiveDetails['affected_employees_count'].' employee(s)');
         }
 
         if (isset($this->archiveDetails['transition_plan'])) {
-            $mailMessage->line('Transition Plan: ' . $this->archiveDetails['transition_plan']);
+            $mailMessage->line('Transition Plan: '.$this->archiveDetails['transition_plan']);
         }
 
         $mailMessage->action('View Archived Position', $url)
@@ -89,7 +90,7 @@ class PositionArchived extends Notification implements ShouldQueue
             'transition_plan' => $this->archiveDetails['transition_plan'] ?? null,
             'archived_at' => now()->toISOString(),
             'type' => 'position_archived',
-            'message' => 'Position "' . $this->position->title . '" has been archived',
+            'message' => 'Position "'.$this->position->title.'" has been archived',
         ];
     }
 
@@ -113,7 +114,7 @@ class PositionArchived extends Notification implements ShouldQueue
             'transition_plan' => $this->archiveDetails['transition_plan'] ?? null,
             'archived_at' => now()->toISOString(),
             'type' => 'position_archived',
-            'message' => 'Position "' . $this->position->title . '" has been archived',
+            'message' => 'Position "'.$this->position->title.'" has been archived',
             'timestamp' => now()->toISOString(),
         ]);
     }

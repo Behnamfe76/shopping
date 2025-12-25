@@ -15,6 +15,7 @@ class ProviderNoteDeleted extends Notification implements ShouldQueue
     use Queueable;
 
     protected ProviderNote $providerNote;
+
     protected string $deletedBy;
 
     /**
@@ -48,12 +49,12 @@ class ProviderNoteDeleted extends Notification implements ShouldQueue
             ->line("A provider note has been deleted for {$provider->name}.")
             ->line("**Note Title:** {$this->providerNote->title}")
             ->line("**Deleted By:** {$deletedBy}")
-            ->line("**Deleted At:** " . now()->format('M j, Y g:i A'));
+            ->line('**Deleted At:** '.now()->format('M j, Y g:i A'));
 
         // Add note details
-        $mailMessage->line("**Note Type:** " . ucfirst($this->providerNote->note_type))
-            ->line("**Priority:** " . ucfirst($this->providerNote->priority))
-            ->line("**Content Preview:** " . substr($this->providerNote->content, 0, 100) . "...");
+        $mailMessage->line('**Note Type:** '.ucfirst($this->providerNote->note_type))
+            ->line('**Priority:** '.ucfirst($this->providerNote->priority))
+            ->line('**Content Preview:** '.substr($this->providerNote->content, 0, 100).'...');
 
         // Add action button to view provider
         $mailMessage->action('View Provider', URL::to("/providers/{$provider->id}"))
@@ -81,11 +82,11 @@ class ProviderNoteDeleted extends Notification implements ShouldQueue
             'note_title' => $this->providerNote->title,
             'note_type' => $this->providerNote->note_type,
             'priority' => $this->providerNote->priority,
-            'content_preview' => substr($this->providerNote->content, 0, 100) . "...",
+            'content_preview' => substr($this->providerNote->content, 0, 100).'...',
             'deleted_at' => now()->toISOString(),
             'action_url' => "/providers/{$provider->id}",
             'icon' => 'delete',
-            'color' => 'red'
+            'color' => 'red',
         ];
     }
 
@@ -120,6 +121,6 @@ class ProviderNoteDeleted extends Notification implements ShouldQueue
      */
     public function getKey(): string
     {
-        return "provider_note_deleted_{$this->providerNote->id}_" . now()->timestamp;
+        return "provider_note_deleted_{$this->providerNote->id}_".now()->timestamp;
     }
 }

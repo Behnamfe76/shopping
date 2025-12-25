@@ -12,7 +12,7 @@ enum ProductStatus: int
 
     public function toString(): string
     {
-        return match($this) {
+        return match ($this) {
             self::DRAFT => 'draft',
             self::PUBLISHED => 'published',
             self::ARCHIVED => 'archived',
@@ -23,7 +23,7 @@ enum ProductStatus: int
 
     public static function fromString(string $value): self
     {
-        return match($value) {
+        return match ($value) {
             'draft' => self::DRAFT,
             'published' => self::PUBLISHED,
             'archived' => self::ARCHIVED,
@@ -35,7 +35,7 @@ enum ProductStatus: int
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::DRAFT => 'Draft',
             self::PUBLISHED => 'Published',
             self::ARCHIVED => 'Archived',

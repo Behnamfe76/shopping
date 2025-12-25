@@ -53,7 +53,7 @@ return new class extends Migration
                 'hazard_pay',
                 'travel_pay',
                 'relocation_adjustment',
-                'other'
+                'other',
             ])->comment('Type of salary change');
 
             // Effective date and reason

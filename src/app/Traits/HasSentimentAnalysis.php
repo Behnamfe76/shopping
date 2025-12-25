@@ -14,14 +14,14 @@ trait HasSentimentAnalysis
         $positiveWords = [
             'good', 'great', 'excellent', 'amazing', 'wonderful', 'perfect', 'love', 'like', 'best', 'awesome',
             'fantastic', 'outstanding', 'superb', 'brilliant', 'fabulous', 'terrific', 'incredible', 'phenomenal',
-            'satisfied', 'happy', 'pleased', 'delighted', 'thrilled', 'impressed', 'recommend', 'quality', 'value'
+            'satisfied', 'happy', 'pleased', 'delighted', 'thrilled', 'impressed', 'recommend', 'quality', 'value',
         ];
 
         $negativeWords = [
             'bad', 'terrible', 'awful', 'horrible', 'worst', 'hate', 'dislike', 'poor', 'disappointing',
             'terrible', 'awful', 'horrible', 'worst', 'hate', 'dislike', 'poor', 'disappointing',
             'useless', 'waste', 'broken', 'defective', 'faulty', 'cheap', 'expensive', 'overpriced',
-            'difficult', 'complicated', 'confusing', 'frustrated', 'angry', 'upset', 'annoyed'
+            'difficult', 'complicated', 'confusing', 'frustrated', 'angry', 'upset', 'annoyed',
         ];
 
         $text = strtolower($text);
@@ -110,14 +110,14 @@ trait HasSentimentAnalysis
                 'positive_count' => 0,
                 'negative_count' => 0,
                 'neutral_count' => 0,
-                'trend' => 'neutral'
+                'trend' => 'neutral',
             ];
         }
 
         $average = array_sum($sentiments) / count($sentiments);
-        $positiveCount = count(array_filter($sentiments, fn($s) => $this->isPositiveSentiment($s)));
-        $negativeCount = count(array_filter($sentiments, fn($s) => $this->isNegativeSentiment($s)));
-        $neutralCount = count(array_filter($sentiments, fn($s) => $this->isNeutralSentiment($s)));
+        $positiveCount = count(array_filter($sentiments, fn ($s) => $this->isPositiveSentiment($s)));
+        $negativeCount = count(array_filter($sentiments, fn ($s) => $this->isNegativeSentiment($s)));
+        $neutralCount = count(array_filter($sentiments, fn ($s) => $this->isNeutralSentiment($s)));
 
         $trend = 'neutral';
         if ($positiveCount > $negativeCount) {
@@ -131,7 +131,7 @@ trait HasSentimentAnalysis
             'positive_count' => $positiveCount,
             'negative_count' => $negativeCount,
             'neutral_count' => $neutralCount,
-            'trend' => $trend
+            'trend' => $trend,
         ];
     }
 }

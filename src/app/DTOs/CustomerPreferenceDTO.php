@@ -2,18 +2,17 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Required;
-use Spatie\LaravelData\Attributes\Validation\Nullable;
-use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
-use Spatie\LaravelData\Attributes\Validation\BooleanType;
-use Spatie\LaravelData\Attributes\Validation\Max;
-use Spatie\LaravelData\Attributes\Validation\In;
-use Spatie\LaravelData\Attributes\Validation\Exists;
-use Illuminate\Support\Carbon;
 use Fereydooni\Shopping\app\Models\CustomerPreference;
-use Fereydooni\Shopping\app\Enums\CustomerPreferenceType;
+use Illuminate\Support\Carbon;
+use Spatie\LaravelData\Attributes\Validation\BooleanType;
+use Spatie\LaravelData\Attributes\Validation\Exists;
+use Spatie\LaravelData\Attributes\Validation\In;
+use Spatie\LaravelData\Attributes\Validation\IntegerType;
+use Spatie\LaravelData\Attributes\Validation\Max;
+use Spatie\LaravelData\Attributes\Validation\Nullable;
+use Spatie\LaravelData\Attributes\Validation\Required;
+use Spatie\LaravelData\Attributes\Validation\StringType;
+use Spatie\LaravelData\Data;
 
 class CustomerPreferenceDTO extends Data
 {
@@ -78,8 +77,7 @@ class CustomerPreferenceDTO extends Data
 
         #[Nullable]
         public ?int $metadata_count = null,
-    ) {
-    }
+    ) {}
 
     public static function fromModel(CustomerPreference $preference): static
     {
@@ -171,7 +169,7 @@ class CustomerPreferenceDTO extends Data
             return $this->typed_value;
         }
 
-        return match($this->preference_type) {
+        return match ($this->preference_type) {
             'string' => $this->preference_value,
             'integer' => (int) $this->preference_value,
             'float' => (float) $this->preference_value,
@@ -187,7 +185,7 @@ class CustomerPreferenceDTO extends Data
             return $this->formatted_value;
         }
 
-        return match($this->preference_type) {
+        return match ($this->preference_type) {
             'boolean' => $this->getTypedValue() ? 'Yes' : 'No',
             'json', 'array', 'object' => json_encode($this->getTypedValue(), JSON_PRETTY_PRINT),
             default => (string) $this->preference_value,
@@ -222,12 +220,13 @@ class CustomerPreferenceDTO extends Data
 
         // Extract category from preference key (e.g., "ui.theme" -> "ui")
         $parts = explode('.', $this->preference_key);
+
         return $parts[0] ?? 'general';
     }
 
     public function hasMetadata(): bool
     {
-        return !empty($this->metadata);
+        return ! empty($this->metadata);
     }
 
     public function getMetadataCount(): int
@@ -242,7 +241,7 @@ class CustomerPreferenceDTO extends Data
 
     public function setMetadataValue(string $key, mixed $value): void
     {
-        if (!is_array($this->metadata)) {
+        if (! is_array($this->metadata)) {
             $this->metadata = [];
         }
         $this->metadata[$key] = $value;
@@ -252,8 +251,10 @@ class CustomerPreferenceDTO extends Data
     {
         if (is_array($this->metadata) && array_key_exists($key, $this->metadata)) {
             unset($this->metadata[$key]);
+
             return true;
         }
+
         return false;
     }
 }

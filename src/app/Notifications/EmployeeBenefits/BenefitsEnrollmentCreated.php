@@ -7,7 +7,6 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Log;
 
 class BenefitsEnrollmentCreated extends Notification implements ShouldQueue
 {
@@ -43,17 +42,17 @@ class BenefitsEnrollmentCreated extends Notification implements ShouldQueue
             ->subject('New Employee Benefits Enrollment Created')
             ->greeting("Hello {$notifiable->name},")
             ->line("A new employee benefits enrollment has been created for {$employeeName}.")
-            ->line("**Benefit Details:**")
+            ->line('**Benefit Details:**')
             ->line("- **Type:** {$this->benefit->benefit_type}")
             ->line("- **Name:** {$this->benefit->benefit_name}")
             ->line("- **Provider:** {$this->benefit->provider}")
             ->line("- **Coverage Level:** {$this->benefit->coverage_level}")
             ->line("- **Status:** {$this->benefit->status}")
             ->line("- **Effective Date:** {$this->benefit->effective_date}")
-            ->line("- **Monthly Premium:** $" . number_format($this->benefit->premium_amount, 2))
-            ->line("- **Employee Contribution:** $" . number_format($this->benefit->employee_contribution, 2))
-            ->line("- **Employer Contribution:** $" . number_format($this->benefit->employer_contribution, 2))
-            ->action('Review Enrollment', url('/admin/employee-benefits/' . $this->benefit->id))
+            ->line('- **Monthly Premium:** $'.number_format($this->benefit->premium_amount, 2))
+            ->line('- **Employee Contribution:** $'.number_format($this->benefit->employee_contribution, 2))
+            ->line('- **Employer Contribution:** $'.number_format($this->benefit->employer_contribution, 2))
+            ->action('Review Enrollment', url('/admin/employee-benefits/'.$this->benefit->id))
             ->line('Please review and approve this enrollment as needed.')
             ->salutation('Best regards, HR System');
     }
@@ -68,7 +67,7 @@ class BenefitsEnrollmentCreated extends Notification implements ShouldQueue
         return [
             'type' => 'benefits_enrollment_created',
             'title' => 'New Benefits Enrollment Created',
-            'message' => "New benefits enrollment created for " . ($employee ? $employee->full_name : 'Unknown Employee'),
+            'message' => 'New benefits enrollment created for '.($employee ? $employee->full_name : 'Unknown Employee'),
             'benefit_id' => $this->benefit->id,
             'employee_id' => $this->benefit->employee_id,
             'employee_name' => $employee?->full_name ?? 'Unknown Employee',
@@ -81,7 +80,7 @@ class BenefitsEnrollmentCreated extends Notification implements ShouldQueue
             'employee_contribution' => $this->benefit->employee_contribution,
             'employer_contribution' => $this->benefit->employer_contribution,
             'created_at' => now()->toISOString(),
-            'action_url' => '/admin/employee-benefits/' . $this->benefit->id
+            'action_url' => '/admin/employee-benefits/'.$this->benefit->id,
         ];
     }
 

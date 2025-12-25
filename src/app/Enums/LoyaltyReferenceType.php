@@ -12,7 +12,7 @@ enum LoyaltyReferenceType: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::ORDER => 'Order',
             self::PRODUCT => 'Product',
             self::CAMPAIGN => 'Campaign',
@@ -23,7 +23,7 @@ enum LoyaltyReferenceType: string
 
     public function description(): string
     {
-        return match($this) {
+        return match ($this) {
             self::ORDER => 'Points earned from order purchase',
             self::PRODUCT => 'Points earned from specific product',
             self::CAMPAIGN => 'Points earned from marketing campaign',

@@ -43,27 +43,27 @@ class CertificationAdded extends Notification implements ShouldQueue
 
         $url = URL::route('provider.certifications.show', [
             'provider' => $provider->id,
-            'certification' => $certification->id
+            'certification' => $certification->id,
         ]);
 
         return (new MailMessage)
-            ->subject('New Certification Added - ' . $certification->certification_name)
-            ->greeting('Hello ' . $provider->name . ',')
+            ->subject('New Certification Added - '.$certification->certification_name)
+            ->greeting('Hello '.$provider->name.',')
             ->line('A new certification has been added to your profile.')
             ->line('**Certification Details:**')
-            ->line('• **Name:** ' . $certification->certification_name)
-            ->line('• **Number:** ' . $certification->certification_number)
-            ->line('• **Issuing Organization:** ' . $certification->issuing_organization)
-            ->line('• **Category:** ' . ucfirst(str_replace('_', ' ', $certification->category)))
-            ->line('• **Issue Date:** ' . $certification->issue_date->format('M d, Y'))
-            ->line('• **Expiry Date:** ' . $certification->expiry_date->format('M d, Y'))
-            ->line('• **Status:** ' . ucfirst($certification->status))
-            ->line('• **Verification Status:** ' . ucfirst(str_replace('_', ' ', $certification->verification_status)))
+            ->line('• **Name:** '.$certification->certification_name)
+            ->line('• **Number:** '.$certification->certification_number)
+            ->line('• **Issuing Organization:** '.$certification->issuing_organization)
+            ->line('• **Category:** '.ucfirst(str_replace('_', ' ', $certification->category)))
+            ->line('• **Issue Date:** '.$certification->issue_date->format('M d, Y'))
+            ->line('• **Expiry Date:** '.$certification->expiry_date->format('M d, Y'))
+            ->line('• **Status:** '.ucfirst($certification->status))
+            ->line('• **Verification Status:** '.ucfirst(str_replace('_', ' ', $certification->verification_status)))
             ->action('View Certification', $url)
             ->line('Please review the certification details and ensure all information is correct.')
             ->line('If you notice any discrepancies, please contact our support team.')
             ->line('Thank you for maintaining your professional credentials with us!')
-            ->salutation('Best regards,<br>' . config('app.name') . ' Team');
+            ->salutation('Best regards,<br>'.config('app.name').' Team');
     }
 
     /**
@@ -84,10 +84,10 @@ class CertificationAdded extends Notification implements ShouldQueue
             'verification_status' => $this->certification->verification_status,
             'issue_date' => $this->certification->issue_date->toISOString(),
             'expiry_date' => $this->certification->expiry_date->toISOString(),
-            'message' => 'New certification "' . $this->certification->certification_name . '" has been added to your profile.',
+            'message' => 'New certification "'.$this->certification->certification_name.'" has been added to your profile.',
             'action_url' => URL::route('provider.certifications.show', [
                 'provider' => $notifiable->id,
-                'certification' => $this->certification->id
+                'certification' => $this->certification->id,
             ]),
             'created_at' => now()->toISOString(),
         ];
@@ -118,8 +118,8 @@ class CertificationAdded extends Notification implements ShouldQueue
         return [
             'provider_certification',
             'certification_added',
-            'provider_' . $this->certification->provider_id,
-            'certification_' . $this->certification->id
+            'provider_'.$this->certification->provider_id,
+            'certification_'.$this->certification->id,
         ];
     }
 }

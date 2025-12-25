@@ -2,22 +2,24 @@
 
 namespace App\Repositories;
 
-use App\Models\ProviderSpecialization;
 use App\DTOs\ProviderSpecializationDTO;
+use App\Models\ProviderSpecialization;
 use App\Repositories\Interfaces\ProviderSpecializationRepositoryInterface;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Exception;
 
 class ProviderSpecializationRepository implements ProviderSpecializationRepositoryInterface
 {
     protected $model;
+
     protected $cachePrefix = 'provider_specialization_';
+
     protected $cacheTtl = 3600; // 1 hour
 
     public function __construct(ProviderSpecialization $model)
@@ -27,7 +29,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
 
     public function all(): Collection
     {
-        return Cache::remember($this->cachePrefix . 'all', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'all', $this->cacheTtl, function () {
             return $this->model->with(['provider', 'verifiedByUser'])->get();
         });
     }
@@ -46,7 +48,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
             ->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->model->with(['provider', 'verifiedByUser'])
             ->orderBy('id', 'asc')
@@ -55,7 +57,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
 
     public function find(int $id): ?ProviderSpecialization
     {
-        return Cache::remember($this->cachePrefix . 'find_' . $id, $this->cacheTtl, function () use ($id) {
+        return Cache::remember($this->cachePrefix.'find_'.$id, $this->cacheTtl, function () use ($id) {
             return $this->model->with(['provider', 'verifiedByUser'])->find($id);
         });
     }
@@ -63,12 +65,13 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
     public function findDTO(int $id): ?ProviderSpecializationDTO
     {
         $specialization = $this->find($id);
+
         return $specialization ? ProviderSpecializationDTO::fromModel($specialization) : null;
     }
 
     public function findByProviderId(int $providerId): Collection
     {
-        return Cache::remember($this->cachePrefix . 'provider_' . $providerId, $this->cacheTtl, function () use ($providerId) {
+        return Cache::remember($this->cachePrefix.'provider_'.$providerId, $this->cacheTtl, function () use ($providerId) {
             return $this->model->with(['provider', 'verifiedByUser'])
                 ->where('provider_id', $providerId)
                 ->orderBy('is_primary', 'desc')
@@ -80,6 +83,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
     public function findByProviderIdDTO(int $providerId): Collection
     {
         $specializations = $this->findByProviderId($providerId);
+
         return $specializations->map(function ($specialization) {
             return ProviderSpecializationDTO::fromModel($specialization);
         });
@@ -88,13 +92,14 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
     public function findBySpecializationName(string $specializationName): Collection
     {
         return $this->model->with(['provider', 'verifiedByUser'])
-            ->where('specialization_name', 'like', '%' . $specializationName . '%')
+            ->where('specialization_name', 'like', '%'.$specializationName.'%')
             ->get();
     }
 
     public function findBySpecializationNameDTO(string $specializationName): Collection
     {
         $specializations = $this->findBySpecializationName($specializationName);
+
         return $specializations->map(function ($specialization) {
             return ProviderSpecializationDTO::fromModel($specialization);
         });
@@ -102,7 +107,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
 
     public function findByCategory(string $category): Collection
     {
-        return Cache::remember($this->cachePrefix . 'category_' . $category, $this->cacheTtl, function () use ($category) {
+        return Cache::remember($this->cachePrefix.'category_'.$category, $this->cacheTtl, function () use ($category) {
             return $this->model->with(['provider', 'verifiedByUser'])
                 ->where('category', $category)
                 ->get();
@@ -112,6 +117,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
     public function findByCategoryDTO(string $category): Collection
     {
         $specializations = $this->findByCategory($category);
+
         return $specializations->map(function ($specialization) {
             return ProviderSpecializationDTO::fromModel($specialization);
         });
@@ -119,7 +125,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
 
     public function findByProficiencyLevel(string $proficiencyLevel): Collection
     {
-        return Cache::remember($this->cachePrefix . 'proficiency_' . $proficiencyLevel, $this->cacheTtl, function () use ($proficiencyLevel) {
+        return Cache::remember($this->cachePrefix.'proficiency_'.$proficiencyLevel, $this->cacheTtl, function () use ($proficiencyLevel) {
             return $this->model->with(['provider', 'verifiedByUser'])
                 ->where('proficiency_level', $proficiencyLevel)
                 ->get();
@@ -129,6 +135,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
     public function findByProficiencyLevelDTO(string $proficiencyLevel): Collection
     {
         $specializations = $this->findByProficiencyLevel($proficiencyLevel);
+
         return $specializations->map(function ($specialization) {
             return ProviderSpecializationDTO::fromModel($specialization);
         });
@@ -136,7 +143,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
 
     public function findByVerificationStatus(string $verificationStatus): Collection
     {
-        return Cache::remember($this->cachePrefix . 'status_' . $verificationStatus, $this->cacheTtl, function () use ($verificationStatus) {
+        return Cache::remember($this->cachePrefix.'status_'.$verificationStatus, $this->cacheTtl, function () use ($verificationStatus) {
             return $this->model->with(['provider', 'verifiedByUser'])
                 ->where('verification_status', $verificationStatus)
                 ->get();
@@ -146,6 +153,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
     public function findByVerificationStatusDTO(string $verificationStatus): Collection
     {
         $specializations = $this->findByVerificationStatus($verificationStatus);
+
         return $specializations->map(function ($specialization) {
             return ProviderSpecializationDTO::fromModel($specialization);
         });
@@ -162,6 +170,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
     public function findByProviderAndCategoryDTO(int $providerId, string $category): Collection
     {
         $specializations = $this->findByProviderAndCategory($providerId, $category);
+
         return $specializations->map(function ($specialization) {
             return ProviderSpecializationDTO::fromModel($specialization);
         });
@@ -178,6 +187,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
     public function findByProviderAndProficiencyDTO(int $providerId, string $proficiencyLevel): Collection
     {
         $specializations = $this->findByProviderAndProficiency($providerId, $proficiencyLevel);
+
         return $specializations->map(function ($specialization) {
             return ProviderSpecializationDTO::fromModel($specialization);
         });
@@ -185,7 +195,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
 
     public function findPrimary(): Collection
     {
-        return Cache::remember($this->cachePrefix . 'primary', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'primary', $this->cacheTtl, function () {
             return $this->model->with(['provider', 'verifiedByUser'])
                 ->where('is_primary', true)
                 ->get();
@@ -195,6 +205,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
     public function findPrimaryDTO(): Collection
     {
         $specializations = $this->findPrimary();
+
         return $specializations->map(function ($specialization) {
             return ProviderSpecializationDTO::fromModel($specialization);
         });
@@ -202,7 +213,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
 
     public function findActive(): Collection
     {
-        return Cache::remember($this->cachePrefix . 'active', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'active', $this->cacheTtl, function () {
             return $this->model->with(['provider', 'verifiedByUser'])
                 ->where('is_active', true)
                 ->get();
@@ -212,6 +223,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
     public function findActiveDTO(): Collection
     {
         $specializations = $this->findActive();
+
         return $specializations->map(function ($specialization) {
             return ProviderSpecializationDTO::fromModel($specialization);
         });
@@ -219,7 +231,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
 
     public function findInactive(): Collection
     {
-        return Cache::remember($this->cachePrefix . 'inactive', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'inactive', $this->cacheTtl, function () {
             return $this->model->with(['provider', 'verifiedByUser'])
                 ->where('is_active', false)
                 ->get();
@@ -229,6 +241,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
     public function findInactiveDTO(): Collection
     {
         $specializations = $this->findInactive();
+
         return $specializations->map(function ($specialization) {
             return ProviderSpecializationDTO::fromModel($specialization);
         });
@@ -236,7 +249,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
 
     public function findVerified(): Collection
     {
-        return Cache::remember($this->cachePrefix . 'verified', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'verified', $this->cacheTtl, function () {
             return $this->model->with(['provider', 'verifiedByUser'])
                 ->where('verification_status', 'verified')
                 ->get();
@@ -246,6 +259,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
     public function findVerifiedDTO(): Collection
     {
         $specializations = $this->findVerified();
+
         return $specializations->map(function ($specialization) {
             return ProviderSpecializationDTO::fromModel($specialization);
         });
@@ -253,7 +267,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
 
     public function findUnverified(): Collection
     {
-        return Cache::remember($this->cachePrefix . 'unverified', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'unverified', $this->cacheTtl, function () {
             return $this->model->with(['provider', 'verifiedByUser'])
                 ->where('verification_status', 'unverified')
                 ->get();
@@ -263,6 +277,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
     public function findUnverifiedDTO(): Collection
     {
         $specializations = $this->findUnverified();
+
         return $specializations->map(function ($specialization) {
             return ProviderSpecializationDTO::fromModel($specialization);
         });
@@ -270,7 +285,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
 
     public function findPending(): Collection
     {
-        return Cache::remember($this->cachePrefix . 'pending', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'pending', $this->cacheTtl, function () {
             return $this->model->with(['provider', 'verifiedByUser'])
                 ->where('verification_status', 'pending')
                 ->get();
@@ -280,6 +295,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
     public function findPendingDTO(): Collection
     {
         $specializations = $this->findPending();
+
         return $specializations->map(function ($specialization) {
             return ProviderSpecializationDTO::fromModel($specialization);
         });
@@ -295,6 +311,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
     public function findByExperienceRangeDTO(int $minYears, int $maxYears): Collection
     {
         $specializations = $this->findByExperienceRange($minYears, $maxYears);
+
         return $specializations->map(function ($specialization) {
             return ProviderSpecializationDTO::fromModel($specialization);
         });
@@ -310,6 +327,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
     public function findByVerifiedByDTO(int $verifiedBy): Collection
     {
         $specializations = $this->findByVerifiedBy($verifiedBy);
+
         return $specializations->map(function ($specialization) {
             return ProviderSpecializationDTO::fromModel($specialization);
         });
@@ -336,7 +354,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
             return $specialization->load(['provider', 'verifiedByUser']);
         } catch (Exception $e) {
             DB::rollBack();
-            Log::error('Failed to create provider specialization: ' . $e->getMessage());
+            Log::error('Failed to create provider specialization: '.$e->getMessage());
             throw $e;
         }
     }
@@ -344,6 +362,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
     public function createAndReturnDTO(array $data): ProviderSpecializationDTO
     {
         $specialization = $this->create($data);
+
         return ProviderSpecializationDTO::fromModel($specialization);
     }
 
@@ -368,7 +387,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
             return $result;
         } catch (Exception $e) {
             DB::rollBack();
-            Log::error('Failed to update provider specialization: ' . $e->getMessage());
+            Log::error('Failed to update provider specialization: '.$e->getMessage());
             throw $e;
         }
     }
@@ -376,6 +395,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
     public function updateAndReturnDTO(ProviderSpecialization $specialization, array $data): ?ProviderSpecializationDTO
     {
         $result = $this->update($specialization, $data);
+
         return $result ? ProviderSpecializationDTO::fromModel($specialization->fresh()) : null;
     }
 
@@ -396,7 +416,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
             return $result;
         } catch (Exception $e) {
             DB::rollBack();
-            Log::error('Failed to delete provider specialization: ' . $e->getMessage());
+            Log::error('Failed to delete provider specialization: '.$e->getMessage());
             throw $e;
         }
     }
@@ -408,6 +428,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
             $this->clearProviderCache($specialization->provider_id);
             $this->clearCache();
         }
+
         return $result;
     }
 
@@ -418,6 +439,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
             $this->clearProviderCache($specialization->provider_id);
             $this->clearCache();
         }
+
         return $result;
     }
 
@@ -442,7 +464,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
             return $result;
         } catch (Exception $e) {
             DB::rollBack();
-            Log::error('Failed to set primary specialization: ' . $e->getMessage());
+            Log::error('Failed to set primary specialization: '.$e->getMessage());
             throw $e;
         }
     }
@@ -454,6 +476,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
             $this->clearProviderCache($specialization->provider_id);
             $this->clearCache();
         }
+
         return $result;
     }
 
@@ -462,7 +485,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
         $result = $specialization->update([
             'verification_status' => 'verified',
             'verified_at' => now(),
-            'verified_by' => $verifiedBy
+            'verified_by' => $verifiedBy,
         ]);
 
         if ($result) {
@@ -473,11 +496,11 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
         return $result;
     }
 
-    public function reject(ProviderSpecialization $specialization, string $reason = null): bool
+    public function reject(ProviderSpecialization $specialization, ?string $reason = null): bool
     {
         $data = [
             'verification_status' => 'rejected',
-            'notes' => $reason ? ($specialization->notes . "\nRejection reason: " . $reason) : $specialization->notes
+            'notes' => $reason ? ($specialization->notes."\nRejection reason: ".$reason) : $specialization->notes,
         ];
 
         $result = $specialization->update($data);
@@ -505,12 +528,12 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
      */
     protected function clearProviderCache(int $providerId): void
     {
-        Cache::forget($this->cachePrefix . 'provider_' . $providerId);
-        Cache::forget($this->cachePrefix . 'active_provider_' . $providerId);
-        Cache::forget($this->cachePrefix . 'verified_provider_' . $providerId);
-        Cache::forget($this->cachePrefix . 'primary_provider_' . $providerId);
-        Cache::forget($this->cachePrefix . 'count_provider_' . $providerId);
-        Cache::forget($this->cachePrefix . 'provider_stats_' . $providerId);
+        Cache::forget($this->cachePrefix.'provider_'.$providerId);
+        Cache::forget($this->cachePrefix.'active_provider_'.$providerId);
+        Cache::forget($this->cachePrefix.'verified_provider_'.$providerId);
+        Cache::forget($this->cachePrefix.'primary_provider_'.$providerId);
+        Cache::forget($this->cachePrefix.'count_provider_'.$providerId);
+        Cache::forget($this->cachePrefix.'provider_stats_'.$providerId);
     }
 
     /**
@@ -518,26 +541,26 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
      */
     protected function clearCache(): void
     {
-        Cache::forget($this->cachePrefix . 'all');
-        Cache::forget($this->cachePrefix . 'primary');
-        Cache::forget($this->cachePrefix . 'active');
-        Cache::forget($this->cachePrefix . 'inactive');
-        Cache::forget($this->cachePrefix . 'verified');
-        Cache::forget($this->cachePrefix . 'unverified');
-        Cache::forget($this->cachePrefix . 'pending');
-        Cache::forget($this->cachePrefix . 'total_count');
-        Cache::forget($this->cachePrefix . 'active_count');
-        Cache::forget($this->cachePrefix . 'verified_count');
-        Cache::forget($this->cachePrefix . 'pending_count');
-        Cache::forget($this->cachePrefix . 'avg_experience');
-        Cache::forget($this->cachePrefix . 'statistics');
+        Cache::forget($this->cachePrefix.'all');
+        Cache::forget($this->cachePrefix.'primary');
+        Cache::forget($this->cachePrefix.'active');
+        Cache::forget($this->cachePrefix.'inactive');
+        Cache::forget($this->cachePrefix.'verified');
+        Cache::forget($this->cachePrefix.'unverified');
+        Cache::forget($this->cachePrefix.'pending');
+        Cache::forget($this->cachePrefix.'total_count');
+        Cache::forget($this->cachePrefix.'active_count');
+        Cache::forget($this->cachePrefix.'verified_count');
+        Cache::forget($this->cachePrefix.'pending_count');
+        Cache::forget($this->cachePrefix.'avg_experience');
+        Cache::forget($this->cachePrefix.'statistics');
     }
 
     // Missing methods from interface
 
     public function getProviderSpecializationCount(int $providerId): int
     {
-        return Cache::remember($this->cachePrefix . 'count_provider_' . $providerId, $this->cacheTtl, function () use ($providerId) {
+        return Cache::remember($this->cachePrefix.'count_provider_'.$providerId, $this->cacheTtl, function () use ($providerId) {
             return $this->model->where('provider_id', $providerId)->count();
         });
     }
@@ -558,7 +581,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
 
     public function getProviderPrimarySpecialization(int $providerId): ?ProviderSpecialization
     {
-        return Cache::remember($this->cachePrefix . 'primary_provider_' . $providerId, $this->cacheTtl, function () use ($providerId) {
+        return Cache::remember($this->cachePrefix.'primary_provider_'.$providerId, $this->cacheTtl, function () use ($providerId) {
             return $this->model->with(['provider', 'verifiedByUser'])
                 ->where('provider_id', $providerId)
                 ->where('is_primary', true)
@@ -569,12 +592,13 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
     public function getProviderPrimarySpecializationDTO(int $providerId): ?ProviderSpecializationDTO
     {
         $specialization = $this->getProviderPrimarySpecialization($providerId);
+
         return $specialization ? ProviderSpecializationDTO::fromModel($specialization) : null;
     }
 
     public function getProviderActiveSpecializations(int $providerId): Collection
     {
-        return Cache::remember($this->cachePrefix . 'active_provider_' . $providerId, $this->cacheTtl, function () use ($providerId) {
+        return Cache::remember($this->cachePrefix.'active_provider_'.$providerId, $this->cacheTtl, function () use ($providerId) {
             return $this->model->with(['provider', 'verifiedByUser'])
                 ->where('provider_id', $providerId)
                 ->where('is_active', true)
@@ -587,6 +611,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
     public function getProviderActiveSpecializationsDTO(int $providerId): Collection
     {
         $specializations = $this->getProviderActiveSpecializations($providerId);
+
         return $specializations->map(function ($specialization) {
             return ProviderSpecializationDTO::fromModel($specialization);
         });
@@ -594,7 +619,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
 
     public function getProviderVerifiedSpecializations(int $providerId): Collection
     {
-        return Cache::remember($this->cachePrefix . 'verified_provider_' . $providerId, $this->cacheTtl, function () use ($providerId) {
+        return Cache::remember($this->cachePrefix.'verified_provider_'.$providerId, $this->cacheTtl, function () use ($providerId) {
             return $this->model->with(['provider', 'verifiedByUser'])
                 ->where('provider_id', $providerId)
                 ->where('verification_status', 'verified')
@@ -607,6 +632,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
     public function getProviderVerifiedSpecializationsDTO(int $providerId): Collection
     {
         $specializations = $this->getProviderVerifiedSpecializations($providerId);
+
         return $specializations->map(function ($specialization) {
             return ProviderSpecializationDTO::fromModel($specialization);
         });
@@ -614,56 +640,56 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
 
     public function getTotalSpecializationCount(): int
     {
-        return Cache::remember($this->cachePrefix . 'total_count', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'total_count', $this->cacheTtl, function () {
             return $this->model->count();
         });
     }
 
     public function getTotalSpecializationCountByCategory(string $category): int
     {
-        return Cache::remember($this->cachePrefix . 'total_count_category_' . $category, $this->cacheTtl, function () use ($category) {
+        return Cache::remember($this->cachePrefix.'total_count_category_'.$category, $this->cacheTtl, function () use ($category) {
             return $this->model->where('category', $category)->count();
         });
     }
 
     public function getTotalSpecializationCountByProficiency(string $proficiencyLevel): int
     {
-        return Cache::remember($this->cachePrefix . 'total_count_proficiency_' . $proficiencyLevel, $this->cacheTtl, function () use ($proficiencyLevel) {
+        return Cache::remember($this->cachePrefix.'total_count_proficiency_'.$proficiencyLevel, $this->cacheTtl, function () use ($proficiencyLevel) {
             return $this->model->where('proficiency_level', $proficiencyLevel)->count();
         });
     }
 
     public function getActiveSpecializationCount(): int
     {
-        return Cache::remember($this->cachePrefix . 'active_count', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'active_count', $this->cacheTtl, function () {
             return $this->model->where('is_active', true)->count();
         });
     }
 
     public function getVerifiedSpecializationCount(): int
     {
-        return Cache::remember($this->cachePrefix . 'verified_count', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'verified_count', $this->cacheTtl, function () {
             return $this->model->where('verification_status', 'verified')->count();
         });
     }
 
     public function getPendingSpecializationCount(): int
     {
-        return Cache::remember($this->cachePrefix . 'pending_count', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'pending_count', $this->cacheTtl, function () {
             return $this->model->where('verification_status', 'pending')->count();
         });
     }
 
     public function getAverageExperience(): float
     {
-        return Cache::remember($this->cachePrefix . 'avg_experience', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'avg_experience', $this->cacheTtl, function () {
             return $this->model->avg('years_experience') ?? 0.0;
         });
     }
 
     public function getAverageExperienceByCategory(string $category): float
     {
-        return Cache::remember($this->cachePrefix . 'avg_experience_category_' . $category, $this->cacheTtl, function () use ($category) {
+        return Cache::remember($this->cachePrefix.'avg_experience_category_'.$category, $this->cacheTtl, function () use ($category) {
             return $this->model->where('category', $category)->avg('years_experience') ?? 0.0;
         });
     }
@@ -678,6 +704,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
     public function searchSpecializationsDTO(string $query): Collection
     {
         $specializations = $this->searchSpecializations($query);
+
         return $specializations->map(function ($specialization) {
             return ProviderSpecializationDTO::fromModel($specialization);
         });
@@ -694,6 +721,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
     public function searchSpecializationsByProviderDTO(int $providerId, string $query): Collection
     {
         $specializations = $this->searchSpecializationsByProvider($providerId, $query);
+
         return $specializations->map(function ($specialization) {
             return ProviderSpecializationDTO::fromModel($specialization);
         });
@@ -726,16 +754,16 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
             $csv .= implode(',', [
                 $specialization->id,
                 $specialization->provider_id,
-                '"' . str_replace('"', '""', $specialization->specialization_name) . '"',
+                '"'.str_replace('"', '""', $specialization->specialization_name).'"',
                 $specialization->category->value,
-                '"' . str_replace('"', '""', $specialization->description ?? '') . '"',
+                '"'.str_replace('"', '""', $specialization->description ?? '').'"',
                 $specialization->years_experience,
                 $specialization->proficiency_level->value,
                 $specialization->verification_status->value,
                 $specialization->is_primary ? 'Yes' : 'No',
                 $specialization->is_active ? 'Yes' : 'No',
-                $specialization->created_at
-            ]) . "\n";
+                $specialization->created_at,
+            ])."\n";
         }
 
         return $csv;
@@ -748,10 +776,14 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
             $headers = str_getcsv(array_shift($lines));
 
             foreach ($lines as $line) {
-                if (empty(trim($line))) continue;
+                if (empty(trim($line))) {
+                    continue;
+                }
 
                 $row = str_getcsv($line);
-                if (count($row) !== count($headers)) continue;
+                if (count($row) !== count($headers)) {
+                    continue;
+                }
 
                 $data = array_combine($headers, $row);
 
@@ -777,14 +809,15 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
 
             return true;
         } catch (Exception $e) {
-            Log::error('Failed to import specialization data: ' . $e->getMessage());
+            Log::error('Failed to import specialization data: '.$e->getMessage());
+
             return false;
         }
     }
 
     public function getSpecializationStatistics(): array
     {
-        return Cache::remember($this->cachePrefix . 'statistics', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'statistics', $this->cacheTtl, function () {
             $total = $this->getTotalSpecializationCount();
             $active = $this->getActiveSpecializationCount();
             $verified = $this->getVerifiedSpecializationCount();
@@ -807,7 +840,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
 
     public function getProviderSpecializationStatistics(int $providerId): array
     {
-        return Cache::remember($this->cachePrefix . 'provider_stats_' . $providerId, $this->cacheTtl, function () use ($providerId) {
+        return Cache::remember($this->cachePrefix.'provider_stats_'.$providerId, $this->cacheTtl, function () use ($providerId) {
             $total = $this->getProviderSpecializationCount($providerId);
             $active = $this->model->where('provider_id', $providerId)->where('is_active', true)->count();
             $verified = $this->model->where('provider_id', $providerId)->where('verification_status', 'verified')->count();
@@ -829,7 +862,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
         });
     }
 
-    public function getSpecializationTrends(string $startDate = null, string $endDate = null): array
+    public function getSpecializationTrends(?string $startDate = null, ?string $endDate = null): array
     {
         $startDate = $startDate ?: now()->subMonths(6)->format('Y-m-d');
         $endDate = $endDate ?: now()->format('Y-m-d');
@@ -871,6 +904,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
     public function getMostPopularSpecializationsDTO(int $limit = 10): Collection
     {
         $specializations = $this->getMostPopularSpecializations($limit);
+
         return $specializations->map(function ($specialization) {
             return [
                 'specialization_name' => $specialization->specialization_name,
@@ -892,6 +926,7 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
     public function getSpecializationsByExpertiseDTO(string $proficiencyLevel = 'expert'): Collection
     {
         $specializations = $this->getSpecializationsByExpertise($proficiencyLevel);
+
         return $specializations->map(function ($specialization) {
             return ProviderSpecializationDTO::fromModel($specialization);
         });

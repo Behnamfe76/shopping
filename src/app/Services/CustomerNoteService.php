@@ -2,23 +2,23 @@
 
 namespace Fereydooni\Shopping\app\Services;
 
-use Illuminate\Support\Collection;
-use Fereydooni\Shopping\app\Repositories\Interfaces\CustomerNoteRepositoryInterface;
-use Fereydooni\Shopping\app\Models\CustomerNote;
 use Fereydooni\Shopping\app\DTOs\CustomerNoteDTO;
+use Fereydooni\Shopping\app\Models\CustomerNote;
+use Fereydooni\Shopping\app\Repositories\Interfaces\CustomerNoteRepositoryInterface;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
-use Fereydooni\Shopping\app\Traits\HasSearchOperations;
 use Fereydooni\Shopping\app\Traits\HasCustomerNoteOperations;
 use Fereydooni\Shopping\app\Traits\HasCustomerNoteStatusManagement;
 use Fereydooni\Shopping\app\Traits\HasNotesManagement;
+use Fereydooni\Shopping\app\Traits\HasSearchOperations;
+use Illuminate\Support\Collection;
 
 class CustomerNoteService
 {
     use HasCrudOperations,
-        HasSearchOperations,
         HasCustomerNoteOperations,
         HasCustomerNoteStatusManagement,
-        HasNotesManagement;
+        HasNotesManagement,
+        HasSearchOperations;
 
     public function __construct(
         protected CustomerNoteRepositoryInterface $repository

@@ -3,10 +3,9 @@
 namespace App\Traits;
 
 use App\Models\EmployeeDepartment;
-use App\Repositories\Interfaces\EmployeeDepartmentRepositoryInterface;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 trait HasEmployeeDepartmentBudgetManagement
 {
@@ -20,13 +19,15 @@ trait HasEmployeeDepartmentBudgetManagement
 
             return Cache::remember($cacheKey, 3600, function () use ($departmentId) {
                 $department = $this->find($departmentId);
+
                 return $department ? (float) $department->budget : 0.0;
             });
         } catch (\Exception $e) {
             Log::error('Error getting department budget', [
                 'department_id' => $departmentId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return 0.0;
         }
     }
@@ -38,7 +39,7 @@ trait HasEmployeeDepartmentBudgetManagement
     {
         try {
             $department = $this->find($departmentId);
-            if (!$department) {
+            if (! $department) {
                 return false;
             }
 
@@ -54,7 +55,7 @@ trait HasEmployeeDepartmentBudgetManagement
                     'department_id' => $departmentId,
                     'old_budget' => $department->getOriginal('budget'),
                     'new_budget' => $budget,
-                    'updated_by' => Auth::id()
+                    'updated_by' => Auth::id(),
                 ]);
             }
 
@@ -63,8 +64,9 @@ trait HasEmployeeDepartmentBudgetManagement
             Log::error('Error setting department budget', [
                 'department_id' => $departmentId,
                 'budget' => $budget,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -79,18 +81,20 @@ trait HasEmployeeDepartmentBudgetManagement
 
             return Cache::remember($cacheKey, 1800, function () use ($departmentId) {
                 $department = $this->find($departmentId);
-                if (!$department || $department->budget <= 0) {
+                if (! $department || $department->budget <= 0) {
                     return 0.0;
                 }
 
                 $utilizedBudget = $this->calculateUtilizedBudget($departmentId);
+
                 return min(100.0, ($utilizedBudget / $department->budget) * 100);
             });
         } catch (\Exception $e) {
             Log::error('Error calculating budget utilization', [
                 'department_id' => $departmentId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return 0.0;
         }
     }
@@ -109,7 +113,7 @@ trait HasEmployeeDepartmentBudgetManagement
             // For now, we'll use a placeholder calculation
 
             $department = $this->find($departmentId);
-            if (!$department) {
+            if (! $department) {
                 return 0.0;
             }
 
@@ -121,8 +125,9 @@ trait HasEmployeeDepartmentBudgetManagement
         } catch (\Exception $e) {
             Log::error('Error calculating utilized budget', [
                 'department_id' => $departmentId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return 0.0;
         }
     }
@@ -133,6 +138,7 @@ trait HasEmployeeDepartmentBudgetManagement
     public function isDepartmentOverBudget(int $departmentId): bool
     {
         $utilization = $this->getDepartmentBudgetUtilization($departmentId);
+
         return $utilization > 100.0;
     }
 
@@ -142,6 +148,7 @@ trait HasEmployeeDepartmentBudgetManagement
     public function isDepartmentApproachingBudgetLimit(int $departmentId, float $threshold = 80.0): bool
     {
         $utilization = $this->getDepartmentBudgetUtilization($departmentId);
+
         return $utilization >= $threshold;
     }
 
@@ -152,17 +159,19 @@ trait HasEmployeeDepartmentBudgetManagement
     {
         try {
             $department = $this->find($departmentId);
-            if (!$department) {
+            if (! $department) {
                 return 0.0;
             }
 
             $utilizedBudget = $this->calculateUtilizedBudget($departmentId);
+
             return max(0.0, $department->budget - $utilizedBudget);
         } catch (\Exception $e) {
             Log::error('Error calculating remaining budget', [
                 'department_id' => $departmentId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return 0.0;
         }
     }
@@ -174,14 +183,14 @@ trait HasEmployeeDepartmentBudgetManagement
     {
         try {
             $department = $this->find($departmentId);
-            if (!$department) {
+            if (! $department) {
                 return [
                     'total_budget' => 0.0,
                     'utilized_budget' => 0.0,
                     'remaining_budget' => 0.0,
                     'utilization_percentage' => 0.0,
                     'is_over_budget' => false,
-                    'is_approaching_limit' => false
+                    'is_approaching_limit' => false,
                 ];
             }
 
@@ -195,20 +204,21 @@ trait HasEmployeeDepartmentBudgetManagement
                 'remaining_budget' => $remainingBudget,
                 'utilization_percentage' => min(100.0, $utilizationPercentage),
                 'is_over_budget' => $utilizationPercentage > 100.0,
-                'is_approaching_limit' => $utilizationPercentage >= 80.0
+                'is_approaching_limit' => $utilizationPercentage >= 80.0,
             ];
         } catch (\Exception $e) {
             Log::error('Error getting budget summary', [
                 'department_id' => $departmentId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return [
                 'total_budget' => 0.0,
                 'utilized_budget' => 0.0,
                 'remaining_budget' => 0.0,
                 'utilization_percentage' => 0.0,
                 'is_over_budget' => false,
-                'is_approaching_limit' => false
+                'is_approaching_limit' => false,
             ];
         }
     }
@@ -216,7 +226,7 @@ trait HasEmployeeDepartmentBudgetManagement
     /**
      * Get budget trends for department
      */
-    public function getBudgetTrends(int $departmentId, string $startDate = null, string $endDate = null): array
+    public function getBudgetTrends(int $departmentId, ?string $startDate = null, ?string $endDate = null): array
     {
         try {
             // This would typically involve historical budget data
@@ -225,13 +235,14 @@ trait HasEmployeeDepartmentBudgetManagement
                 'monthly_spending' => [],
                 'budget_variance' => [],
                 'forecast' => [],
-                'recommendations' => []
+                'recommendations' => [],
             ];
         } catch (\Exception $e) {
             Log::error('Error getting budget trends', [
                 'department_id' => $departmentId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return [];
         }
     }
@@ -243,7 +254,7 @@ trait HasEmployeeDepartmentBudgetManagement
     {
         try {
             $department = $this->find($departmentId);
-            if (!$department) {
+            if (! $department) {
                 return false;
             }
 
@@ -257,7 +268,7 @@ trait HasEmployeeDepartmentBudgetManagement
                     'old_budget' => $oldBudget,
                     'new_budget' => $newBudget,
                     'reason' => $reason,
-                    'updated_by' => Auth::id()
+                    'updated_by' => Auth::id(),
                 ]);
             }
 
@@ -266,8 +277,9 @@ trait HasEmployeeDepartmentBudgetManagement
             Log::error('Error updating budget allocation', [
                 'department_id' => $departmentId,
                 'new_budget' => $newBudget,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -283,8 +295,9 @@ trait HasEmployeeDepartmentBudgetManagement
             });
         } catch (\Exception $e) {
             Log::error('Error getting total budget', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return 0.0;
         }
     }
@@ -308,17 +321,18 @@ trait HasEmployeeDepartmentBudgetManagement
                 'total_budget' => $totalBudget,
                 'total_utilized' => $totalUtilized,
                 'overall_utilization' => $totalBudget > 0 ? ($totalUtilized / $totalBudget) * 100 : 0,
-                'departments_count' => $departments->count()
+                'departments_count' => $departments->count(),
             ];
         } catch (\Exception $e) {
             Log::error('Error getting overall budget utilization', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return [
                 'total_budget' => 0.0,
                 'total_utilized' => 0.0,
                 'overall_utilization' => 0.0,
-                'departments_count' => 0
+                'departments_count' => 0,
             ];
         }
     }

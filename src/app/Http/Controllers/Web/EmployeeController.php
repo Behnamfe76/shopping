@@ -2,15 +2,13 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers\Web;
 
-use Illuminate\Routing\Controller;
-use Fereydooni\Shopping\app\Services\EmployeeService;
-use Fereydooni\Shopping\app\DTOs\EmployeeDTO;
 use Fereydooni\Shopping\app\Models\Employee;
-use Illuminate\Http\Request;
+use Fereydooni\Shopping\app\Services\EmployeeService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\View\View;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\View\View;
 
 class EmployeeController extends Controller
 {
@@ -64,7 +62,7 @@ class EmployeeController extends Controller
     {
         $employee = $this->employeeService->findById($id);
 
-        if (!$employee) {
+        if (! $employee) {
             abort(404);
         }
 
@@ -123,7 +121,7 @@ class EmployeeController extends Controller
             'success' => true,
             'message' => 'Employee created successfully',
             'data' => $employee,
-            'redirect' => route('employees.show', $employee->id)
+            'redirect' => route('employees.show', $employee->id),
         ]);
     }
 
@@ -134,7 +132,7 @@ class EmployeeController extends Controller
     {
         $employee = $this->employeeService->findById($id);
 
-        if (!$employee) {
+        if (! $employee) {
             abort(404);
         }
 
@@ -154,7 +152,7 @@ class EmployeeController extends Controller
     {
         $employee = $this->employeeService->findById($id);
 
-        if (!$employee) {
+        if (! $employee) {
             abort(404);
         }
 
@@ -163,7 +161,7 @@ class EmployeeController extends Controller
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:employees,email,' . $id,
+            'email' => 'required|email|unique:employees,email,'.$id,
             'phone' => 'nullable|string|max:20',
             'date_of_birth' => 'nullable|date',
             'gender' => 'nullable|string|in:male,female,other,prefer_not_to_say',
@@ -181,7 +179,7 @@ class EmployeeController extends Controller
         return response()->json([
             'success' => $updated,
             'message' => $updated ? 'Employee updated successfully' : 'Failed to update employee',
-            'data' => $updated ? $this->employeeService->findById($id) : null
+            'data' => $updated ? $this->employeeService->findById($id) : null,
         ]);
     }
 
@@ -192,7 +190,7 @@ class EmployeeController extends Controller
     {
         $employee = $this->employeeService->findById($id);
 
-        if (!$employee) {
+        if (! $employee) {
             abort(404);
         }
 
@@ -202,7 +200,7 @@ class EmployeeController extends Controller
 
         return response()->json([
             'success' => $deleted,
-            'message' => $deleted ? 'Employee deleted successfully' : 'Failed to delete employee'
+            'message' => $deleted ? 'Employee deleted successfully' : 'Failed to delete employee',
         ]);
     }
 
@@ -247,7 +245,7 @@ class EmployeeController extends Controller
         Gate::authorize('importData', Employee::class);
 
         $request->validate([
-            'file' => 'required|file|mimes:csv,xlsx,xls|max:10240'
+            'file' => 'required|file|mimes:csv,xlsx,xls|max:10240',
         ]);
 
         $result = $this->employeeService->importEmployees($request->file('file'));
@@ -255,7 +253,7 @@ class EmployeeController extends Controller
         return response()->json([
             'success' => $result['success'],
             'message' => $result['message'],
-            'data' => $result['data'] ?? null
+            'data' => $result['data'] ?? null,
         ]);
     }
 
@@ -274,7 +272,7 @@ class EmployeeController extends Controller
         return response()->json([
             'success' => $result['success'],
             'message' => $result['message'],
-            'download_url' => $result['download_url'] ?? null
+            'download_url' => $result['download_url'] ?? null,
         ]);
     }
 
@@ -353,7 +351,7 @@ class EmployeeController extends Controller
     {
         $employee = $this->employeeService->findById($id);
 
-        if (!$employee) {
+        if (! $employee) {
             return response()->json(['error' => 'Employee not found'], 404);
         }
 
@@ -361,7 +359,7 @@ class EmployeeController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $employee
+            'data' => $employee,
         ]);
     }
 
@@ -376,7 +374,7 @@ class EmployeeController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $stats
+            'data' => $stats,
         ]);
     }
 
@@ -394,7 +392,7 @@ class EmployeeController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $employees
+            'data' => $employees,
         ]);
     }
 }

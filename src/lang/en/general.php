@@ -10,9 +10,9 @@ return [
     | All general keys would be here
     |
     */
-    
+
     'not-used' => 'Not Used',
-    'usage-counter' => "Used :value Times",
+    'usage-counter' => 'Used :value Times',
     'active' => 'Active',
     'in-active' => 'Inactive',
     'featured' => 'Featured',

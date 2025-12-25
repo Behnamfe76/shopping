@@ -3,17 +3,17 @@
 namespace App\Listeners\ProviderCertification;
 
 use App\Events\ProviderCertification\ProviderCertificationCreated;
+use App\Events\ProviderCertification\ProviderCertificationExpired;
+use App\Events\ProviderCertification\ProviderCertificationRejected;
+use App\Events\ProviderCertification\ProviderCertificationRenewed;
+use App\Events\ProviderCertification\ProviderCertificationRevoked;
+use App\Events\ProviderCertification\ProviderCertificationSuspended;
 use App\Events\ProviderCertification\ProviderCertificationUpdated;
 use App\Events\ProviderCertification\ProviderCertificationVerified;
-use App\Events\ProviderCertification\ProviderCertificationRejected;
-use App\Events\ProviderCertification\ProviderCertificationExpired;
-use App\Events\ProviderCertification\ProviderCertificationRenewed;
-use App\Events\ProviderCertification\ProviderCertificationSuspended;
-use App\Events\ProviderCertification\ProviderCertificationRevoked;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class UpdateProviderCertificationMetrics implements ShouldQueue
 {
@@ -70,14 +70,14 @@ class UpdateProviderCertificationMetrics implements ShouldQueue
             Log::info('Provider certification metrics updated successfully', [
                 'event' => get_class($event),
                 'certification_id' => $certification->id,
-                'provider_id' => $providerId
+                'provider_id' => $providerId,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to update provider certification metrics', [
                 'event' => get_class($event),
                 'certification_id' => $event->certification->id ?? null,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             throw $e;
@@ -281,7 +281,7 @@ class UpdateProviderCertificationMetrics implements ShouldQueue
         Log::error('Provider certification metrics update job failed', [
             'event' => get_class($event),
             'certification_id' => $event->certification->id ?? null,
-            'error' => $exception->getMessage()
+            'error' => $exception->getMessage(),
         ]);
     }
 }

@@ -25,7 +25,7 @@ enum PaymentTerms: string
      */
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::IMMEDIATE => 'Immediate',
             self::NET_15 => 'Net 15',
             self::NET_30 => 'Net 30',
@@ -41,7 +41,7 @@ enum PaymentTerms: string
      */
     public function days(): int
     {
-        return match($this) {
+        return match ($this) {
             self::IMMEDIATE => 0,
             self::NET_15 => 15,
             self::NET_30 => 30,
@@ -84,4 +84,3 @@ enum PaymentTerms: string
         return "Payment due within {$this->days()} days";
     }
 }
-

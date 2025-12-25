@@ -41,16 +41,16 @@ class ContractCreated extends Notification implements ShouldQueue
 
         return (new MailMessage)
             ->subject('New Provider Contract Created')
-            ->greeting('Hello ' . $notifiable->name)
+            ->greeting('Hello '.$notifiable->name)
             ->line('A new provider contract has been created.')
             ->line('Contract Details:')
-            ->line('- Contract Number: ' . $this->contract->contract_number)
-            ->line('- Provider: ' . $provider->name)
-            ->line('- Contract Type: ' . ucfirst($this->contract->contract_type))
-            ->line('- Start Date: ' . $this->contract->start_date->format('M d, Y'))
-            ->line('- End Date: ' . $this->contract->end_date->format('M d, Y'))
-            ->line('- Contract Value: ' . $this->contract->currency . ' ' . number_format($this->contract->contract_value, 2))
-            ->action('View Contract', url('/provider-contracts/' . $this->contract->id))
+            ->line('- Contract Number: '.$this->contract->contract_number)
+            ->line('- Provider: '.$provider->name)
+            ->line('- Contract Type: '.ucfirst($this->contract->contract_type))
+            ->line('- Start Date: '.$this->contract->start_date->format('M d, Y'))
+            ->line('- End Date: '.$this->contract->end_date->format('M d, Y'))
+            ->line('- Contract Value: '.$this->contract->currency.' '.number_format($this->contract->contract_value, 2))
+            ->action('View Contract', url('/provider-contracts/'.$this->contract->id))
             ->line('Please review and take necessary actions.');
     }
 
@@ -67,8 +67,8 @@ class ContractCreated extends Notification implements ShouldQueue
             'contract_number' => $this->contract->contract_number,
             'contract_type' => $this->contract->contract_type,
             'status' => $this->contract->status,
-            'message' => 'New provider contract created: ' . $this->contract->contract_number,
-            'type' => 'contract_created'
+            'message' => 'New provider contract created: '.$this->contract->contract_number,
+            'type' => 'contract_created',
         ];
     }
 }

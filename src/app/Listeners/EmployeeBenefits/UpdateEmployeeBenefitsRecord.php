@@ -2,16 +2,16 @@
 
 namespace App\Listeners\EmployeeBenefits;
 
-use App\Events\EmployeeBenefits\EmployeeBenefitsCreated;
-use App\Events\EmployeeBenefits\EmployeeBenefitsUpdated;
-use App\Events\EmployeeBenefits\EmployeeBenefitsEnrolled;
-use App\Events\EmployeeBenefits\EmployeeBenefitsTerminated;
 use App\Events\EmployeeBenefits\EmployeeBenefitsCancelled;
+use App\Events\EmployeeBenefits\EmployeeBenefitsCreated;
+use App\Events\EmployeeBenefits\EmployeeBenefitsEnrolled;
 use App\Events\EmployeeBenefits\EmployeeBenefitsExpiring;
+use App\Events\EmployeeBenefits\EmployeeBenefitsTerminated;
+use App\Events\EmployeeBenefits\EmployeeBenefitsUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class UpdateEmployeeBenefitsRecord implements ShouldQueue
 {
@@ -36,7 +36,7 @@ class UpdateEmployeeBenefitsRecord implements ShouldQueue
             Log::error('Error updating employee benefits record', [
                 'event' => get_class($event),
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
         }
     }
@@ -56,7 +56,7 @@ class UpdateEmployeeBenefitsRecord implements ShouldQueue
 
         Log::info('Employee benefits record updated for creation', [
             'benefit_id' => $benefit->id,
-            'employee_id' => $benefit->employee_id
+            'employee_id' => $benefit->employee_id,
         ]);
     }
 
@@ -81,7 +81,7 @@ class UpdateEmployeeBenefitsRecord implements ShouldQueue
         Log::info('Employee benefits record updated for modification', [
             'benefit_id' => $benefit->id,
             'employee_id' => $benefit->employee_id,
-            'changes' => $changes
+            'changes' => $changes,
         ]);
     }
 
@@ -100,7 +100,7 @@ class UpdateEmployeeBenefitsRecord implements ShouldQueue
 
         Log::info('Employee benefits record updated for enrollment', [
             'benefit_id' => $benefit->id,
-            'employee_id' => $benefit->employee_id
+            'employee_id' => $benefit->employee_id,
         ]);
     }
 
@@ -119,7 +119,7 @@ class UpdateEmployeeBenefitsRecord implements ShouldQueue
 
         Log::info('Employee benefits record updated for termination', [
             'benefit_id' => $benefit->id,
-            'employee_id' => $benefit->employee_id
+            'employee_id' => $benefit->employee_id,
         ]);
     }
 
@@ -138,7 +138,7 @@ class UpdateEmployeeBenefitsRecord implements ShouldQueue
 
         Log::info('Employee benefits record updated for cancellation', [
             'benefit_id' => $benefit->id,
-            'employee_id' => $benefit->employee_id
+            'employee_id' => $benefit->employee_id,
         ]);
     }
 
@@ -154,7 +154,7 @@ class UpdateEmployeeBenefitsRecord implements ShouldQueue
 
         Log::info('Employee benefits record updated for expiring', [
             'benefit_id' => $benefit->id,
-            'employee_id' => $benefit->employee_id
+            'employee_id' => $benefit->employee_id,
         ]);
     }
 
@@ -168,12 +168,12 @@ class UpdateEmployeeBenefitsRecord implements ShouldQueue
                 ->where('id', $employeeId)
                 ->update([
                     'benefits_count' => DB::raw('(SELECT COUNT(*) FROM employee_benefits WHERE employee_id = ? AND deleted_at IS NULL)'),
-                    'updated_at' => now()
+                    'updated_at' => now(),
                 ]);
         } catch (\Exception $e) {
             Log::error('Error updating employee benefits count', [
                 'employee_id' => $employeeId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -188,13 +188,13 @@ class UpdateEmployeeBenefitsRecord implements ShouldQueue
                 ->where('id', $employeeId)
                 ->update([
                     'benefits_status' => $status,
-                    'updated_at' => now()
+                    'updated_at' => now(),
                 ]);
         } catch (\Exception $e) {
             Log::error('Error updating employee benefits status', [
                 'employee_id' => $employeeId,
                 'status' => $status,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -222,13 +222,13 @@ class UpdateEmployeeBenefitsRecord implements ShouldQueue
                         'total_benefits_cost' => $costs->total_premium ?? 0,
                         'total_employee_contribution' => $costs->total_employee_contribution ?? 0,
                         'total_employer_contribution' => $costs->total_employer_contribution ?? 0,
-                        'updated_at' => now()
+                        'updated_at' => now(),
                     ]);
             }
         } catch (\Exception $e) {
             Log::error('Error updating employee benefits costs', [
                 'employee_id' => $employeeId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -248,7 +248,7 @@ class UpdateEmployeeBenefitsRecord implements ShouldQueue
             cache()->put('company_active_benefits_count', $activeCount, now()->addHours(24));
         } catch (\Exception $e) {
             Log::error('Error updating active benefits count', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -269,7 +269,7 @@ class UpdateEmployeeBenefitsRecord implements ShouldQueue
             cache()->put('company_expiring_benefits_count', $expiringCount, now()->addHours(24));
         } catch (\Exception $e) {
             Log::error('Error updating expiring benefits count', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -297,7 +297,7 @@ class UpdateEmployeeBenefitsRecord implements ShouldQueue
             }
         } catch (\Exception $e) {
             Log::error('Error updating company benefits statistics', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }

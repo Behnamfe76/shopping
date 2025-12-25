@@ -31,6 +31,7 @@ class ProviderCommunicationThreadResource extends JsonResource
     private function calculateAverageResponseTime(): ?float
     {
         $responseTimes = $this->resource->whereNotNull('response_time')->pluck('response_time');
+
         return $responseTimes->isNotEmpty() ? $responseTimes->avg() : null;
     }
 
@@ -38,7 +39,7 @@ class ProviderCommunicationThreadResource extends JsonResource
     {
         $lastMessage = $this->resource->last();
 
-        if (!$lastMessage) {
+        if (! $lastMessage) {
             return 'empty';
         }
 

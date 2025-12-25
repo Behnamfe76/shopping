@@ -2,15 +2,15 @@
 
 namespace Database\Seeders;
 
+use App\Enums\PerformanceGrade;
+use App\Enums\PeriodType;
+use App\Models\Provider;
+use App\Models\ProviderPerformance;
+use Carbon\Carbon;
+use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use App\Models\ProviderPerformance;
-use App\Models\Provider;
-use App\Enums\PerformanceGrade;
-use App\Enums\PeriodType;
-use Carbon\Carbon;
-use Faker\Factory as Faker;
 
 class ProviderPerformanceSeeder extends Seeder
 {
@@ -20,8 +20,9 @@ class ProviderPerformanceSeeder extends Seeder
     public function run(): void
     {
         // Skip if no providers exist
-        if (!Schema::hasTable('providers') || Provider::count() == 0) {
+        if (! Schema::hasTable('providers') || Provider::count() == 0) {
             $this->command->warn('No providers found. Skipping provider performance seeding.');
+
             return;
         }
 
@@ -32,6 +33,7 @@ class ProviderPerformanceSeeder extends Seeder
 
         if ($providers->isEmpty()) {
             $this->command->warn('No providers available for seeding.');
+
             return;
         }
 
@@ -180,7 +182,7 @@ class ProviderPerformanceSeeder extends Seeder
         $baseRevenue = $faker->numberBetween(5000, 50000);
 
         // Adjust for period type
-        $multiplier = match($periodType) {
+        $multiplier = match ($periodType) {
             'monthly' => 1,
             'quarterly' => 3,
             'yearly' => 12,
@@ -273,10 +275,19 @@ class ProviderPerformanceSeeder extends Seeder
      */
     protected function determinePerformanceGrade(float $score): PerformanceGrade
     {
-        if ($score >= 90) return PerformanceGrade::A;
-        if ($score >= 80) return PerformanceGrade::B;
-        if ($score >= 70) return PerformanceGrade::C;
-        if ($score >= 60) return PerformanceGrade::D;
+        if ($score >= 90) {
+            return PerformanceGrade::A;
+        }
+        if ($score >= 80) {
+            return PerformanceGrade::B;
+        }
+        if ($score >= 70) {
+            return PerformanceGrade::C;
+        }
+        if ($score >= 60) {
+            return PerformanceGrade::D;
+        }
+
         return PerformanceGrade::F;
     }
 

@@ -3,14 +3,14 @@
 namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use Fereydooni\Shopping\app\Http\Requests\MarkAsReadRequest;
+use Fereydooni\Shopping\app\Http\Requests\ReplyToCommunicationRequest;
+use Fereydooni\Shopping\app\Http\Requests\SearchCommunicationRequest;
+use Fereydooni\Shopping\app\Http\Requests\SendCommunicationRequest;
 use Fereydooni\Shopping\app\Http\Requests\StoreProviderCommunicationRequest;
 use Fereydooni\Shopping\app\Http\Requests\UpdateProviderCommunicationRequest;
-use Fereydooni\Shopping\app\Http\Requests\SendCommunicationRequest;
-use Fereydooni\Shopping\app\Http\Requests\ReplyToCommunicationRequest;
-use Fereydooni\Shopping\app\Http\Requests\MarkAsReadRequest;
-use Fereydooni\Shopping\app\Http\Requests\SearchCommunicationRequest;
-use Fereydooni\Shopping\app\Http\Resources\ProviderCommunicationResource;
 use Fereydooni\Shopping\app\Http\Resources\ProviderCommunicationCollection;
+use Fereydooni\Shopping\app\Http\Resources\ProviderCommunicationResource;
 use Fereydooni\Shopping\app\Http\Resources\ProviderCommunicationSearchResource;
 use Fereydooni\Shopping\app\Http\Resources\ProviderCommunicationStatisticsResource;
 use Fereydooni\Shopping\app\Http\Resources\ProviderCommunicationThreadResource;
@@ -19,7 +19,6 @@ use Fereydooni\Shopping\app\Services\ProviderCommunicationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Gate;
 
 class ProviderCommunicationController extends Controller
 {
@@ -46,7 +45,7 @@ class ProviderCommunicationController extends Controller
 
         return response()->json([
             'message' => 'Provider communication created successfully',
-            'data' => new ProviderCommunicationResource($communication)
+            'data' => new ProviderCommunicationResource($communication),
         ], 201);
     }
 
@@ -55,7 +54,7 @@ class ProviderCommunicationController extends Controller
         $this->authorize('view', $providerCommunication);
 
         return response()->json([
-            'data' => new ProviderCommunicationResource($providerCommunication)
+            'data' => new ProviderCommunicationResource($providerCommunication),
         ]);
     }
 
@@ -66,9 +65,9 @@ class ProviderCommunicationController extends Controller
         $data = $request->validated();
         $updated = $this->providerCommunicationService->update($providerCommunication, $data);
 
-        if (!$updated) {
+        if (! $updated) {
             return response()->json([
-                'message' => 'Failed to update provider communication'
+                'message' => 'Failed to update provider communication',
             ], 500);
         }
 
@@ -76,7 +75,7 @@ class ProviderCommunicationController extends Controller
 
         return response()->json([
             'message' => 'Provider communication updated successfully',
-            'data' => new ProviderCommunicationResource($communication)
+            'data' => new ProviderCommunicationResource($communication),
         ]);
     }
 
@@ -86,14 +85,14 @@ class ProviderCommunicationController extends Controller
 
         $deleted = $this->providerCommunicationService->delete($providerCommunication);
 
-        if (!$deleted) {
+        if (! $deleted) {
             return response()->json([
-                'message' => 'Failed to delete provider communication'
+                'message' => 'Failed to delete provider communication',
             ], 500);
         }
 
         return response()->json([
-            'message' => 'Provider communication deleted successfully'
+            'message' => 'Provider communication deleted successfully',
         ]);
     }
 
@@ -111,7 +110,7 @@ class ProviderCommunicationController extends Controller
 
         return response()->json([
             'message' => 'Communication sent successfully',
-            'data' => new ProviderCommunicationResource($communication)
+            'data' => new ProviderCommunicationResource($communication),
         ], 201);
     }
 
@@ -135,7 +134,7 @@ class ProviderCommunicationController extends Controller
 
         return response()->json([
             'message' => 'Reply sent successfully',
-            'data' => new ProviderCommunicationResource($reply)
+            'data' => new ProviderCommunicationResource($reply),
         ], 201);
     }
 
@@ -148,14 +147,14 @@ class ProviderCommunicationController extends Controller
 
         $updated = $this->providerCommunicationService->markAsRead($providerCommunication, $readAt);
 
-        if (!$updated) {
+        if (! $updated) {
             return response()->json([
-                'message' => 'Failed to mark communication as read'
+                'message' => 'Failed to mark communication as read',
             ], 500);
         }
 
         return response()->json([
-            'message' => 'Communication marked as read successfully'
+            'message' => 'Communication marked as read successfully',
         ]);
     }
 
@@ -165,14 +164,14 @@ class ProviderCommunicationController extends Controller
 
         $updated = $this->providerCommunicationService->markAsReplied($providerCommunication);
 
-        if (!$updated) {
+        if (! $updated) {
             return response()->json([
-                'message' => 'Failed to mark communication as replied'
+                'message' => 'Failed to mark communication as replied',
             ], 500);
         }
 
         return response()->json([
-            'message' => 'Communication marked as replied successfully'
+            'message' => 'Communication marked as replied successfully',
         ]);
     }
 
@@ -182,14 +181,14 @@ class ProviderCommunicationController extends Controller
 
         $updated = $this->providerCommunicationService->archive($providerCommunication);
 
-        if (!$updated) {
+        if (! $updated) {
             return response()->json([
-                'message' => 'Failed to archive communication'
+                'message' => 'Failed to archive communication',
             ], 500);
         }
 
         return response()->json([
-            'message' => 'Communication archived successfully'
+            'message' => 'Communication archived successfully',
         ]);
     }
 
@@ -199,14 +198,14 @@ class ProviderCommunicationController extends Controller
 
         $updated = $this->providerCommunicationService->unarchive($providerCommunication);
 
-        if (!$updated) {
+        if (! $updated) {
             return response()->json([
-                'message' => 'Failed to unarchive communication'
+                'message' => 'Failed to unarchive communication',
             ], 500);
         }
 
         return response()->json([
-            'message' => 'Communication unarchived successfully'
+            'message' => 'Communication unarchived successfully',
         ]);
     }
 
@@ -216,14 +215,14 @@ class ProviderCommunicationController extends Controller
 
         $updated = $this->providerCommunicationService->setUrgent($providerCommunication);
 
-        if (!$updated) {
+        if (! $updated) {
             return response()->json([
-                'message' => 'Failed to set communication as urgent'
+                'message' => 'Failed to set communication as urgent',
             ], 500);
         }
 
         return response()->json([
-            'message' => 'Communication set as urgent successfully'
+            'message' => 'Communication set as urgent successfully',
         ]);
     }
 
@@ -233,14 +232,14 @@ class ProviderCommunicationController extends Controller
 
         $updated = $this->providerCommunicationService->unsetUrgent($providerCommunication);
 
-        if (!$updated) {
+        if (! $updated) {
             return response()->json([
-                'message' => 'Failed to unset communication urgency'
+                'message' => 'Failed to unset communication urgency',
             ], 500);
         }
 
         return response()->json([
-            'message' => 'Communication urgency unset successfully'
+            'message' => 'Communication urgency unset successfully',
         ]);
     }
 
@@ -261,7 +260,7 @@ class ProviderCommunicationController extends Controller
         $thread = $this->providerCommunicationService->findByThreadId($threadId);
 
         return response()->json([
-            'data' => new ProviderCommunicationThreadResource($thread)
+            'data' => new ProviderCommunicationThreadResource($thread),
         ]);
     }
 
@@ -275,7 +274,7 @@ class ProviderCommunicationController extends Controller
         $conversation = $this->providerCommunicationService->findConversation($providerId, $userId, $limit);
 
         return response()->json([
-            'data' => ProviderCommunicationResource::collection($conversation)
+            'data' => ProviderCommunicationResource::collection($conversation),
         ]);
     }
 
@@ -292,7 +291,7 @@ class ProviderCommunicationController extends Controller
         }
 
         return response()->json([
-            'data' => new ProviderCommunicationStatisticsResource($analytics)
+            'data' => new ProviderCommunicationStatisticsResource($analytics),
         ]);
     }
 
@@ -325,7 +324,7 @@ class ProviderCommunicationController extends Controller
         }
 
         return response()->json([
-            'data' => $stats
+            'data' => $stats,
         ]);
     }
 

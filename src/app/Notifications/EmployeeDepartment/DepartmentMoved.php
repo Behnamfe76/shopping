@@ -5,16 +5,18 @@ namespace App\Notifications\EmployeeDepartment;
 use App\Models\EmployeeDepartment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\BroadcastMessage;
 
 class DepartmentMoved extends Notification implements ShouldQueue
 {
     use Queueable;
 
     public $department;
+
     public $previousParentId;
+
     public $newParentId;
 
     /**
@@ -41,14 +43,14 @@ class DepartmentMoved extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Department Moved: ' . $this->department->name)
-            ->greeting('Hello ' . $notifiable->name . ',')
+            ->subject('Department Moved: '.$this->department->name)
+            ->greeting('Hello '.$notifiable->name.',')
             ->line('A department has been moved in the organizational hierarchy.')
-            ->line('Department: ' . $this->department->name)
-            ->line('Code: ' . $this->department->code)
-            ->line('Previous Parent: ' . $this->getParentDepartmentName($this->previousParentId))
-            ->line('New Parent: ' . $this->getParentDepartmentName($this->newParentId))
-            ->line('Location: ' . ($this->department->location ?? 'Not specified'))
+            ->line('Department: '.$this->department->name)
+            ->line('Code: '.$this->department->code)
+            ->line('Previous Parent: '.$this->getParentDepartmentName($this->previousParentId))
+            ->line('New Parent: '.$this->getParentDepartmentName($this->newParentId))
+            ->line('Location: '.($this->department->location ?? 'Not specified'))
             ->action('View Department', $this->getDepartmentUrl())
             ->line('This change may affect:')
             ->line('• Reporting relationships')
@@ -69,9 +71,9 @@ class DepartmentMoved extends Notification implements ShouldQueue
             'department_name' => $this->department->name,
             'previous_parent_id' => $this->previousParentId,
             'new_parent_id' => $this->newParentId,
-            'message' => 'Department "' . $this->department->name . '" has been moved in the hierarchy.',
+            'message' => 'Department "'.$this->department->name.'" has been moved in the hierarchy.',
             'action_url' => $this->getDepartmentUrl(),
-            'priority' => 'normal'
+            'priority' => 'normal',
         ];
     }
 
@@ -84,9 +86,9 @@ class DepartmentMoved extends Notification implements ShouldQueue
             'type' => 'department_moved',
             'department_id' => $this->department->id,
             'department_name' => $this->department->name,
-            'message' => 'Department "' . $this->department->name . '" has been moved in the hierarchy.',
+            'message' => 'Department "'.$this->department->name.'" has been moved in the hierarchy.',
             'timestamp' => now()->toISOString(),
-            'action_url' => $this->getDepartmentUrl()
+            'action_url' => $this->getDepartmentUrl(),
         ]);
     }
 
@@ -98,8 +100,10 @@ class DepartmentMoved extends Notification implements ShouldQueue
         try {
             if ($parentId) {
                 $parent = EmployeeDepartment::find($parentId);
+
                 return $parent ? $parent->name : 'Unknown';
             }
+
             return 'None (Root Department)';
         } catch (\Exception $e) {
             return 'Unknown';
@@ -111,6 +115,6 @@ class DepartmentMoved extends Notification implements ShouldQueue
      */
     protected function getDepartmentUrl(): string
     {
-        return '/departments/' . $this->department->id;
+        return '/departments/'.$this->department->id;
     }
 }

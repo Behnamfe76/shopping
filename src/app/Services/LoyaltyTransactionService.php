@@ -4,18 +4,18 @@ namespace Fereydooni\Shopping\app\Services;
 
 use Fereydooni\Shopping\app\Repositories\Interfaces\LoyaltyTransactionRepositoryInterface;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
-use Fereydooni\Shopping\app\Traits\HasSearchOperations;
+use Fereydooni\Shopping\app\Traits\HasLoyaltyPointsManagement;
 use Fereydooni\Shopping\app\Traits\HasLoyaltyTransactionOperations;
 use Fereydooni\Shopping\app\Traits\HasLoyaltyTransactionStatusManagement;
-use Fereydooni\Shopping\app\Traits\HasLoyaltyPointsManagement;
+use Fereydooni\Shopping\app\Traits\HasSearchOperations;
 
 class LoyaltyTransactionService
 {
     use HasCrudOperations,
-        HasSearchOperations,
+        HasLoyaltyPointsManagement,
         HasLoyaltyTransactionOperations,
         HasLoyaltyTransactionStatusManagement,
-        HasLoyaltyPointsManagement;
+        HasSearchOperations;
 
     protected LoyaltyTransactionRepositoryInterface $repository;
 
@@ -60,7 +60,7 @@ class LoyaltyTransactionService
         return $this->repository->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null)
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null)
     {
         return $this->repository->cursorPaginate($perPage, $cursor);
     }
@@ -202,17 +202,17 @@ class LoyaltyTransactionService
     }
 
     // Transaction-specific operations
-    public function reverse($transaction, string $reason = null): bool
+    public function reverse($transaction, ?string $reason = null): bool
     {
         return $this->repository->reverse($transaction, $reason);
     }
 
-    public function addPoints(int $customerId, int $points, string $reason = null, array $metadata = [])
+    public function addPoints(int $customerId, int $points, ?string $reason = null, array $metadata = [])
     {
         return $this->repository->addPoints($customerId, $points, $reason, $metadata);
     }
 
-    public function deductPoints(int $customerId, int $points, string $reason = null, array $metadata = [])
+    public function deductPoints(int $customerId, int $points, ?string $reason = null, array $metadata = [])
     {
         return $this->repository->deductPoints($customerId, $points, $reason, $metadata);
     }

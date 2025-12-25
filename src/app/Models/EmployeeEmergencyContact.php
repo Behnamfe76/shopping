@@ -2,12 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
+use Fereydooni\Shopping\app\Enums\Relationship;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Carbon;
-use Fereydooni\Shopping\app\Enums\Relationship;
 
 class EmployeeEmergencyContact extends Model
 {
@@ -84,7 +83,7 @@ class EmployeeEmergencyContact extends Model
     {
         return $query->where(function ($q) use ($phone) {
             $q->where('phone_primary', 'like', "%{$phone}%")
-              ->orWhere('phone_secondary', 'like', "%{$phone}%");
+                ->orWhere('phone_secondary', 'like', "%{$phone}%");
         });
     }
 
@@ -123,8 +122,8 @@ class EmployeeEmergencyContact extends Model
     {
         // Remove primary status from other contacts of the same employee
         static::where('employee_id', $this->employee_id)
-              ->where('id', '!=', $this->id)
-              ->update(['is_primary' => false]);
+            ->where('id', '!=', $this->id)
+            ->update(['is_primary' => false]);
 
         return $this->update(['is_primary' => true]);
     }
@@ -141,7 +140,7 @@ class EmployeeEmergencyContact extends Model
             $this->city,
             $this->state,
             $this->postal_code,
-            $this->country
+            $this->country,
         ]);
 
         return implode(', ', $parts);
@@ -164,17 +163,17 @@ class EmployeeEmergencyContact extends Model
 
     public function hasValidPhone(): bool
     {
-        return !empty($this->phone_primary) || !empty($this->phone_secondary);
+        return ! empty($this->phone_primary) || ! empty($this->phone_secondary);
     }
 
     public function hasValidEmail(): bool
     {
-        return !empty($this->email) && filter_var($this->email, FILTER_VALIDATE_EMAIL);
+        return ! empty($this->email) && filter_var($this->email, FILTER_VALIDATE_EMAIL);
     }
 
     public function hasValidAddress(): bool
     {
-        return !empty($this->address) && !empty($this->city) && !empty($this->state);
+        return ! empty($this->address) && ! empty($this->city) && ! empty($this->state);
     }
 
     public function getContactMethod(): string
@@ -185,6 +184,7 @@ class EmployeeEmergencyContact extends Model
         if ($this->hasValidEmail()) {
             return 'email';
         }
+
         return 'address';
     }
 
@@ -193,6 +193,7 @@ class EmployeeEmergencyContact extends Model
         if ($this->is_primary) {
             return $this->getContactMethod();
         }
+
         return 'secondary';
     }
 }

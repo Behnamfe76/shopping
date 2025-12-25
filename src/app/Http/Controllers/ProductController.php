@@ -2,20 +2,17 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
+use Fereydooni\Shopping\app\Http\Requests\SearchProductRequest;
+use Fereydooni\Shopping\app\Http\Requests\StoreProductRequest;
+use Fereydooni\Shopping\app\Http\Requests\ToggleProductStatusRequest;
+use Fereydooni\Shopping\app\Http\Requests\UpdateProductRequest;
+use Fereydooni\Shopping\app\Http\Requests\UploadProductMediaRequest;
 use Fereydooni\Shopping\app\Models\Product;
 use Fereydooni\Shopping\app\Services\ProductService;
-use Fereydooni\Shopping\app\Http\Requests\StoreProductRequest;
-use Fereydooni\Shopping\app\Http\Requests\UpdateProductRequest;
-use Fereydooni\Shopping\app\Http\Requests\ToggleProductStatusRequest;
-use Fereydooni\Shopping\app\Http\Requests\SearchProductRequest;
-use Fereydooni\Shopping\app\Http\Requests\UploadProductMediaRequest;
-use Fereydooni\Shopping\app\Http\Resources\ProductResource;
-use Fereydooni\Shopping\app\Http\Resources\ProductCollection;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class ProductController extends Controller
 {
@@ -124,7 +121,7 @@ class ProductController extends Controller
         return response()->json([
             'success' => $success,
             'message' => $success ? 'Product status updated successfully.' : 'Failed to update product status.',
-            'is_active' => $product->fresh()->is_active
+            'is_active' => $product->fresh()->is_active,
         ]);
     }
 
@@ -140,7 +137,7 @@ class ProductController extends Controller
         return response()->json([
             'success' => $success,
             'message' => $success ? 'Product featured status updated successfully.' : 'Failed to update product featured status.',
-            'is_featured' => $product->fresh()->is_featured
+            'is_featured' => $product->fresh()->is_featured,
         ]);
     }
 
@@ -155,7 +152,7 @@ class ProductController extends Controller
 
         return response()->json([
             'success' => $success,
-            'message' => $success ? 'Product published successfully.' : 'Failed to publish product.'
+            'message' => $success ? 'Product published successfully.' : 'Failed to publish product.',
         ]);
     }
 
@@ -170,7 +167,7 @@ class ProductController extends Controller
 
         return response()->json([
             'success' => $success,
-            'message' => $success ? 'Product unpublished successfully.' : 'Failed to unpublish product.'
+            'message' => $success ? 'Product unpublished successfully.' : 'Failed to unpublish product.',
         ]);
     }
 
@@ -185,7 +182,7 @@ class ProductController extends Controller
 
         return response()->json([
             'success' => $success,
-            'message' => $success ? 'Product archived successfully.' : 'Failed to archive product.'
+            'message' => $success ? 'Product archived successfully.' : 'Failed to archive product.',
         ]);
     }
 
@@ -379,7 +376,7 @@ class ProductController extends Controller
 
         return response()->json([
             'success' => $success,
-            'message' => $success ? 'Media uploaded successfully.' : 'Failed to upload media.'
+            'message' => $success ? 'Media uploaded successfully.' : 'Failed to upload media.',
         ]);
     }
 
@@ -394,7 +391,7 @@ class ProductController extends Controller
 
         return response()->json([
             'success' => $success,
-            'message' => $success ? 'Media deleted successfully.' : 'Failed to delete media.'
+            'message' => $success ? 'Media deleted successfully.' : 'Failed to delete media.',
         ]);
     }
 
@@ -411,7 +408,7 @@ class ProductController extends Controller
 
         return response()->json([
             'success' => $success,
-            'message' => $success ? 'Product duplicated successfully.' : 'Failed to duplicate product.'
+            'message' => $success ? 'Product duplicated successfully.' : 'Failed to duplicate product.',
         ]);
     }
 }

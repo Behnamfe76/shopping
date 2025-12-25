@@ -2,8 +2,8 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Fereydooni\Shopping\app\Models\UserSubscription;
+use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateUserSubscriptionRequest extends FormRequest
 {
@@ -13,6 +13,7 @@ class UpdateUserSubscriptionRequest extends FormRequest
     public function authorize(): bool
     {
         $userSubscription = $this->route('userSubscription');
+
         return $this->user()->can('update', $userSubscription);
     }
 
@@ -77,7 +78,7 @@ class UpdateUserSubscriptionRequest extends FormRequest
         $userSubscription = $this->route('userSubscription');
 
         // Ensure user can only update own subscriptions if they don't have update.any permission
-        if (!$this->user()->can('update.any', UserSubscription::class) &&
+        if (! $this->user()->can('update.any', UserSubscription::class) &&
             $this->user()->can('update.own', UserSubscription::class)) {
             $this->merge(['user_id' => $this->user()->id]);
         }
@@ -102,7 +103,7 @@ class UpdateUserSubscriptionRequest extends FormRequest
             'expired' => ['active'],
         ];
 
-        if (!in_array($newStatus, $allowedTransitions[$currentStatus] ?? [])) {
+        if (! in_array($newStatus, $allowedTransitions[$currentStatus] ?? [])) {
             $this->validator->errors()->add('status', "Cannot transition from {$currentStatus} to {$newStatus}.");
         }
     }

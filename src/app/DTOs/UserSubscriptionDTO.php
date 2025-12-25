@@ -2,23 +2,18 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
+use Fereydooni\Shopping\app\Enums\SubscriptionStatus;
+use Fereydooni\Shopping\app\Models\User;
+use Fereydooni\Shopping\app\Models\UserSubscription;
+use Illuminate\Support\Carbon;
+use Spatie\LaravelData\Attributes\Validation\Date;
+use Spatie\LaravelData\Attributes\Validation\Exists;
+use Spatie\LaravelData\Attributes\Validation\In;
+use Spatie\LaravelData\Attributes\Validation\IntegerType;
+use Spatie\LaravelData\Attributes\Validation\Nullable;
 use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\Numeric;
-use Spatie\LaravelData\Attributes\Validation\Min;
-use Spatie\LaravelData\Attributes\Validation\Max;
-use Spatie\LaravelData\Attributes\Validation\In;
-use Spatie\LaravelData\Attributes\Validation\Exists;
-use Spatie\LaravelData\Attributes\Validation\Nullable;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
-use Spatie\LaravelData\Attributes\Validation\Date;
-use Fereydooni\Shopping\app\Models\UserSubscription;
-use Fereydooni\Shopping\app\Models\User;
-use Fereydooni\Shopping\app\Models\Subscription;
-use Fereydooni\Shopping\app\Models\Order;
-use Fereydooni\Shopping\app\Enums\SubscriptionStatus;
-use Illuminate\Support\Carbon;
+use Spatie\LaravelData\Data;
 
 class UserSubscriptionDTO extends Data
 {
@@ -30,13 +25,13 @@ class UserSubscriptionDTO extends Data
         public int $subscription_id,
 
         #[Nullable, IntegerType, Exists('orders', 'id')]
-        public ?int $order_id = null,
+        public ?int $order_id,
 
         #[Required, Date]
         public string $start_date,
 
         #[Nullable, Date]
-        public ?string $end_date = null,
+        public ?string $end_date,
 
         #[Required, StringType, In(['active', 'cancelled', 'expired', 'trialing'])]
         public string $status,
@@ -81,8 +76,7 @@ class UserSubscriptionDTO extends Data
 
         #[Nullable]
         public ?int $days_until_next_billing = null,
-    ) {
-    }
+    ) {}
 
     public static function fromModel(UserSubscription $userSubscription): self
     {
@@ -145,7 +139,7 @@ class UserSubscriptionDTO extends Data
     private static function calculateIsActive(UserSubscription $userSubscription): bool
     {
         return $userSubscription->status === SubscriptionStatus::ACTIVE &&
-               (!$userSubscription->end_date || $userSubscription->end_date->isFuture());
+               (! $userSubscription->end_date || $userSubscription->end_date->isFuture());
     }
 
     private static function calculateIsTrial(UserSubscription $userSubscription): bool
@@ -166,7 +160,7 @@ class UserSubscriptionDTO extends Data
 
     private static function calculateDaysRemaining(UserSubscription $userSubscription): ?int
     {
-        if (!$userSubscription->end_date) {
+        if (! $userSubscription->end_date) {
             return null;
         }
 
@@ -175,7 +169,7 @@ class UserSubscriptionDTO extends Data
 
     private static function calculateDaysUntilNextBilling(UserSubscription $userSubscription): ?int
     {
-        if (!$userSubscription->next_billing_date) {
+        if (! $userSubscription->next_billing_date) {
             return null;
         }
 
@@ -204,7 +198,7 @@ class UserSubscriptionDTO extends Data
 
     public function getStatusColor(): string
     {
-        return match($this->status) {
+        return match ($this->status) {
             'active' => 'green',
             'trialing' => 'blue',
             'cancelled' => 'red',

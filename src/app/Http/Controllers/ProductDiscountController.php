@@ -2,19 +2,19 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
+use Fereydooni\Shopping\app\Http\Requests\CalculateProductDiscountRequest;
+use Fereydooni\Shopping\app\Http\Requests\ExtendProductDiscountRequest;
+use Fereydooni\Shopping\app\Http\Requests\SearchProductDiscountRequest;
+use Fereydooni\Shopping\app\Http\Requests\ShortenProductDiscountRequest;
+use Fereydooni\Shopping\app\Http\Requests\StoreProductDiscountRequest;
+use Fereydooni\Shopping\app\Http\Requests\ToggleProductDiscountStatusRequest;
+use Fereydooni\Shopping\app\Http\Requests\UpdateProductDiscountRequest;
 use Fereydooni\Shopping\app\Models\ProductDiscount;
 use Fereydooni\Shopping\app\Services\ProductDiscountService;
-use Fereydooni\Shopping\app\Http\Requests\StoreProductDiscountRequest;
-use Fereydooni\Shopping\app\Http\Requests\UpdateProductDiscountRequest;
-use Fereydooni\Shopping\app\Http\Requests\ToggleProductDiscountStatusRequest;
-use Fereydooni\Shopping\app\Http\Requests\ExtendProductDiscountRequest;
-use Fereydooni\Shopping\app\Http\Requests\ShortenProductDiscountRequest;
-use Fereydooni\Shopping\app\Http\Requests\CalculateProductDiscountRequest;
-use Fereydooni\Shopping\app\Http\Requests\SearchProductDiscountRequest;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class ProductDiscountController extends Controller
 {

@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
+use Exception;
 use Fereydooni\Shopping\app\Events\Provider\ProviderLocationCreated;
 use Fereydooni\Shopping\app\Events\Provider\ProviderLocationUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
-use Exception;
 
 class ProcessLocationGeocoding implements ShouldQueue
 {
@@ -46,13 +46,13 @@ class ProcessLocationGeocoding implements ShouldQueue
 
             Log::info('Location geocoding processed for location creation', [
                 'location_id' => $location->id,
-                'provider_id' => $location->provider_id
+                'provider_id' => $location->provider_id,
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to process location geocoding for location creation', [
                 'location_id' => $event->providerLocation->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -73,13 +73,13 @@ class ProcessLocationGeocoding implements ShouldQueue
 
             Log::info('Location geocoding processed for location update', [
                 'location_id' => $location->id,
-                'provider_id' => $location->provider_id
+                'provider_id' => $location->provider_id,
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to process location geocoding for location update', [
                 'location_id' => $event->providerLocation->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -90,15 +90,15 @@ class ProcessLocationGeocoding implements ShouldQueue
     protected function needsGeocoding($location): bool
     {
         // Skip if already has coordinates
-        if (!is_null($location->latitude) && !is_null($location->longitude)) {
+        if (! is_null($location->latitude) && ! is_null($location->longitude)) {
             return false;
         }
 
         // Check if has address information
-        $hasAddress = !empty($location->address) ||
-                     !empty($location->city) ||
-                     !empty($location->state) ||
-                     !empty($location->country);
+        $hasAddress = ! empty($location->address) ||
+                     ! empty($location->city) ||
+                     ! empty($location->state) ||
+                     ! empty($location->country);
 
         return $hasAddress;
     }
@@ -131,8 +131,9 @@ class ProcessLocationGeocoding implements ShouldQueue
             if (empty($address)) {
                 Log::warning('Cannot process geocoding - insufficient address data', [
                     'location_id' => $location->id,
-                    'address' => $address
+                    'address' => $address,
                 ]);
+
                 return;
             }
 
@@ -147,22 +148,22 @@ class ProcessLocationGeocoding implements ShouldQueue
                     'location_id' => $location->id,
                     'coordinates' => [
                         'latitude' => $geocodingResult['latitude'],
-                        'longitude' => $geocodingResult['longitude']
+                        'longitude' => $geocodingResult['longitude'],
                     ],
-                    'method' => $method
+                    'method' => $method,
                 ]);
             } else {
                 Log::warning('Geocoding service returned no coordinates', [
                     'location_id' => $location->id,
                     'address' => $address,
-                    'result' => $geocodingResult
+                    'result' => $geocodingResult,
                 ]);
             }
 
         } catch (Exception $e) {
             Log::error('Failed to process geocoding', [
                 'location_id' => $location->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -174,23 +175,23 @@ class ProcessLocationGeocoding implements ShouldQueue
     {
         $addressParts = [];
 
-        if (!empty($location->address)) {
+        if (! empty($location->address)) {
             $addressParts[] = $location->address;
         }
 
-        if (!empty($location->city)) {
+        if (! empty($location->city)) {
             $addressParts[] = $location->city;
         }
 
-        if (!empty($location->state)) {
+        if (! empty($location->state)) {
             $addressParts[] = $location->state;
         }
 
-        if (!empty($location->postal_code)) {
+        if (! empty($location->postal_code)) {
             $addressParts[] = $location->postal_code;
         }
 
-        if (!empty($location->country)) {
+        if (! empty($location->country)) {
             $addressParts[] = $location->country;
         }
 
@@ -213,13 +214,13 @@ class ProcessLocationGeocoding implements ShouldQueue
                 'formatted_address' => $address,
                 'accuracy' => 'unknown',
                 'place_id' => null,
-                'verified' => false
+                'verified' => false,
             ];
 
             // For now, return null to indicate no geocoding service is configured
             Log::info('Geocoding service called (placeholder)', [
                 'location_id' => $location->id,
-                'address' => $address
+                'address' => $address,
             ]);
 
             return null;
@@ -228,7 +229,7 @@ class ProcessLocationGeocoding implements ShouldQueue
             Log::error('Geocoding service call failed', [
                 'location_id' => $location->id,
                 'address' => $address,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             return null;
@@ -244,7 +245,7 @@ class ProcessLocationGeocoding implements ShouldQueue
             $updateData = [
                 'latitude' => $geocodingResult['latitude'],
                 'longitude' => $geocodingResult['longitude'],
-                'updated_at' => now()
+                'updated_at' => now(),
             ];
 
             // Add additional geocoding metadata if available
@@ -266,7 +267,7 @@ class ProcessLocationGeocoding implements ShouldQueue
         } catch (Exception $e) {
             Log::error('Failed to update location coordinates', [
                 'location_id' => $location->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -283,7 +284,7 @@ class ProcessLocationGeocoding implements ShouldQueue
             'location_id' => $locationId,
             'provider_id' => $providerId,
             'error' => $exception->getMessage(),
-            'trace' => $exception->getTraceAsString()
+            'trace' => $exception->getTraceAsString(),
         ]);
     }
 }

@@ -2,14 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers\Api;
 
-use Illuminate\Routing\Controller;
 use Fereydooni\Shopping\app\Services\EmployeePerformanceReviewService;
-use Fereydooni\Shopping\app\DTOs\EmployeePerformanceReviewDTO;
-use Fereydooni\Shopping\app\Models\EmployeePerformanceReview;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
 
 class EmployeePerformanceReviewController extends Controller
 {
@@ -28,7 +25,7 @@ class EmployeePerformanceReviewController extends Controller
         return response()->json([
             'success' => true,
             'data' => $reviews,
-            'message' => 'Performance reviews retrieved successfully'
+            'message' => 'Performance reviews retrieved successfully',
         ]);
     }
 
@@ -59,7 +56,7 @@ class EmployeePerformanceReviewController extends Controller
             return response()->json([
                 'success' => false,
                 'errors' => $validator->errors(),
-                'message' => 'Validation failed'
+                'message' => 'Validation failed',
             ], 422);
         }
 
@@ -69,12 +66,12 @@ class EmployeePerformanceReviewController extends Controller
             return response()->json([
                 'success' => true,
                 'data' => $review,
-                'message' => 'Performance review created successfully'
+                'message' => 'Performance review created successfully',
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to create performance review: ' . $e->getMessage()
+                'message' => 'Failed to create performance review: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -86,17 +83,17 @@ class EmployeePerformanceReviewController extends Controller
     {
         $review = $this->service->find($id);
 
-        if (!$review) {
+        if (! $review) {
             return response()->json([
                 'success' => false,
-                'message' => 'Performance review not found'
+                'message' => 'Performance review not found',
             ], 404);
         }
 
         return response()->json([
             'success' => true,
             'data' => $review,
-            'message' => 'Performance review retrieved successfully'
+            'message' => 'Performance review retrieved successfully',
         ]);
     }
 
@@ -125,7 +122,7 @@ class EmployeePerformanceReviewController extends Controller
             return response()->json([
                 'success' => false,
                 'errors' => $validator->errors(),
-                'message' => 'Validation failed'
+                'message' => 'Validation failed',
             ], 422);
         }
 
@@ -135,12 +132,12 @@ class EmployeePerformanceReviewController extends Controller
             return response()->json([
                 'success' => true,
                 'data' => $review,
-                'message' => 'Performance review updated successfully'
+                'message' => 'Performance review updated successfully',
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to update performance review: ' . $e->getMessage()
+                'message' => 'Failed to update performance review: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -156,18 +153,18 @@ class EmployeePerformanceReviewController extends Controller
             if ($result) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Performance review deleted successfully'
+                    'message' => 'Performance review deleted successfully',
                 ]);
             } else {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Failed to delete performance review'
+                    'message' => 'Failed to delete performance review',
                 ], 500);
             }
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to delete performance review: ' . $e->getMessage()
+                'message' => 'Failed to delete performance review: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -182,7 +179,7 @@ class EmployeePerformanceReviewController extends Controller
         return response()->json([
             'success' => true,
             'data' => $reviews,
-            'message' => 'Employee performance reviews retrieved successfully'
+            'message' => 'Employee performance reviews retrieved successfully',
         ]);
     }
 
@@ -192,6 +189,7 @@ class EmployeePerformanceReviewController extends Controller
     public function storeForEmployee(Request $request, int $employeeId): JsonResponse
     {
         $request->merge(['employee_id' => $employeeId]);
+
         return $this->store($request);
     }
 
@@ -202,14 +200,14 @@ class EmployeePerformanceReviewController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'query' => 'required|string|min:2',
-            'filters' => 'nullable|array'
+            'filters' => 'nullable|array',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'errors' => $validator->errors(),
-                'message' => 'Validation failed'
+                'message' => 'Validation failed',
             ], 422);
         }
 
@@ -219,7 +217,7 @@ class EmployeePerformanceReviewController extends Controller
         return response()->json([
             'success' => true,
             'data' => $reviews,
-            'message' => 'Search results retrieved successfully'
+            'message' => 'Search results retrieved successfully',
         ]);
     }
 
@@ -234,18 +232,18 @@ class EmployeePerformanceReviewController extends Controller
             if ($result) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Performance review submitted for approval successfully'
+                    'message' => 'Performance review submitted for approval successfully',
                 ]);
             } else {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Failed to submit performance review for approval'
+                    'message' => 'Failed to submit performance review for approval',
                 ], 500);
             }
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to submit performance review: ' . $e->getMessage()
+                'message' => 'Failed to submit performance review: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -256,14 +254,14 @@ class EmployeePerformanceReviewController extends Controller
     public function approve(Request $request, int $id): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'approved_by' => 'required|exists:users,id'
+            'approved_by' => 'required|exists:users,id',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'errors' => $validator->errors(),
-                'message' => 'Validation failed'
+                'message' => 'Validation failed',
             ], 422);
         }
 
@@ -273,18 +271,18 @@ class EmployeePerformanceReviewController extends Controller
             if ($result) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Performance review approved successfully'
+                    'message' => 'Performance review approved successfully',
                 ]);
             } else {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Failed to approve performance review'
+                    'message' => 'Failed to approve performance review',
                 ], 500);
             }
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to approve performance review: ' . $e->getMessage()
+                'message' => 'Failed to approve performance review: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -296,14 +294,14 @@ class EmployeePerformanceReviewController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'rejected_by' => 'required|exists:users,id',
-            'reason' => 'nullable|string|max:500'
+            'reason' => 'nullable|string|max:500',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'errors' => $validator->errors(),
-                'message' => 'Validation failed'
+                'message' => 'Validation failed',
             ], 422);
         }
 
@@ -317,18 +315,18 @@ class EmployeePerformanceReviewController extends Controller
             if ($result) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Performance review rejected successfully'
+                    'message' => 'Performance review rejected successfully',
                 ]);
             } else {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Failed to reject performance review'
+                    'message' => 'Failed to reject performance review',
                 ], 500);
             }
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to reject performance review: ' . $e->getMessage()
+                'message' => 'Failed to reject performance review: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -339,14 +337,14 @@ class EmployeePerformanceReviewController extends Controller
     public function assignReviewer(Request $request, int $id): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'reviewer_id' => 'required|exists:users,id'
+            'reviewer_id' => 'required|exists:users,id',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'errors' => $validator->errors(),
-                'message' => 'Validation failed'
+                'message' => 'Validation failed',
             ], 422);
         }
 
@@ -356,18 +354,18 @@ class EmployeePerformanceReviewController extends Controller
             if ($result) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Reviewer assigned successfully'
+                    'message' => 'Reviewer assigned successfully',
                 ]);
             } else {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Failed to assign reviewer'
+                    'message' => 'Failed to assign reviewer',
                 ], 500);
             }
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to assign reviewer: ' . $e->getMessage()
+                'message' => 'Failed to assign reviewer: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -378,14 +376,14 @@ class EmployeePerformanceReviewController extends Controller
     public function schedule(Request $request, int $id): JsonResponse
     {
         $validator = Validator::make($request->all(), [
-            'review_date' => 'required|date|after:today'
+            'review_date' => 'required|date|after:today',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'errors' => $validator->errors(),
-                'message' => 'Validation failed'
+                'message' => 'Validation failed',
             ], 422);
         }
 
@@ -395,18 +393,18 @@ class EmployeePerformanceReviewController extends Controller
             if ($result) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Performance review scheduled successfully'
+                    'message' => 'Performance review scheduled successfully',
                 ]);
             } else {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Failed to schedule performance review'
+                    'message' => 'Failed to schedule performance review',
                 ], 500);
             }
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to schedule performance review: ' . $e->getMessage()
+                'message' => 'Failed to schedule performance review: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -421,7 +419,7 @@ class EmployeePerformanceReviewController extends Controller
         return response()->json([
             'success' => true,
             'data' => $reviews,
-            'message' => 'Pending approval reviews retrieved successfully'
+            'message' => 'Pending approval reviews retrieved successfully',
         ]);
     }
 
@@ -435,7 +433,7 @@ class EmployeePerformanceReviewController extends Controller
         return response()->json([
             'success' => true,
             'data' => $reviews,
-            'message' => 'Overdue reviews retrieved successfully'
+            'message' => 'Overdue reviews retrieved successfully',
         ]);
     }
 
@@ -450,7 +448,7 @@ class EmployeePerformanceReviewController extends Controller
         return response()->json([
             'success' => true,
             'data' => $reviews,
-            'message' => 'Upcoming reviews retrieved successfully'
+            'message' => 'Upcoming reviews retrieved successfully',
         ]);
     }
 
@@ -465,7 +463,7 @@ class EmployeePerformanceReviewController extends Controller
         return response()->json([
             'success' => true,
             'data' => $statistics,
-            'message' => 'Review statistics retrieved successfully'
+            'message' => 'Review statistics retrieved successfully',
         ]);
     }
 
@@ -479,7 +477,7 @@ class EmployeePerformanceReviewController extends Controller
         return response()->json([
             'success' => true,
             'data' => $statistics,
-            'message' => 'Employee review statistics retrieved successfully'
+            'message' => 'Employee review statistics retrieved successfully',
         ]);
     }
 
@@ -493,7 +491,7 @@ class EmployeePerformanceReviewController extends Controller
         return response()->json([
             'success' => true,
             'data' => $statistics,
-            'message' => 'Department review statistics retrieved successfully'
+            'message' => 'Department review statistics retrieved successfully',
         ]);
     }
 
@@ -505,14 +503,14 @@ class EmployeePerformanceReviewController extends Controller
         $validator = Validator::make($request->all(), [
             'type' => 'required|in:employee,department,company',
             'id' => 'required_if:type,employee,department|integer',
-            'period' => 'required|in:month,quarter,year'
+            'period' => 'required|in:month,quarter,year',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'errors' => $validator->errors(),
-                'message' => 'Validation failed'
+                'message' => 'Validation failed',
             ], 422);
         }
 
@@ -543,12 +541,12 @@ class EmployeePerformanceReviewController extends Controller
             return response()->json([
                 'success' => true,
                 'data' => $report,
-                'message' => 'Performance report generated successfully'
+                'message' => 'Performance report generated successfully',
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to generate report: ' . $e->getMessage()
+                'message' => 'Failed to generate report: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -560,14 +558,14 @@ class EmployeePerformanceReviewController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'filters' => 'nullable|array',
-            'format' => 'required|in:json,csv,xlsx,pdf'
+            'format' => 'required|in:json,csv,xlsx,pdf',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'errors' => $validator->errors(),
-                'message' => 'Validation failed'
+                'message' => 'Validation failed',
             ], 422);
         }
 
@@ -580,14 +578,14 @@ class EmployeePerformanceReviewController extends Controller
                 'success' => true,
                 'data' => [
                     'export_url' => $exportData,
-                    'format' => $format
+                    'format' => $format,
                 ],
-                'message' => 'Performance reviews exported successfully'
+                'message' => 'Performance reviews exported successfully',
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to export reviews: ' . $e->getMessage()
+                'message' => 'Failed to export reviews: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -599,14 +597,14 @@ class EmployeePerformanceReviewController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'data' => 'required|string',
-            'format' => 'required|in:json,csv,xlsx'
+            'format' => 'required|in:json,csv,xlsx',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'errors' => $validator->errors(),
-                'message' => 'Validation failed'
+                'message' => 'Validation failed',
             ], 422);
         }
 
@@ -619,18 +617,18 @@ class EmployeePerformanceReviewController extends Controller
             if ($result) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Performance reviews imported successfully'
+                    'message' => 'Performance reviews imported successfully',
                 ]);
             } else {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Failed to import performance reviews'
+                    'message' => 'Failed to import performance reviews',
                 ], 500);
             }
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to import reviews: ' . $e->getMessage()
+                'message' => 'Failed to import reviews: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -642,14 +640,14 @@ class EmployeePerformanceReviewController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'review_ids' => 'required|array|min:1',
-            'review_ids.*' => 'integer|exists:employee_performance_reviews,id'
+            'review_ids.*' => 'integer|exists:employee_performance_reviews,id',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'errors' => $validator->errors(),
-                'message' => 'Validation failed'
+                'message' => 'Validation failed',
             ], 422);
         }
 
@@ -659,18 +657,18 @@ class EmployeePerformanceReviewController extends Controller
             if ($result) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Performance reviews bulk approved successfully'
+                    'message' => 'Performance reviews bulk approved successfully',
                 ]);
             } else {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Failed to bulk approve performance reviews'
+                    'message' => 'Failed to bulk approve performance reviews',
                 ], 500);
             }
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to bulk approve reviews: ' . $e->getMessage()
+                'message' => 'Failed to bulk approve reviews: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -683,14 +681,14 @@ class EmployeePerformanceReviewController extends Controller
         $validator = Validator::make($request->all(), [
             'review_ids' => 'required|array|min:1',
             'review_ids.*' => 'integer|exists:employee_performance_reviews,id',
-            'reason' => 'nullable|string|max:500'
+            'reason' => 'nullable|string|max:500',
         ]);
 
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
                 'errors' => $validator->errors(),
-                'message' => 'Validation failed'
+                'message' => 'Validation failed',
             ], 422);
         }
 
@@ -703,18 +701,18 @@ class EmployeePerformanceReviewController extends Controller
             if ($result) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Performance reviews bulk rejected successfully'
+                    'message' => 'Performance reviews bulk rejected successfully',
                 ]);
             } else {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Failed to bulk reject performance reviews'
+                    'message' => 'Failed to bulk reject performance reviews',
                 ], 500);
             }
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to bulk reject reviews: ' . $e->getMessage()
+                'message' => 'Failed to bulk reject reviews: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -730,18 +728,18 @@ class EmployeePerformanceReviewController extends Controller
             if ($result) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Review reminders sent successfully'
+                    'message' => 'Review reminders sent successfully',
                 ]);
             } else {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Failed to send review reminders'
+                    'message' => 'Failed to send review reminders',
                 ], 500);
             }
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to send reminders: ' . $e->getMessage()
+                'message' => 'Failed to send reminders: '.$e->getMessage(),
             ], 500);
         }
     }

@@ -24,35 +24,35 @@ class GeocodeLocationRequest extends FormRequest
                 'required',
                 'string',
                 'min:5',
-                'max:500'
+                'max:500',
             ],
             'provider_id' => [
                 'nullable',
                 'integer',
-                'exists:providers,id'
+                'exists:providers,id',
             ],
             'location_id' => [
                 'nullable',
                 'integer',
-                'exists:provider_locations,id'
+                'exists:provider_locations,id',
             ],
             'geocoding_service' => [
                 'nullable',
                 'string',
-                'in:google,openstreetmap,here,mapbox,manual'
+                'in:google,openstreetmap,here,mapbox,manual',
             ],
             'prefer_exact_match' => [
-                'boolean'
+                'boolean',
             ],
             'include_components' => [
-                'boolean'
+                'boolean',
             ],
             'language' => [
                 'nullable',
                 'string',
                 'size:2',
-                'in:en,es,fr,de,it,pt,ru,zh,ja,ko,ar,hi'
-            ]
+                'in:en,es,fr,de,it,pt,ru,zh,ja,ko,ar,hi',
+            ],
         ];
     }
 
@@ -69,7 +69,7 @@ class GeocodeLocationRequest extends FormRequest
             'location_id.exists' => 'Selected location does not exist.',
             'geocoding_service.in' => 'Invalid geocoding service.',
             'language.size' => 'Language must be a 2-character code.',
-            'language.in' => 'Unsupported language code.'
+            'language.in' => 'Unsupported language code.',
         ];
     }
 
@@ -85,7 +85,7 @@ class GeocodeLocationRequest extends FormRequest
             'geocoding_service' => 'geocoding service',
             'prefer_exact_match' => 'exact match preference',
             'include_components' => 'address components',
-            'language' => 'language'
+            'language' => 'language',
         ];
     }
 
@@ -112,24 +112,24 @@ class GeocodeLocationRequest extends FormRequest
         }
 
         // Set default values
-        if (!$this->has('geocoding_service')) {
+        if (! $this->has('geocoding_service')) {
             $data['geocoding_service'] = 'google';
         }
 
-        if (!$this->has('prefer_exact_match')) {
+        if (! $this->has('prefer_exact_match')) {
             $data['prefer_exact_match'] = false;
         }
 
-        if (!$this->has('include_components')) {
+        if (! $this->has('include_components')) {
             $data['include_components'] = true;
         }
 
-        if (!$this->has('language')) {
+        if (! $this->has('language')) {
             $data['language'] = 'en';
         }
 
         // Merge the processed data
-        if (!empty($data)) {
+        if (! empty($data)) {
             $this->merge($data);
         }
     }

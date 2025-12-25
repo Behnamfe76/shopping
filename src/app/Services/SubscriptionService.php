@@ -2,15 +2,12 @@
 
 namespace Fereydooni\Shopping\app\Services;
 
+use Fereydooni\Shopping\app\DTOs\SubscriptionDTO;
+use Fereydooni\Shopping\app\Models\Subscription;
 use Fereydooni\Shopping\app\Repositories\Interfaces\SubscriptionRepositoryInterface;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
 use Fereydooni\Shopping\app\Traits\HasSearchOperations;
-use Fereydooni\Shopping\app\Models\Subscription;
-use Fereydooni\Shopping\app\DTOs\SubscriptionDTO;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
 
 class SubscriptionService
 {
@@ -18,12 +15,13 @@ class SubscriptionService
         HasSearchOperations;
 
     protected SubscriptionRepositoryInterface $repository;
+
     protected string $dtoClass = SubscriptionDTO::class;
 
     public function __construct(SubscriptionRepositoryInterface $repository)
     {
         $this->repository = $repository;
-        $this->model = new Subscription();
+        $this->model = new Subscription;
     }
 
     // Repository method delegation
@@ -107,7 +105,7 @@ class SubscriptionService
         return $this->repository->validateSubscription($data);
     }
 
-    public function calculateNextBillingDate(Subscription $subscription, string $startDate = null): string
+    public function calculateNextBillingDate(Subscription $subscription, ?string $startDate = null): string
     {
         return $this->repository->calculateNextBillingDate($subscription, $startDate);
     }
@@ -135,7 +133,7 @@ class SubscriptionService
     // Business logic methods
     public function createSubscription(array $data): SubscriptionDTO
     {
-        if (!$this->validateSubscription($data)) {
+        if (! $this->validateSubscription($data)) {
             throw new \InvalidArgumentException('Invalid subscription data');
         }
 
@@ -146,11 +144,11 @@ class SubscriptionService
     {
         $subscription = $this->repository->find($id);
 
-        if (!$subscription) {
+        if (! $subscription) {
             throw new \InvalidArgumentException('Subscription not found');
         }
 
-        if (!$this->validateSubscription($data)) {
+        if (! $this->validateSubscription($data)) {
             throw new \InvalidArgumentException('Invalid subscription data');
         }
 
@@ -161,7 +159,7 @@ class SubscriptionService
     {
         $subscription = $this->repository->find($id);
 
-        if (!$subscription) {
+        if (! $subscription) {
             throw new \InvalidArgumentException('Subscription not found');
         }
 

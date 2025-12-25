@@ -12,7 +12,7 @@ enum PositionStatus: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::ACTIVE => 'Active',
             self::INACTIVE => 'Inactive',
             self::ARCHIVED => 'Archived',
@@ -23,7 +23,7 @@ enum PositionStatus: string
 
     public function shortLabel(): string
     {
-        return match($this) {
+        return match ($this) {
             self::ACTIVE => 'Active',
             self::INACTIVE => 'Inactive',
             self::ARCHIVED => 'Archived',
@@ -34,7 +34,7 @@ enum PositionStatus: string
 
     public function color(): string
     {
-        return match($this) {
+        return match ($this) {
             self::ACTIVE => 'green',
             self::INACTIVE => 'yellow',
             self::ARCHIVED => 'gray',
@@ -70,6 +70,6 @@ enum PositionStatus: string
 
     public function isVisible(): bool
     {
-        return !in_array($this, [self::ARCHIVED]);
+        return ! in_array($this, [self::ARCHIVED]);
     }
 }

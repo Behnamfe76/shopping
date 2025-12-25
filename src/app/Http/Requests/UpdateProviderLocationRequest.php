@@ -3,7 +3,6 @@
 namespace Fereydooni\Shopping\app\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class UpdateProviderLocationRequest extends FormRequest
 {
@@ -26,121 +25,121 @@ class UpdateProviderLocationRequest extends FormRequest
             'provider_id' => [
                 'sometimes',
                 'integer',
-                'exists:providers,id'
+                'exists:providers,id',
             ],
             'location_name' => [
                 'sometimes',
                 'string',
-                'max:255'
+                'max:255',
             ],
             'address' => [
                 'sometimes',
                 'string',
-                'max:255'
+                'max:255',
             ],
             'city' => [
                 'sometimes',
                 'string',
-                'max:100'
+                'max:100',
             ],
             'state' => [
                 'sometimes',
                 'string',
-                'max:100'
+                'max:100',
             ],
             'postal_code' => [
                 'nullable',
                 'string',
-                'max:20'
+                'max:20',
             ],
             'country' => [
                 'sometimes',
                 'string',
                 'size:2',
-                'in:US,CA,MX,GB,DE,FR,IT,ES,NL,BE,CH,AT,SE,NO,DK,FI,PL,CZ,HU,RO,BG,HR,SI,SK,EE,LV,LT,MT,CY,GR,PT,IE,LU,AU,NZ,JP,CN,IN,BR,AR,CL,PE,CO,VE,EC,BO,PY,UY,GY,SR,GF,FK,ZA,EG,NG,KE,UG,TZ,ET,GH,CI,SN,ML,BF,NE,TD,SD,LY,TN,DZ,MA,MR,AO,CD,CG,GA,CM,CF,SS'
+                'in:US,CA,MX,GB,DE,FR,IT,ES,NL,BE,CH,AT,SE,NO,DK,FI,PL,CZ,HU,RO,BG,HR,SI,SK,EE,LV,LT,MT,CY,GR,PT,IE,LU,AU,NZ,JP,CN,IN,BR,AR,CL,PE,CO,VE,EC,BO,PY,UY,GY,SR,GF,FK,ZA,EG,NG,KE,UG,TZ,ET,GH,CI,SN,ML,BF,NE,TD,SD,LY,TN,DZ,MA,MR,AO,CD,CG,GA,CM,CF,SS',
             ],
             'phone' => [
                 'nullable',
                 'string',
                 'max:20',
-                'regex:/^[\+]?[1-9][\d]{0,15}$/'
+                'regex:/^[\+]?[1-9][\d]{0,15}$/',
             ],
             'email' => [
                 'nullable',
                 'email',
-                'max:255'
+                'max:255',
             ],
             'website' => [
                 'nullable',
                 'url',
-                'max:255'
+                'max:255',
             ],
             'is_primary' => [
-                'boolean'
+                'boolean',
             ],
             'is_active' => [
-                'boolean'
+                'boolean',
             ],
             'location_type' => [
                 'sometimes',
                 'string',
-                'in:headquarters,warehouse,store,office,factory,distribution_center,retail_outlet,service_center,other'
+                'in:headquarters,warehouse,store,office,factory,distribution_center,retail_outlet,service_center,other',
             ],
             'operating_hours' => [
                 'nullable',
-                'array'
+                'array',
             ],
             'operating_hours.*.day' => [
                 'required_with:operating_hours',
                 'string',
-                'in:monday,tuesday,wednesday,thursday,friday,saturday,sunday'
+                'in:monday,tuesday,wednesday,thursday,friday,saturday,sunday',
             ],
             'operating_hours.*.open' => [
                 'required_with:operating_hours',
                 'string',
-                'regex:/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/'
+                'regex:/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/',
             ],
             'operating_hours.*.close' => [
                 'required_with:operating_hours',
                 'string',
-                'regex:/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/'
+                'regex:/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/',
             ],
             'timezone' => [
                 'nullable',
                 'string',
-                'timezone'
+                'timezone',
             ],
             'latitude' => [
                 'nullable',
                 'numeric',
-                'between:-90,90'
+                'between:-90,90',
             ],
             'longitude' => [
                 'nullable',
                 'numeric',
-                'between:-180,180'
+                'between:-180,180',
             ],
             'contact_person' => [
                 'nullable',
                 'string',
-                'max:100'
+                'max:100',
             ],
             'contact_phone' => [
                 'nullable',
                 'string',
                 'max:20',
-                'regex:/^[\+]?[1-9][\d]{0,15}$/'
+                'regex:/^[\+]?[1-9][\d]{0,15}$/',
             ],
             'contact_email' => [
                 'nullable',
                 'email',
-                'max:255'
+                'max:255',
             ],
             'notes' => [
                 'nullable',
                 'string',
-                'max:1000'
-            ]
+                'max:1000',
+            ],
         ];
     }
 
@@ -179,7 +178,7 @@ class UpdateProviderLocationRequest extends FormRequest
             'contact_phone.max' => 'Contact phone number cannot exceed 20 characters.',
             'contact_email.email' => 'Contact email format is invalid.',
             'contact_email.max' => 'Contact email cannot exceed 255 characters.',
-            'notes.max' => 'Notes cannot exceed 1000 characters.'
+            'notes.max' => 'Notes cannot exceed 1000 characters.',
         ];
     }
 
@@ -209,7 +208,7 @@ class UpdateProviderLocationRequest extends FormRequest
             'contact_person' => 'contact person',
             'contact_phone' => 'contact phone',
             'contact_email' => 'contact email',
-            'notes' => 'notes'
+            'notes' => 'notes',
         ];
     }
 
@@ -251,8 +250,8 @@ class UpdateProviderLocationRequest extends FormRequest
 
         if ($this->has('website')) {
             $website = trim($this->website);
-            if ($website && !preg_match("~^(?:f|ht)tps?://~i", $website)) {
-                $website = 'https://' . $website;
+            if ($website && ! preg_match('~^(?:f|ht)tps?://~i', $website)) {
+                $website = 'https://'.$website;
             }
             $data['website'] = $website;
         }
@@ -282,7 +281,7 @@ class UpdateProviderLocationRequest extends FormRequest
         }
 
         // Merge the processed data
-        if (!empty($data)) {
+        if (! empty($data)) {
             $this->merge($data);
         }
     }

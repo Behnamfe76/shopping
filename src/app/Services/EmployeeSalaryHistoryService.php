@@ -2,17 +2,15 @@
 
 namespace App\Services;
 
-use App\Models\EmployeeSalaryHistory;
-use App\Models\Employee;
-use App\Repositories\EmployeeSalaryHistoryRepository;
-use App\DTOs\EmployeeSalaryHistoryDTO;
 use App\Enums\SalaryChangeType;
-use Illuminate\Support\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
+use App\Models\Employee;
+use App\Models\EmployeeSalaryHistory;
+use App\Repositories\EmployeeSalaryHistoryRepository;
 use Carbon\Carbon;
 use Exception;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class EmployeeSalaryHistoryService
 {
@@ -59,7 +57,7 @@ class EmployeeSalaryHistoryService
             DB::rollBack();
             Log::error('Error creating salary history', [
                 'data' => $data,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -74,7 +72,7 @@ class EmployeeSalaryHistoryService
             DB::beginTransaction();
 
             $salaryHistory = $this->repository->find($id);
-            if (!$salaryHistory) {
+            if (! $salaryHistory) {
                 throw new Exception('Salary history record not found');
             }
 
@@ -83,7 +81,7 @@ class EmployeeSalaryHistoryService
 
             // Update the record
             $updated = $this->repository->update($salaryHistory, $data);
-            if (!$updated) {
+            if (! $updated) {
                 throw new Exception('Failed to update salary history record');
             }
 
@@ -99,7 +97,7 @@ class EmployeeSalaryHistoryService
             Log::error('Error updating salary history', [
                 'id' => $id,
                 'data' => $data,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -114,7 +112,7 @@ class EmployeeSalaryHistoryService
             DB::beginTransaction();
 
             $salaryHistory = $this->repository->find($id);
-            if (!$salaryHistory) {
+            if (! $salaryHistory) {
                 throw new Exception('Salary history record not found');
             }
 
@@ -124,7 +122,7 @@ class EmployeeSalaryHistoryService
 
             // Approve the change
             $approved = $this->repository->approve($salaryHistory, $approvedBy);
-            if (!$approved) {
+            if (! $approved) {
                 throw new Exception('Failed to approve salary change');
             }
 
@@ -142,7 +140,7 @@ class EmployeeSalaryHistoryService
             Log::error('Error approving salary change', [
                 'id' => $id,
                 'approved_by' => $approvedBy,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -151,13 +149,13 @@ class EmployeeSalaryHistoryService
     /**
      * Reject a salary change
      */
-    public function rejectSalaryChange(int $id, int $rejectedBy, string $reason = null): bool
+    public function rejectSalaryChange(int $id, int $rejectedBy, ?string $reason = null): bool
     {
         try {
             DB::beginTransaction();
 
             $salaryHistory = $this->repository->find($id);
-            if (!$salaryHistory) {
+            if (! $salaryHistory) {
                 throw new Exception('Salary history record not found');
             }
 
@@ -167,7 +165,7 @@ class EmployeeSalaryHistoryService
 
             // Reject the change
             $rejected = $this->repository->reject($salaryHistory, $rejectedBy, $reason);
-            if (!$rejected) {
+            if (! $rejected) {
                 throw new Exception('Failed to reject salary change');
             }
 
@@ -180,7 +178,7 @@ class EmployeeSalaryHistoryService
             Log::error('Error rejecting salary change', [
                 'id' => $id,
                 'rejected_by' => $rejectedBy,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -195,7 +193,7 @@ class EmployeeSalaryHistoryService
             DB::beginTransaction();
 
             $salaryHistory = $this->repository->find($id);
-            if (!$salaryHistory) {
+            if (! $salaryHistory) {
                 throw new Exception('Salary history record not found');
             }
 
@@ -209,7 +207,7 @@ class EmployeeSalaryHistoryService
                 'processed_at' => now(),
             ]);
 
-            if (!$updated) {
+            if (! $updated) {
                 throw new Exception('Failed to process salary change');
             }
 
@@ -230,7 +228,7 @@ class EmployeeSalaryHistoryService
             Log::error('Error processing salary change', [
                 'id' => $id,
                 'processed_by' => $processedBy,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -247,7 +245,7 @@ class EmployeeSalaryHistoryService
     /**
      * Get salary statistics
      */
-    public function getSalaryStatistics(string $startDate = null, string $endDate = null): array
+    public function getSalaryStatistics(?string $startDate = null, ?string $endDate = null): array
     {
         return $this->repository->getSalaryChangeStatistics($startDate, $endDate);
     }
@@ -255,7 +253,7 @@ class EmployeeSalaryHistoryService
     /**
      * Get salary trends
      */
-    public function getSalaryTrends(string $startDate = null, string $endDate = null): array
+    public function getSalaryTrends(?string $startDate = null, ?string $endDate = null): array
     {
         return $this->repository->getSalaryTrends($startDate, $endDate);
     }
@@ -302,13 +300,13 @@ class EmployeeSalaryHistoryService
         // Validate change type
         if (isset($data['change_type'])) {
             $validTypes = array_column(SalaryChangeType::cases(), 'value');
-            if (!in_array($data['change_type'], $validTypes)) {
+            if (! in_array($data['change_type'], $validTypes)) {
                 throw new Exception('Invalid change type');
             }
         }
 
         // Validate retroactive dates if applicable
-        if (!empty($data['is_retroactive']) && $data['is_retroactive']) {
+        if (! empty($data['is_retroactive']) && $data['is_retroactive']) {
             if (empty($data['retroactive_start_date']) || empty($data['retroactive_end_date'])) {
                 throw new Exception('Retroactive start and end dates are required for retroactive adjustments');
             }
@@ -325,7 +323,7 @@ class EmployeeSalaryHistoryService
     private function updateEmployeeSalary(EmployeeSalaryHistory $salaryHistory): void
     {
         $employee = $salaryHistory->employee;
-        if (!$employee) {
+        if (! $employee) {
             return;
         }
 
@@ -340,7 +338,7 @@ class EmployeeSalaryHistoryService
      */
     private function processRetroactiveAdjustment(EmployeeSalaryHistory $salaryHistory): void
     {
-        if (!$salaryHistory->is_retroactive) {
+        if (! $salaryHistory->is_retroactive) {
             return;
         }
 

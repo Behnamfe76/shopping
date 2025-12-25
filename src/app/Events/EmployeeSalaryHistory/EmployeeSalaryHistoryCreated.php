@@ -2,9 +2,9 @@
 
 namespace App\Events\EmployeeSalaryHistory;
 
+use App\Models\EmployeeSalaryHistory;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use App\Models\EmployeeSalaryHistory;
 
 class EmployeeSalaryHistoryCreated
 {
@@ -44,7 +44,7 @@ class EmployeeSalaryHistoryCreated
 
     public function getRetroactivePeriod(): ?string
     {
-        if (!$this->isRetroactive()) {
+        if (! $this->isRetroactive()) {
             return null;
         }
 

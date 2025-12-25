@@ -11,10 +11,15 @@ class ProviderNoteDeleted
     use Dispatchable, SerializesModels;
 
     public int $providerNoteId;
+
     public int $providerId;
+
     public int $userId;
+
     public string $title;
+
     public string $noteType;
+
     public string $priority;
 
     /**

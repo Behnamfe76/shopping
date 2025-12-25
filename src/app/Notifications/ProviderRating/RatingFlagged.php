@@ -13,6 +13,7 @@ class RatingFlagged extends Notification implements ShouldQueue
     use Queueable;
 
     public ProviderRating $rating;
+
     public ?string $reason;
 
     /**

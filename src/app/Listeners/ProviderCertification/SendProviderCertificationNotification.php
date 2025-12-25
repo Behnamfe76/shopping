@@ -3,21 +3,19 @@
 namespace App\Listeners\ProviderCertification;
 
 use App\Events\ProviderCertification\ProviderCertificationCreated;
-use App\Events\ProviderCertification\ProviderCertificationUpdated;
-use App\Events\ProviderCertification\ProviderCertificationVerified;
-use App\Events\ProviderCertification\ProviderCertificationRejected;
 use App\Events\ProviderCertification\ProviderCertificationExpired;
+use App\Events\ProviderCertification\ProviderCertificationRejected;
 use App\Events\ProviderCertification\ProviderCertificationRenewed;
-use App\Events\ProviderCertification\ProviderCertificationSuspended;
 use App\Events\ProviderCertification\ProviderCertificationRevoked;
+use App\Events\ProviderCertification\ProviderCertificationSuspended;
+use App\Events\ProviderCertification\ProviderCertificationVerified;
 use App\Notifications\ProviderCertification\CertificationAdded;
-use App\Notifications\ProviderCertification\CertificationVerified;
-use App\Notifications\ProviderCertification\CertificationRejected;
-use App\Notifications\ProviderCertification\CertificationExpiring;
 use App\Notifications\ProviderCertification\CertificationExpired;
+use App\Notifications\ProviderCertification\CertificationRejected;
 use App\Notifications\ProviderCertification\CertificationRenewed;
-use App\Notifications\ProviderCertification\CertificationSuspended;
 use App\Notifications\ProviderCertification\CertificationRevoked;
+use App\Notifications\ProviderCertification\CertificationSuspended;
+use App\Notifications\ProviderCertification\CertificationVerified;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
@@ -36,10 +34,11 @@ class SendProviderCertificationNotification implements ShouldQueue
         try {
             $provider = $event->certification->provider;
 
-            if (!$provider) {
+            if (! $provider) {
                 Log::warning('Provider not found for certification notification', [
-                    'certification_id' => $event->certification->id
+                    'certification_id' => $event->certification->id,
                 ]);
+
                 return;
             }
 
@@ -76,7 +75,7 @@ class SendProviderCertificationNotification implements ShouldQueue
             Log::info('Provider certification notification sent successfully', [
                 'event' => get_class($event),
                 'certification_id' => $event->certification->id,
-                'provider_id' => $provider->id
+                'provider_id' => $provider->id,
             ]);
 
         } catch (\Exception $e) {
@@ -84,7 +83,7 @@ class SendProviderCertificationNotification implements ShouldQueue
                 'event' => get_class($event),
                 'certification_id' => $event->certification->id ?? null,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             throw $e;
@@ -99,7 +98,7 @@ class SendProviderCertificationNotification implements ShouldQueue
         Log::error('Provider certification notification job failed', [
             'event' => get_class($event),
             'certification_id' => $event->certification->id ?? null,
-            'error' => $exception->getMessage()
+            'error' => $exception->getMessage(),
         ]);
     }
 }

@@ -2,11 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\ProviderRating;
-use App\Models\Provider;
-use App\Models\User;
 use App\Enums\RatingCategory;
 use App\Enums\RatingStatus;
+use App\Models\Provider;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -23,6 +22,7 @@ class ProviderRatingSeeder extends Seeder
 
         if ($providers->isEmpty() || $users->isEmpty()) {
             $this->command->warn('No providers or users found. Skipping ProviderRating seeding.');
+
             return;
         }
 
@@ -134,6 +134,7 @@ class ProviderRatingSeeder extends Seeder
     protected function getRandomCategory(): string
     {
         $categories = RatingCategory::cases();
+
         return $this->faker->randomElement($categories)->value;
     }
 
@@ -143,6 +144,7 @@ class ProviderRatingSeeder extends Seeder
     protected function getRandomStatus(): string
     {
         $statuses = RatingStatus::cases();
+
         return $this->faker->randomElement($statuses)->value;
     }
 
@@ -362,6 +364,7 @@ class ProviderRatingSeeder extends Seeder
         // Higher ratings tend to get more helpful votes
         $baseVotes = $rating * 10;
         $variation = $this->faker->numberBetween(-5, 15);
+
         return max(0, (int) ($baseVotes + $variation));
     }
 
@@ -372,6 +375,7 @@ class ProviderRatingSeeder extends Seeder
     {
         $helpfulVotes = $this->generateHelpfulVotes($rating);
         $additionalVotes = $this->faker->numberBetween(0, 20);
+
         return $helpfulVotes + $additionalVotes;
     }
 

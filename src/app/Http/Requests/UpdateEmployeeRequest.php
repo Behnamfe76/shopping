@@ -2,11 +2,10 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Fereydooni\Shopping\app\Models\Employee;
 use Fereydooni\Shopping\app\Enums\EmployeeStatus;
 use Fereydooni\Shopping\app\Enums\EmploymentType;
 use Fereydooni\Shopping\app\Enums\Gender;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class UpdateEmployeeRequest extends FormRequest
@@ -17,6 +16,7 @@ class UpdateEmployeeRequest extends FormRequest
     public function authorize(): bool
     {
         $employee = $this->route('employee');
+
         return $this->user()->can('update', $employee);
     }
 
@@ -34,13 +34,13 @@ class UpdateEmployeeRequest extends FormRequest
                 'sometimes',
                 'email',
                 'max:255',
-                Rule::unique('employees', 'email')->ignore($employee->id)
+                Rule::unique('employees', 'email')->ignore($employee->id),
             ],
             'phone' => ['sometimes', 'string', 'max:20'],
             'date_of_birth' => ['sometimes', 'date', 'before:today'],
-            'gender' => ['sometimes', 'string', 'in:' . implode(',', array_column(Gender::cases(), 'value'))],
-            'status' => ['sometimes', 'string', 'in:' . implode(',', array_column(EmployeeStatus::cases(), 'value'))],
-            'employment_type' => ['sometimes', 'string', 'in:' . implode(',', array_column(EmploymentType::cases(), 'value'))],
+            'gender' => ['sometimes', 'string', 'in:'.implode(',', array_column(Gender::cases(), 'value'))],
+            'status' => ['sometimes', 'string', 'in:'.implode(',', array_column(EmployeeStatus::cases(), 'value'))],
+            'employment_type' => ['sometimes', 'string', 'in:'.implode(',', array_column(EmploymentType::cases(), 'value'))],
             'department' => ['sometimes', 'string', 'max:100'],
             'position' => ['sometimes', 'string', 'max:100'],
             'manager_id' => ['sometimes', 'integer', 'exists:employees,id'],
@@ -88,4 +88,3 @@ class UpdateEmployeeRequest extends FormRequest
         $this->except(['user_id', 'employee_number', 'hire_date', 'termination_date']);
     }
 }
-

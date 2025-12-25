@@ -3,7 +3,6 @@
 namespace Fereydooni\Shopping\app\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class StoreProductTagRequest extends FormRequest
 {
@@ -69,7 +68,8 @@ class StoreProductTagRequest extends FormRequest
         ];
     }
 
-    public function prepareForValidation(){
+    public function prepareForValidation()
+    {
         $this->merge([
             'usage_count' => 0,
             'is_active' => $this->boolean('is_active', false),

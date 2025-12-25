@@ -2,13 +2,13 @@
 
 namespace Fereydooni\Shopping\app\Listeners\EmployeeTimeOff;
 
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
 use Fereydooni\Shopping\app\Events\EmployeeTimeOff\EmployeeTimeOffApproved;
 use Fereydooni\Shopping\app\Events\EmployeeTimeOff\EmployeeTimeOffCancelled;
 use Fereydooni\Shopping\app\Models\Employee;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class UpdateEmployeeBalance implements ShouldQueue
 {
@@ -31,7 +31,7 @@ class UpdateEmployeeBalance implements ShouldQueue
         } catch (\Exception $e) {
             Log::error('Failed to update employee balance', [
                 'event' => get_class($event),
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -45,10 +45,11 @@ class UpdateEmployeeBalance implements ShouldQueue
                 // Update employee's time-off balance
                 $employee = Employee::find($timeOff->employee_id);
 
-                if (!$employee) {
+                if (! $employee) {
                     Log::warning('Employee not found for balance update', [
-                        'employee_id' => $timeOff->employee_id
+                        'employee_id' => $timeOff->employee_id,
                     ]);
+
                     return;
                 }
 
@@ -62,7 +63,7 @@ class UpdateEmployeeBalance implements ShouldQueue
                     'employee_id' => $employee->id,
                     'days_deducted' => $daysToDeduct,
                     'hours_deducted' => $hoursToDeduct,
-                    'time_off_id' => $timeOff->id
+                    'time_off_id' => $timeOff->id,
                 ]);
 
                 // TODO: Implement actual balance update logic
@@ -72,7 +73,7 @@ class UpdateEmployeeBalance implements ShouldQueue
             Log::error('Failed to update employee balance in transaction', [
                 'employee_id' => $timeOff->employee_id,
                 'time_off_id' => $timeOff->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -90,10 +91,11 @@ class UpdateEmployeeBalance implements ShouldQueue
 
                 $employee = Employee::find($timeOff->employee_id);
 
-                if (!$employee) {
+                if (! $employee) {
                     Log::warning('Employee not found for balance restoration', [
-                        'employee_id' => $timeOff->employee_id
+                        'employee_id' => $timeOff->employee_id,
                     ]);
+
                     return;
                 }
 
@@ -106,7 +108,7 @@ class UpdateEmployeeBalance implements ShouldQueue
                     'employee_id' => $employee->id,
                     'days_restored' => $daysToRestore,
                     'hours_restored' => $hoursToRestore,
-                    'time_off_id' => $timeOff->id
+                    'time_off_id' => $timeOff->id,
                 ]);
 
                 // TODO: Implement actual balance restoration logic
@@ -116,7 +118,7 @@ class UpdateEmployeeBalance implements ShouldQueue
             Log::error('Failed to restore employee balance in transaction', [
                 'employee_id' => $timeOff->employee_id,
                 'time_off_id' => $timeOff->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }

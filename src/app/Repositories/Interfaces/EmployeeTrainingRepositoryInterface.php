@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\Repositories\Interfaces;
 
+use Fereydooni\Shopping\DTOs\EmployeeTrainingDTO;
+use Fereydooni\Shopping\Models\EmployeeTraining;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Fereydooni\Shopping\Models\EmployeeTraining;
-use Fereydooni\Shopping\DTOs\EmployeeTrainingDTO;
 
 interface EmployeeTrainingRepositoryInterface
 {

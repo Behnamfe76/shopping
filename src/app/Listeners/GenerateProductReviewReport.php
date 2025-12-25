@@ -2,9 +2,6 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
-use Fereydooni\Shopping\app\Events\ProductReviewCreated;
-use Fereydooni\Shopping\app\Events\ProductReviewUpdated;
-use Fereydooni\Shopping\app\Events\ProductReviewDeleted;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
@@ -41,7 +38,7 @@ class GenerateProductReviewReport implements ShouldQueue
         Log::info('Product review report generated', [
             'review_id' => $review->id,
             'product_id' => $productId,
-            'event_type' => get_class($event)
+            'event_type' => get_class($event),
         ]);
     }
 
@@ -57,7 +54,7 @@ class GenerateProductReviewReport implements ShouldQueue
         // - Monitoring review quality metrics
 
         Log::info('Review analytics generated for product', [
-            'product_id' => $productId
+            'product_id' => $productId,
         ]);
     }
 
@@ -73,7 +70,7 @@ class GenerateProductReviewReport implements ShouldQueue
         // - Competitive analysis
 
         Log::info('Product performance report generated', [
-            'product_id' => $productId
+            'product_id' => $productId,
         ]);
     }
 
@@ -89,7 +86,7 @@ class GenerateProductReviewReport implements ShouldQueue
         // - Community participation analysis
 
         Log::info('User engagement report generated', [
-            'product_id' => $productId
+            'product_id' => $productId,
         ]);
     }
 
@@ -100,7 +97,7 @@ class GenerateProductReviewReport implements ShouldQueue
     {
         Log::error('Failed to generate product review report', [
             'review_id' => $event->review->id,
-            'error' => $exception->getMessage()
+            'error' => $exception->getMessage(),
         ]);
     }
 }

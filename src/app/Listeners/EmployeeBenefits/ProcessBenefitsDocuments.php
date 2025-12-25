@@ -2,12 +2,12 @@
 
 namespace App\Listeners\EmployeeBenefits;
 
-use App\Events\EmployeeBenefits\EmployeeBenefitsCreated;
-use App\Events\EmployeeBenefits\EmployeeBenefitsUpdated;
-use App\Events\EmployeeBenefits\EmployeeBenefitsEnrolled;
-use App\Events\EmployeeBenefits\EmployeeBenefitsTerminated;
 use App\Events\EmployeeBenefits\EmployeeBenefitsCancelled;
+use App\Events\EmployeeBenefits\EmployeeBenefitsCreated;
+use App\Events\EmployeeBenefits\EmployeeBenefitsEnrolled;
 use App\Events\EmployeeBenefits\EmployeeBenefitsExpiring;
+use App\Events\EmployeeBenefits\EmployeeBenefitsTerminated;
+use App\Events\EmployeeBenefits\EmployeeBenefitsUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
@@ -36,7 +36,7 @@ class ProcessBenefitsDocuments implements ShouldQueue
             Log::error('Error processing benefits documents', [
                 'event' => get_class($event),
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
         }
     }
@@ -56,7 +56,7 @@ class ProcessBenefitsDocuments implements ShouldQueue
 
         Log::info('Benefits documents processed for creation', [
             'benefit_id' => $benefit->id,
-            'employee_id' => $benefit->employee_id
+            'employee_id' => $benefit->employee_id,
         ]);
     }
 
@@ -81,7 +81,7 @@ class ProcessBenefitsDocuments implements ShouldQueue
         Log::info('Benefits documents processed for update', [
             'benefit_id' => $benefit->id,
             'employee_id' => $benefit->employee_id,
-            'changes' => $changes
+            'changes' => $changes,
         ]);
     }
 
@@ -100,7 +100,7 @@ class ProcessBenefitsDocuments implements ShouldQueue
 
         Log::info('Benefits documents processed for enrollment', [
             'benefit_id' => $benefit->id,
-            'employee_id' => $benefit->employee_id
+            'employee_id' => $benefit->employee_id,
         ]);
     }
 
@@ -119,7 +119,7 @@ class ProcessBenefitsDocuments implements ShouldQueue
 
         Log::info('Benefits documents processed for termination', [
             'benefit_id' => $benefit->id,
-            'employee_id' => $benefit->employee_id
+            'employee_id' => $benefit->employee_id,
         ]);
     }
 
@@ -135,7 +135,7 @@ class ProcessBenefitsDocuments implements ShouldQueue
 
         Log::info('Benefits documents processed for cancellation', [
             'benefit_id' => $benefit->id,
-            'employee_id' => $benefit->employee_id
+            'employee_id' => $benefit->employee_id,
         ]);
     }
 
@@ -154,7 +154,7 @@ class ProcessBenefitsDocuments implements ShouldQueue
 
         Log::info('Benefits documents processed for expiring', [
             'benefit_id' => $benefit->id,
-            'employee_id' => $benefit->employee_id
+            'employee_id' => $benefit->employee_id,
         ]);
     }
 
@@ -179,7 +179,7 @@ class ProcessBenefitsDocuments implements ShouldQueue
         } catch (\Exception $e) {
             Log::error('Error processing enrollment documents', [
                 'benefit_id' => $benefit->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -203,7 +203,7 @@ class ProcessBenefitsDocuments implements ShouldQueue
                 'effective_date' => $benefit->effective_date,
                 'end_date' => $benefit->end_date,
                 'status' => $benefit->status,
-                'generated_at' => now()->toISOString()
+                'generated_at' => now()->toISOString(),
             ];
 
             // Store summary document
@@ -213,7 +213,7 @@ class ProcessBenefitsDocuments implements ShouldQueue
         } catch (\Exception $e) {
             Log::error('Error generating benefit summary', [
                 'benefit_id' => $benefit->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -233,8 +233,8 @@ class ProcessBenefitsDocuments implements ShouldQueue
                 'enrollment_date' => $benefit->enrollment_date,
                 'effective_date' => $benefit->effective_date,
                 'status' => 'enrolled',
-                'confirmation_number' => 'ENR-' . str_pad($benefit->id, 6, '0', STR_PAD_LEFT),
-                'generated_at' => now()->toISOString()
+                'confirmation_number' => 'ENR-'.str_pad($benefit->id, 6, '0', STR_PAD_LEFT),
+                'generated_at' => now()->toISOString(),
             ];
 
             $filename = "enrollment_confirmation_{$benefit->id}.json";
@@ -243,7 +243,7 @@ class ProcessBenefitsDocuments implements ShouldQueue
         } catch (\Exception $e) {
             Log::error('Error generating enrollment confirmation', [
                 'benefit_id' => $benefit->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -262,8 +262,8 @@ class ProcessBenefitsDocuments implements ShouldQueue
                 'termination_date' => now()->toDateString(),
                 'end_date' => $benefit->end_date,
                 'reason' => $reason,
-                'termination_number' => 'TERM-' . str_pad($benefit->id, 6, '0', STR_PAD_LEFT),
-                'generated_at' => now()->toISOString()
+                'termination_number' => 'TERM-'.str_pad($benefit->id, 6, '0', STR_PAD_LEFT),
+                'generated_at' => now()->toISOString(),
             ];
 
             $filename = "termination_document_{$benefit->id}.json";
@@ -272,7 +272,7 @@ class ProcessBenefitsDocuments implements ShouldQueue
         } catch (\Exception $e) {
             Log::error('Error generating termination document', [
                 'benefit_id' => $benefit->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -290,8 +290,8 @@ class ProcessBenefitsDocuments implements ShouldQueue
                 'benefit_name' => $benefit->benefit_name,
                 'cancellation_date' => now()->toDateString(),
                 'reason' => $reason,
-                'cancellation_number' => 'CANCEL-' . str_pad($benefit->id, 6, '0', STR_PAD_LEFT),
-                'generated_at' => now()->toISOString()
+                'cancellation_number' => 'CANCEL-'.str_pad($benefit->id, 6, '0', STR_PAD_LEFT),
+                'generated_at' => now()->toISOString(),
             ];
 
             $filename = "cancellation_document_{$benefit->id}.json";
@@ -300,7 +300,7 @@ class ProcessBenefitsDocuments implements ShouldQueue
         } catch (\Exception $e) {
             Log::error('Error generating cancellation document', [
                 'benefit_id' => $benefit->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -318,8 +318,8 @@ class ProcessBenefitsDocuments implements ShouldQueue
                 'benefit_name' => $benefit->benefit_name,
                 'current_end_date' => $benefit->end_date,
                 'renewal_deadline' => now()->addDays(30)->toDateString(),
-                'renewal_notice_number' => 'RENEW-' . str_pad($benefit->id, 6, '0', STR_PAD_LEFT),
-                'generated_at' => now()->toISOString()
+                'renewal_notice_number' => 'RENEW-'.str_pad($benefit->id, 6, '0', STR_PAD_LEFT),
+                'generated_at' => now()->toISOString(),
             ];
 
             $filename = "renewal_notice_{$benefit->id}.json";
@@ -328,7 +328,7 @@ class ProcessBenefitsDocuments implements ShouldQueue
         } catch (\Exception $e) {
             Log::error('Error generating renewal notice', [
                 'benefit_id' => $benefit->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -341,10 +341,10 @@ class ProcessBenefitsDocuments implements ShouldQueue
         $significantFields = [
             'benefit_type', 'benefit_name', 'provider', 'coverage_level',
             'premium_amount', 'employee_contribution', 'employer_contribution',
-            'effective_date', 'end_date', 'status'
+            'effective_date', 'end_date', 'status',
         ];
 
-        return !empty(array_intersect(array_keys($changes), $significantFields));
+        return ! empty(array_intersect(array_keys($changes), $significantFields));
     }
 
     /**

@@ -2,15 +2,14 @@
 
 namespace Fereydooni\Shopping\app\Repositories;
 
+use Fereydooni\Shopping\app\DTOs\OrderItemDTO;
+use Fereydooni\Shopping\app\Models\OrderItem;
+use Fereydooni\Shopping\app\Repositories\Interfaces\OrderItemRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Fereydooni\Shopping\app\Repositories\Interfaces\OrderItemRepositoryInterface;
-use Fereydooni\Shopping\app\Models\OrderItem;
-use Fereydooni\Shopping\app\DTOs\OrderItemDTO;
 
 class OrderItemRepository implements OrderItemRepositoryInterface
 {
@@ -31,7 +30,7 @@ class OrderItemRepository implements OrderItemRepositoryInterface
             ->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return OrderItem::with(['order', 'product', 'variant', 'shipmentItems'])
             ->cursorPaginate($perPage, ['*'], 'cursor', $cursor);
@@ -45,17 +44,18 @@ class OrderItemRepository implements OrderItemRepositoryInterface
     public function findDTO(int $id): ?OrderItemDTO
     {
         $orderItem = $this->find($id);
+
         return $orderItem ? OrderItemDTO::fromModel($orderItem) : null;
     }
 
     public function create(array $data): OrderItem
     {
         // Calculate totals if not provided
-        if (!isset($data['subtotal'])) {
+        if (! isset($data['subtotal'])) {
             $data['subtotal'] = ($data['price'] ?? 0) * ($data['quantity'] ?? 1);
         }
 
-        if (!isset($data['total_amount'])) {
+        if (! isset($data['total_amount'])) {
             $data['total_amount'] = ($data['subtotal'] ?? 0) - ($data['discount_amount'] ?? 0) + ($data['tax_amount'] ?? 0);
         }
 
@@ -65,6 +65,7 @@ class OrderItemRepository implements OrderItemRepositoryInterface
     public function createAndReturnDTO(array $data): OrderItemDTO
     {
         $orderItem = $this->create($data);
+
         return OrderItemDTO::fromModel($orderItem);
     }
 
@@ -90,6 +91,7 @@ class OrderItemRepository implements OrderItemRepositoryInterface
     public function updateAndReturnDTO(OrderItem $orderItem, array $data): ?OrderItemDTO
     {
         $updated = $this->update($orderItem, $data);
+
         return $updated ? OrderItemDTO::fromModel($orderItem->fresh()) : null;
     }
 
@@ -187,7 +189,7 @@ class OrderItemRepository implements OrderItemRepositoryInterface
     }
 
     // Shipping operations
-    public function markAsShipped(OrderItem $orderItem, int $shippedQuantity = null): bool
+    public function markAsShipped(OrderItem $orderItem, ?int $shippedQuantity = null): bool
     {
         $shippedQuantity = $shippedQuantity ?? $orderItem->quantity;
 
@@ -197,20 +199,21 @@ class OrderItemRepository implements OrderItemRepositoryInterface
 
         $data = [
             'is_shipped' => $shippedQuantity >= $orderItem->quantity,
-            'shipped_quantity' => $shippedQuantity
+            'shipped_quantity' => $shippedQuantity,
         ];
 
         return $this->update($orderItem, $data);
     }
 
-    public function markAsShippedDTO(OrderItem $orderItem, int $shippedQuantity = null): ?OrderItemDTO
+    public function markAsShippedDTO(OrderItem $orderItem, ?int $shippedQuantity = null): ?OrderItemDTO
     {
         $updated = $this->markAsShipped($orderItem, $shippedQuantity);
+
         return $updated ? OrderItemDTO::fromModel($orderItem->fresh()) : null;
     }
 
     // Return operations
-    public function markAsReturned(OrderItem $orderItem, int $returnedQuantity = null): bool
+    public function markAsReturned(OrderItem $orderItem, ?int $returnedQuantity = null): bool
     {
         $returnedQuantity = $returnedQuantity ?? $orderItem->shipped_quantity;
 
@@ -219,20 +222,21 @@ class OrderItemRepository implements OrderItemRepositoryInterface
         }
 
         $data = [
-            'returned_quantity' => $returnedQuantity
+            'returned_quantity' => $returnedQuantity,
         ];
 
         return $this->update($orderItem, $data);
     }
 
-    public function markAsReturnedDTO(OrderItem $orderItem, int $returnedQuantity = null): ?OrderItemDTO
+    public function markAsReturnedDTO(OrderItem $orderItem, ?int $returnedQuantity = null): ?OrderItemDTO
     {
         $updated = $this->markAsReturned($orderItem, $returnedQuantity);
+
         return $updated ? OrderItemDTO::fromModel($orderItem->fresh()) : null;
     }
 
     // Refund operations
-    public function processRefund(OrderItem $orderItem, float $refundAmount = null): bool
+    public function processRefund(OrderItem $orderItem, ?float $refundAmount = null): bool
     {
         $refundAmount = $refundAmount ?? $orderItem->total_amount;
 
@@ -241,15 +245,16 @@ class OrderItemRepository implements OrderItemRepositoryInterface
         }
 
         $data = [
-            'refunded_amount' => $refundAmount
+            'refunded_amount' => $refundAmount,
         ];
 
         return $this->update($orderItem, $data);
     }
 
-    public function processRefundDTO(OrderItem $orderItem, float $refundAmount = null): ?OrderItemDTO
+    public function processRefundDTO(OrderItem $orderItem, ?float $refundAmount = null): ?OrderItemDTO
     {
         $updated = $this->processRefund($orderItem, $refundAmount);
+
         return $updated ? OrderItemDTO::fromModel($orderItem->fresh()) : null;
     }
 
@@ -303,9 +308,9 @@ class OrderItemRepository implements OrderItemRepositoryInterface
         return OrderItem::with(['order', 'product', 'variant', 'shipmentItems'])
             ->where(function ($q) use ($query) {
                 $q->where('sku', 'like', "%{$query}%")
-                  ->orWhere('product_name', 'like', "%{$query}%")
-                  ->orWhere('variant_name', 'like', "%{$query}%")
-                  ->orWhere('notes', 'like', "%{$query}%");
+                    ->orWhere('product_name', 'like', "%{$query}%")
+                    ->orWhere('variant_name', 'like', "%{$query}%")
+                    ->orWhere('notes', 'like', "%{$query}%");
             })
             ->get();
     }
@@ -369,7 +374,8 @@ class OrderItemRepository implements OrderItemRepositoryInterface
     public function validateOrderItem(array $data): bool
     {
         $validator = Validator::make($data, OrderItemDTO::rules(), OrderItemDTO::messages());
-        return !$validator->fails();
+
+        return ! $validator->fails();
     }
 
     public function calculateItemTotals(array $itemData): array
@@ -386,40 +392,40 @@ class OrderItemRepository implements OrderItemRepositoryInterface
             'subtotal' => $subtotal,
             'total_amount' => $total,
             'discount_amount' => $discount,
-            'tax_amount' => $tax
+            'tax_amount' => $tax,
         ];
     }
 
     // Inventory operations
-    public function checkInventory(int $productId, int $variantId = null, int $quantity = 1): bool
+    public function checkInventory(int $productId, ?int $variantId = null, int $quantity = 1): bool
     {
         // This would integrate with a product inventory system
         // For now, we'll assume inventory is available
         return true;
     }
 
-    public function reserveInventory(int $productId, int $variantId = null, int $quantity = 1): bool
+    public function reserveInventory(int $productId, ?int $variantId = null, int $quantity = 1): bool
     {
         // This would integrate with a product inventory system
         // For now, we'll assume reservation is successful
         return true;
     }
 
-    public function releaseInventory(int $productId, int $variantId = null, int $quantity = 1): bool
+    public function releaseInventory(int $productId, ?int $variantId = null, int $quantity = 1): bool
     {
         // This would integrate with a product inventory system
         // For now, we'll assume release is successful
         return true;
     }
 
-    public function updateInventory(int $productId, int $variantId = null, int $quantity = 1, string $operation = 'decrease'): bool
+    public function updateInventory(int $productId, ?int $variantId = null, int $quantity = 1, string $operation = 'decrease'): bool
     {
         // This would integrate with a product inventory system
         // For now, we'll assume update is successful
         return true;
     }
 
-    public function getInventoryLevel(int $productId, int $variantId = null): int
+    public function getInventoryLevel(int $productId, ?int $variantId = null): int
     {
         // This would integrate with a product inventory system
         // For now, we'll return a default value
@@ -431,6 +437,6 @@ class OrderItemRepository implements OrderItemRepositoryInterface
     {
         // This would typically query an audit log or history table
         // For now, we'll return an empty collection
-        return new Collection();
+        return new Collection;
     }
 }

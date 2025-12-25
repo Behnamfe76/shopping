@@ -2,15 +2,15 @@
 
 namespace Fereydooni\Shopping\App\Listeners\ProviderPayment;
 
+use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentCompleted;
+use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentCreated;
+use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentFailed;
+use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentProcessed;
+use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentReconciled;
+use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
-use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentCreated;
-use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentUpdated;
-use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentProcessed;
-use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentCompleted;
-use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentFailed;
-use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentReconciled;
 
 class LogProviderPaymentActivity implements ShouldQueue
 {
@@ -30,14 +30,14 @@ class LogProviderPaymentActivity implements ShouldQueue
 
             Log::info('Provider payment activity logged successfully', [
                 'payment_id' => $payment->id,
-                'event_type' => $eventType
+                'event_type' => $eventType,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to log provider payment activity', [
                 'error' => $e->getMessage(),
                 'event_type' => get_class($event),
-                'payment_id' => $event->payment->id ?? 'unknown'
+                'payment_id' => $event->payment->id ?? 'unknown',
             ]);
         }
     }
@@ -80,7 +80,7 @@ class LogProviderPaymentActivity implements ShouldQueue
             'timestamp' => now(),
             'user_id' => auth()->id() ?? null,
             'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent()
+            'user_agent' => request()->userAgent(),
         ];
 
         Log::info('Provider payment activity', $activityData);

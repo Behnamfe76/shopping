@@ -70,7 +70,7 @@ class ProviderInvoiceFactory extends Factory
 
         return [
             'provider_id' => Provider::factory(),
-            'invoice_number' => 'INV-' . $this->faker->unique()->numberBetween(10000, 99999),
+            'invoice_number' => 'INV-'.$this->faker->unique()->numberBetween(10000, 99999),
             'invoice_date' => $invoiceDate,
             'due_date' => $dueDate,
             'total_amount' => $totalAmount,
@@ -88,7 +88,7 @@ class ProviderInvoiceFactory extends Factory
                 'invoice.pdf',
                 'receipt.pdf',
                 'contract.pdf',
-                'supporting_docs.zip'
+                'supporting_docs.zip',
             ], $this->faker->numberBetween(1, 3)),
             'sent_at' => $sentAt,
             'paid_at' => $paidAt,
@@ -243,4 +243,3 @@ class ProviderInvoiceFactory extends Factory
         ]);
     }
 }
-

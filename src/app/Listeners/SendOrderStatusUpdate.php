@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
+use Fereydooni\Shopping\app\Events\OrderStatusChanged;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Fereydooni\Shopping\app\Events\OrderStatusChanged;
 
 class SendOrderStatusUpdate implements ShouldQueue
 {

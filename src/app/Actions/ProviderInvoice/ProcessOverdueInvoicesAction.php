@@ -2,12 +2,11 @@
 
 namespace Fereydooni\Shopping\App\Actions\ProviderInvoice;
 
+use Exception;
+use Fereydooni\Shopping\App\Enums\InvoiceStatus;
 use Fereydooni\Shopping\App\Models\ProviderInvoice;
 use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderInvoiceRepositoryInterface;
-use Fereydooni\Shopping\App\Enums\InvoiceStatus;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
-use Exception;
 
 class ProcessOverdueInvoicesAction
 {
@@ -26,10 +25,11 @@ class ProcessOverdueInvoicesAction
 
             if ($overdueInvoices->isEmpty()) {
                 Log::info('No overdue invoices found to process');
+
                 return [
                     'processed_count' => 0,
                     'overdue_invoices' => [],
-                    'total_overdue_amount' => 0
+                    'total_overdue_amount' => 0,
                 ];
             }
 
@@ -46,7 +46,7 @@ class ProcessOverdueInvoicesAction
                 } catch (Exception $e) {
                     Log::error('Failed to process overdue invoice', [
                         'invoice_id' => $invoice->id,
-                        'error' => $e->getMessage()
+                        'error' => $e->getMessage(),
                     ]);
                 }
             }
@@ -54,18 +54,18 @@ class ProcessOverdueInvoicesAction
             Log::info('Overdue invoices processing completed', [
                 'total_found' => $overdueInvoices->count(),
                 'processed_count' => $processedCount,
-                'total_overdue_amount' => $totalOverdueAmount
+                'total_overdue_amount' => $totalOverdueAmount,
             ]);
 
             return [
                 'processed_count' => $processedCount,
                 'overdue_invoices' => $processedInvoices,
-                'total_overdue_amount' => $totalOverdueAmount
+                'total_overdue_amount' => $totalOverdueAmount,
             ];
 
         } catch (Exception $e) {
             Log::error('Failed to process overdue invoices', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -94,21 +94,21 @@ class ProcessOverdueInvoicesAction
         Log::info('Overdue notice sent to provider', [
             'invoice_id' => $invoice->id,
             'provider_id' => $invoice->provider_id,
-            'days_overdue' => $invoice->due_date->diffInDays(now())
+            'days_overdue' => $invoice->due_date->diffInDays(now()),
         ]);
 
         // Send notification to internal team
         Log::info('Overdue notice sent to internal team', [
             'invoice_id' => $invoice->id,
             'provider_id' => $invoice->provider_id,
-            'amount' => $invoice->total_amount
+            'amount' => $invoice->total_amount,
         ]);
 
         // Send escalation notification if severely overdue
         if ($invoice->due_date->diffInDays(now()) > 30) {
             Log::info('Severe overdue escalation sent', [
                 'invoice_id' => $invoice->id,
-                'days_overdue' => $invoice->due_date->diffInDays(now())
+                'days_overdue' => $invoice->due_date->diffInDays(now()),
             ]);
         }
     }
@@ -122,7 +122,7 @@ class ProcessOverdueInvoicesAction
             Log::info('Late fees calculated for severely overdue invoice', [
                 'invoice_id' => $invoice->id,
                 'days_overdue' => $daysOverdue,
-                'late_fee_amount' => $this->calculateLateFeeAmount($invoice, $daysOverdue)
+                'late_fee_amount' => $this->calculateLateFeeAmount($invoice, $daysOverdue),
             ]);
         }
     }
@@ -138,6 +138,7 @@ class ProcessOverdueInvoicesAction
         }
 
         $monthsOverdue = ceil($daysOverdue / 30);
+
         return $baseAmount * $lateFeeRate * ($monthsOverdue - 1);
     }
 
@@ -147,8 +148,7 @@ class ProcessOverdueInvoicesAction
         Log::info('Provider overdue records updated', [
             'invoice_id' => $invoice->id,
             'provider_id' => $invoice->provider_id,
-            'overdue_amount' => $invoice->total_amount
+            'overdue_amount' => $invoice->total_amount,
         ]);
     }
 }
-

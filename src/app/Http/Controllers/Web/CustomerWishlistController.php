@@ -7,7 +7,6 @@ use Fereydooni\Shopping\app\DTOs\CustomerWishlistDTO;
 use Fereydooni\Shopping\app\Models\CustomerWishlist;
 use Fereydooni\Shopping\app\Services\CustomerWishlistService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class CustomerWishlistController extends Controller
@@ -105,10 +104,10 @@ class CustomerWishlistController extends Controller
         $wishlistByPrice = $this->wishlistService->getWishlistByPrice($customerId);
 
         return view('customer-wishlists.items', compact(
-            'wishlist', 
-            'wishlistByPriority', 
-            'wishlistByDate', 
-            'wishlistByPrice', 
+            'wishlist',
+            'wishlistByPriority',
+            'wishlistByDate',
+            'wishlistByPrice',
             'customerId'
         ));
     }

@@ -3,7 +3,6 @@
 namespace Fereydooni\Shopping\app\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Fereydooni\Shopping\app\Models\UserSubscription;
 
 class CancelUserSubscriptionRequest extends FormRequest
 {
@@ -13,6 +12,7 @@ class CancelUserSubscriptionRequest extends FormRequest
     public function authorize(): bool
     {
         $userSubscription = $this->route('userSubscription');
+
         return $this->user()->can('cancel', $userSubscription);
     }
 
@@ -64,7 +64,7 @@ class CancelUserSubscriptionRequest extends FormRequest
         }
 
         // Set default effective date to today if not provided
-        if (!$this->has('effective_date')) {
+        if (! $this->has('effective_date')) {
             $this->merge(['effective_date' => now()->format('Y-m-d')]);
         }
     }

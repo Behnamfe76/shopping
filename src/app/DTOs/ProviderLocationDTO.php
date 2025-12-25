@@ -2,37 +2,31 @@
 
 namespace Fereydooni\Shopping\App\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Email;
-use Spatie\LaravelData\Attributes\Validation\Url;
-use Spatie\LaravelData\Attributes\Validation\Numeric;
-use Spatie\LaravelData\Attributes\Validation\Min;
-use Spatie\LaravelData\Attributes\Validation\Max;
-use Spatie\LaravelData\Attributes\Validation\Date;
-use Spatie\LaravelData\Attributes\Validation\Nullable;
-use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
-use Spatie\LaravelData\Attributes\Validation\FloatType;
-use Spatie\LaravelData\Attributes\Validation\ArrayType;
-use Spatie\LaravelData\Attributes\Validation\In;
-use Spatie\LaravelData\Attributes\Validation\Regex;
-use Spatie\LaravelData\Attributes\Validation\Timezone;
-use Spatie\LaravelData\Attributes\Validation\Json;
-use Spatie\LaravelData\Attributes\Validation\Unique;
-use Spatie\LaravelData\Attributes\Validation\Exists;
-use Spatie\LaravelData\Attributes\Validation\RequiredIf;
-use Spatie\LaravelData\Attributes\Validation\ProhibitedIf;
-use Fereydooni\Shopping\App\Enums\LocationType;
 use Fereydooni\Shopping\App\Enums\Country;
-use Fereydooni\Shopping\App\Models\ProviderLocation;
+use Fereydooni\Shopping\App\Enums\LocationType;
 use Fereydooni\Shopping\App\Models\Provider;
-use Carbon\Carbon;
+use Fereydooni\Shopping\App\Models\ProviderLocation;
+use Spatie\LaravelData\Attributes\Validation\Date;
+use Spatie\LaravelData\Attributes\Validation\Email;
+use Spatie\LaravelData\Attributes\Validation\Exists;
+use Spatie\LaravelData\Attributes\Validation\FloatType;
+use Spatie\LaravelData\Attributes\Validation\In;
+use Spatie\LaravelData\Attributes\Validation\IntegerType;
+use Spatie\LaravelData\Attributes\Validation\Json;
+use Spatie\LaravelData\Attributes\Validation\Max;
+use Spatie\LaravelData\Attributes\Validation\Min;
+use Spatie\LaravelData\Attributes\Validation\Nullable;
+use Spatie\LaravelData\Attributes\Validation\Regex;
+use Spatie\LaravelData\Attributes\Validation\StringType;
+use Spatie\LaravelData\Attributes\Validation\Timezone;
+use Spatie\LaravelData\Attributes\Validation\Url;
+use Spatie\LaravelData\Data;
 
 class ProviderLocationDTO extends Data
 {
     public function __construct(
         #[IntegerType, Nullable]
-        public ?int $id = null,
+        public ?int $id,
 
         #[IntegerType, Exists(Provider::class, 'id')]
         public int $provider_id,
@@ -129,13 +123,13 @@ class ProviderLocationDTO extends Data
             'city' => ['required', 'string', 'min:2', 'max:100'],
             'state' => ['required', 'string', 'min:2', 'max:100'],
             'postal_code' => ['required', 'string', 'min:3', 'max:20'],
-            'country' => ['required', 'string', 'in:' . implode(',', Country::values())],
+            'country' => ['required', 'string', 'in:'.implode(',', Country::values())],
             'phone' => ['required', 'string', 'min:10', 'max:20', 'regex:/^[\+]?[1-9][\d]{0,15}$/'],
             'email' => ['nullable', 'email', 'max:255'],
             'website' => ['nullable', 'url', 'max:255'],
             'is_primary' => ['boolean'],
             'is_active' => ['boolean'],
-            'location_type' => ['required', 'string', 'in:' . implode(',', LocationType::values())],
+            'location_type' => ['required', 'string', 'in:'.implode(',', LocationType::values())],
             'operating_hours' => ['nullable', 'array'],
             'timezone' => ['nullable', 'string', 'timezone'],
             'latitude' => ['nullable', 'numeric', 'min:-90', 'max:90'],
@@ -373,17 +367,17 @@ class ProviderLocationDTO extends Data
         $validDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
         foreach ($this->operating_hours as $day => $hours) {
-            if (!in_array(strtolower($day), $validDays)) {
+            if (! in_array(strtolower($day), $validDays)) {
                 throw new \InvalidArgumentException("Invalid day of week: {$day}");
             }
 
-            if (!is_array($hours)) {
+            if (! is_array($hours)) {
                 throw new \InvalidArgumentException("Operating hours for {$day} must be an array");
             }
 
             // Validate time format (HH:MM)
             foreach ($hours as $time) {
-                if (!preg_match('/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/', $time)) {
+                if (! preg_match('/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/', $time)) {
                     throw new \InvalidArgumentException("Invalid time format for {$day}: {$time}");
                 }
             }
@@ -393,13 +387,15 @@ class ProviderLocationDTO extends Data
     public function getOperatingHoursForDay(string $day): ?array
     {
         $day = strtolower($day);
+
         return $this->operating_hours[$day] ?? null;
     }
 
     public function isOpenOnDay(string $day): bool
     {
         $day = strtolower($day);
-        return isset($this->operating_hours[$day]) && !empty($this->operating_hours[$day]);
+
+        return isset($this->operating_hours[$day]) && ! empty($this->operating_hours[$day]);
     }
 
     public function getFormattedPhone(): string
@@ -412,7 +408,7 @@ class ProviderLocationDTO extends Data
         }
 
         if (strlen($phone) === 10) {
-            return '+1' . $phone;
+            return '+1'.$phone;
         }
 
         return $phone;
@@ -429,7 +425,7 @@ class ProviderLocationDTO extends Data
 
     public function getDistanceFrom(float $latitude, float $longitude): ?float
     {
-        if (!$this->hasCoordinates()) {
+        if (! $this->hasCoordinates()) {
             return null;
         }
 
@@ -454,6 +450,7 @@ class ProviderLocationDTO extends Data
     public function getDistanceInKm(float $latitude, float $longitude): ?float
     {
         $miles = $this->getDistanceFrom($latitude, $longitude);
+
         return $miles ? $miles * 1.609344 : null;
     }
 

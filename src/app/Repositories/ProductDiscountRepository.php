@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\app\Repositories;
 
+use Carbon\Carbon;
+use Fereydooni\Shopping\app\DTOs\ProductDiscountDTO;
+use Fereydooni\Shopping\app\Models\ProductDiscount;
+use Fereydooni\Shopping\app\Repositories\Interfaces\ProductDiscountRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Fereydooni\Shopping\app\Repositories\Interfaces\ProductDiscountRepositoryInterface;
-use Fereydooni\Shopping\app\Models\ProductDiscount;
-use Fereydooni\Shopping\app\DTOs\ProductDiscountDTO;
-use Carbon\Carbon;
 
 class ProductDiscountRepository implements ProductDiscountRepositoryInterface
 {
@@ -31,6 +31,7 @@ class ProductDiscountRepository implements ProductDiscountRepositoryInterface
     public function findDTO(int $id): ?ProductDiscountDTO
     {
         $discount = $this->find($id);
+
         return $discount ? ProductDiscountDTO::fromModel($discount) : null;
     }
 
@@ -42,6 +43,7 @@ class ProductDiscountRepository implements ProductDiscountRepositoryInterface
     public function createAndReturnDTO(array $data): ProductDiscountDTO
     {
         $discount = $this->create($data);
+
         return ProductDiscountDTO::fromModel($discount);
     }
 
@@ -122,7 +124,7 @@ class ProductDiscountRepository implements ProductDiscountRepositoryInterface
 
     public function toggleActive(ProductDiscount $discount): bool
     {
-        return $discount->update(['is_active' => !$discount->is_active]);
+        return $discount->update(['is_active' => ! $discount->is_active]);
     }
 
     public function extend(ProductDiscount $discount, string $newEndDate): bool
@@ -152,9 +154,9 @@ class ProductDiscountRepository implements ProductDiscountRepositoryInterface
         return ProductDiscount::with(['product', 'createdBy', 'updatedBy'])
             ->where(function ($q) use ($query) {
                 $q->where('description', 'like', "%{$query}%")
-                  ->orWhereHas('product', function ($productQuery) use ($query) {
-                      $productQuery->where('name', 'like', "%{$query}%");
-                  });
+                    ->orWhereHas('product', function ($productQuery) use ($query) {
+                        $productQuery->where('name', 'like', "%{$query}%");
+                    });
             })
             ->orderBy('created_at', 'desc')
             ->get();
@@ -200,7 +202,7 @@ class ProductDiscountRepository implements ProductDiscountRepositoryInterface
     {
         $discount = $this->find($discountId);
 
-        if (!$discount) {
+        if (! $discount) {
             return [];
         }
 

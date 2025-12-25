@@ -3,8 +3,8 @@
 namespace Fereydooni\Shopping\app\Listeners\CustomerWishlist;
 
 use Fereydooni\Shopping\app\Events\CustomerWishlist\CustomerWishlistCreated;
-use Fereydooni\Shopping\app\Events\CustomerWishlist\CustomerWishlistUpdated;
 use Fereydooni\Shopping\app\Events\CustomerWishlist\CustomerWishlistDeleted;
+use Fereydooni\Shopping\app\Events\CustomerWishlist\CustomerWishlistUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 

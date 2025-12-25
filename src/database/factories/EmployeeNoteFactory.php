@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\database\factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Fereydooni\Shopping\app\Models\EmployeeNote;
-use Fereydooni\Shopping\app\Models\Employee;
-use Fereydooni\Shopping\app\Models\User;
-use Fereydooni\Shopping\app\Enums\EmployeeNoteType;
 use Fereydooni\Shopping\app\Enums\EmployeeNotePriority;
+use Fereydooni\Shopping\app\Enums\EmployeeNoteType;
+use Fereydooni\Shopping\app\Models\Employee;
+use Fereydooni\Shopping\app\Models\EmployeeNote;
+use Fereydooni\Shopping\app\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class EmployeeNoteFactory extends Factory
 {
@@ -26,7 +26,7 @@ class EmployeeNoteFactory extends Factory
             'is_archived' => $this->faker->boolean(10), // 10% chance of being archived
             'tags' => $this->faker->randomElements([
                 'performance', 'training', 'feedback', 'goal', 'incident',
-                'praise', 'warning', 'general', 'important', 'urgent'
+                'praise', 'warning', 'general', 'important', 'urgent',
             ], rand(0, 3)),
             'attachments' => [],
         ];
@@ -115,10 +115,10 @@ class EmployeeNoteFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'priority' => EmployeeNotePriority::URGENT,
             'tags' => array_merge($this->faker->randomElements([
-                'urgent', 'important', 'critical'
+                'urgent', 'important', 'critical',
             ], rand(1, 2)), $this->faker->randomElements([
                 'performance', 'training', 'feedback', 'goal', 'incident',
-                'praise', 'warning', 'general'
+                'praise', 'warning', 'general',
             ], rand(0, 1))),
         ]);
     }
@@ -128,10 +128,10 @@ class EmployeeNoteFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'priority' => EmployeeNotePriority::HIGH,
             'tags' => array_merge($this->faker->randomElements([
-                'important', 'high-priority'
+                'important', 'high-priority',
             ], rand(1, 2)), $this->faker->randomElements([
                 'performance', 'training', 'feedback', 'goal', 'incident',
-                'praise', 'warning', 'general'
+                'praise', 'warning', 'general',
             ], rand(0, 1))),
         ]);
     }
@@ -141,10 +141,10 @@ class EmployeeNoteFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'is_private' => true,
             'tags' => array_merge($this->faker->randomElements([
-                'private', 'confidential'
+                'private', 'confidential',
             ], rand(1, 2)), $this->faker->randomElements([
                 'performance', 'training', 'feedback', 'goal', 'incident',
-                'praise', 'warning', 'general'
+                'praise', 'warning', 'general',
             ], rand(0, 1))),
         ]);
     }
@@ -154,12 +154,11 @@ class EmployeeNoteFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'is_archived' => true,
             'tags' => array_merge($this->faker->randomElements([
-                'archived', 'historical'
+                'archived', 'historical',
             ], rand(1, 2)), $this->faker->randomElements([
                 'performance', 'training', 'feedback', 'goal', 'incident',
-                'praise', 'warning', 'general'
+                'praise', 'warning', 'general',
             ], rand(0, 1))),
         ]);
     }
 }
-

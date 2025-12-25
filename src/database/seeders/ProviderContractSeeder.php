@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Enums\ContractStatus;
+use App\Enums\ContractType;
 use App\Models\Provider;
 use App\Models\ProviderContract;
-use App\Enums\ContractType;
-use App\Enums\ContractStatus;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -28,7 +28,7 @@ class ProviderContractSeeder extends Seeder
         } catch (\Exception $e) {
             DB::rollBack();
 
-            $this->command->error('Failed to seed provider contracts: ' . $e->getMessage());
+            $this->command->error('Failed to seed provider contracts: '.$e->getMessage());
 
             throw $e;
         }
@@ -44,6 +44,7 @@ class ProviderContractSeeder extends Seeder
         if ($providers->isEmpty()) {
             $this->command->warn('No providers found. Creating sample contracts with factory providers.');
             $this->createContractsWithFactoryProviders();
+
             return;
         }
 
@@ -130,8 +131,9 @@ class ProviderContractSeeder extends Seeder
      */
     protected function generateStartDate(): \DateTime
     {
-        $startDate = new \DateTime();
-        $startDate->modify('-' . rand(0, 24) . ' months');
+        $startDate = new \DateTime;
+        $startDate->modify('-'.rand(0, 24).' months');
+
         return $startDate;
     }
 
@@ -142,7 +144,8 @@ class ProviderContractSeeder extends Seeder
     {
         $endDate = clone $startDate;
         $duration = rand(6, 60); // 6 months to 5 years
-        $endDate->modify('+' . $duration . ' months');
+        $endDate->modify('+'.$duration.' months');
+
         return $endDate;
     }
 
@@ -151,7 +154,7 @@ class ProviderContractSeeder extends Seeder
      */
     protected function generateContractNumber(ContractType $contractType, \DateTime $startDate): string
     {
-        $prefix = 'CONTRACT-' . strtoupper($contractType->value);
+        $prefix = 'CONTRACT-'.strtoupper($contractType->value);
         $number = str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT);
         $year = $startDate->format('Y');
 
@@ -227,7 +230,8 @@ class ProviderContractSeeder extends Seeder
     {
         if ($status === ContractStatus::ACTIVE) {
             $renewalDate = clone $endDate;
-            $renewalDate->modify('+' . rand(1, 3) . ' months');
+            $renewalDate->modify('+'.rand(1, 3).' months');
+
             return $renewalDate->format('Y-m-d');
         }
 
@@ -241,7 +245,8 @@ class ProviderContractSeeder extends Seeder
     {
         if ($status === ContractStatus::TERMINATED) {
             $terminationDate = clone $startDate;
-            $terminationDate->modify('+' . rand(1, 12) . ' months');
+            $terminationDate->modify('+'.rand(1, 12).' months');
+
             return $terminationDate->format('Y-m-d');
         }
 
@@ -330,6 +335,7 @@ class ProviderContractSeeder extends Seeder
         ];
 
         [$min, $max] = $rates[$contractType];
+
         return round(rand($min * 100, $max * 100) / 100, 2);
     }
 
@@ -347,6 +353,7 @@ class ProviderContractSeeder extends Seeder
         ];
 
         [$min, $max] = $ranges[$contractType];
+
         return round(rand($min, $max), 2);
     }
 
@@ -356,6 +363,7 @@ class ProviderContractSeeder extends Seeder
     protected function generateCurrency(): string
     {
         $currencies = ['USD', 'EUR', 'GBP', 'JPY', 'CAD', 'AUD', 'CHF'];
+
         return $currencies[array_rand($currencies)];
     }
 
@@ -405,7 +413,8 @@ class ProviderContractSeeder extends Seeder
     {
         if (in_array($status, [ContractStatus::ACTIVE, ContractStatus::SUSPENDED, ContractStatus::EXPIRED, ContractStatus::TERMINATED])) {
             $signedAt = clone $startDate;
-            $signedAt->modify('+' . rand(0, 30) . ' days');
+            $signedAt->modify('+'.rand(0, 30).' days');
+
             return $signedAt->format('Y-m-d H:i:s');
         }
 
@@ -443,11 +452,11 @@ class ProviderContractSeeder extends Seeder
 
         for ($i = 0; $i < $numAttachments; $i++) {
             $attachments[] = [
-                'name' => 'contract_attachment_' . ($i + 1) . '.pdf',
+                'name' => 'contract_attachment_'.($i + 1).'.pdf',
                 'type' => 'pdf',
                 'size' => rand(100, 5000),
                 'uploaded_at' => now()->subDays(rand(1, 30))->format('Y-m-d H:i:s'),
-                'description' => 'Contract attachment ' . ($i + 1),
+                'description' => 'Contract attachment '.($i + 1),
             ];
         }
 
@@ -464,7 +473,7 @@ class ProviderContractSeeder extends Seeder
 
         for ($i = 0; $i < $numNotes; $i++) {
             $notes[] = [
-                'content' => 'Contract note ' . ($i + 1) . ': Important information about the contract.',
+                'content' => 'Contract note '.($i + 1).': Important information about the contract.',
                 'author' => 'System',
                 'created_at' => now()->subDays(rand(1, 15))->format('Y-m-d H:i:s'),
                 'type' => ['general', 'important', 'reminder'][array_rand(['general', 'important', 'reminder'])],

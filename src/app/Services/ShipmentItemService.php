@@ -2,15 +2,15 @@
 
 namespace Fereydooni\Shopping\app\Services;
 
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Fereydooni\Shopping\app\Repositories\Interfaces\ShipmentItemRepositoryInterface;
-use Fereydooni\Shopping\app\Models\ShipmentItem;
 use Fereydooni\Shopping\app\DTOs\ShipmentItemDTO;
+use Fereydooni\Shopping\app\Models\ShipmentItem;
+use Fereydooni\Shopping\app\Repositories\Interfaces\ShipmentItemRepositoryInterface;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
 use Fereydooni\Shopping\app\Traits\HasSearchOperations;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 
 class ShipmentItemService
 {
@@ -40,7 +40,7 @@ class ShipmentItemService
         return $this->repository->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->repository->cursorPaginate($perPage, $cursor);
     }
@@ -282,7 +282,7 @@ class ShipmentItemService
     public function createShipmentItem(array $data): ShipmentItem
     {
         // Validate quantity availability before creating
-        if (!$this->checkQuantityAvailability($data['order_item_id'], $data['quantity'])) {
+        if (! $this->checkQuantityAvailability($data['order_item_id'], $data['quantity'])) {
             throw new \InvalidArgumentException('Insufficient quantity available for this order item.');
         }
 
@@ -292,6 +292,7 @@ class ShipmentItemService
     public function createShipmentItemDTO(array $data): ShipmentItemDTO
     {
         $model = $this->createShipmentItem($data);
+
         return ShipmentItemDTO::fromModel($model);
     }
 
@@ -299,7 +300,7 @@ class ShipmentItemService
     {
         // Validate quantity if it's being updated
         if (isset($data['quantity'])) {
-            if (!$this->validateShipmentItemQuantity($shipmentItem, $data['quantity'])) {
+            if (! $this->validateShipmentItemQuantity($shipmentItem, $data['quantity'])) {
                 throw new \InvalidArgumentException('Invalid quantity for this shipment item.');
             }
         }
@@ -310,6 +311,7 @@ class ShipmentItemService
     public function updateShipmentItemDTO(ShipmentItem $shipmentItem, array $data): ?ShipmentItemDTO
     {
         $updated = $this->updateShipmentItem($shipmentItem, $data);
+
         return $updated ? ShipmentItemDTO::fromModel($shipmentItem->fresh()) : null;
     }
 
@@ -345,7 +347,7 @@ class ShipmentItemService
     {
         // Validate all items before bulk creation
         foreach ($items as $item) {
-            if (!$this->checkQuantityAvailability($item['order_item_id'], $item['quantity'])) {
+            if (! $this->checkQuantityAvailability($item['order_item_id'], $item['quantity'])) {
                 throw new \InvalidArgumentException("Insufficient quantity available for order item {$item['order_item_id']}.");
             }
         }
@@ -359,7 +361,7 @@ class ShipmentItemService
         foreach ($updates as $update) {
             if (isset($update['id']) && isset($update['quantity'])) {
                 $shipmentItem = $this->find($update['id']);
-                if ($shipmentItem && !$this->validateShipmentItemQuantity($shipmentItem, $update['quantity'])) {
+                if ($shipmentItem && ! $this->validateShipmentItemQuantity($shipmentItem, $update['quantity'])) {
                     throw new \InvalidArgumentException("Invalid quantity for shipment item {$update['id']}.");
                 }
             }

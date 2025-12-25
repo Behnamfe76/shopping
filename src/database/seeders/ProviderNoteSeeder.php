@@ -2,8 +2,8 @@
 
 namespace Fereydooni\Shopping\database\seeders;
 
-use Fereydooni\Shopping\app\Models\ProviderNote;
 use Fereydooni\Shopping\app\Models\Provider;
+use Fereydooni\Shopping\app\Models\ProviderNote;
 use Fereydooni\Shopping\app\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -20,6 +20,7 @@ class ProviderNoteSeeder extends Seeder
 
         if ($providers->isEmpty() || $users->isEmpty()) {
             $this->command->warn('No providers or users found. Skipping provider note seeding.');
+
             return;
         }
 
@@ -45,14 +46,14 @@ class ProviderNoteSeeder extends Seeder
             'quality' => 0.15,     // 15% chance
             'performance' => 0.1,  // 10% chance
             'communication' => 0.05, // 5% chance
-            'other' => 0.05        // 5% chance
+            'other' => 0.05,        // 5% chance
         ];
 
         $priorities = [
             'low' => 0.4,      // 40% chance
             'medium' => 0.35,  // 35% chance
             'high' => 0.2,     // 20% chance
-            'urgent' => 0.05   // 5% chance
+            'urgent' => 0.05,   // 5% chance
         ];
 
         // Create 5-15 notes per provider
@@ -153,6 +154,7 @@ class ProviderNoteSeeder extends Seeder
         ];
 
         $availableTitles = $titles[$noteType][$priority] ?? $titles['general']['medium'];
+
         return $availableTitles[array_rand($availableTitles)];
     }
 
@@ -219,7 +221,7 @@ class ProviderNoteSeeder extends Seeder
 
         $additionalDetail = $additionalDetails[array_rand($additionalDetails)];
 
-        return $baseContent . ' ' . $additionalDetail;
+        return $baseContent.' '.$additionalDetail;
     }
 
     /**
@@ -285,7 +287,7 @@ class ProviderNoteSeeder extends Seeder
 
         for ($i = 0; $i < $numAttachments; $i++) {
             $type = $types[array_rand($types)];
-            $filename = "{$noteType}_note_" . uniqid() . ".{$type}";
+            $filename = "{$noteType}_note_".uniqid().".{$type}";
             $attachments[] = "attachments/provider-notes/{$filename}";
         }
 

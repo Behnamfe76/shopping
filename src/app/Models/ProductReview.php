@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
+use Fereydooni\Shopping\app\Enums\ReviewStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Fereydooni\Shopping\app\Enums\ReviewStatus;
 use Illuminate\Support\Carbon;
 
 class ProductReview extends Model

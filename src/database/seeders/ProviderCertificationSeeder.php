@@ -2,15 +2,14 @@
 
 namespace Fereydooni\Shopping\Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use Fereydooni\Shopping\App\Models\ProviderCertification;
-use Fereydooni\Shopping\App\Models\Provider;
-use Fereydooni\Shopping\App\Models\User;
+use Carbon\Carbon;
 use Fereydooni\Shopping\App\Enums\CertificationCategory;
 use Fereydooni\Shopping\App\Enums\CertificationStatus;
 use Fereydooni\Shopping\App\Enums\VerificationStatus;
-use Carbon\Carbon;
+use Fereydooni\Shopping\App\Models\Provider;
+use Fereydooni\Shopping\App\Models\ProviderCertification;
+use Fereydooni\Shopping\App\Models\User;
+use Illuminate\Database\Seeder;
 
 class ProviderCertificationSeeder extends Seeder
 {
@@ -342,7 +341,7 @@ class ProviderCertificationSeeder extends Seeder
      */
     protected function getRandomRenewalDate(Carbon $issueDate, ?Carbon $expiryDate): ?Carbon
     {
-        if (!$expiryDate) {
+        if (! $expiryDate) {
             return null;
         }
 
@@ -362,6 +361,7 @@ class ProviderCertificationSeeder extends Seeder
             $domains = ['verify.example.com', 'cert.example.org', 'check.example.net'];
             $domain = $domains[array_rand($domains)];
             $id = rand(100000, 999999);
+
             return "https://{$domain}/verify/{$id}";
         }
 
@@ -376,7 +376,8 @@ class ProviderCertificationSeeder extends Seeder
         if (rand(0, 1)) {
             $extensions = ['pdf', 'jpg', 'png', 'docx'];
             $extension = $extensions[array_rand($extensions)];
-            $filename = 'cert_' . rand(1000, 9999) . '.' . $extension;
+            $filename = 'cert_'.rand(1000, 9999).'.'.$extension;
+
             return "certifications/{$filename}";
         }
 
@@ -434,7 +435,7 @@ class ProviderCertificationSeeder extends Seeder
             CertificationCategory::OTHER => 'General Certification',
         ];
 
-        return $names[$category] . ' ' . rand(100, 999);
+        return $names[$category].' '.rand(100, 999);
     }
 
     /**
@@ -489,6 +490,7 @@ class ProviderCertificationSeeder extends Seeder
         ];
 
         $count = rand(3, 5);
+
         return array_rand(array_flip($requirements), $count);
     }
 
@@ -531,4 +533,4 @@ class ProviderCertificationSeeder extends Seeder
             $this->command->info("  {$verificationStatus}: {$count}");
         }
     }
-};
+}

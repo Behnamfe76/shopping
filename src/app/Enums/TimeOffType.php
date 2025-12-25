@@ -14,7 +14,7 @@ enum TimeOffType: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::VACATION => 'Vacation',
             self::SICK => 'Sick Leave',
             self::PERSONAL => 'Personal Leave',
@@ -27,7 +27,7 @@ enum TimeOffType: string
 
     public function description(): string
     {
-        return match($this) {
+        return match ($this) {
             self::VACATION => 'Paid time off for vacation purposes',
             self::SICK => 'Paid time off due to illness or injury',
             self::PERSONAL => 'Personal time off for various reasons',
@@ -40,7 +40,7 @@ enum TimeOffType: string
 
     public function isPaid(): bool
     {
-        return match($this) {
+        return match ($this) {
             self::VACATION, self::SICK, self::BEREAVEMENT, self::JURY_DUTY, self::MILITARY => true,
             self::PERSONAL, self::OTHER => false,
         };
@@ -48,7 +48,7 @@ enum TimeOffType: string
 
     public function requiresApproval(): bool
     {
-        return match($this) {
+        return match ($this) {
             self::SICK => false,
             self::VACATION, self::PERSONAL, self::BEREAVEMENT, self::JURY_DUTY, self::MILITARY, self::OTHER => true,
         };
@@ -56,7 +56,7 @@ enum TimeOffType: string
 
     public function color(): string
     {
-        return match($this) {
+        return match ($this) {
             self::VACATION => 'blue',
             self::SICK => 'red',
             self::PERSONAL => 'green',
@@ -67,4 +67,3 @@ enum TimeOffType: string
         };
     }
 }
-

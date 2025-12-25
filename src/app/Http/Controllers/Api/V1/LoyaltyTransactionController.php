@@ -2,15 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
-use Fereydooni\Shopping\app\Services\LoyaltyTransactionService;
-use Fereydooni\Shopping\app\Models\LoyaltyTransaction;
 use Fereydooni\Shopping\app\DTOs\LoyaltyTransactionDTO;
-use Fereydooni\Shopping\app\Enums\LoyaltyTransactionType;
-use Fereydooni\Shopping\app\Enums\LoyaltyTransactionStatus;
-use Fereydooni\Shopping\app\Enums\LoyaltyReferenceType;
+use Fereydooni\Shopping\app\Services\LoyaltyTransactionService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class LoyaltyTransactionController extends Controller
 {
@@ -75,7 +71,7 @@ class LoyaltyTransactionController extends Controller
     {
         $transaction = $this->service->find($id);
 
-        if (!$transaction) {
+        if (! $transaction) {
             return response()->json([
                 'message' => 'Loyalty transaction not found',
             ], 404);
@@ -93,7 +89,7 @@ class LoyaltyTransactionController extends Controller
     {
         $transaction = $this->service->find($id);
 
-        if (!$transaction) {
+        if (! $transaction) {
             return response()->json([
                 'message' => 'Loyalty transaction not found',
             ], 404);
@@ -116,7 +112,7 @@ class LoyaltyTransactionController extends Controller
 
         $updated = $this->service->update($transaction, $validated);
 
-        if (!$updated) {
+        if (! $updated) {
             return response()->json([
                 'message' => 'Failed to update loyalty transaction',
             ], 500);
@@ -135,7 +131,7 @@ class LoyaltyTransactionController extends Controller
     {
         $transaction = $this->service->find($id);
 
-        if (!$transaction) {
+        if (! $transaction) {
             return response()->json([
                 'message' => 'Loyalty transaction not found',
             ], 404);
@@ -143,7 +139,7 @@ class LoyaltyTransactionController extends Controller
 
         $deleted = $this->service->delete($transaction);
 
-        if (!$deleted) {
+        if (! $deleted) {
             return response()->json([
                 'message' => 'Failed to delete loyalty transaction',
             ], 500);
@@ -161,7 +157,7 @@ class LoyaltyTransactionController extends Controller
     {
         $transaction = $this->service->find($id);
 
-        if (!$transaction) {
+        if (! $transaction) {
             return response()->json([
                 'message' => 'Loyalty transaction not found',
             ], 404);
@@ -173,7 +169,7 @@ class LoyaltyTransactionController extends Controller
 
         $reversed = $this->service->reverse($transaction, $validated['reason'] ?? null);
 
-        if (!$reversed) {
+        if (! $reversed) {
             return response()->json([
                 'message' => 'Failed to reverse loyalty transaction',
             ], 500);

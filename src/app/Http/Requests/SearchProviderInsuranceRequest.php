@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
+use Fereydooni\Shopping\app\Enums\InsuranceStatus;
+use Fereydooni\Shopping\app\Enums\InsuranceType;
+use Fereydooni\Shopping\app\Enums\VerificationStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Fereydooni\Shopping\app\Enums\InsuranceType;
-use Fereydooni\Shopping\app\Enums\InsuranceStatus;
-use Fereydooni\Shopping\app\Enums\VerificationStatus;
 
 class SearchProviderInsuranceRequest extends FormRequest
 {
@@ -28,64 +28,64 @@ class SearchProviderInsuranceRequest extends FormRequest
                 'required',
                 'string',
                 'min:2',
-                'max:255'
+                'max:255',
             ],
             'provider_id' => [
                 'nullable',
                 'integer',
-                'exists:providers,id'
+                'exists:providers,id',
             ],
             'insurance_type' => [
                 'nullable',
                 'string',
-                Rule::in(InsuranceType::values())
+                Rule::in(InsuranceType::values()),
             ],
             'status' => [
                 'nullable',
                 'string',
-                Rule::in(InsuranceStatus::values())
+                Rule::in(InsuranceStatus::values()),
             ],
             'verification_status' => [
                 'nullable',
                 'string',
-                Rule::in(VerificationStatus::values())
+                Rule::in(VerificationStatus::values()),
             ],
             'start_date' => [
                 'nullable',
-                'date'
+                'date',
             ],
             'end_date' => [
                 'nullable',
                 'date',
-                'after_or_equal:start_date'
+                'after_or_equal:start_date',
             ],
             'min_coverage' => [
                 'nullable',
                 'numeric',
-                'min:0'
+                'min:0',
             ],
             'max_coverage' => [
                 'nullable',
                 'numeric',
                 'min:0',
-                'gte:min_coverage'
+                'gte:min_coverage',
             ],
             'sort_by' => [
                 'nullable',
                 'string',
-                Rule::in(['created_at', 'updated_at', 'start_date', 'end_date', 'coverage_amount', 'status', 'verification_status'])
+                Rule::in(['created_at', 'updated_at', 'start_date', 'end_date', 'coverage_amount', 'status', 'verification_status']),
             ],
             'sort_direction' => [
                 'nullable',
                 'string',
-                Rule::in(['asc', 'desc'])
+                Rule::in(['asc', 'desc']),
             ],
             'per_page' => [
                 'nullable',
                 'integer',
                 'min:1',
-                'max:100'
-            ]
+                'max:100',
+            ],
         ];
     }
 
@@ -110,7 +110,7 @@ class SearchProviderInsuranceRequest extends FormRequest
             'sort_by.in' => 'The selected sort field is invalid.',
             'sort_direction.in' => 'Sort direction must be either ascending or descending.',
             'per_page.min' => 'Per page must be at least 1.',
-            'per_page.max' => 'Per page cannot exceed 100.'
+            'per_page.max' => 'Per page cannot exceed 100.',
         ];
     }
 
@@ -131,7 +131,7 @@ class SearchProviderInsuranceRequest extends FormRequest
             'max_coverage' => 'maximum coverage',
             'sort_by' => 'sort field',
             'sort_direction' => 'sort direction',
-            'per_page' => 'per page'
+            'per_page' => 'per page',
         ];
     }
 
@@ -141,15 +141,15 @@ class SearchProviderInsuranceRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         // Set default values
-        if (!$this->has('sort_by')) {
+        if (! $this->has('sort_by')) {
             $this->merge(['sort_by' => 'created_at']);
         }
 
-        if (!$this->has('sort_direction')) {
+        if (! $this->has('sort_direction')) {
             $this->merge(['sort_direction' => 'desc']);
         }
 
-        if (!$this->has('per_page')) {
+        if (! $this->has('per_page')) {
             $this->merge(['per_page' => 15]);
         }
     }

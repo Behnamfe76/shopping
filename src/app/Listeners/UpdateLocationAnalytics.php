@@ -2,19 +2,19 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
-use Fereydooni\Shopping\app\Events\Provider\ProviderLocationCreated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderLocationUpdated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderLocationDeleted;
-use Fereydooni\Shopping\app\Events\Provider\PrimaryLocationChanged;
+use Exception;
 use Fereydooni\Shopping\app\Events\Provider\LocationCoordinatesUpdated;
-use Fereydooni\Shopping\app\Events\Provider\LocationOperatingHoursUpdated;
 use Fereydooni\Shopping\app\Events\Provider\LocationGeocoded;
+use Fereydooni\Shopping\app\Events\Provider\LocationOperatingHoursUpdated;
+use Fereydooni\Shopping\app\Events\Provider\PrimaryLocationChanged;
+use Fereydooni\Shopping\app\Events\Provider\ProviderLocationCreated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderLocationDeleted;
+use Fereydooni\Shopping\app\Events\Provider\ProviderLocationUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Exception;
+use Illuminate\Support\Facades\Log;
 
 class UpdateLocationAnalytics implements ShouldQueue
 {
@@ -54,13 +54,13 @@ class UpdateLocationAnalytics implements ShouldQueue
 
             Log::info('Location analytics updated for location creation', [
                 'location_id' => $location->id,
-                'provider_id' => $location->provider_id
+                'provider_id' => $location->provider_id,
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to update location analytics for location creation', [
                 'location_id' => $event->providerLocation->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -96,13 +96,13 @@ class UpdateLocationAnalytics implements ShouldQueue
             Log::info('Location analytics updated for location update', [
                 'location_id' => $location->id,
                 'provider_id' => $location->provider_id,
-                'changes' => array_keys($changes)
+                'changes' => array_keys($changes),
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to update location analytics for location update', [
                 'location_id' => $event->providerLocation->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -123,13 +123,13 @@ class UpdateLocationAnalytics implements ShouldQueue
 
             Log::info('Location analytics updated for location deletion', [
                 'location_id' => $location->id,
-                'provider_id' => $location->provider_id
+                'provider_id' => $location->provider_id,
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to update location analytics for location deletion', [
                 'location_id' => $event->providerLocation->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -147,13 +147,13 @@ class UpdateLocationAnalytics implements ShouldQueue
 
             Log::info('Primary location analytics updated', [
                 'location_id' => $location->id,
-                'provider_id' => $location->provider_id
+                'provider_id' => $location->provider_id,
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to update primary location analytics', [
                 'location_id' => $event->newPrimaryLocation->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -171,13 +171,13 @@ class UpdateLocationAnalytics implements ShouldQueue
 
             Log::info('Geospatial analytics updated for coordinates change', [
                 'location_id' => $location->id,
-                'provider_id' => $location->provider_id
+                'provider_id' => $location->provider_id,
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to update geospatial analytics for coordinates change', [
                 'location_id' => $event->providerLocation->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -195,13 +195,13 @@ class UpdateLocationAnalytics implements ShouldQueue
 
             Log::info('Operating hours analytics updated', [
                 'location_id' => $location->id,
-                'provider_id' => $location->provider_id
+                'provider_id' => $location->provider_id,
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to update operating hours analytics', [
                 'location_id' => $event->providerLocation->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -219,13 +219,13 @@ class UpdateLocationAnalytics implements ShouldQueue
 
             Log::info('Geocoding analytics updated', [
                 'location_id' => $location->id,
-                'provider_id' => $location->provider_id
+                'provider_id' => $location->provider_id,
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to update geocoding analytics', [
                 'location_id' => $event->providerLocation->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -253,7 +253,7 @@ class UpdateLocationAnalytics implements ShouldQueue
         } catch (Exception $e) {
             Log::error('Failed to update location counts', [
                 'provider_id' => $providerId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -280,7 +280,7 @@ class UpdateLocationAnalytics implements ShouldQueue
         } catch (Exception $e) {
             Log::error('Failed to update location type distribution', [
                 'provider_id' => $providerId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -307,7 +307,7 @@ class UpdateLocationAnalytics implements ShouldQueue
         } catch (Exception $e) {
             Log::error('Failed to update geographic distribution', [
                 'provider_id' => $providerId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -337,7 +337,7 @@ class UpdateLocationAnalytics implements ShouldQueue
         } catch (Exception $e) {
             Log::error('Failed to update active status distribution', [
                 'provider_id' => $providerId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -360,7 +360,7 @@ class UpdateLocationAnalytics implements ShouldQueue
         } catch (Exception $e) {
             Log::error('Failed to update primary location analytics', [
                 'provider_id' => $providerId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -391,7 +391,7 @@ class UpdateLocationAnalytics implements ShouldQueue
         } catch (Exception $e) {
             Log::error('Failed to update geospatial analytics', [
                 'provider_id' => $providerId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -416,7 +416,7 @@ class UpdateLocationAnalytics implements ShouldQueue
         } catch (Exception $e) {
             Log::error('Failed to update operating hours analytics', [
                 'provider_id' => $providerId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -447,7 +447,7 @@ class UpdateLocationAnalytics implements ShouldQueue
         } catch (Exception $e) {
             Log::error('Failed to update geocoding analytics', [
                 'provider_id' => $providerId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -469,7 +469,7 @@ class UpdateLocationAnalytics implements ShouldQueue
         } catch (Exception $e) {
             Log::error('Failed to clear analytics cache', [
                 'provider_id' => $providerId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -486,7 +486,7 @@ class UpdateLocationAnalytics implements ShouldQueue
             'location_id' => $locationId,
             'provider_id' => $providerId,
             'error' => $exception->getMessage(),
-            'trace' => $exception->getTraceAsString()
+            'trace' => $exception->getTraceAsString(),
         ]);
     }
 }

@@ -9,6 +9,7 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 class ProductCollection extends ResourceCollection
 {
     use GetPaginationAttibutes;
+
     /**
      * Create a new anonymous resource collection.
      */

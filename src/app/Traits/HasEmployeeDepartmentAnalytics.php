@@ -3,9 +3,6 @@
 namespace App\Traits;
 
 use App\Models\EmployeeDepartment;
-use App\Repositories\Interfaces\EmployeeDepartmentRepositoryInterface;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 
 trait HasEmployeeDepartmentAnalytics
 {
@@ -36,7 +33,7 @@ trait HasEmployeeDepartmentAnalytics
                 'hierarchy_depth' => $this->calculateHierarchyDepth(),
                 'average_employees_per_department' => $this->calculateAverageEmployeesPerDepartment(),
                 'total_budget' => $this->getTotalBudget(),
-                'budget_utilization' => $this->getOverallBudgetUtilization()
+                'budget_utilization' => $this->getOverallBudgetUtilization(),
             ];
         } catch (\Exception $e) {
             return [
@@ -50,7 +47,7 @@ trait HasEmployeeDepartmentAnalytics
                 'hierarchy_depth' => 0,
                 'average_employees_per_department' => 0,
                 'total_budget' => 0,
-                'budget_utilization' => []
+                'budget_utilization' => [],
             ];
         }
     }
@@ -62,7 +59,7 @@ trait HasEmployeeDepartmentAnalytics
     {
         try {
             $department = $this->find($departmentId);
-            if (!$department) {
+            if (! $department) {
                 return [];
             }
 
@@ -81,7 +78,7 @@ trait HasEmployeeDepartmentAnalytics
                 'turnover_rate' => $this->calculateTurnoverRate($departmentId),
                 'productivity_metrics' => $this->getProductivityMetrics($departmentId),
                 'cost_per_employee' => $this->calculateCostPerEmployee($departmentId),
-                'revenue_per_employee' => $this->calculateRevenuePerEmployee($departmentId)
+                'revenue_per_employee' => $this->calculateRevenuePerEmployee($departmentId),
             ];
         } catch (\Exception $e) {
             return [];
@@ -91,7 +88,7 @@ trait HasEmployeeDepartmentAnalytics
     /**
      * Get department trends
      */
-    public function getDepartmentTrends(string $startDate = null, string $endDate = null): array
+    public function getDepartmentTrends(?string $startDate = null, ?string $endDate = null): array
     {
         try {
             $startDate = $startDate ?? now()->subMonths(6)->format('Y-m-d');
@@ -102,7 +99,7 @@ trait HasEmployeeDepartmentAnalytics
                 'budget_changes' => $this->getBudgetChangeTrend($startDate, $endDate),
                 'department_creation' => $this->getDepartmentCreationTrend($startDate, $endDate),
                 'manager_changes' => $this->getManagerChangeTrend($startDate, $endDate),
-                'hierarchy_changes' => $this->getHierarchyChangeTrend($startDate, $endDate)
+                'hierarchy_changes' => $this->getHierarchyChangeTrend($startDate, $endDate),
             ];
         } catch (\Exception $e) {
             return [];
@@ -224,7 +221,7 @@ trait HasEmployeeDepartmentAnalytics
                 'tasks_completed' => 0,
                 'average_task_completion_time' => 0,
                 'quality_score' => 0,
-                'customer_satisfaction' => 0
+                'customer_satisfaction' => 0,
             ];
         } catch (\Exception $e) {
             return [];
@@ -243,6 +240,7 @@ trait HasEmployeeDepartmentAnalytics
             }
 
             $utilizedBudget = $this->calculateUtilizedBudget($departmentId);
+
             return round($utilizedBudget / $employeeCount, 2);
         } catch (\Exception $e) {
             return 0.0;
@@ -274,7 +272,7 @@ trait HasEmployeeDepartmentAnalytics
             return [
                 'trend' => 'stable',
                 'growth_rate' => 0.0,
-                'monthly_data' => []
+                'monthly_data' => [],
             ];
         } catch (\Exception $e) {
             return [];
@@ -292,7 +290,7 @@ trait HasEmployeeDepartmentAnalytics
             return [
                 'trend' => 'stable',
                 'change_rate' => 0.0,
-                'monthly_data' => []
+                'monthly_data' => [],
             ];
         } catch (\Exception $e) {
             return [];
@@ -314,7 +312,7 @@ trait HasEmployeeDepartmentAnalytics
             return [
                 'total_created' => $departments->sum('count'),
                 'daily_data' => $departments->toArray(),
-                'average_per_day' => $departments->count() > 0 ? round($departments->sum('count') / $departments->count(), 2) : 0
+                'average_per_day' => $departments->count() > 0 ? round($departments->sum('count') / $departments->count(), 2) : 0,
             ];
         } catch (\Exception $e) {
             return [];
@@ -332,7 +330,7 @@ trait HasEmployeeDepartmentAnalytics
             return [
                 'total_changes' => 0,
                 'daily_data' => [],
-                'average_per_day' => 0
+                'average_per_day' => 0,
             ];
         } catch (\Exception $e) {
             return [];
@@ -350,7 +348,7 @@ trait HasEmployeeDepartmentAnalytics
             return [
                 'total_changes' => 0,
                 'daily_data' => [],
-                'average_per_day' => 0
+                'average_per_day' => 0,
             ];
         } catch (\Exception $e) {
             return [];
@@ -364,7 +362,7 @@ trait HasEmployeeDepartmentAnalytics
     {
         try {
             $department = $this->find($departmentId);
-            if (!$department) {
+            if (! $department) {
                 return [];
             }
 
@@ -375,21 +373,21 @@ trait HasEmployeeDepartmentAnalytics
                     'code' => $department->code,
                     'status' => $department->status,
                     'created_at' => $department->created_at,
-                    'updated_at' => $department->updated_at
+                    'updated_at' => $department->updated_at,
                 ],
                 'hierarchy_info' => [
                     'parent_id' => $department->parent_id,
                     'manager_id' => $department->manager_id,
                     'depth' => $this->calculateDepartmentDepth($departmentId),
-                    'children_count' => $this->findByParentId($departmentId)->count()
+                    'children_count' => $this->findByParentId($departmentId)->count(),
                 ],
                 'performance_metrics' => $this->getDepartmentPerformanceMetrics($departmentId),
                 'budget_info' => $this->getBudgetSummary($departmentId),
                 'employee_info' => [
                     'current_count' => $this->getDepartmentEmployeeCount($departmentId),
                     'headcount_limit' => $department->headcount_limit,
-                    'utilization' => $this->getDepartmentHeadcountUtilization($departmentId)
-                ]
+                    'utilization' => $this->getDepartmentHeadcountUtilization($departmentId),
+                ],
             ];
         } catch (\Exception $e) {
             return [];
@@ -405,7 +403,7 @@ trait HasEmployeeDepartmentAnalytics
             $data = [
                 'summary' => $this->getDepartmentStatistics(),
                 'departments' => [],
-                'exported_at' => now()->toISOString()
+                'exported_at' => now()->toISOString(),
             ];
 
             $departments = EmployeeDepartment::all();

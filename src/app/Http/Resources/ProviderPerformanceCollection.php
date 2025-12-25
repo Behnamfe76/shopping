@@ -35,7 +35,7 @@ class ProviderPerformanceCollection extends ResourceCollection
                 'average_performance_score' => $this->collection->avg('performance_score'),
                 'grade_distribution' => $this->getGradeDistribution(),
                 'verification_status' => $this->getVerificationStatus(),
-            ]
+            ],
         ];
     }
 
@@ -68,7 +68,7 @@ class ProviderPerformanceCollection extends ResourceCollection
             'unverified' => $unverified,
             'verification_rate' => $this->collection->count() > 0
                 ? round(($verified / $this->collection->count()) * 100, 2)
-                : 0
+                : 0,
         ];
     }
 }

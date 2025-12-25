@@ -2,11 +2,11 @@
 
 namespace App\Traits;
 
-use App\Models\EmployeePosition;
 use App\Enums\PositionStatus;
+use App\Models\EmployeePosition;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 trait HasEmployeePositionStatusManagement
 {
@@ -24,15 +24,16 @@ trait HasEmployeePositionStatusManagement
             // Log the action
             Log::info("Position {$position->title} activated", [
                 'position_id' => $position->id,
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return true;
         } catch (\Exception $e) {
             Log::error("Failed to activate position {$position->id}", [
                 'error' => $e->getMessage(),
-                'position_id' => $position->id
+                'position_id' => $position->id,
             ]);
+
             return false;
         }
     }
@@ -51,15 +52,16 @@ trait HasEmployeePositionStatusManagement
             // Log the action
             Log::info("Position {$position->title} deactivated", [
                 'position_id' => $position->id,
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return true;
         } catch (\Exception $e) {
             Log::error("Failed to deactivate position {$position->id}", [
                 'error' => $e->getMessage(),
-                'position_id' => $position->id
+                'position_id' => $position->id,
             ]);
+
             return false;
         }
     }
@@ -78,15 +80,16 @@ trait HasEmployeePositionStatusManagement
             // Log the action
             Log::info("Position {$position->title} archived", [
                 'position_id' => $position->id,
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return true;
         } catch (\Exception $e) {
             Log::error("Failed to archive position {$position->id}", [
                 'error' => $e->getMessage(),
-                'position_id' => $position->id
+                'position_id' => $position->id,
             ]);
+
             return false;
         }
     }
@@ -105,15 +108,16 @@ trait HasEmployeePositionStatusManagement
             // Log the action
             Log::info("Position {$position->title} set to hiring", [
                 'position_id' => $position->id,
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return true;
         } catch (\Exception $e) {
             Log::error("Failed to set position {$position->id} to hiring", [
                 'error' => $e->getMessage(),
-                'position_id' => $position->id
+                'position_id' => $position->id,
             ]);
+
             return false;
         }
     }
@@ -132,15 +136,16 @@ trait HasEmployeePositionStatusManagement
             // Log the action
             Log::info("Position {$position->title} set to frozen", [
                 'position_id' => $position->id,
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return true;
         } catch (\Exception $e) {
             Log::error("Failed to set position {$position->id} to frozen", [
                 'error' => $e->getMessage(),
-                'position_id' => $position->id
+                'position_id' => $position->id,
             ]);
+
             return false;
         }
     }

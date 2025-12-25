@@ -2,12 +2,12 @@
 
 namespace App\Traits;
 
-use App\Models\EmployeePosition;
 use App\Enums\PositionStatus;
+use App\Models\EmployeePosition;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 trait HasEmployeePositionHiringManagement
 {
@@ -19,7 +19,7 @@ trait HasEmployeePositionHiringManagement
         try {
             $position->update([
                 'status' => PositionStatus::HIRING,
-                'is_active' => true
+                'is_active' => true,
             ]);
 
             // Clear cache
@@ -29,7 +29,7 @@ trait HasEmployeePositionHiringManagement
             Log::info("Position {$position->title} set to hiring", [
                 'position_id' => $position->id,
                 'hiring_details' => $hiringDetails,
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return true;
@@ -37,8 +37,9 @@ trait HasEmployeePositionHiringManagement
             Log::error("Failed to set position {$position->id} to hiring", [
                 'error' => $e->getMessage(),
                 'position_id' => $position->id,
-                'hiring_details' => $hiringDetails
+                'hiring_details' => $hiringDetails,
             ]);
+
             return false;
         }
     }
@@ -51,7 +52,7 @@ trait HasEmployeePositionHiringManagement
         try {
             $position->update([
                 'status' => PositionStatus::ACTIVE,
-                'is_active' => true
+                'is_active' => true,
             ]);
 
             // Clear cache
@@ -60,15 +61,16 @@ trait HasEmployeePositionHiringManagement
             // Log the action
             Log::info("Position {$position->title} hiring closed", [
                 'position_id' => $position->id,
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return true;
         } catch (\Exception $e) {
             Log::error("Failed to close hiring for position {$position->id}", [
                 'error' => $e->getMessage(),
-                'position_id' => $position->id
+                'position_id' => $position->id,
             ]);
+
             return false;
         }
     }
@@ -167,7 +169,7 @@ trait HasEmployeePositionHiringManagement
                 'urgent_hiring' => $urgentHiring,
                 'by_department' => $hiringByDepartment,
                 'by_level' => $hiringByLevel,
-                'average_time_open' => $this->getAverageHiringTimeOpen()
+                'average_time_open' => $this->getAverageHiringTimeOpen(),
             ];
         });
     }
@@ -222,11 +224,11 @@ trait HasEmployeePositionHiringManagement
                 'by_priority' => [
                     'critical' => $this->getCriticalHiringPositions()->count(),
                     'urgent' => $this->getUrgentHiringPositions()->count(),
-                    'normal' => 0
+                    'normal' => 0,
                 ],
                 'by_department' => $hiringPositions->groupBy('department.name')->map->count(),
                 'by_level' => $hiringPositions->groupBy('level')->map->count(),
-                'estimated_fill_time' => $this->getEstimatedFillTime()
+                'estimated_fill_time' => $this->getEstimatedFillTime(),
             ];
 
             $pipeline['by_priority']['normal'] = $pipeline['total'] - $pipeline['by_priority']['critical'] - $pipeline['by_priority']['urgent'];
@@ -250,7 +252,7 @@ trait HasEmployeePositionHiringManagement
             'lead' => 60,
             'manager' => 75,
             'director' => 90,
-            'executive' => 120
+            'executive' => 120,
         ];
     }
 
@@ -281,7 +283,7 @@ trait HasEmployeePositionHiringManagement
         }
 
         if (empty($recommendations)) {
-            $recommendations[] = "All hiring positions are within acceptable timeframes";
+            $recommendations[] = 'All hiring positions are within acceptable timeframes';
         }
 
         return $recommendations;

@@ -14,6 +14,7 @@ class CertificationRejected extends Notification implements ShouldQueue
     use Queueable;
 
     public $certification;
+
     public $reason;
 
     /**
@@ -45,35 +46,35 @@ class CertificationRejected extends Notification implements ShouldQueue
 
         $url = URL::route('provider.certifications.edit', [
             'provider' => $provider->id,
-            'certification' => $certification->id
+            'certification' => $certification->id,
         ]);
 
         $mailMessage = (new MailMessage)
-            ->subject('Certification Rejected - ' . $certification->certification_name)
-            ->greeting('Hello ' . $provider->name . ',')
+            ->subject('Certification Rejected - '.$certification->certification_name)
+            ->greeting('Hello '.$provider->name.',')
             ->line('We regret to inform you that your certification has been rejected during the verification process.')
             ->line('**Certification Details:**')
-            ->line('• **Name:** ' . $certification->certification_name)
-            ->line('• **Number:** ' . $certification->certification_number)
-            ->line('• **Issuing Organization:** ' . $certification->issuing_organization)
-            ->line('• **Category:** ' . ucfirst(str_replace('_', ' ', $certification->category)))
-            ->line('• **Status:** ' . ucfirst($certification->status))
-            ->line('• **Verification Status:** ' . ucfirst(str_replace('_', ' ', $certification->verification_status)));
+            ->line('• **Name:** '.$certification->certification_name)
+            ->line('• **Number:** '.$certification->certification_number)
+            ->line('• **Issuing Organization:** '.$certification->issuing_organization)
+            ->line('• **Category:** '.ucfirst(str_replace('_', ' ', $certification->category)))
+            ->line('• **Status:** '.ucfirst($certification->status))
+            ->line('• **Verification Status:** '.ucfirst(str_replace('_', ' ', $certification->verification_status)));
 
         if ($this->reason) {
             $mailMessage->line('**Rejection Reason:**')
-                       ->line($this->reason);
+                ->line($this->reason);
         }
 
         $mailMessage->line('**Next Steps:**')
-                   ->line('1. Review the rejection reason carefully')
-                   ->line('2. Gather any additional documentation if needed')
-                   ->line('3. Update your certification information')
-                   ->line('4. Resubmit for verification')
-                   ->action('Update Certification', $url)
-                   ->line('If you have any questions about the rejection or need assistance, please contact our support team.')
-                   ->line('We\'re here to help you get your certification verified successfully.')
-                   ->salutation('Best regards,<br>' . config('app.name') . ' Team');
+            ->line('1. Review the rejection reason carefully')
+            ->line('2. Gather any additional documentation if needed')
+            ->line('3. Update your certification information')
+            ->line('4. Resubmit for verification')
+            ->action('Update Certification', $url)
+            ->line('If you have any questions about the rejection or need assistance, please contact our support team.')
+            ->line('We\'re here to help you get your certification verified successfully.')
+            ->salutation('Best regards,<br>'.config('app.name').' Team');
 
         return $mailMessage;
     }
@@ -95,10 +96,10 @@ class CertificationRejected extends Notification implements ShouldQueue
             'status' => $this->certification->status,
             'verification_status' => $this->certification->verification_status,
             'rejection_reason' => $this->reason,
-            'message' => 'Your certification "' . $this->certification->certification_name . '" has been rejected.',
+            'message' => 'Your certification "'.$this->certification->certification_name.'" has been rejected.',
             'action_url' => URL::route('provider.certifications.edit', [
                 'provider' => $notifiable->id,
-                'certification' => $this->certification->id
+                'certification' => $this->certification->id,
             ]),
             'created_at' => now()->toISOString(),
         ];
@@ -130,8 +131,8 @@ class CertificationRejected extends Notification implements ShouldQueue
         return [
             'provider_certification',
             'certification_rejected',
-            'provider_' . $this->certification->provider_id,
-            'certification_' . $this->certification->id
+            'provider_'.$this->certification->provider_id,
+            'certification_'.$this->certification->id,
         ];
     }
 }

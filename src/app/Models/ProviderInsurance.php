@@ -2,16 +2,14 @@
 
 namespace Fereydooni\Shopping\App\Models;
 
+use Carbon\Carbon;
+use Fereydooni\Shopping\App\Enums\InsuranceStatus;
+use Fereydooni\Shopping\App\Enums\InsuranceType;
+use Fereydooni\Shopping\App\Enums\VerificationStatus;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Fereydooni\Shopping\App\Enums\InsuranceType;
-use Fereydooni\Shopping\App\Enums\InsuranceStatus;
-use Fereydooni\Shopping\App\Enums\VerificationStatus;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 
 class ProviderInsurance extends Model
 {
@@ -92,7 +90,7 @@ class ProviderInsurance extends Model
      */
     public function isExpiringSoon(int $days = 30): bool
     {
-        return $this->end_date->diffInDays(now()) <= $days && !$this->isExpired();
+        return $this->end_date->diffInDays(now()) <= $days && ! $this->isExpired();
     }
 
     /**
@@ -192,6 +190,7 @@ class ProviderInsurance extends Model
 
         if ($this->status !== $newStatus) {
             $this->status = $newStatus;
+
             return $this->save();
         }
 
@@ -216,7 +215,7 @@ class ProviderInsurance extends Model
     public function removeDocument(string $documentPath): bool
     {
         $documents = $this->documents ?? [];
-        $documents = array_filter($documents, fn($doc) => $doc !== $documentPath);
+        $documents = array_filter($documents, fn ($doc) => $doc !== $documentPath);
         $this->documents = array_values($documents);
 
         return $this->save();
@@ -225,7 +224,7 @@ class ProviderInsurance extends Model
     /**
      * Verify the insurance.
      */
-    public function verify(int $verifiedBy, string $notes = null): bool
+    public function verify(int $verifiedBy, ?string $notes = null): bool
     {
         $this->verification_status = VerificationStatus::VERIFIED;
         $this->verified_by = $verifiedBy;
@@ -257,6 +256,7 @@ class ProviderInsurance extends Model
     public function activate(): bool
     {
         $this->status = InsuranceStatus::ACTIVE;
+
         return $this->save();
     }
 
@@ -266,18 +266,20 @@ class ProviderInsurance extends Model
     public function deactivate(): bool
     {
         $this->status = InsuranceStatus::SUSPENDED;
+
         return $this->save();
     }
 
     /**
      * Cancel the insurance.
      */
-    public function cancel(string $reason = null): bool
+    public function cancel(?string $reason = null): bool
     {
         $this->status = InsuranceStatus::CANCELLED;
         if ($reason) {
             $this->notes = $reason;
         }
+
         return $this->save();
     }
 
@@ -340,7 +342,7 @@ class ProviderInsurance extends Model
     public function scopeExpiringSoon($query, int $days = 30)
     {
         return $query->where('end_date', '<=', now()->addDays($days))
-                    ->where('end_date', '>', now());
+            ->where('end_date', '>', now());
     }
 
     /**
@@ -397,7 +399,7 @@ class ProviderInsurance extends Model
     public function scopeByDateRange($query, string $startDate, string $endDate)
     {
         return $query->whereBetween('start_date', [$startDate, $endDate])
-                    ->orWhereBetween('end_date', [$startDate, $endDate]);
+            ->orWhereBetween('end_date', [$startDate, $endDate]);
     }
 
     /**

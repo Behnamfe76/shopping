@@ -2,28 +2,21 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Email;
+use Fereydooni\Shopping\app\Enums\PositionLevel;
+use Fereydooni\Shopping\app\Enums\PositionStatus;
+use Fereydooni\Shopping\app\Models\EmployeePosition;
+use Illuminate\Support\Carbon;
+use Spatie\LaravelData\Attributes\Validation\ArrayType;
+use Spatie\LaravelData\Attributes\Validation\BooleanType;
+use Spatie\LaravelData\Attributes\Validation\Decimal;
+use Spatie\LaravelData\Attributes\Validation\IntegerType;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\Min;
 use Spatie\LaravelData\Attributes\Validation\Nullable;
 use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
-use Spatie\LaravelData\Attributes\Validation\BooleanType;
-use Spatie\LaravelData\Attributes\Validation\Date;
-use Spatie\LaravelData\Attributes\Validation\Numeric;
-use Spatie\LaravelData\Attributes\Validation\In;
 use Spatie\LaravelData\Attributes\Validation\Unique;
-use Spatie\LaravelData\Attributes\Validation\Regex;
-use Spatie\LaravelData\Attributes\Validation\ArrayType;
-use Spatie\LaravelData\Attributes\Validation\Decimal;
-use Illuminate\Support\Carbon;
-use Fereydooni\Shopping\app\Enums\PositionStatus;
-use Fereydooni\Shopping\app\Enums\PositionLevel;
-use Fereydooni\Shopping\app\Models\EmployeePosition;
-use Fereydooni\Shopping\app\Models\EmployeeDepartment;
-use Fereydooni\Shopping\app\Models\Employee;
+use Spatie\LaravelData\Data;
 
 class EmployeePositionDTO extends Data
 {
@@ -106,8 +99,7 @@ class EmployeePositionDTO extends Data
 
         #[Nullable]
         public ?EmployeeDTO $manager
-    ) {
-    }
+    ) {}
 
     public static function fromModel(EmployeePosition $position): self
     {
@@ -136,7 +128,7 @@ class EmployeePositionDTO extends Data
             created_at: $position->created_at,
             updated_at: $position->updated_at,
             department: $position->department ? EmployeeDepartmentDTO::fromModel($position->department) : null,
-            employees: $position->employees ? $position->employees->map(fn($employee) => EmployeeDTO::fromModel($employee))->toArray() : null,
+            employees: $position->employees ? $position->employees->map(fn ($employee) => EmployeeDTO::fromModel($employee))->toArray() : null,
             manager: $position->manager ? EmployeeDTO::fromModel($position->manager) : null
         );
     }
@@ -148,13 +140,13 @@ class EmployeePositionDTO extends Data
             'code' => ['required', 'string', 'max:50', 'unique:employee_positions,code'],
             'description' => ['nullable', 'string', 'max:1000'],
             'department_id' => ['required', 'integer', 'exists:employee_departments,id'],
-            'level' => ['required', 'string', 'in:' . implode(',', array_column(PositionLevel::cases(), 'value'))],
+            'level' => ['required', 'string', 'in:'.implode(',', array_column(PositionLevel::cases(), 'value'))],
             'salary_min' => ['nullable', 'numeric', 'min:0'],
             'salary_max' => ['nullable', 'numeric', 'min:0', 'gte:salary_min'],
             'hourly_rate_min' => ['nullable', 'numeric', 'min:0'],
             'hourly_rate_max' => ['nullable', 'numeric', 'min:0', 'gte:hourly_rate_min'],
             'is_active' => ['required', 'boolean'],
-            'status' => ['required', 'string', 'in:' . implode(',', array_column(PositionStatus::cases(), 'value'))],
+            'status' => ['required', 'string', 'in:'.implode(',', array_column(PositionStatus::cases(), 'value'))],
             'requirements' => ['nullable', 'array'],
             'responsibilities' => ['nullable', 'array'],
             'skills_required' => ['nullable', 'array'],
@@ -210,16 +202,18 @@ class EmployeePositionDTO extends Data
     public function getSalaryRange(): string
     {
         if ($this->salary_min && $this->salary_max) {
-            return '$' . number_format($this->salary_min, 0) . ' - $' . number_format($this->salary_max, 0);
+            return '$'.number_format($this->salary_min, 0).' - $'.number_format($this->salary_max, 0);
         }
+
         return 'Not specified';
     }
 
     public function getHourlyRateRange(): string
     {
         if ($this->hourly_rate_min && $this->hourly_rate_max) {
-            return '$' . number_format($this->hourly_rate_min, 2) . ' - $' . number_format($this->hourly_rate_max, 2);
+            return '$'.number_format($this->hourly_rate_min, 2).' - $'.number_format($this->hourly_rate_max, 2);
         }
+
         return 'Not specified';
     }
 
@@ -228,6 +222,7 @@ class EmployeePositionDTO extends Data
         if ($this->salary_min && $this->salary_max) {
             return ($this->salary_min + $this->salary_max) / 2;
         }
+
         return 0;
     }
 
@@ -236,6 +231,7 @@ class EmployeePositionDTO extends Data
         if ($this->hourly_rate_min && $this->hourly_rate_max) {
             return ($this->hourly_rate_min + $this->hourly_rate_max) / 2;
         }
+
         return 0;
     }
 

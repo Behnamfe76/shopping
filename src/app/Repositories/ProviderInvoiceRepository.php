@@ -2,19 +2,17 @@
 
 namespace Fereydooni\Shopping\App\Repositories;
 
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Cache;
-use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderInvoiceRepositoryInterface;
-use Fereydooni\Shopping\App\Models\ProviderInvoice;
 use Fereydooni\Shopping\App\DTOs\ProviderInvoiceDTO;
 use Fereydooni\Shopping\App\Enums\InvoiceStatus;
-use Fereydooni\Shopping\App\Enums\PaymentTerms;
-use Carbon\Carbon;
+use Fereydooni\Shopping\App\Models\ProviderInvoice;
+use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderInvoiceRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
 {
@@ -47,7 +45,7 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
             ->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->model->with(['provider', 'payments'])
             ->orderBy('id', 'desc')
@@ -64,6 +62,7 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
     public function findDTO(int $id): ?ProviderInvoiceDTO
     {
         $invoice = $this->find($id);
+
         return $invoice ? ProviderInvoiceDTO::fromModel($invoice) : null;
     }
 
@@ -78,10 +77,11 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
             Cache::forget('provider_invoices_all');
 
             DB::commit();
+
             return $invoice;
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Failed to create provider invoice: ' . $e->getMessage());
+            Log::error('Failed to create provider invoice: '.$e->getMessage());
             throw $e;
         }
     }
@@ -89,6 +89,7 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
     public function createAndReturnDTO(array $data): ProviderInvoiceDTO
     {
         $invoice = $this->create($data);
+
         return ProviderInvoiceDTO::fromModel($invoice);
     }
 
@@ -104,10 +105,11 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
             Cache::forget('provider_invoices_all');
 
             DB::commit();
+
             return $result;
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Failed to update provider invoice: ' . $e->getMessage());
+            Log::error('Failed to update provider invoice: '.$e->getMessage());
             throw $e;
         }
     }
@@ -115,6 +117,7 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
     public function updateAndReturnDTO(ProviderInvoice $invoice, array $data): ?ProviderInvoiceDTO
     {
         $result = $this->update($invoice, $data);
+
         return $result ? ProviderInvoiceDTO::fromModel($invoice->fresh()) : null;
     }
 
@@ -130,10 +133,11 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
             Cache::forget('provider_invoices_all');
 
             DB::commit();
+
             return $result;
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Failed to delete provider invoice: ' . $e->getMessage());
+            Log::error('Failed to delete provider invoice: '.$e->getMessage());
             throw $e;
         }
     }
@@ -152,7 +156,8 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
     public function findByProviderIdDTO(int $providerId): Collection
     {
         $invoices = $this->findByProviderId($providerId);
-        return $invoices->map(fn($invoice) => ProviderInvoiceDTO::fromModel($invoice));
+
+        return $invoices->map(fn ($invoice) => ProviderInvoiceDTO::fromModel($invoice));
     }
 
     public function findByInvoiceNumber(string $invoiceNumber): ?ProviderInvoice
@@ -165,6 +170,7 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
     public function findByInvoiceNumberDTO(string $invoiceNumber): ?ProviderInvoiceDTO
     {
         $invoice = $this->findByInvoiceNumber($invoiceNumber);
+
         return $invoice ? ProviderInvoiceDTO::fromModel($invoice) : null;
     }
 
@@ -179,7 +185,8 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
     public function findByStatusDTO(string $status): Collection
     {
         $invoices = $this->findByStatus($status);
-        return $invoices->map(fn($invoice) => ProviderInvoiceDTO::fromModel($invoice));
+
+        return $invoices->map(fn ($invoice) => ProviderInvoiceDTO::fromModel($invoice));
     }
 
     public function findByDateRange(string $startDate, string $endDate): Collection
@@ -193,7 +200,8 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
     public function findByDateRangeDTO(string $startDate, string $endDate): Collection
     {
         $invoices = $this->findByDateRange($startDate, $endDate);
-        return $invoices->map(fn($invoice) => ProviderInvoiceDTO::fromModel($invoice));
+
+        return $invoices->map(fn ($invoice) => ProviderInvoiceDTO::fromModel($invoice));
     }
 
     public function findByProviderAndDateRange(int $providerId, string $startDate, string $endDate): Collection
@@ -208,7 +216,8 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
     public function findByProviderAndDateRangeDTO(int $providerId, string $startDate, string $endDate): Collection
     {
         $invoices = $this->findByProviderAndDateRange($providerId, $startDate, $endDate);
-        return $invoices->map(fn($invoice) => ProviderInvoiceDTO::fromModel($invoice));
+
+        return $invoices->map(fn ($invoice) => ProviderInvoiceDTO::fromModel($invoice));
     }
 
     public function findByDueDateRange(string $startDate, string $endDate): Collection
@@ -222,7 +231,8 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
     public function findByDueDateRangeDTO(string $startDate, string $endDate): Collection
     {
         $invoices = $this->findByDueDateRange($startDate, $endDate);
-        return $invoices->map(fn($invoice) => ProviderInvoiceDTO::fromModel($invoice));
+
+        return $invoices->map(fn ($invoice) => ProviderInvoiceDTO::fromModel($invoice));
     }
 
     public function findByAmountRange(float $minAmount, float $maxAmount): Collection
@@ -236,7 +246,8 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
     public function findByAmountRangeDTO(float $minAmount, float $maxAmount): Collection
     {
         $invoices = $this->findByAmountRange($minAmount, $maxAmount);
-        return $invoices->map(fn($invoice) => ProviderInvoiceDTO::fromModel($invoice));
+
+        return $invoices->map(fn ($invoice) => ProviderInvoiceDTO::fromModel($invoice));
     }
 
     public function findByPaymentTerms(string $paymentTerms): Collection
@@ -250,7 +261,8 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
     public function findByPaymentTermsDTO(string $paymentTerms): Collection
     {
         $invoices = $this->findByPaymentTerms($paymentTerms);
-        return $invoices->map(fn($invoice) => ProviderInvoiceDTO::fromModel($invoice));
+
+        return $invoices->map(fn ($invoice) => ProviderInvoiceDTO::fromModel($invoice));
     }
 
     public function findByCurrency(string $currency): Collection
@@ -264,7 +276,8 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
     public function findByCurrencyDTO(string $currency): Collection
     {
         $invoices = $this->findByCurrency($currency);
-        return $invoices->map(fn($invoice) => ProviderInvoiceDTO::fromModel($invoice));
+
+        return $invoices->map(fn ($invoice) => ProviderInvoiceDTO::fromModel($invoice));
     }
 
     // Status-based queries
@@ -281,7 +294,8 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
     public function findOverdueDTO(): Collection
     {
         $invoices = $this->findOverdue();
-        return $invoices->map(fn($invoice) => ProviderInvoiceDTO::fromModel($invoice));
+
+        return $invoices->map(fn ($invoice) => ProviderInvoiceDTO::fromModel($invoice));
     }
 
     public function findPaid(): Collection
@@ -299,16 +313,17 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
         return $this->model->whereIn('status', [
             InvoiceStatus::SENT->value,
             InvoiceStatus::OVERDUE->value,
-            InvoiceStatus::PARTIALLY_PAID->value
+            InvoiceStatus::PARTIALLY_PAID->value,
         ])->with(['provider', 'payments'])
-        ->orderBy('due_date', 'asc')
-        ->get();
+            ->orderBy('due_date', 'asc')
+            ->get();
     }
 
     public function findUnpaidDTO(): Collection
     {
         $invoices = $this->findUnpaid();
-        return $invoices->map(fn($invoice) => ProviderInvoiceDTO::fromModel($invoice));
+
+        return $invoices->map(fn ($invoice) => ProviderInvoiceDTO::fromModel($invoice));
     }
 
     public function findDraft(): Collection
@@ -330,23 +345,23 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
 
         return $this->update($invoice, [
             'status' => InvoiceStatus::SENT->value,
-            'sent_at' => now()
+            'sent_at' => now(),
         ]);
     }
 
-    public function markAsPaid(ProviderInvoice $invoice, string $paymentDate = null): bool
+    public function markAsPaid(ProviderInvoice $invoice, ?string $paymentDate = null): bool
     {
-        if (!in_array($invoice->status, [
+        if (! in_array($invoice->status, [
             InvoiceStatus::SENT->value,
             InvoiceStatus::OVERDUE->value,
-            InvoiceStatus::PARTIALLY_PAID->value
+            InvoiceStatus::PARTIALLY_PAID->value,
         ])) {
             return false;
         }
 
         return $this->update($invoice, [
             'status' => InvoiceStatus::PAID->value,
-            'paid_at' => $paymentDate ?: now()
+            'paid_at' => $paymentDate ?: now(),
         ]);
     }
 
@@ -357,32 +372,32 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
         }
 
         return $this->update($invoice, [
-            'status' => InvoiceStatus::OVERDUE->value
+            'status' => InvoiceStatus::OVERDUE->value,
         ]);
     }
 
-    public function cancel(ProviderInvoice $invoice, string $reason = null): bool
+    public function cancel(ProviderInvoice $invoice, ?string $reason = null): bool
     {
-        if (!in_array($invoice->status, [
+        if (! in_array($invoice->status, [
             InvoiceStatus::DRAFT->value,
-            InvoiceStatus::SENT->value
+            InvoiceStatus::SENT->value,
         ])) {
             return false;
         }
 
         $data = ['status' => InvoiceStatus::CANCELLED->value];
         if ($reason) {
-            $data['notes'] = ($invoice->notes ? $invoice->notes . "\n" : '') . "Cancelled: {$reason}";
+            $data['notes'] = ($invoice->notes ? $invoice->notes."\n" : '')."Cancelled: {$reason}";
         }
 
         return $this->update($invoice, $data);
     }
 
-    public function dispute(ProviderInvoice $invoice, string $reason = null): bool
+    public function dispute(ProviderInvoice $invoice, ?string $reason = null): bool
     {
         $data = ['status' => InvoiceStatus::DISPUTED->value];
         if ($reason) {
-            $data['notes'] = ($invoice->notes ? $invoice->notes . "\n" : '') . "Disputed: {$reason}";
+            $data['notes'] = ($invoice->notes ? $invoice->notes."\n" : '')."Disputed: {$reason}";
         }
 
         return $this->update($invoice, $data);
@@ -395,7 +410,7 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
         }
 
         return $this->update($invoice, [
-            'sent_at' => now()
+            'sent_at' => now(),
         ]);
     }
 
@@ -403,12 +418,20 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
     {
         $data = [];
 
-        if (isset($amounts['subtotal'])) $data['subtotal'] = $amounts['subtotal'];
-        if (isset($amounts['tax_amount'])) $data['tax_amount'] = $amounts['tax_amount'];
-        if (isset($amounts['discount_amount'])) $data['discount_amount'] = $amounts['discount_amount'];
-        if (isset($amounts['shipping_amount'])) $data['shipping_amount'] = $amounts['shipping_amount'];
+        if (isset($amounts['subtotal'])) {
+            $data['subtotal'] = $amounts['subtotal'];
+        }
+        if (isset($amounts['tax_amount'])) {
+            $data['tax_amount'] = $amounts['tax_amount'];
+        }
+        if (isset($amounts['discount_amount'])) {
+            $data['discount_amount'] = $amounts['discount_amount'];
+        }
+        if (isset($amounts['shipping_amount'])) {
+            $data['shipping_amount'] = $amounts['shipping_amount'];
+        }
 
-        if (!empty($data)) {
+        if (! empty($data)) {
             $data['total_amount'] = $this->calculateTotalAmount($data);
         }
 
@@ -423,7 +446,7 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
         }
 
         return $this->update($invoice, [
-            'due_date' => $newDueDate
+            'due_date' => $newDueDate,
         ]);
     }
 
@@ -442,7 +465,7 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
             ->count();
     }
 
-    public function getProviderTotalInvoiced(int $providerId, string $startDate = null, string $endDate = null): float
+    public function getProviderTotalInvoiced(int $providerId, ?string $startDate = null, ?string $endDate = null): float
     {
         $query = $this->model->where('provider_id', $providerId);
 
@@ -453,7 +476,7 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
         return $query->sum('total_amount');
     }
 
-    public function getProviderTotalPaid(int $providerId, string $startDate = null, string $endDate = null): float
+    public function getProviderTotalPaid(int $providerId, ?string $startDate = null, ?string $endDate = null): float
     {
         $query = $this->model->where('provider_id', $providerId)
             ->where('status', InvoiceStatus::PAID->value);
@@ -471,7 +494,7 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
             ->whereIn('status', [
                 InvoiceStatus::SENT->value,
                 InvoiceStatus::OVERDUE->value,
-                InvoiceStatus::PARTIALLY_PAID->value
+                InvoiceStatus::PARTIALLY_PAID->value,
             ])
             ->sum('total_amount');
     }
@@ -502,7 +525,7 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
         return $this->model->where('status', $status)->count();
     }
 
-    public function getTotalInvoicedAmount(string $startDate = null, string $endDate = null): float
+    public function getTotalInvoicedAmount(?string $startDate = null, ?string $endDate = null): float
     {
         $query = $this->model;
 
@@ -513,7 +536,7 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
         return $query->sum('total_amount');
     }
 
-    public function getTotalPaidAmount(string $startDate = null, string $endDate = null): float
+    public function getTotalPaidAmount(?string $startDate = null, ?string $endDate = null): float
     {
         $query = $this->model->where('status', InvoiceStatus::PAID->value);
 
@@ -529,7 +552,7 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
         return $this->model->whereIn('status', [
             InvoiceStatus::SENT->value,
             InvoiceStatus::OVERDUE->value,
-            InvoiceStatus::PARTIALLY_PAID->value
+            InvoiceStatus::PARTIALLY_PAID->value,
         ])->sum('total_amount');
     }
 
@@ -559,7 +582,7 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
         return $this->model->whereIn('status', [
             InvoiceStatus::SENT->value,
             InvoiceStatus::OVERDUE->value,
-            InvoiceStatus::PARTIALLY_PAID->value
+            InvoiceStatus::PARTIALLY_PAID->value,
         ])->count();
     }
 
@@ -568,20 +591,21 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
     {
         return $this->model->where(function ($q) use ($query) {
             $q->where('invoice_number', 'like', "%{$query}%")
-              ->orWhere('reference_number', 'like', "%{$query}%")
-              ->orWhere('notes', 'like', "%{$query}%")
-              ->orWhereHas('provider', function ($providerQuery) use ($query) {
-                  $providerQuery->where('name', 'like', "%{$query}%");
-              });
+                ->orWhere('reference_number', 'like', "%{$query}%")
+                ->orWhere('notes', 'like', "%{$query}%")
+                ->orWhereHas('provider', function ($providerQuery) use ($query) {
+                    $providerQuery->where('name', 'like', "%{$query}%");
+                });
         })->with(['provider', 'payments'])
-        ->orderBy('created_at', 'desc')
-        ->get();
+            ->orderBy('created_at', 'desc')
+            ->get();
     }
 
     public function searchInvoicesDTO(string $query): Collection
     {
         $invoices = $this->searchInvoices($query);
-        return $invoices->map(fn($invoice) => ProviderInvoiceDTO::fromModel($invoice));
+
+        return $invoices->map(fn ($invoice) => ProviderInvoiceDTO::fromModel($invoice));
     }
 
     public function searchInvoicesByProvider(int $providerId, string $query): Collection
@@ -589,8 +613,8 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
         return $this->model->where('provider_id', $providerId)
             ->where(function ($q) use ($query) {
                 $q->where('invoice_number', 'like', "%{$query}%")
-                  ->orWhere('reference_number', 'like', "%{$query}%")
-                  ->orWhere('notes', 'like', "%{$query}%");
+                    ->orWhere('reference_number', 'like', "%{$query}%")
+                    ->orWhere('notes', 'like', "%{$query}%");
             })->with(['provider', 'payments'])
             ->orderBy('created_at', 'desc')
             ->get();
@@ -599,7 +623,8 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
     public function searchInvoicesByProviderDTO(int $providerId, string $query): Collection
     {
         $invoices = $this->searchInvoicesByProvider($providerId, $query);
-        return $invoices->map(fn($invoice) => ProviderInvoiceDTO::fromModel($invoice));
+
+        return $invoices->map(fn ($invoice) => ProviderInvoiceDTO::fromModel($invoice));
     }
 
     // Import/Export functionality
@@ -616,10 +641,12 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
         // This is a placeholder - actual implementation would depend on import library
         try {
             $data = json_decode($data, true);
+
             // Process imported data
             return true;
         } catch (\Exception $e) {
-            Log::error('Failed to import invoice data: ' . $e->getMessage());
+            Log::error('Failed to import invoice data: '.$e->getMessage());
+
             return false;
         }
     }
@@ -657,7 +684,7 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
         ];
     }
 
-    public function getInvoiceTrends(string $startDate = null, string $endDate = null): array
+    public function getInvoiceTrends(?string $startDate = null, ?string $endDate = null): array
     {
         $startDate = $startDate ?: now()->subMonths(12)->format('Y-m-d');
         $endDate = $endDate ?: now()->format('Y-m-d');
@@ -693,13 +720,13 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
 
     public function isInvoiceNumberUnique(string $invoiceNumber): bool
     {
-        return !$this->model->where('invoice_number', $invoiceNumber)->exists();
+        return ! $this->model->where('invoice_number', $invoiceNumber)->exists();
     }
 
     public function calculateInvoiceTotals(int $invoiceId): array
     {
         $invoice = $this->find($invoiceId);
-        if (!$invoice) {
+        if (! $invoice) {
             return [];
         }
 
@@ -757,4 +784,3 @@ class ProviderInvoiceRepository implements ProviderInvoiceRepositoryInterface
             ->toArray();
     }
 }
-

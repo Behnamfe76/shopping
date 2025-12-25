@@ -14,7 +14,7 @@ class ProviderPermissionSeeder extends Seeder
     public function run(): void
     {
         // Check if permissions table exists
-        if (!Schema::hasTable('permissions')) {
+        if (! Schema::hasTable('permissions')) {
             return;
         }
 

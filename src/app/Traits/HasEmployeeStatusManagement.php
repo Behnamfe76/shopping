@@ -2,9 +2,8 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
-use Fereydooni\Shopping\app\Models\Employee;
-use Fereydooni\Shopping\app\DTOs\EmployeeDTO;
 use Fereydooni\Shopping\app\Enums\EmployeeStatus;
+use Fereydooni\Shopping\app\Models\Employee;
 use Illuminate\Database\Eloquent\Collection;
 
 trait HasEmployeeStatusManagement
@@ -20,12 +19,12 @@ trait HasEmployeeStatusManagement
         return $this->repository->deactivate($employee);
     }
 
-    public function terminateEmployee(Employee $employee, string $reason = null, string $terminationDate = null): bool
+    public function terminateEmployee(Employee $employee, ?string $reason = null, ?string $terminationDate = null): bool
     {
         return $this->repository->terminate($employee, $reason, $terminationDate);
     }
 
-    public function rehireEmployee(Employee $employee, string $hireDate = null): bool
+    public function rehireEmployee(Employee $employee, ?string $hireDate = null): bool
     {
         return $this->repository->rehire($employee, $hireDate);
     }
@@ -97,7 +96,7 @@ trait HasEmployeeStatusManagement
         return in_array($employee->status, [
             EmployeeStatus::INACTIVE,
             EmployeeStatus::PENDING,
-            EmployeeStatus::ON_LEAVE
+            EmployeeStatus::ON_LEAVE,
         ]);
     }
 
@@ -112,7 +111,7 @@ trait HasEmployeeStatusManagement
             EmployeeStatus::ACTIVE,
             EmployeeStatus::INACTIVE,
             EmployeeStatus::PENDING,
-            EmployeeStatus::ON_LEAVE
+            EmployeeStatus::ON_LEAVE,
         ]);
     }
 
@@ -134,6 +133,7 @@ trait HasEmployeeStatusManagement
             case EmployeeStatus::TERMINATED:
                 $reason = $options['reason'] ?? null;
                 $terminationDate = $options['termination_date'] ?? null;
+
                 return $this->terminateEmployee($employee, $reason, $terminationDate);
 
             case EmployeeStatus::ON_LEAVE:
@@ -189,7 +189,7 @@ trait HasEmployeeStatusManagement
         foreach ($stats as $status => $count) {
             $distribution[$status] = [
                 'count' => $count,
-                'percentage' => $total > 0 ? round(($count / $total) * 100, 2) : 0
+                'percentage' => $total > 0 ? round(($count / $total) * 100, 2) : 0,
             ];
         }
 
@@ -235,7 +235,7 @@ trait HasEmployeeStatusManagement
         return $results;
     }
 
-    public function bulkTerminateEmployees(array $employeeIds, string $reason = null): array
+    public function bulkTerminateEmployees(array $employeeIds, ?string $reason = null): array
     {
         $results = [];
 
@@ -262,7 +262,7 @@ trait HasEmployeeStatusManagement
         return false;
     }
 
-    public function processEmployeeOffboarding(Employee $employee, string $reason = null): bool
+    public function processEmployeeOffboarding(Employee $employee, ?string $reason = null): bool
     {
         // Transition to TERMINATED
         if ($this->canTerminateEmployee($employee)) {
@@ -292,4 +292,3 @@ trait HasEmployeeStatusManagement
         return false;
     }
 }
-

@@ -2,11 +2,8 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\MapName;
-use Spatie\LaravelData\Attributes\WithTransformer;
-use Spatie\LaravelData\Transformers\DateTimeTransformer;
 use Illuminate\Support\Carbon;
+use Spatie\LaravelData\Data;
 
 class ProductAttributeValueDTO extends Data
 {
@@ -28,8 +25,7 @@ class ProductAttributeValueDTO extends Data
         public ?Carbon $created_at = null,
         public ?Carbon $updated_at = null,
         public ?ProductAttributeDTO $attribute = null,
-    ) {
-    }
+    ) {}
 
     public static function fromModel($attributeValue): static
     {
@@ -106,4 +102,3 @@ class ProductAttributeValueDTO extends Data
         ];
     }
 }
-

@@ -10,7 +10,7 @@ enum RatingScale: string
 
     public function getMaxValue(): int
     {
-        return match($this) {
+        return match ($this) {
             self::FIVE_STAR => 5,
             self::TEN_SCALE => 10,
             self::PERCENTAGE => 100,
@@ -19,7 +19,7 @@ enum RatingScale: string
 
     public function getMinValue(): int
     {
-        return match($this) {
+        return match ($this) {
             self::FIVE_STAR => 1,
             self::TEN_SCALE => 1,
             self::PERCENTAGE => 0,
@@ -28,7 +28,7 @@ enum RatingScale: string
 
     public function getDescription(): string
     {
-        return match($this) {
+        return match ($this) {
             self::FIVE_STAR => '1-5 Star Rating',
             self::TEN_SCALE => '1-10 Scale Rating',
             self::PERCENTAGE => '0-100% Rating',

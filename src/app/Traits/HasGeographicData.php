@@ -17,8 +17,9 @@ trait HasGeographicData
             'village_model' => 'App\Models\Village',
         ]);
 
-        $key = $type . '_model';
-        return $config[$key] ?? "App\\Models\\" . ucfirst($type);
+        $key = $type.'_model';
+
+        return $config[$key] ?? 'App\\Models\\'.ucfirst($type);
     }
 
     protected function getDefaultGeographicValue(string $type): mixed
@@ -166,11 +167,11 @@ trait HasGeographicData
         ];
 
         foreach ($defaults as $type => $defaultValue) {
-            if ($defaultValue && !$this->{$type . '_id'}) {
+            if ($defaultValue && ! $this->{$type.'_id'}) {
                 $model = $this->getGeographicModel($type);
                 $entity = app($model)->where('name', $defaultValue)->first();
                 if ($entity) {
-                    $this->{$type . '_id'} = $entity->id;
+                    $this->{$type.'_id'} = $entity->id;
                 }
             }
         }

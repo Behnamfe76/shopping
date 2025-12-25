@@ -2,13 +2,13 @@
 
 namespace Fereydooni\Shopping\Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use Fereydooni\Shopping\App\Models\ProviderPayment;
+use Fereydooni\Shopping\App\Enums\ProviderPaymentMethod;
+use Fereydooni\Shopping\App\Enums\ProviderPaymentStatus;
 use Fereydooni\Shopping\App\Models\Provider;
 use Fereydooni\Shopping\App\Models\ProviderInvoice;
+use Fereydooni\Shopping\App\Models\ProviderPayment;
 use Fereydooni\Shopping\App\Models\User;
-use Fereydooni\Shopping\App\Enums\ProviderPaymentStatus;
-use Fereydooni\Shopping\App\Enums\ProviderPaymentMethod;
+use Illuminate\Database\Seeder;
 
 class ProviderPaymentSeeder extends Seeder
 {
@@ -24,12 +24,14 @@ class ProviderPaymentSeeder extends Seeder
 
         if ($providers->isEmpty()) {
             $this->command->warn('No providers found. Creating sample providers first.');
+
             // You might want to run ProviderSeeder here first
             return;
         }
 
         if ($users->isEmpty()) {
             $this->command->warn('No users found. Creating sample users first.');
+
             // You might want to run UserSeeder here first
             return;
         }
@@ -120,6 +122,7 @@ class ProviderPaymentSeeder extends Seeder
         ];
 
         $range = $ranges[$currency] ?? [100, 5000];
+
         return round(rand($range[0] * 100, $range[1] * 100) / 100, 2);
     }
 
@@ -174,6 +177,7 @@ class ProviderPaymentSeeder extends Seeder
         ];
 
         $statusNotes = $notes[$status] ?? ['Payment note'];
+
         return $statusNotes[array_rand($statusNotes)];
     }
 
@@ -185,22 +189,22 @@ class ProviderPaymentSeeder extends Seeder
         switch ($paymentMethod->value) {
             case 'bank_transfer':
                 return [
-                    'reference_number' => 'BANK-' . strtoupper(substr(md5(uniqid()), 0, 8)),
+                    'reference_number' => 'BANK-'.strtoupper(substr(md5(uniqid()), 0, 8)),
                     'transaction_id' => null,
                 ];
             case 'check':
                 return [
-                    'reference_number' => 'CHK-' . strtoupper(substr(md5(uniqid()), 0, 8)),
+                    'reference_number' => 'CHK-'.strtoupper(substr(md5(uniqid()), 0, 8)),
                     'transaction_id' => null,
                 ];
             case 'credit_card':
                 return [
                     'reference_number' => null,
-                    'transaction_id' => 'TXN-' . strtoupper(substr(md5(uniqid()), 0, 12)),
+                    'transaction_id' => 'TXN-'.strtoupper(substr(md5(uniqid()), 0, 12)),
                 ];
             case 'wire_transfer':
                 return [
-                    'reference_number' => 'WIRE-' . strtoupper(substr(md5(uniqid()), 0, 8)),
+                    'reference_number' => 'WIRE-'.strtoupper(substr(md5(uniqid()), 0, 8)),
                     'transaction_id' => null,
                 ];
             case 'cash':
@@ -210,7 +214,7 @@ class ProviderPaymentSeeder extends Seeder
                 ];
             default:
                 return [
-                    'reference_number' => 'REF-' . strtoupper(substr(md5(uniqid()), 0, 8)),
+                    'reference_number' => 'REF-'.strtoupper(substr(md5(uniqid()), 0, 8)),
                     'transaction_id' => null,
                 ];
         }
@@ -381,7 +385,7 @@ class ProviderPaymentSeeder extends Seeder
                 'attachments' => [
                     'check_image.jpg',
                     'deposit_slip.pdf',
-                    'bank_confirmation.pdf'
+                    'bank_confirmation.pdf',
                 ],
                 'reconciliation_notes' => 'Payment reconciled with attached documents',
                 'notes' => 'Check payment with supporting documents',
@@ -398,6 +402,6 @@ class ProviderPaymentSeeder extends Seeder
         $date = now()->format('Ymd');
         $random = strtoupper(substr(md5(uniqid()), 0, 6));
 
-        return $prefix . $date . $random;
+        return $prefix.$date.$random;
     }
 }

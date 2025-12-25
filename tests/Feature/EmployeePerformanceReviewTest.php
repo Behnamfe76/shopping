@@ -2,26 +2,28 @@
 
 namespace Tests\Feature;
 
-use Tests\TestCase;
-use Fereydooni\Shopping\app\Models\EmployeePerformanceReview;
-use Fereydooni\Shopping\app\Models\Employee;
-use Fereydooni\Shopping\app\Models\User;
 use Fereydooni\Shopping\app\DTOs\EmployeePerformanceReviewDTO;
-use Fereydooni\Shopping\app\Services\EmployeePerformanceReviewService;
 use Fereydooni\Shopping\app\Enums\EmployeePerformanceReviewStatus;
-use Fereydooni\Shopping\app\Enums\EmployeePerformanceReviewRating;
+use Fereydooni\Shopping\app\Models\Employee;
+use Fereydooni\Shopping\app\Models\EmployeePerformanceReview;
+use Fereydooni\Shopping\app\Models\User;
+use Fereydooni\Shopping\app\Services\EmployeePerformanceReviewService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
+use Tests\TestCase;
 
 class EmployeePerformanceReviewTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
 
     protected Employee $employee;
+
     protected User $reviewer;
+
     protected User $approver;
+
     protected EmployeePerformanceReviewService $service;
 
     protected function setUp(): void
@@ -55,7 +57,7 @@ class EmployeePerformanceReviewTest extends TestCase
             'areas_for_improvement' => 'Time management',
             'recommendations' => 'Continue current performance',
             'employee_comments' => 'I am satisfied with my performance',
-            'reviewer_comments' => 'Employee shows great potential'
+            'reviewer_comments' => 'Employee shows great potential',
         ];
 
         $review = $this->service->createReview($data);
@@ -73,14 +75,14 @@ class EmployeePerformanceReviewTest extends TestCase
         $review = EmployeePerformanceReview::factory()->create([
             'employee_id' => $this->employee->id,
             'reviewer_id' => $this->reviewer->id,
-            'status' => EmployeePerformanceReviewStatus::DRAFT
+            'status' => EmployeePerformanceReviewStatus::DRAFT,
         ]);
 
         $updateData = [
             'overall_rating' => 4.5,
             'performance_score' => 90.0,
             'strengths' => 'Updated strengths',
-            'areas_for_improvement' => 'Updated improvement areas'
+            'areas_for_improvement' => 'Updated improvement areas',
         ];
 
         $updatedReview = $this->service->updateReview($review->id, $updateData);
@@ -96,7 +98,7 @@ class EmployeePerformanceReviewTest extends TestCase
     {
         $review = EmployeePerformanceReview::factory()->create([
             'employee_id' => $this->employee->id,
-            'reviewer_id' => $this->reviewer->id
+            'reviewer_id' => $this->reviewer->id,
         ]);
 
         $result = $this->service->deleteReview($review->id);
@@ -111,7 +113,7 @@ class EmployeePerformanceReviewTest extends TestCase
         $review = EmployeePerformanceReview::factory()->create([
             'employee_id' => $this->employee->id,
             'reviewer_id' => $this->reviewer->id,
-            'status' => EmployeePerformanceReviewStatus::DRAFT
+            'status' => EmployeePerformanceReviewStatus::DRAFT,
         ]);
 
         $result = $this->service->submitReview($review->id);
@@ -119,7 +121,7 @@ class EmployeePerformanceReviewTest extends TestCase
         $this->assertTrue($result);
         $this->assertDatabaseHas('employee_performance_reviews', [
             'id' => $review->id,
-            'status' => EmployeePerformanceReviewStatus::PENDING_APPROVAL
+            'status' => EmployeePerformanceReviewStatus::PENDING_APPROVAL,
         ]);
     }
 
@@ -129,7 +131,7 @@ class EmployeePerformanceReviewTest extends TestCase
         $review = EmployeePerformanceReview::factory()->create([
             'employee_id' => $this->employee->id,
             'reviewer_id' => $this->reviewer->id,
-            'status' => EmployeePerformanceReviewStatus::PENDING_APPROVAL
+            'status' => EmployeePerformanceReviewStatus::PENDING_APPROVAL,
         ]);
 
         $result = $this->service->approveReview($review->id, $this->approver->id);
@@ -139,7 +141,7 @@ class EmployeePerformanceReviewTest extends TestCase
             'id' => $review->id,
             'status' => EmployeePerformanceReviewStatus::APPROVED,
             'is_approved' => true,
-            'approved_by' => $this->approver->id
+            'approved_by' => $this->approver->id,
         ]);
     }
 
@@ -149,7 +151,7 @@ class EmployeePerformanceReviewTest extends TestCase
         $review = EmployeePerformanceReview::factory()->create([
             'employee_id' => $this->employee->id,
             'reviewer_id' => $this->reviewer->id,
-            'status' => EmployeePerformanceReviewStatus::PENDING_APPROVAL
+            'status' => EmployeePerformanceReviewStatus::PENDING_APPROVAL,
         ]);
 
         $reason = 'Incomplete information provided';
@@ -158,7 +160,7 @@ class EmployeePerformanceReviewTest extends TestCase
         $this->assertTrue($result);
         $this->assertDatabaseHas('employee_performance_reviews', [
             'id' => $review->id,
-            'status' => EmployeePerformanceReviewStatus::REJECTED
+            'status' => EmployeePerformanceReviewStatus::REJECTED,
         ]);
     }
 
@@ -167,7 +169,7 @@ class EmployeePerformanceReviewTest extends TestCase
     {
         $review = EmployeePerformanceReview::factory()->create([
             'employee_id' => $this->employee->id,
-            'reviewer_id' => $this->reviewer->id
+            'reviewer_id' => $this->reviewer->id,
         ]);
 
         $newReviewer = User::factory()->create();
@@ -176,7 +178,7 @@ class EmployeePerformanceReviewTest extends TestCase
         $this->assertTrue($result);
         $this->assertDatabaseHas('employee_performance_reviews', [
             'id' => $review->id,
-            'reviewer_id' => $newReviewer->id
+            'reviewer_id' => $newReviewer->id,
         ]);
     }
 
@@ -185,7 +187,7 @@ class EmployeePerformanceReviewTest extends TestCase
     {
         $review = EmployeePerformanceReview::factory()->create([
             'employee_id' => $this->employee->id,
-            'reviewer_id' => $this->reviewer->id
+            'reviewer_id' => $this->reviewer->id,
         ]);
 
         $reviewDate = '2025-01-15';
@@ -194,7 +196,7 @@ class EmployeePerformanceReviewTest extends TestCase
         $this->assertTrue($result);
         $this->assertDatabaseHas('employee_performance_reviews', [
             'id' => $review->id,
-            'review_date' => $reviewDate
+            'review_date' => $reviewDate,
         ]);
     }
 
@@ -204,7 +206,7 @@ class EmployeePerformanceReviewTest extends TestCase
         // Create multiple reviews for the same employee
         EmployeePerformanceReview::factory()->count(3)->create([
             'employee_id' => $this->employee->id,
-            'reviewer_id' => $this->reviewer->id
+            'reviewer_id' => $this->reviewer->id,
         ]);
 
         $reviews = $this->service->getEmployeeReviews($this->employee->id);
@@ -222,13 +224,13 @@ class EmployeePerformanceReviewTest extends TestCase
         EmployeePerformanceReview::factory()->create([
             'employee_id' => $this->employee->id,
             'reviewer_id' => $this->reviewer->id,
-            'review_date' => '2023-12-15'
+            'review_date' => '2023-12-15',
         ]);
 
         $latestReview = EmployeePerformanceReview::factory()->create([
             'employee_id' => $this->employee->id,
             'reviewer_id' => $this->reviewer->id,
-            'review_date' => '2024-12-15'
+            'review_date' => '2024-12-15',
         ]);
 
         $result = $this->service->getEmployeeLatestReview($this->employee->id);
@@ -244,14 +246,14 @@ class EmployeePerformanceReviewTest extends TestCase
             'employee_id' => $this->employee->id,
             'reviewer_id' => $this->reviewer->id,
             'overall_rating' => 3.5,
-            'review_date' => '2023-12-15'
+            'review_date' => '2023-12-15',
         ]);
 
         EmployeePerformanceReview::factory()->create([
             'employee_id' => $this->employee->id,
             'reviewer_id' => $this->reviewer->id,
             'overall_rating' => 4.0,
-            'review_date' => '2024-12-15'
+            'review_date' => '2024-12-15',
         ]);
 
         $ratingHistory = $this->service->getEmployeeRatingHistory($this->employee->id);
@@ -267,13 +269,13 @@ class EmployeePerformanceReviewTest extends TestCase
         EmployeePerformanceReview::factory()->create([
             'employee_id' => $this->employee->id,
             'reviewer_id' => $this->reviewer->id,
-            'overall_rating' => 3.0
+            'overall_rating' => 3.0,
         ]);
 
         EmployeePerformanceReview::factory()->create([
             'employee_id' => $this->employee->id,
             'reviewer_id' => $this->reviewer->id,
-            'overall_rating' => 5.0
+            'overall_rating' => 5.0,
         ]);
 
         $averageRating = $this->service->getEmployeeAverageRating($this->employee->id);
@@ -287,7 +289,7 @@ class EmployeePerformanceReviewTest extends TestCase
         EmployeePerformanceReview::factory()->create([
             'employee_id' => $this->employee->id,
             'reviewer_id' => $this->reviewer->id,
-            'status' => EmployeePerformanceReviewStatus::PENDING_APPROVAL
+            'status' => EmployeePerformanceReviewStatus::PENDING_APPROVAL,
         ]);
 
         $pendingApprovals = $this->service->getPendingApprovals();
@@ -303,7 +305,7 @@ class EmployeePerformanceReviewTest extends TestCase
             'employee_id' => $this->employee->id,
             'reviewer_id' => $this->reviewer->id,
             'review_date' => now()->subDays(30),
-            'status' => EmployeePerformanceReviewStatus::DRAFT
+            'status' => EmployeePerformanceReviewStatus::DRAFT,
         ]);
 
         $overdueReviews = $this->service->getOverdueReviews();
@@ -317,7 +319,7 @@ class EmployeePerformanceReviewTest extends TestCase
         EmployeePerformanceReview::factory()->create([
             'employee_id' => $this->employee->id,
             'reviewer_id' => $this->reviewer->id,
-            'review_date' => now()->addDays(7)
+            'review_date' => now()->addDays(7),
         ]);
 
         $upcomingReviews = $this->service->getUpcomingReviews();
@@ -331,7 +333,7 @@ class EmployeePerformanceReviewTest extends TestCase
         EmployeePerformanceReview::factory()->create([
             'employee_id' => $this->employee->id,
             'reviewer_id' => $this->reviewer->id,
-            'strengths' => 'Excellent communication skills'
+            'strengths' => 'Excellent communication skills',
         ]);
 
         $searchResults = $this->service->searchReviews('communication');
@@ -348,14 +350,14 @@ class EmployeePerformanceReviewTest extends TestCase
             'employee_id' => $this->employee->id,
             'reviewer_id' => $this->reviewer->id,
             'status' => EmployeePerformanceReviewStatus::APPROVED,
-            'overall_rating' => 4.0
+            'overall_rating' => 4.0,
         ]);
 
         EmployeePerformanceReview::factory()->create([
             'employee_id' => $this->employee->id,
             'reviewer_id' => $this->reviewer->id,
             'status' => EmployeePerformanceReviewStatus::PENDING_APPROVAL,
-            'overall_rating' => 3.5
+            'overall_rating' => 3.5,
         ]);
 
         $statistics = $this->service->getReviewStatistics();
@@ -373,7 +375,7 @@ class EmployeePerformanceReviewTest extends TestCase
         EmployeePerformanceReview::factory()->count(3)->create([
             'employee_id' => $this->employee->id,
             'reviewer_id' => $this->reviewer->id,
-            'overall_rating' => 4.0
+            'overall_rating' => 4.0,
         ]);
 
         $report = $this->service->generatePerformanceReport($this->employee->id, 'year');
@@ -390,7 +392,7 @@ class EmployeePerformanceReviewTest extends TestCase
     {
         EmployeePerformanceReview::factory()->count(2)->create([
             'employee_id' => $this->employee->id,
-            'reviewer_id' => $this->reviewer->id
+            'reviewer_id' => $this->reviewer->id,
         ]);
 
         $exportData = $this->service->exportReviews([], 'json');
@@ -411,8 +413,8 @@ class EmployeePerformanceReviewTest extends TestCase
                 'review_date' => '2024-12-15',
                 'next_review_date' => '2025-06-15',
                 'overall_rating' => 4.0,
-                'performance_score' => 85.0
-            ]
+                'performance_score' => 85.0,
+            ],
         ]);
 
         $result = $this->service->importReviews($importData, 'json');
@@ -420,7 +422,7 @@ class EmployeePerformanceReviewTest extends TestCase
         $this->assertTrue($result);
         $this->assertDatabaseHas('employee_performance_reviews', [
             'employee_id' => $this->employee->id,
-            'overall_rating' => 4.0
+            'overall_rating' => 4.0,
         ]);
     }
 
@@ -430,7 +432,7 @@ class EmployeePerformanceReviewTest extends TestCase
         $reviews = EmployeePerformanceReview::factory()->count(3)->create([
             'employee_id' => $this->employee->id,
             'reviewer_id' => $this->reviewer->id,
-            'status' => EmployeePerformanceReviewStatus::PENDING_APPROVAL
+            'status' => EmployeePerformanceReviewStatus::PENDING_APPROVAL,
         ]);
 
         $reviewIds = $reviews->pluck('id')->toArray();
@@ -441,7 +443,7 @@ class EmployeePerformanceReviewTest extends TestCase
         foreach ($reviewIds as $reviewId) {
             $this->assertDatabaseHas('employee_performance_reviews', [
                 'id' => $reviewId,
-                'status' => EmployeePerformanceReviewStatus::APPROVED
+                'status' => EmployeePerformanceReviewStatus::APPROVED,
             ]);
         }
     }
@@ -452,7 +454,7 @@ class EmployeePerformanceReviewTest extends TestCase
         $reviews = EmployeePerformanceReview::factory()->count(3)->create([
             'employee_id' => $this->employee->id,
             'reviewer_id' => $this->reviewer->id,
-            'status' => EmployeePerformanceReviewStatus::PENDING_APPROVAL
+            'status' => EmployeePerformanceReviewStatus::PENDING_APPROVAL,
         ]);
 
         $reviewIds = $reviews->pluck('id')->toArray();
@@ -464,7 +466,7 @@ class EmployeePerformanceReviewTest extends TestCase
         foreach ($reviewIds as $reviewId) {
             $this->assertDatabaseHas('employee_performance_reviews', [
                 'id' => $reviewId,
-                'status' => EmployeePerformanceReviewStatus::REJECTED
+                'status' => EmployeePerformanceReviewStatus::REJECTED,
             ]);
         }
     }
@@ -477,7 +479,7 @@ class EmployeePerformanceReviewTest extends TestCase
             'employee_id' => $this->employee->id,
             'reviewer_id' => $this->reviewer->id,
             'review_date' => now()->subDays(30),
-            'status' => EmployeePerformanceReviewStatus::DRAFT
+            'status' => EmployeePerformanceReviewStatus::DRAFT,
         ]);
 
         $result = $this->service->sendReviewReminders();
@@ -508,7 +510,7 @@ class EmployeePerformanceReviewTest extends TestCase
             'review_date' => '2024-12-15',
             'next_review_date' => '2025-06-15',
             'overall_rating' => 6.0, // Invalid rating
-            'performance_score' => 85.0
+            'performance_score' => 85.0,
         ];
 
         $this->expectException(\Exception::class);
@@ -526,7 +528,7 @@ class EmployeePerformanceReviewTest extends TestCase
             'review_date' => '2024-12-15',
             'next_review_date' => '2025-06-15',
             'overall_rating' => 4.0,
-            'performance_score' => 150.0 // Invalid score
+            'performance_score' => 150.0, // Invalid score
         ];
 
         $this->expectException(\Exception::class);
@@ -544,7 +546,7 @@ class EmployeePerformanceReviewTest extends TestCase
             'review_date' => '2024-12-15',
             'next_review_date' => '2024-12-10', // Next review before current
             'overall_rating' => 4.0,
-            'performance_score' => 85.0
+            'performance_score' => 85.0,
         ];
 
         $this->expectException(\Exception::class);
@@ -564,7 +566,7 @@ class EmployeePerformanceReviewTest extends TestCase
             'overall_rating' => 4.0,
             'performance_score' => 85.0,
             'goals_achieved' => ['Goal 1', 'Goal 2'],
-            'goals_missed' => ['Goal 3']
+            'goals_missed' => ['Goal 3'],
         ];
 
         $review = $this->service->createReview($data);
@@ -579,7 +581,7 @@ class EmployeePerformanceReviewTest extends TestCase
         $review = EmployeePerformanceReview::factory()->create([
             'employee_id' => $this->employee->id,
             'reviewer_id' => $this->reviewer->id,
-            'status' => EmployeePerformanceReviewStatus::DRAFT
+            'status' => EmployeePerformanceReviewStatus::DRAFT,
         ]);
 
         // Draft -> Submitted
@@ -596,7 +598,7 @@ class EmployeePerformanceReviewTest extends TestCase
     {
         $review = EmployeePerformanceReview::factory()->create([
             'employee_id' => $this->employee->id,
-            'reviewer_id' => $this->reviewer->id
+            'reviewer_id' => $this->reviewer->id,
         ]);
 
         $this->service->deleteReview($review->id);
@@ -610,19 +612,19 @@ class EmployeePerformanceReviewTest extends TestCase
         EmployeePerformanceReview::factory()->create([
             'employee_id' => $this->employee->id,
             'reviewer_id' => $this->reviewer->id,
-            'overall_rating' => 3.0
+            'overall_rating' => 3.0,
         ]);
 
         EmployeePerformanceReview::factory()->create([
             'employee_id' => $this->employee->id,
             'reviewer_id' => $this->reviewer->id,
-            'overall_rating' => 4.0
+            'overall_rating' => 4.0,
         ]);
 
         EmployeePerformanceReview::factory()->create([
             'employee_id' => $this->employee->id,
             'reviewer_id' => $this->reviewer->id,
-            'overall_rating' => 5.0
+            'overall_rating' => 5.0,
         ]);
 
         $averageRating = $this->service->getEmployeeAverageRating($this->employee->id);
@@ -640,7 +642,7 @@ class EmployeePerformanceReviewTest extends TestCase
         EmployeePerformanceReview::factory()->create([
             'employee_id' => $this->employee->id,
             'reviewer_id' => $this->reviewer->id,
-            'overall_rating' => 4.0
+            'overall_rating' => 4.0,
         ]);
 
         $statistics = $this->service->getDepartmentReviewStatistics($departmentId);
@@ -656,7 +658,7 @@ class EmployeePerformanceReviewTest extends TestCase
         EmployeePerformanceReview::factory()->count(5)->create([
             'employee_id' => $this->employee->id,
             'reviewer_id' => $this->reviewer->id,
-            'overall_rating' => 4.0
+            'overall_rating' => 4.0,
         ]);
 
         $statistics = $this->service->getCompanyReviews();

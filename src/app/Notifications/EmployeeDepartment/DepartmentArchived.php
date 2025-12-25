@@ -5,15 +5,16 @@ namespace App\Notifications\EmployeeDepartment;
 use App\Models\EmployeeDepartment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\BroadcastMessage;
 
 class DepartmentArchived extends Notification implements ShouldQueue
 {
     use Queueable;
 
     public $department;
+
     public $reason;
 
     /**
@@ -39,14 +40,14 @@ class DepartmentArchived extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Department Archived: ' . $this->department->name)
-            ->greeting('Hello ' . $notifiable->name . ',')
+            ->subject('Department Archived: '.$this->department->name)
+            ->greeting('Hello '.$notifiable->name.',')
             ->line('A department has been archived in the organization.')
-            ->line('Department: ' . $this->department->name)
-            ->line('Code: ' . $this->department->code)
-            ->line('Location: ' . ($this->department->location ?? 'Not specified'))
+            ->line('Department: '.$this->department->name)
+            ->line('Code: '.$this->department->code)
+            ->line('Location: '.($this->department->location ?? 'Not specified'))
             ->when($this->reason, function ($message) {
-                return $message->line('Reason: ' . $this->reason);
+                return $message->line('Reason: '.$this->reason);
             })
             ->line('This department is now archived and may affect:')
             ->line('• Employee assignments')
@@ -67,9 +68,9 @@ class DepartmentArchived extends Notification implements ShouldQueue
             'department_id' => $this->department->id,
             'department_name' => $this->department->name,
             'reason' => $this->reason,
-            'message' => 'Department "' . $this->department->name . '" has been archived.',
+            'message' => 'Department "'.$this->department->name.'" has been archived.',
             'action_url' => $this->getDepartmentUrl(),
-            'priority' => 'high'
+            'priority' => 'high',
         ];
     }
 
@@ -82,9 +83,9 @@ class DepartmentArchived extends Notification implements ShouldQueue
             'type' => 'department_archived',
             'department_id' => $this->department->id,
             'department_name' => $this->department->name,
-            'message' => 'Department "' . $this->department->name . '" has been archived.',
+            'message' => 'Department "'.$this->department->name.'" has been archived.',
             'timestamp' => now()->toISOString(),
-            'action_url' => $this->getDepartmentUrl()
+            'action_url' => $this->getDepartmentUrl(),
         ]);
     }
 
@@ -93,6 +94,6 @@ class DepartmentArchived extends Notification implements ShouldQueue
      */
     protected function getDepartmentUrl(): string
     {
-        return '/departments/' . $this->department->id;
+        return '/departments/'.$this->department->id;
     }
 }

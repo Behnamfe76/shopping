@@ -2,15 +2,16 @@
 
 namespace Fereydooni\Shopping\app\Events;
 
+use Fereydooni\Shopping\app\Models\Order;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Fereydooni\Shopping\app\Models\Order;
 
 class OrderUpdated
 {
     use Dispatchable, SerializesModels;
 
     public Order $order;
+
     public array $changes;
 
     /**

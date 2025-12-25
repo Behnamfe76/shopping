@@ -2,9 +2,8 @@
 
 namespace App\Policies;
 
-use App\Models\User;
 use App\Models\EmployeePerformanceReview;
-use App\Enums\EmployeePerformanceReviewStatus;
+use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class EmployeePerformanceReviewPolicy
@@ -384,7 +383,7 @@ class EmployeePerformanceReviewPolicy
      */
     protected function canEditReview(EmployeePerformanceReview $review): bool
     {
-        return $review->isEditable() && !$review->isFinal();
+        return $review->isEditable() && ! $review->isFinal();
     }
 
     /**
@@ -455,24 +454,24 @@ class EmployeePerformanceReviewPolicy
         return [
             'admin' => [
                 'all' => true,
-                'description' => 'Full access to all performance review functionality'
+                'description' => 'Full access to all performance review functionality',
             ],
             'hr_manager' => [
                 'all' => true,
-                'description' => 'Full access to all performance review functionality'
+                'description' => 'Full access to all performance review functionality',
             ],
             'manager' => [
                 'department_only' => true,
-                'description' => 'Access to performance reviews within their department'
+                'description' => 'Access to performance reviews within their department',
             ],
             'employee' => [
                 'own_only' => true,
-                'description' => 'Access to their own performance reviews only'
+                'description' => 'Access to their own performance reviews only',
             ],
             'reviewer' => [
                 'assigned_only' => true,
-                'description' => 'Access to reviews they are assigned to review'
-            ]
+                'description' => 'Access to reviews they are assigned to review',
+            ],
         ];
     }
 
@@ -505,7 +504,7 @@ class EmployeePerformanceReviewPolicy
                 'view-employee-performance-reviews',
                 'update-employee-performance-reviews',
                 'submit-employee-performance-reviews',
-            ]
+            ],
         ];
     }
 }

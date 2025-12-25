@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Http\Resources;
 
+use Fereydooni\Shopping\app\Models\Brand;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Fereydooni\Shopping\app\Models\Brand;
 
 class BrandResource extends JsonResource
 {
@@ -32,7 +32,7 @@ class BrandResource extends JsonResource
             'is_active' => $this->is_active,
             'is_featured' => $this->is_featured,
             'sort_order' => $this->sort_order,
-            'status' => __('brands.statuses.' . $this->status->value),
+            'status' => __('brands.statuses.'.$this->status->value),
             'status_label' => $this->status->label(),
             'products_count' => $this->when(isset($this->products_count), $this->products_count),
             'media' => $this->when($this->relationLoaded('media'), function () {

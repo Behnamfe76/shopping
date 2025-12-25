@@ -5,8 +5,8 @@ namespace Fereydooni\Shopping\App\Listeners\ProviderInvoice;
 use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoicePaid;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ProcessInvoicePayment implements ShouldQueue
 {
@@ -30,13 +30,13 @@ class ProcessInvoicePayment implements ShouldQueue
             Log::info('Invoice payment processed successfully', [
                 'invoice_id' => $invoice->id,
                 'provider_id' => $invoice->provider_id,
-                'amount' => $invoice->total_amount
+                'amount' => $invoice->total_amount,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to process invoice payment', [
                 'invoice_id' => $event->invoice->id ?? 'unknown',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             throw $e;
@@ -51,7 +51,7 @@ class ProcessInvoicePayment implements ShouldQueue
         Log::info('Processing payment for invoice', [
             'invoice_id' => $invoice->id,
             'amount' => $invoice->total_amount,
-            'payment_method' => $invoice->payment_method
+            'payment_method' => $invoice->payment_method,
         ]);
     }
 
@@ -72,7 +72,7 @@ class ProcessInvoicePayment implements ShouldQueue
 
             Log::info('Provider records updated after payment', [
                 'provider_id' => $provider->id,
-                'invoice_id' => $invoice->id
+                'invoice_id' => $invoice->id,
             ]);
         }
     }
@@ -91,7 +91,7 @@ class ProcessInvoicePayment implements ShouldQueue
             'reference_number' => $invoice->reference_number,
             'status' => 'completed',
             'created_at' => now(),
-            'updated_at' => now()
+            'updated_at' => now(),
         ];
 
         // You could create a ProviderPayment model here
@@ -99,7 +99,7 @@ class ProcessInvoicePayment implements ShouldQueue
 
         Log::info('Payment record created', [
             'invoice_id' => $invoice->id,
-            'payment_data' => $paymentData
+            'payment_data' => $paymentData,
         ]);
     }
 
@@ -108,7 +108,7 @@ class ProcessInvoicePayment implements ShouldQueue
         // Update system-wide financial metrics
         // This could involve updating cache, database fields, etc.
 
-        $cacheKey = 'financial_metrics_' . date('Y-m');
+        $cacheKey = 'financial_metrics_'.date('Y-m');
         $metrics = cache($cacheKey, []);
 
         $metrics['total_payments'] = ($metrics['total_payments'] ?? 0) + 1;
@@ -119,8 +119,7 @@ class ProcessInvoicePayment implements ShouldQueue
 
         Log::info('Financial metrics updated', [
             'invoice_id' => $invoice->id,
-            'metrics' => $metrics
+            'metrics' => $metrics,
         ]);
     }
 }
-

@@ -233,6 +233,7 @@ class ProviderPaymentPermissions
     public static function getPermissionDescription(string $permission): string
     {
         $descriptions = self::getPermissionDescriptions();
+
         return $descriptions[$permission] ?? 'Unknown permission';
     }
 

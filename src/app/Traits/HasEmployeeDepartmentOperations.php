@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
+use Fereydooni\Shopping\app\DTOs\EmployeeDepartmentDTO;
+use Fereydooni\Shopping\app\Models\EmployeeDepartment;
+use Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeDepartmentRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Fereydooni\Shopping\app\Models\EmployeeDepartment;
-use Fereydooni\Shopping\app\DTOs\EmployeeDepartmentDTO;
-use Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeDepartmentRepositoryInterface;
 
 trait HasEmployeeDepartmentOperations
 {
@@ -25,7 +25,7 @@ trait HasEmployeeDepartmentOperations
      */
     public function getAllDepartmentsDTO(): Collection
     {
-        return $this->getAllDepartments()->map(fn($dept) => EmployeeDepartmentDTO::fromModel($dept));
+        return $this->getAllDepartments()->map(fn ($dept) => EmployeeDepartmentDTO::fromModel($dept));
     }
 
     /**

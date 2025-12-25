@@ -44,7 +44,7 @@ class ProviderInvoicePermissions
 
         // Ownership permissions
         Gate::define('provider-invoice.view-own', function ($user, $invoice = null) {
-            if (!$user->hasPermissionTo('provider-invoice.view-own')) {
+            if (! $user->hasPermissionTo('provider-invoice.view-own')) {
                 return false;
             }
 
@@ -60,7 +60,7 @@ class ProviderInvoicePermissions
         });
 
         Gate::define('provider-invoice.edit-own', function ($user, $invoice = null) {
-            if (!$user->hasPermissionTo('provider-invoice.edit-own')) {
+            if (! $user->hasPermissionTo('provider-invoice.edit-own')) {
                 return false;
             }
 
@@ -73,7 +73,7 @@ class ProviderInvoicePermissions
 
         // Team and department permissions
         Gate::define('provider-invoice.view-team', function ($user, $invoice = null) {
-            if (!$user->hasPermissionTo('provider-invoice.view-team')) {
+            if (! $user->hasPermissionTo('provider-invoice.view-team')) {
                 return false;
             }
 
@@ -85,7 +85,7 @@ class ProviderInvoicePermissions
         });
 
         Gate::define('provider-invoice.view-department', function ($user, $invoice = null) {
-            if (!$user->hasPermissionTo('provider-invoice.view-department')) {
+            if (! $user->hasPermissionTo('provider-invoice.view-department')) {
                 return false;
             }
 
@@ -138,7 +138,7 @@ class ProviderInvoicePermissions
                 'provider-invoice.export',
                 'provider-invoice.import',
                 'provider-invoice.statistics',
-                'provider-invoice.approval'
+                'provider-invoice.approval',
             ]);
         });
 
@@ -148,7 +148,7 @@ class ProviderInvoicePermissions
                 'provider-invoice.view-own',
                 'provider-invoice.view-team',
                 'provider-invoice.view-department',
-                'provider-invoice.view-all'
+                'provider-invoice.view-all',
             ]);
         });
 
@@ -156,7 +156,7 @@ class ProviderInvoicePermissions
             return $user->hasAnyPermission([
                 'provider-invoice.send',
                 'provider-invoice.mark-paid',
-                'provider-invoice.cancel'
+                'provider-invoice.cancel',
             ]);
         });
 
@@ -206,7 +206,7 @@ class ProviderInvoicePermissions
             // Composite
             'provider-invoice.full-access',
             'provider-invoice.read-only',
-            'provider-invoice.workflow'
+            'provider-invoice.workflow',
         ];
     }
 
@@ -220,12 +220,12 @@ class ProviderInvoicePermissions
                 'provider-invoice.view',
                 'provider-invoice.create',
                 'provider-invoice.edit',
-                'provider-invoice.delete'
+                'provider-invoice.delete',
             ],
             'Workflow Management' => [
                 'provider-invoice.send',
                 'provider-invoice.mark-paid',
-                'provider-invoice.cancel'
+                'provider-invoice.cancel',
             ],
             'Access Control' => [
                 'provider-invoice.view-own',
@@ -234,23 +234,23 @@ class ProviderInvoicePermissions
                 'provider-invoice.view-team',
                 'provider-invoice.view-department',
                 'provider-invoice.view-all',
-                'provider-invoice.manage-all'
+                'provider-invoice.manage-all',
             ],
             'Data Management' => [
                 'provider-invoice.export',
-                'provider-invoice.import'
+                'provider-invoice.import',
             ],
             'Analytics' => [
-                'provider-invoice.statistics'
+                'provider-invoice.statistics',
             ],
             'Approval' => [
-                'provider-invoice.approval'
+                'provider-invoice.approval',
             ],
             'Composite Permissions' => [
                 'provider-invoice.full-access',
                 'provider-invoice.read-only',
-                'provider-invoice.workflow'
-            ]
+                'provider-invoice.workflow',
+            ],
         ];
     }
 
@@ -297,4 +297,3 @@ class ProviderInvoicePermissions
         return $user->can('provider-invoice.view');
     }
 }
-

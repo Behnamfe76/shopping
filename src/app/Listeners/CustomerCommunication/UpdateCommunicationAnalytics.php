@@ -2,14 +2,14 @@
 
 namespace Fereydooni\Shopping\app\Listeners\CustomerCommunication;
 
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
-use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationSent;
+use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationBounced;
+use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationClicked;
 use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationDelivered;
 use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationOpened;
-use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationClicked;
-use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationBounced;
+use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationSent;
 use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationUnsubscribed;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
 
 class UpdateCommunicationAnalytics implements ShouldQueue
 {
@@ -21,7 +21,7 @@ class UpdateCommunicationAnalytics implements ShouldQueue
     public function handle($event): void
     {
         $communication = $event->communication;
-        
+
         // Update analytics based on event type
         switch (get_class($event)) {
             case CustomerCommunicationSent::class:

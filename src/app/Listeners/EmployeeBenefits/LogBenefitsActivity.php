@@ -2,16 +2,16 @@
 
 namespace App\Listeners\EmployeeBenefits;
 
-use App\Events\EmployeeBenefits\EmployeeBenefitsCreated;
-use App\Events\EmployeeBenefits\EmployeeBenefitsUpdated;
-use App\Events\EmployeeBenefits\EmployeeBenefitsEnrolled;
-use App\Events\EmployeeBenefits\EmployeeBenefitsTerminated;
 use App\Events\EmployeeBenefits\EmployeeBenefitsCancelled;
+use App\Events\EmployeeBenefits\EmployeeBenefitsCreated;
+use App\Events\EmployeeBenefits\EmployeeBenefitsEnrolled;
 use App\Events\EmployeeBenefits\EmployeeBenefitsExpiring;
+use App\Events\EmployeeBenefits\EmployeeBenefitsTerminated;
+use App\Events\EmployeeBenefits\EmployeeBenefitsUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class LogBenefitsActivity implements ShouldQueue
 {
@@ -36,7 +36,7 @@ class LogBenefitsActivity implements ShouldQueue
             Log::error('Error logging benefits activity', [
                 'event' => get_class($event),
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
         }
     }
@@ -57,7 +57,7 @@ class LogBenefitsActivity implements ShouldQueue
                 'benefit_type' => $benefit->benefit_type,
                 'benefit_name' => $benefit->benefit_name,
                 'provider' => $benefit->provider,
-                'status' => $benefit->status
+                'status' => $benefit->status,
             ]
         );
     }
@@ -78,7 +78,7 @@ class LogBenefitsActivity implements ShouldQueue
             [
                 'changes' => $changes,
                 'benefit_type' => $benefit->benefit_type,
-                'benefit_name' => $benefit->benefit_name
+                'benefit_name' => $benefit->benefit_name,
             ]
         );
     }
@@ -99,7 +99,7 @@ class LogBenefitsActivity implements ShouldQueue
                 'benefit_type' => $benefit->benefit_type,
                 'benefit_name' => $benefit->benefit_name,
                 'effective_date' => $benefit->effective_date,
-                'provider' => $benefit->provider
+                'provider' => $benefit->provider,
             ]
         );
     }
@@ -120,7 +120,7 @@ class LogBenefitsActivity implements ShouldQueue
                 'benefit_type' => $benefit->benefit_type,
                 'benefit_name' => $benefit->benefit_name,
                 'end_date' => $benefit->end_date,
-                'reason' => $event->reason
+                'reason' => $event->reason,
             ]
         );
     }
@@ -140,7 +140,7 @@ class LogBenefitsActivity implements ShouldQueue
             [
                 'benefit_type' => $benefit->benefit_type,
                 'benefit_name' => $benefit->benefit_name,
-                'reason' => $event->reason
+                'reason' => $event->reason,
             ]
         );
     }
@@ -161,7 +161,7 @@ class LogBenefitsActivity implements ShouldQueue
                 'benefit_type' => $benefit->benefit_type,
                 'benefit_name' => $benefit->benefit_name,
                 'end_date' => $benefit->end_date,
-                'days_until_expiry' => now()->diffInDays($benefit->end_date)
+                'days_until_expiry' => now()->diffInDays($benefit->end_date),
             ]
         );
     }
@@ -183,7 +183,7 @@ class LogBenefitsActivity implements ShouldQueue
                     'causer_id' => $employeeId,
                     'properties' => json_encode($metadata),
                     'created_at' => now(),
-                    'updated_at' => now()
+                    'updated_at' => now(),
                 ]);
             }
 
@@ -194,7 +194,7 @@ class LogBenefitsActivity implements ShouldQueue
                 'benefit_id' => $benefitId,
                 'description' => $description,
                 'metadata' => $metadata,
-                'timestamp' => now()->toISOString()
+                'timestamp' => now()->toISOString(),
             ]);
 
         } catch (\Exception $e) {
@@ -202,7 +202,7 @@ class LogBenefitsActivity implements ShouldQueue
                 'action' => $action,
                 'employee_id' => $employeeId,
                 'benefit_id' => $benefitId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }

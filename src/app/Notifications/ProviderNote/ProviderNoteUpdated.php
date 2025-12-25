@@ -15,6 +15,7 @@ class ProviderNoteUpdated extends Notification implements ShouldQueue
     use Queueable;
 
     protected ProviderNote $providerNote;
+
     protected array $changes;
 
     /**
@@ -48,11 +49,11 @@ class ProviderNoteUpdated extends Notification implements ShouldQueue
             ->line("A provider note has been updated for {$provider->name}.")
             ->line("**Note Title:** {$this->providerNote->title}")
             ->line("**Updated By:** {$updater->name}")
-            ->line("**Updated At:** " . $this->providerNote->updated_at->format('M j, Y g:i A'));
+            ->line('**Updated At:** '.$this->providerNote->updated_at->format('M j, Y g:i A'));
 
         // Add change details if available
-        if (!empty($this->changes)) {
-            $mailMessage->line("**Changes Made:**");
+        if (! empty($this->changes)) {
+            $mailMessage->line('**Changes Made:**');
             foreach ($this->changes as $field => $change) {
                 if (isset($change['old']) && isset($change['new'])) {
                     $mailMessage->line("- **{$field}:** {$change['old']} → {$change['new']}");
@@ -61,9 +62,9 @@ class ProviderNoteUpdated extends Notification implements ShouldQueue
         }
 
         // Add note details
-        $mailMessage->line("**Note Type:** " . ucfirst($this->providerNote->note_type))
-            ->line("**Priority:** " . ucfirst($this->providerNote->priority))
-            ->line("**Status:** " . ($this->providerNote->is_archived ? 'Archived' : 'Active'));
+        $mailMessage->line('**Note Type:** '.ucfirst($this->providerNote->note_type))
+            ->line('**Priority:** '.ucfirst($this->providerNote->priority))
+            ->line('**Status:** '.($this->providerNote->is_archived ? 'Archived' : 'Active'));
 
         // Add action button
         $mailMessage->action('View Provider Note', URL::to("/providers/{$provider->id}/notes/{$this->providerNote->id}"))
@@ -97,7 +98,7 @@ class ProviderNoteUpdated extends Notification implements ShouldQueue
             'updated_at' => $this->providerNote->updated_at->toISOString(),
             'action_url' => "/providers/{$provider->id}/notes/{$this->providerNote->id}",
             'icon' => 'edit',
-            'color' => 'blue'
+            'color' => 'blue',
         ];
     }
 

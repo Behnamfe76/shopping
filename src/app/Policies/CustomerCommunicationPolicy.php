@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
-use Fereydooni\Shopping\app\Models\User;
 use Fereydooni\Shopping\app\Models\CustomerCommunication;
+use Fereydooni\Shopping\app\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class CustomerCommunicationPolicy
 {
@@ -23,7 +23,7 @@ class CustomerCommunicationPolicy
      */
     public function view(User $user, CustomerCommunication $communication): bool
     {
-        return $user->can('customer-communications.view') || 
+        return $user->can('customer-communications.view') ||
                ($user->can('customer-communications.viewOwn') && $communication->user_id === $user->id);
     }
 
@@ -40,7 +40,7 @@ class CustomerCommunicationPolicy
      */
     public function update(User $user, CustomerCommunication $communication): bool
     {
-        return $user->can('customer-communications.update') || 
+        return $user->can('customer-communications.update') ||
                ($user->can('customer-communications.updateOwn') && $communication->user_id === $user->id);
     }
 
@@ -49,7 +49,7 @@ class CustomerCommunicationPolicy
      */
     public function delete(User $user, CustomerCommunication $communication): bool
     {
-        return $user->can('customer-communications.delete') || 
+        return $user->can('customer-communications.delete') ||
                ($user->can('customer-communications.deleteOwn') && $communication->user_id === $user->id);
     }
 
@@ -74,7 +74,7 @@ class CustomerCommunicationPolicy
      */
     public function schedule(User $user, CustomerCommunication $communication): bool
     {
-        return $user->can('customer-communications.schedule') || 
+        return $user->can('customer-communications.schedule') ||
                ($user->can('customer-communications.scheduleOwn') && $communication->user_id === $user->id);
     }
 
@@ -83,7 +83,7 @@ class CustomerCommunicationPolicy
      */
     public function send(User $user, CustomerCommunication $communication): bool
     {
-        return $user->can('customer-communications.send') || 
+        return $user->can('customer-communications.send') ||
                ($user->can('customer-communications.sendOwn') && $communication->user_id === $user->id);
     }
 
@@ -92,7 +92,7 @@ class CustomerCommunicationPolicy
      */
     public function cancel(User $user, CustomerCommunication $communication): bool
     {
-        return $user->can('customer-communications.cancel') || 
+        return $user->can('customer-communications.cancel') ||
                ($user->can('customer-communications.cancelOwn') && $communication->user_id === $user->id);
     }
 
@@ -101,7 +101,7 @@ class CustomerCommunicationPolicy
      */
     public function reschedule(User $user, CustomerCommunication $communication): bool
     {
-        return $user->can('customer-communications.reschedule') || 
+        return $user->can('customer-communications.reschedule') ||
                ($user->can('customer-communications.rescheduleOwn') && $communication->user_id === $user->id);
     }
 
@@ -110,7 +110,7 @@ class CustomerCommunicationPolicy
      */
     public function markAsDelivered(User $user, CustomerCommunication $communication): bool
     {
-        return $user->can('customer-communications.markAsDelivered') || 
+        return $user->can('customer-communications.markAsDelivered') ||
                ($user->can('customer-communications.markAsDeliveredOwn') && $communication->user_id === $user->id);
     }
 
@@ -119,7 +119,7 @@ class CustomerCommunicationPolicy
      */
     public function markAsOpened(User $user, CustomerCommunication $communication): bool
     {
-        return $user->can('customer-communications.markAsOpened') || 
+        return $user->can('customer-communications.markAsOpened') ||
                ($user->can('customer-communications.markAsOpenedOwn') && $communication->user_id === $user->id);
     }
 
@@ -128,7 +128,7 @@ class CustomerCommunicationPolicy
      */
     public function markAsClicked(User $user, CustomerCommunication $communication): bool
     {
-        return $user->can('customer-communications.markAsClicked') || 
+        return $user->can('customer-communications.markAsClicked') ||
                ($user->can('customer-communications.markAsClickedOwn') && $communication->user_id === $user->id);
     }
 
@@ -137,7 +137,7 @@ class CustomerCommunicationPolicy
      */
     public function markAsBounced(User $user, CustomerCommunication $communication): bool
     {
-        return $user->can('customer-communications.markAsBounced') || 
+        return $user->can('customer-communications.markAsBounced') ||
                ($user->can('customer-communications.markAsBouncedOwn') && $communication->user_id === $user->id);
     }
 
@@ -146,7 +146,7 @@ class CustomerCommunicationPolicy
      */
     public function markAsUnsubscribed(User $user, CustomerCommunication $communication): bool
     {
-        return $user->can('customer-communications.markAsUnsubscribed') || 
+        return $user->can('customer-communications.markAsUnsubscribed') ||
                ($user->can('customer-communications.markAsUnsubscribedOwn') && $communication->user_id === $user->id);
     }
 
@@ -179,7 +179,7 @@ class CustomerCommunicationPolicy
      */
     public function manageAttachments(User $user, CustomerCommunication $communication): bool
     {
-        return $user->can('customer-communications.manageAttachments') || 
+        return $user->can('customer-communications.manageAttachments') ||
                ($user->can('customer-communications.manageAttachmentsOwn') && $communication->user_id === $user->id);
     }
 
@@ -188,7 +188,7 @@ class CustomerCommunicationPolicy
      */
     public function viewTrackingData(User $user, CustomerCommunication $communication): bool
     {
-        return $user->can('customer-communications.viewTrackingData') || 
+        return $user->can('customer-communications.viewTrackingData') ||
                ($user->can('customer-communications.viewTrackingDataOwn') && $communication->user_id === $user->id);
     }
 }

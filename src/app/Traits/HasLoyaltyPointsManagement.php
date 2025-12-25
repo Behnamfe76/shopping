@@ -2,18 +2,18 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
-use Illuminate\Support\Facades\DB;
-use Fereydooni\Shopping\app\Models\LoyaltyTransaction;
-use Fereydooni\Shopping\app\Enums\LoyaltyTransactionType;
-use Fereydooni\Shopping\app\Enums\LoyaltyTransactionStatus;
 use Fereydooni\Shopping\app\Enums\LoyaltyReferenceType;
+use Fereydooni\Shopping\app\Enums\LoyaltyTransactionStatus;
+use Fereydooni\Shopping\app\Enums\LoyaltyTransactionType;
+use Fereydooni\Shopping\app\Models\LoyaltyTransaction;
+use Illuminate\Support\Facades\DB;
 
 trait HasLoyaltyPointsManagement
 {
     /**
      * Add loyalty points to customer
      */
-    public function addPoints(int $customerId, int $points, string $reason = null, array $metadata = []): LoyaltyTransaction
+    public function addPoints(int $customerId, int $points, ?string $reason = null, array $metadata = []): LoyaltyTransaction
     {
         return DB::transaction(function () use ($customerId, $points, $reason, $metadata) {
             $transaction = $this->create([
@@ -42,7 +42,7 @@ trait HasLoyaltyPointsManagement
     /**
      * Deduct loyalty points from customer
      */
-    public function deductPoints(int $customerId, int $points, string $reason = null, array $metadata = []): LoyaltyTransaction
+    public function deductPoints(int $customerId, int $points, ?string $reason = null, array $metadata = []): LoyaltyTransaction
     {
         return DB::transaction(function () use ($customerId, $points, $reason, $metadata) {
             // Check if customer has enough points
@@ -106,6 +106,7 @@ trait HasLoyaltyPointsManagement
     public function calculateBalanceValue(int $customerId): float
     {
         $balance = $this->calculateBalance($customerId);
+
         return $this->calculatePointsValue($balance);
     }
 
@@ -177,6 +178,7 @@ trait HasLoyaltyPointsManagement
     protected function getCustomerTotalSpent(int $customerId): float
     {
         $customer = \Fereydooni\Shopping\app\Models\Customer::find($customerId);
+
         return $customer ? $customer->total_spent : 0;
     }
 
@@ -186,7 +188,7 @@ trait HasLoyaltyPointsManagement
     protected function updateCustomerLoyaltyPoints(int $customerId, int $pointsChange): void
     {
         $customer = \Fereydooni\Shopping\app\Models\Customer::find($customerId);
-        
+
         if ($customer) {
             $customer->increment('loyalty_points', $pointsChange);
         }

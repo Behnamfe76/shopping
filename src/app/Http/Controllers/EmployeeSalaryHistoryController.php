@@ -2,20 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EmployeeSalaryHistory\ApproveSalaryChangeRequest;
+use App\Http\Requests\EmployeeSalaryHistory\ProcessSalaryChangeRequest;
+use App\Http\Requests\EmployeeSalaryHistory\RejectSalaryChangeRequest;
 use App\Http\Requests\EmployeeSalaryHistory\StoreEmployeeSalaryHistoryRequest;
 use App\Http\Requests\EmployeeSalaryHistory\UpdateEmployeeSalaryHistoryRequest;
-use App\Http\Requests\EmployeeSalaryHistory\ApproveSalaryChangeRequest;
-use App\Http\Requests\EmployeeSalaryHistory\RejectSalaryChangeRequest;
-use App\Http\Requests\EmployeeSalaryHistory\ProcessSalaryChangeRequest;
-use App\Services\EmployeeSalaryHistoryService;
 use App\Models\EmployeeSalaryHistory;
-use App\DTOs\EmployeeSalaryHistoryDTO;
-use Illuminate\Http\Request;
+use App\Services\EmployeeSalaryHistoryService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\View\View;
 
 class EmployeeSalaryHistoryController extends Controller
 {
@@ -72,7 +71,7 @@ class EmployeeSalaryHistoryController extends Controller
         } catch (\Exception $e) {
             return back()
                 ->withInput()
-                ->withErrors(['error' => 'Failed to create salary change request: ' . $e->getMessage()]);
+                ->withErrors(['error' => 'Failed to create salary change request: '.$e->getMessage()]);
         }
     }
 
@@ -122,7 +121,7 @@ class EmployeeSalaryHistoryController extends Controller
         } catch (\Exception $e) {
             return back()
                 ->withInput()
-                ->withErrors(['error' => 'Failed to update salary change request: ' . $e->getMessage()]);
+                ->withErrors(['error' => 'Failed to update salary change request: '.$e->getMessage()]);
         }
     }
 
@@ -145,7 +144,7 @@ class EmployeeSalaryHistoryController extends Controller
             return back()->withErrors(['error' => 'Failed to delete salary change request.']);
 
         } catch (\Exception $e) {
-            return back()->withErrors(['error' => 'Failed to delete salary change request: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'Failed to delete salary change request: '.$e->getMessage()]);
         }
     }
 
@@ -166,19 +165,19 @@ class EmployeeSalaryHistoryController extends Controller
                 return response()->json([
                     'success' => true,
                     'message' => 'Salary change approved successfully.',
-                    'status' => 'approved'
+                    'status' => 'approved',
                 ]);
             }
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to approve salary change.'
+                'message' => 'Failed to approve salary change.',
             ], 400);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to approve salary change: ' . $e->getMessage()
+                'message' => 'Failed to approve salary change: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -201,19 +200,19 @@ class EmployeeSalaryHistoryController extends Controller
                 return response()->json([
                     'success' => true,
                     'message' => 'Salary change rejected successfully.',
-                    'status' => 'rejected'
+                    'status' => 'rejected',
                 ]);
             }
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to reject salary change.'
+                'message' => 'Failed to reject salary change.',
             ], 400);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to reject salary change: ' . $e->getMessage()
+                'message' => 'Failed to reject salary change: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -235,19 +234,19 @@ class EmployeeSalaryHistoryController extends Controller
                 return response()->json([
                     'success' => true,
                     'message' => 'Salary change processed successfully.',
-                    'status' => 'processed'
+                    'status' => 'processed',
                 ]);
             }
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to process salary change.'
+                'message' => 'Failed to process salary change.',
             ], 400);
 
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to process salary change: ' . $e->getMessage()
+                'message' => 'Failed to process salary change: '.$e->getMessage(),
             ], 500);
         }
     }
@@ -313,7 +312,7 @@ class EmployeeSalaryHistoryController extends Controller
         return response()->json([
             'success' => true,
             'data' => $results,
-            'total' => $results->count()
+            'total' => $results->count(),
         ]);
     }
 }

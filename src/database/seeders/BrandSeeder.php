@@ -3,8 +3,8 @@
 namespace Fereydooni\Shopping\database\seeders;
 
 use Fereydooni\Shopping\app\Enums\BrandStatus;
-use Illuminate\Database\Seeder;
 use Fereydooni\Shopping\app\Models\Brand;
+use Illuminate\Database\Seeder;
 
 class BrandSeeder extends Seeder
 {

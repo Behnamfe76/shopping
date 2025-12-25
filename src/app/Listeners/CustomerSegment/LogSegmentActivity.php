@@ -53,7 +53,7 @@ class LogSegmentActivity implements ShouldQueue
                 $this->logCustomerRemoved($event);
             }
         } catch (\Exception $e) {
-            Log::error('Error logging segment activity: ' . $e->getMessage());
+            Log::error('Error logging segment activity: '.$e->getMessage());
         }
     }
 
@@ -63,8 +63,8 @@ class LogSegmentActivity implements ShouldQueue
     private function logSegmentCreated(CustomerSegmentCreated $event): void
     {
         $segment = $event->segment;
-        
-        Log::info("Customer segment created", [
+
+        Log::info('Customer segment created', [
             'segment_id' => $segment->id,
             'segment_name' => $segment->name,
             'segment_type' => $segment->type,
@@ -79,8 +79,8 @@ class LogSegmentActivity implements ShouldQueue
     private function logSegmentUpdated(CustomerSegmentUpdated $event): void
     {
         $segment = $event->segment;
-        
-        Log::info("Customer segment updated", [
+
+        Log::info('Customer segment updated', [
             'segment_id' => $segment->id,
             'segment_name' => $segment->name,
             'updated_by' => auth()->id(),
@@ -94,8 +94,8 @@ class LogSegmentActivity implements ShouldQueue
     private function logSegmentDeleted(CustomerSegmentDeleted $event): void
     {
         $segment = $event->segment;
-        
-        Log::info("Customer segment deleted", [
+
+        Log::info('Customer segment deleted', [
             'segment_id' => $segment->id,
             'segment_name' => $segment->name,
             'deleted_by' => auth()->id(),
@@ -109,8 +109,8 @@ class LogSegmentActivity implements ShouldQueue
     private function logSegmentActivated(CustomerSegmentActivated $event): void
     {
         $segment = $event->segment;
-        
-        Log::info("Customer segment activated", [
+
+        Log::info('Customer segment activated', [
             'segment_id' => $segment->id,
             'segment_name' => $segment->name,
             'activated_by' => auth()->id(),
@@ -124,8 +124,8 @@ class LogSegmentActivity implements ShouldQueue
     private function logSegmentDeactivated(CustomerSegmentDeactivated $event): void
     {
         $segment = $event->segment;
-        
-        Log::info("Customer segment deactivated", [
+
+        Log::info('Customer segment deactivated', [
             'segment_id' => $segment->id,
             'segment_name' => $segment->name,
             'deactivated_by' => auth()->id(),
@@ -140,8 +140,8 @@ class LogSegmentActivity implements ShouldQueue
     {
         $segment = $event->segment;
         $customerCount = $event->customerCount;
-        
-        Log::info("Customer segment calculated", [
+
+        Log::info('Customer segment calculated', [
             'segment_id' => $segment->id,
             'segment_name' => $segment->name,
             'customer_count' => $customerCount,
@@ -155,7 +155,7 @@ class LogSegmentActivity implements ShouldQueue
      */
     private function logSegmentRecalculated(CustomerSegmentRecalculated $event): void
     {
-        Log::info("All customer segments recalculated", [
+        Log::info('All customer segments recalculated', [
             'recalculated_by' => auth()->id(),
             'recalculated_at' => now(),
         ]);
@@ -168,8 +168,8 @@ class LogSegmentActivity implements ShouldQueue
     {
         $segment = $event->segment;
         $customerId = $event->customerId;
-        
-        Log::info("Customer added to segment", [
+
+        Log::info('Customer added to segment', [
             'segment_id' => $segment->id,
             'segment_name' => $segment->name,
             'customer_id' => $customerId,
@@ -185,8 +185,8 @@ class LogSegmentActivity implements ShouldQueue
     {
         $segment = $event->segment;
         $customerId = $event->customerId;
-        
-        Log::info("Customer removed from segment", [
+
+        Log::info('Customer removed from segment', [
             'segment_id' => $segment->id,
             'segment_name' => $segment->name,
             'customer_id' => $customerId,

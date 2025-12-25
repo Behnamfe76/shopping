@@ -2,11 +2,11 @@
 
 namespace App\Listeners\EmployeeDepartment;
 
+use App\Events\EmployeeDepartment\EmployeeDepartmentArchived;
 use App\Events\EmployeeDepartment\EmployeeDepartmentCreated;
-use App\Events\EmployeeDepartment\EmployeeDepartmentUpdated;
 use App\Events\EmployeeDepartment\EmployeeDepartmentManagerAssigned;
 use App\Events\EmployeeDepartment\EmployeeDepartmentMoved;
-use App\Events\EmployeeDepartment\EmployeeDepartmentArchived;
+use App\Events\EmployeeDepartment\EmployeeDepartmentUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
@@ -15,7 +15,9 @@ class UpdateDepartmentMetrics implements ShouldQueue
     use InteractsWithQueue;
 
     public $queue = 'metrics';
+
     public $tries = 3;
+
     public $timeout = 45;
 
     /**

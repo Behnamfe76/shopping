@@ -5,16 +5,18 @@ namespace App\Notifications\EmployeeDepartment;
 use App\Models\EmployeeDepartment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\BroadcastMessage;
 
 class BudgetThresholdReached extends Notification implements ShouldQueue
 {
     use Queueable;
 
     public $department;
+
     public $threshold;
+
     public $currentUtilization;
 
     /**
@@ -41,14 +43,14 @@ class BudgetThresholdReached extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Budget Threshold Alert: ' . $this->department->name)
-            ->greeting('Hello ' . $notifiable->name . ',')
+            ->subject('Budget Threshold Alert: '.$this->department->name)
+            ->greeting('Hello '.$notifiable->name.',')
             ->line('A budget threshold has been reached for the following department:')
-            ->line('Department: ' . $this->department->name)
-            ->line('Code: ' . $this->department->code)
-            ->line('Budget: $' . number_format($this->department->budget ?? 0, 2))
-            ->line('Current Utilization: ' . number_format($this->currentUtilization, 1) . '%')
-            ->line('Threshold: ' . number_format($this->threshold, 1) . '%')
+            ->line('Department: '.$this->department->name)
+            ->line('Code: '.$this->department->code)
+            ->line('Budget: $'.number_format($this->department->budget ?? 0, 2))
+            ->line('Current Utilization: '.number_format($this->currentUtilization, 1).'%')
+            ->line('Threshold: '.number_format($this->threshold, 1).'%')
             ->line('This alert indicates that the department is approaching or has exceeded its budget limit.')
             ->action('View Department', $this->getDepartmentUrl())
             ->line('Recommended actions:')
@@ -70,9 +72,9 @@ class BudgetThresholdReached extends Notification implements ShouldQueue
             'department_name' => $this->department->name,
             'threshold' => $this->threshold,
             'current_utilization' => $this->currentUtilization,
-            'message' => 'Budget threshold of ' . $this->threshold . '% reached for "' . $this->department->name . '".',
+            'message' => 'Budget threshold of '.$this->threshold.'% reached for "'.$this->department->name.'".',
             'action_url' => $this->getDepartmentUrl(),
-            'priority' => 'urgent'
+            'priority' => 'urgent',
         ];
     }
 
@@ -85,9 +87,9 @@ class BudgetThresholdReached extends Notification implements ShouldQueue
             'type' => 'budget_threshold_reached',
             'department_id' => $this->department->id,
             'department_name' => $this->department->name,
-            'message' => 'Budget threshold of ' . $this->threshold . '% reached for "' . $this->department->name . '".',
+            'message' => 'Budget threshold of '.$this->threshold.'% reached for "'.$this->department->name.'".',
             'timestamp' => now()->toISOString(),
-            'action_url' => $this->getDepartmentUrl()
+            'action_url' => $this->getDepartmentUrl(),
         ]);
     }
 
@@ -96,6 +98,6 @@ class BudgetThresholdReached extends Notification implements ShouldQueue
      */
     protected function getDepartmentUrl(): string
     {
-        return '/departments/' . $this->department->id;
+        return '/departments/'.$this->department->id;
     }
 }

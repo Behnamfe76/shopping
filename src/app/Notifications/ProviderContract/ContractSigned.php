@@ -41,15 +41,15 @@ class ContractSigned extends Notification implements ShouldQueue
 
         return (new MailMessage)
             ->subject('Provider Contract Signed')
-            ->greeting('Hello ' . $notifiable->name)
+            ->greeting('Hello '.$notifiable->name)
             ->line('A provider contract has been signed.')
             ->line('Contract Details:')
-            ->line('- Contract Number: ' . $this->contract->contract_number)
-            ->line('- Provider: ' . $provider->name)
-            ->line('- Contract Type: ' . ucfirst($this->contract->contract_type))
-            ->line('- Signed Date: ' . $this->contract->signed_at->format('M d, Y'))
+            ->line('- Contract Number: '.$this->contract->contract_number)
+            ->line('- Provider: '.$provider->name)
+            ->line('- Contract Type: '.ucfirst($this->contract->contract_type))
+            ->line('- Signed Date: '.$this->contract->signed_at->format('M d, Y'))
             ->line('- Status: Active')
-            ->action('View Contract', url('/provider-contracts/' . $this->contract->id))
+            ->action('View Contract', url('/provider-contracts/'.$this->contract->id))
             ->line('The contract is now active and operational.');
     }
 
@@ -66,8 +66,8 @@ class ContractSigned extends Notification implements ShouldQueue
             'contract_number' => $this->contract->contract_number,
             'status' => 'active',
             'signed_at' => $this->contract->signed_at,
-            'message' => 'Provider contract signed: ' . $this->contract->contract_number,
-            'type' => 'contract_signed'
+            'message' => 'Provider contract signed: '.$this->contract->contract_number,
+            'type' => 'contract_signed',
         ];
     }
 }

@@ -2,13 +2,13 @@
 
 namespace Fereydooni\Shopping\database\seeders;
 
-use Illuminate\Database\Seeder;
-use Fereydooni\Shopping\app\Models\LoyaltyTransaction;
-use Fereydooni\Shopping\app\Models\Customer;
-use Fereydooni\Shopping\app\Enums\LoyaltyTransactionType;
-use Fereydooni\Shopping\app\Enums\LoyaltyTransactionStatus;
-use Fereydooni\Shopping\app\Enums\LoyaltyReferenceType;
 use Carbon\Carbon;
+use Fereydooni\Shopping\app\Enums\LoyaltyReferenceType;
+use Fereydooni\Shopping\app\Enums\LoyaltyTransactionStatus;
+use Fereydooni\Shopping\app\Enums\LoyaltyTransactionType;
+use Fereydooni\Shopping\app\Models\Customer;
+use Fereydooni\Shopping\app\Models\LoyaltyTransaction;
+use Illuminate\Database\Seeder;
 
 class LoyaltyTransactionSeeder extends Seeder
 {
@@ -23,6 +23,7 @@ class LoyaltyTransactionSeeder extends Seeder
 
         if ($customers->isEmpty() || $users->isEmpty()) {
             $this->command->warn('No customers or users found. Please seed customers and users first.');
+
             return;
         }
 
@@ -107,7 +108,7 @@ class LoyaltyTransactionSeeder extends Seeder
      */
     protected function getPointsForTransactionType(LoyaltyTransactionType $type): int
     {
-        return match($type) {
+        return match ($type) {
             LoyaltyTransactionType::EARNED => rand(10, 500),
             LoyaltyTransactionType::BONUS => rand(5, 100),
             LoyaltyTransactionType::REDEEMED => rand(50, 1000),
@@ -121,7 +122,7 @@ class LoyaltyTransactionSeeder extends Seeder
      */
     protected function getReferenceId(LoyaltyReferenceType $referenceType): ?int
     {
-        return match($referenceType) {
+        return match ($referenceType) {
             LoyaltyReferenceType::ORDER => rand(1, 1000),
             LoyaltyReferenceType::PRODUCT => rand(1, 500),
             LoyaltyReferenceType::CAMPAIGN => rand(1, 50),
@@ -193,7 +194,8 @@ class LoyaltyTransactionSeeder extends Seeder
         ];
 
         $typeReasons = $reasons[$transactionType] ?? [];
-        return !empty($typeReasons) ? $typeReasons[array_rand($typeReasons)] : null;
+
+        return ! empty($typeReasons) ? $typeReasons[array_rand($typeReasons)] : null;
     }
 
     /**
@@ -226,14 +228,14 @@ class LoyaltyTransactionSeeder extends Seeder
         // Add specific metadata based on transaction type
         switch ($transactionType) {
             case LoyaltyTransactionType::EARNED:
-                $metadata['earning_rate'] = rand(1, 10) . '%';
+                $metadata['earning_rate'] = rand(1, 10).'%';
                 $metadata['order_amount'] = rand(1000, 100000) / 100;
                 break;
             case LoyaltyTransactionType::BONUS:
                 $metadata['bonus_type'] = ['birthday', 'holiday', 'referral', 'seasonal'][array_rand([0, 1, 2, 3])];
                 break;
             case LoyaltyTransactionType::REDEEMED:
-                $metadata['redemption_rate'] = rand(1, 5) . '%';
+                $metadata['redemption_rate'] = rand(1, 5).'%';
                 $metadata['discount_amount'] = rand(500, 5000) / 100;
                 break;
             case LoyaltyTransactionType::ADJUSTMENT:

@@ -13,6 +13,7 @@ class BenefitsCostChange extends Notification implements ShouldQueue
     use Queueable;
 
     protected EmployeeBenefits $benefit;
+
     protected array $changes;
 
     /**
@@ -43,31 +44,31 @@ class BenefitsCostChange extends Notification implements ShouldQueue
         $message = (new MailMessage)
             ->subject('Your Benefits Costs Have Changed')
             ->greeting("Hello {$notifiable->name},")
-            ->line("Your benefits costs have been updated.")
-            ->line("**Benefit Details:**")
+            ->line('Your benefits costs have been updated.')
+            ->line('**Benefit Details:**')
             ->line("- **Benefit Type:** {$this->benefit->benefit_type}")
             ->line("- **Benefit Name:** {$this->benefit->benefit_name}")
             ->line("- **Provider:** {$this->benefit->provider}");
 
         // Add cost change details
         if (isset($this->changes['premium_amount'])) {
-            $message->line("- **Monthly Premium:** $" . number_format($this->benefit->premium_amount, 2));
+            $message->line('- **Monthly Premium:** $'.number_format($this->benefit->premium_amount, 2));
         }
 
         if (isset($this->changes['employee_contribution'])) {
-            $message->line("- **Your Monthly Contribution:** $" . number_format($this->benefit->employee_contribution, 2));
+            $message->line('- **Your Monthly Contribution:** $'.number_format($this->benefit->employee_contribution, 2));
         }
 
         if (isset($this->changes['employer_contribution'])) {
-            $message->line("- **Employer Contribution:** $" . number_format($this->benefit->employer_contribution, 2));
+            $message->line('- **Employer Contribution:** $'.number_format($this->benefit->employer_contribution, 2));
         }
 
-        $message->line('**Effective Date:** ' . now()->toDateString())
+        $message->line('**Effective Date:** '.now()->toDateString())
             ->line('**Important Notes:**')
             ->line('- These changes will be reflected in your next payroll.')
             ->line('- Please review your updated benefits summary.')
             ->line('- Contact HR if you have questions about these changes.')
-            ->action('View Benefits Details', url('/employee/benefits/' . $this->benefit->id))
+            ->action('View Benefits Details', url('/employee/benefits/'.$this->benefit->id))
             ->salutation('Best regards, HR Team');
 
         return $message;
@@ -93,7 +94,7 @@ class BenefitsCostChange extends Notification implements ShouldQueue
             'changes' => $this->changes,
             'effective_date' => now()->toDateString(),
             'created_at' => now()->toISOString(),
-            'action_url' => '/employee/benefits/' . $this->benefit->id
+            'action_url' => '/employee/benefits/'.$this->benefit->id,
         ];
     }
 

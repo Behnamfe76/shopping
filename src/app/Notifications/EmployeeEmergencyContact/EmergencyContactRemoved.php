@@ -43,9 +43,9 @@ class EmergencyContactRemoved extends Notification implements ShouldQueue
         $message = (new MailMessage)
             ->subject('Emergency Contact Removed')
             ->greeting("Hello {$employee->first_name},")
-            ->line("An emergency contact has been removed from your profile.");
+            ->line('An emergency contact has been removed from your profile.');
 
-        $message->line("**Removed Contact Details:**")
+        $message->line('**Removed Contact Details:**')
             ->line("Name: {$contact->contact_name}")
             ->line("Relationship: {$contact->relationship}")
             ->line("Primary Phone: {$contact->phone_primary}");
@@ -59,11 +59,11 @@ class EmergencyContactRemoved extends Notification implements ShouldQueue
         }
 
         if ($contact->is_primary) {
-            $message->line("**Important:** This was your primary emergency contact. You should designate a new primary contact as soon as possible.")
-                ->line("Please log into your profile and add a new emergency contact or designate an existing one as primary.");
+            $message->line('**Important:** This was your primary emergency contact. You should designate a new primary contact as soon as possible.')
+                ->line('Please log into your profile and add a new emergency contact or designate an existing one as primary.');
         }
 
-        $message->line("If you did not request this removal or if this was done in error, please contact HR immediately.")
+        $message->line('If you did not request this removal or if this was done in error, please contact HR immediately.')
             ->action('View Your Profile', url('/employee/profile'))
             ->line('Thank you for keeping your emergency contact information up to date.');
 
@@ -115,8 +115,8 @@ class EmergencyContactRemoved extends Notification implements ShouldQueue
         return [
             'emergency_contact',
             'contact_removed',
-            'employee_' . $this->contact->employee_id,
-            'contact_' . $this->contact->id,
+            'employee_'.$this->contact->employee_id,
+            'contact_'.$this->contact->id,
         ];
     }
 }

@@ -2,13 +2,13 @@
 
 namespace Fereydooni\Shopping\app\Actions\EmployeeBenefits;
 
-use Fereydooni\Shopping\app\DTOs\EmployeeBenefitsDTO;
-use Fereydooni\Shopping\app\Models\EmployeeBenefits;
 use App\Repositories\EmployeeBenefitsRepository;
+use Exception;
+use Fereydooni\Shopping\app\DTOs\EmployeeBenefitsDTO;
 use Fereydooni\Shopping\app\Events\EmployeeBenefits\EmployeeBenefitsUpdated;
+use Fereydooni\Shopping\app\Models\EmployeeBenefits;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Exception;
 
 class UpdateEmployeeBenefitsAction
 {
@@ -40,7 +40,7 @@ class UpdateEmployeeBenefitsAction
             // Update the benefit enrollment
             $updated = $this->repository->update($benefit, $data);
 
-            if (!$updated) {
+            if (! $updated) {
                 throw new Exception('Failed to update employee benefits');
             }
 
@@ -59,7 +59,7 @@ class UpdateEmployeeBenefitsAction
             Log::error('Failed to update employee benefits', [
                 'error' => $e->getMessage(),
                 'benefit_id' => $benefit->id,
-                'data' => $data
+                'data' => $data,
             ]);
             throw $e;
         }
@@ -70,7 +70,7 @@ class UpdateEmployeeBenefitsAction
         // Validate benefit type if provided
         if (isset($data['benefit_type'])) {
             $validTypes = ['health', 'dental', 'vision', 'life', 'disability', 'retirement', 'other'];
-            if (!in_array($data['benefit_type'], $validTypes)) {
+            if (! in_array($data['benefit_type'], $validTypes)) {
                 throw new Exception('Invalid benefit type');
             }
         }
@@ -78,7 +78,7 @@ class UpdateEmployeeBenefitsAction
         // Validate status if provided
         if (isset($data['status'])) {
             $validStatuses = ['enrolled', 'pending', 'terminated', 'cancelled'];
-            if (!in_array($data['status'], $validStatuses)) {
+            if (! in_array($data['status'], $validStatuses)) {
                 throw new Exception('Invalid status');
             }
         }

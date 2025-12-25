@@ -2,18 +2,18 @@
 
 namespace Fereydooni\Shopping\app\Drivers;
 
-use Laravel\Scout\Builder;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Pagination\Paginator;
+use Fereydooni\Shopping\app\Contracts\QueryDriverInterface;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\CursorPaginator;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Fereydooni\Shopping\app\Contracts\QueryDriverInterface;
+use Illuminate\Pagination\Paginator;
+use Laravel\Scout\Builder;
 
 class TypesenseQueryDriver implements QueryDriverInterface
 {
     protected array $searchableFields = [];
+
     protected $model;
 
     public function paginate(string $model, array $filters = [], array $searchOptions = [], int $perPage = 15): LengthAwarePaginator
@@ -26,12 +26,14 @@ class TypesenseQueryDriver implements QueryDriverInterface
     public function simplePaginate(string $model, array $filters = [], array $searchOptions = [], int $perPage = 15): Paginator
     {
         $builder = $this->buildScoutQuery($model, $filters, $searchOptions);
+
         return $builder->simplePaginate($perPage);
     }
 
     public function cursorPaginate(string $model, array $filters = [], array $searchOptions = [], int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         $builder = $this->buildScoutQuery($model, $filters, $searchOptions);
+
         return $builder->cursorPaginate($perPage, ['*'], 'id', $cursor);
     }
 
@@ -50,6 +52,7 @@ class TypesenseQueryDriver implements QueryDriverInterface
     {
         $builder = $model::search('*');
         $builder = $this->applyFilters($builder, $filters);
+
         return $builder->get();
     }
 
@@ -76,10 +79,10 @@ class TypesenseQueryDriver implements QueryDriverInterface
     /**
      * Apply comprehensive Typesense search with all available capabilities
      *
-     * @param mixed $query Scout builder query
-     * @param string $searchTerm Search query
-     * @param array $searchOptions Configuration options
-     * @param array $searchableFields Fields to search in
+     * @param  mixed  $query  Scout builder query
+     * @param  string  $searchTerm  Search query
+     * @param  array  $searchOptions  Configuration options
+     * @param  array  $searchableFields  Fields to search in
      * @return mixed
      */
     public function applySearch($query, string $searchTerm = '', array $searchOptions = [], array $searchableFields = [])
@@ -107,7 +110,7 @@ class TypesenseQueryDriver implements QueryDriverInterface
         $options['query_by'] = implode(',', $searchableFields);
 
         // Field weights (if provided)
-        if (!empty($config['field_weights'])) {
+        if (! empty($config['field_weights'])) {
             $options['query_by_weights'] = implode(',', $config['field_weights']);
         }
 
@@ -150,7 +153,7 @@ class TypesenseQueryDriver implements QueryDriverInterface
 
             case 'semantic':
                 // Semantic/vector search
-                if (!empty($config['embedding_field'])) {
+                if (! empty($config['embedding_field'])) {
                     $embeddingField = $config['embedding_field'];
                     $k = $config['k'] ?? 100;
                     $alpha = $config['alpha'] ?? 0.5;
@@ -163,7 +166,7 @@ class TypesenseQueryDriver implements QueryDriverInterface
 
             case 'hybrid':
                 // Combine keyword + semantic search
-                if (!empty($config['embedding_field'])) {
+                if (! empty($config['embedding_field'])) {
                     $embeddingField = $config['embedding_field'];
                     $k = $config['k'] ?? 100;
                     $alpha = $config['alpha'] ?? 0.3; // 30% weight to vector, 70% to keyword
@@ -207,24 +210,24 @@ class TypesenseQueryDriver implements QueryDriverInterface
         }
 
         // ==================== STOPWORDS ====================
-        if (!empty($config['stopwords'])) {
+        if (! empty($config['stopwords'])) {
             $options['stopwords'] = is_array($config['stopwords'])
                 ? implode(',', $config['stopwords'])
                 : $config['stopwords'];
         }
 
         // ==================== SORTING ====================
-        if (!empty($config['sort_by'])) {
+        if (! empty($config['sort_by'])) {
             $options['sort_by'] = $config['sort_by'];
         }
 
         // ==================== FILTERING ====================
-        if (!empty($config['filter_by'])) {
+        if (! empty($config['filter_by'])) {
             $options['filter_by'] = $config['filter_by'];
         }
 
         // ==================== FACETING ====================
-        if (!empty($config['facet_by'])) {
+        if (! empty($config['facet_by'])) {
             $options['facet_by'] = is_array($config['facet_by'])
                 ? implode(',', $config['facet_by'])
                 : $config['facet_by'];
@@ -235,19 +238,19 @@ class TypesenseQueryDriver implements QueryDriverInterface
         }
 
         // ==================== GROUPING ====================
-        if (!empty($config['group_by'])) {
+        if (! empty($config['group_by'])) {
             $options['group_by'] = $config['group_by'];
             $options['group_limit'] = $config['group_limit'] ?? 3;
         }
 
         // ==================== HIGHLIGHTING ====================
-        if (!empty($config['highlight_fields'])) {
+        if (! empty($config['highlight_fields'])) {
             $options['highlight_fields'] = is_array($config['highlight_fields'])
                 ? implode(',', $config['highlight_fields'])
                 : $config['highlight_fields'];
         }
 
-        if (!empty($config['highlight_full_fields'])) {
+        if (! empty($config['highlight_full_fields'])) {
             $options['highlight_full_fields'] = is_array($config['highlight_full_fields'])
                 ? implode(',', $config['highlight_full_fields'])
                 : $config['highlight_full_fields'];
@@ -263,13 +266,13 @@ class TypesenseQueryDriver implements QueryDriverInterface
         }
 
         // ==================== RESULT FIELDS ====================
-        if (!empty($config['include_fields'])) {
+        if (! empty($config['include_fields'])) {
             $options['include_fields'] = is_array($config['include_fields'])
                 ? implode(',', $config['include_fields'])
                 : $config['include_fields'];
         }
 
-        if (!empty($config['exclude_fields'])) {
+        if (! empty($config['exclude_fields'])) {
             $existingExclude = $options['exclude_fields'] ?? '';
             $newExclude = is_array($config['exclude_fields'])
                 ? implode(',', $config['exclude_fields'])
@@ -307,11 +310,11 @@ class TypesenseQueryDriver implements QueryDriverInterface
         }
 
         // ==================== PINNING & HIDING ====================
-        if (!empty($config['pinned_hits'])) {
+        if (! empty($config['pinned_hits'])) {
             $options['pinned_hits'] = $config['pinned_hits'];
         }
 
-        if (!empty($config['hidden_hits'])) {
+        if (! empty($config['hidden_hits'])) {
             $options['hidden_hits'] = $config['hidden_hits'];
         }
 
@@ -403,7 +406,7 @@ class TypesenseQueryDriver implements QueryDriverInterface
         return $presets[$preset] ?? $presets['ecommerce'];
     }
 
-    public function applySorting($query, array $sortOptions = [], string $model)
+    public function applySorting($query, array $sortOptions, string $model)
     {
         if (empty($sortOptions)) {
             return $query;
@@ -413,7 +416,7 @@ class TypesenseQueryDriver implements QueryDriverInterface
         $sortField = $sortOptions['sort_field'] === 'id' ? 'id_numeric' : $sortField;
         $sortDirection = $sortOptions['sort_direction'] ?? 'asc';
 
-        $stringTypeFields = array_filter($this->model::getTypesenseCollectionSchema()['fields'], fn($field) => $field['type'] === 'string');
+        $stringTypeFields = array_filter($this->model::getTypesenseCollectionSchema()['fields'], fn ($field) => $field['type'] === 'string');
 
         if (in_array($sortField, array_column($stringTypeFields, 'name'))) {
             throw new \Exception("Typesense does not support sorting by string field: {$sortField}", 400);
@@ -424,12 +427,13 @@ class TypesenseQueryDriver implements QueryDriverInterface
 
     public function supports(string $model): bool
     {
-        if (!class_exists($model) || !is_subclass_of($model, Model::class)) {
+        if (! class_exists($model) || ! is_subclass_of($model, Model::class)) {
             return false;
         }
 
         // Check if the model uses the Searchable trait
         $traits = class_uses_recursive($model);
+
         return in_array('Laravel\Scout\Searchable', $traits);
     }
 
@@ -444,7 +448,7 @@ class TypesenseQueryDriver implements QueryDriverInterface
         $searchTerm = $searchOptions['search'] ?? '*';
 
         // If there's a search term, create the builder with it, otherwise use wildcard
-        if (!empty($searchTerm) && $searchTerm !== '*') {
+        if (! empty($searchTerm) && $searchTerm !== '*') {
             $builder = $model::search($searchTerm);
 
             // Apply search options to modify the search term if needed

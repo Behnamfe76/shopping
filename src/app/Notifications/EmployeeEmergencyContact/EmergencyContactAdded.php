@@ -7,7 +7,6 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Log;
 
 class EmergencyContactAdded extends Notification implements ShouldQueue
 {
@@ -44,8 +43,8 @@ class EmergencyContactAdded extends Notification implements ShouldQueue
         return (new MailMessage)
             ->subject('Emergency Contact Added')
             ->greeting("Hello {$employee->first_name},")
-            ->line("A new emergency contact has been added to your profile.")
-            ->line("**Contact Details:**")
+            ->line('A new emergency contact has been added to your profile.')
+            ->line('**Contact Details:**')
             ->line("Name: {$contact->contact_name}")
             ->line("Relationship: {$contact->relationship}")
             ->line("Primary Phone: {$contact->phone_primary}")
@@ -56,9 +55,9 @@ class EmergencyContactAdded extends Notification implements ShouldQueue
                 return $message->line("Email: {$contact->email}");
             })
             ->when($contact->is_primary, function ($message) {
-                return $message->line("**This contact has been set as your primary emergency contact.**");
+                return $message->line('**This contact has been set as your primary emergency contact.**');
             })
-            ->line("If you did not request this change or if any information is incorrect, please contact HR immediately.")
+            ->line('If you did not request this change or if any information is incorrect, please contact HR immediately.')
             ->action('View Your Profile', url('/employee/profile'))
             ->line('Thank you for keeping your emergency contact information up to date.');
     }
@@ -107,8 +106,8 @@ class EmergencyContactAdded extends Notification implements ShouldQueue
     {
         return [
             'emergency_contact',
-            'employee_' . $this->contact->employee_id,
-            'contact_' . $this->contact->id,
+            'employee_'.$this->contact->employee_id,
+            'contact_'.$this->contact->id,
         ];
     }
 }

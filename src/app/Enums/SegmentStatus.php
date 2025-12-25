@@ -11,7 +11,7 @@ enum SegmentStatus: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::ACTIVE => 'Active',
             self::INACTIVE => 'Inactive',
             self::DRAFT => 'Draft',
@@ -21,7 +21,7 @@ enum SegmentStatus: string
 
     public function color(): string
     {
-        return match($this) {
+        return match ($this) {
             self::ACTIVE => 'green',
             self::INACTIVE => 'gray',
             self::DRAFT => 'yellow',
@@ -31,7 +31,7 @@ enum SegmentStatus: string
 
     public function description(): string
     {
-        return match($this) {
+        return match ($this) {
             self::ACTIVE => 'Segment is active and being used for targeting',
             self::INACTIVE => 'Segment is inactive and not being used',
             self::DRAFT => 'Segment is in draft mode and not yet active',

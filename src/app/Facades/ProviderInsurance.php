@@ -6,9 +6,9 @@ use App\DTOs\ProviderInsuranceDTO;
 use App\Models\ProviderInsurance;
 use App\Services\ProviderInsuranceService;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Support\Facades\Facade;
 
 /**
@@ -70,7 +70,7 @@ class ProviderInsurance extends Facade
     /**
      * Cursor paginate provider insurance records
      */
-    public static function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public static function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return static::getFacadeRoot()->cursorPaginate($perPage, $cursor);
     }
@@ -398,7 +398,7 @@ class ProviderInsurance extends Facade
     /**
      * Cancel provider insurance
      */
-    public static function cancel(ProviderInsurance $providerInsurance, string $reason = null): bool
+    public static function cancel(ProviderInsurance $providerInsurance, ?string $reason = null): bool
     {
         return static::getFacadeRoot()->cancel($providerInsurance, $reason);
     }
@@ -406,7 +406,7 @@ class ProviderInsurance extends Facade
     /**
      * Suspend provider insurance
      */
-    public static function suspend(ProviderInsurance $providerInsurance, string $reason = null): bool
+    public static function suspend(ProviderInsurance $providerInsurance, ?string $reason = null): bool
     {
         return static::getFacadeRoot()->suspend($providerInsurance, $reason);
     }
@@ -414,7 +414,7 @@ class ProviderInsurance extends Facade
     /**
      * Verify provider insurance
      */
-    public static function verify(ProviderInsurance $providerInsurance, int $verifiedBy, string $notes = null): bool
+    public static function verify(ProviderInsurance $providerInsurance, int $verifiedBy, ?string $notes = null): bool
     {
         return static::getFacadeRoot()->verify($providerInsurance, $verifiedBy, $notes);
     }

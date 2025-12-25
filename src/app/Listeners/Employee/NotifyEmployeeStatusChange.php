@@ -7,7 +7,6 @@ use Fereydooni\Shopping\app\Events\Employee\EmployeeDeactivated;
 use Fereydooni\Shopping\app\Events\Employee\EmployeeTerminated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 
@@ -66,13 +65,13 @@ class NotifyEmployeeStatusChange implements ShouldQueue
 
             Log::info("Employee status change notification sent for {$status}", [
                 'employee_id' => $employee->id,
-                'status' => $status
+                'status' => $status,
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to send employee status change notification', [
                 'employee_id' => $employee->id,
                 'status' => $status,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -111,7 +110,7 @@ class NotifyEmployeeStatusChange implements ShouldQueue
     {
         Log::error('Failed to notify employee status change', [
             'event' => get_class($event),
-            'error' => $exception->getMessage()
+            'error' => $exception->getMessage(),
         ]);
     }
 }

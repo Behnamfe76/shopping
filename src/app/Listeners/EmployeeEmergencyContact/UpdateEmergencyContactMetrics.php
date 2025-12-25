@@ -3,14 +3,13 @@
 namespace App\Listeners\EmployeeEmergencyContact;
 
 use App\Events\EmployeeEmergencyContact\EmployeeEmergencyContactCreated;
-use App\Events\EmployeeEmergencyContact\EmployeeEmergencyContactUpdated;
-use App\Events\EmployeeEmergencyContact\EmployeeEmergencyContactSetPrimary;
 use App\Events\EmployeeEmergencyContact\EmployeeEmergencyContactDeleted;
+use App\Events\EmployeeEmergencyContact\EmployeeEmergencyContactSetPrimary;
+use App\Events\EmployeeEmergencyContact\EmployeeEmergencyContactUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class UpdateEmergencyContactMetrics implements ShouldQueue
 {
@@ -119,7 +118,7 @@ class UpdateEmergencyContactMetrics implements ShouldQueue
     private function updateGeographicMetrics($contact, string $action): void
     {
         try {
-            if (!empty($contact->city) || !empty($contact->state) || !empty($contact->country)) {
+            if (! empty($contact->city) || ! empty($contact->state) || ! empty($contact->country)) {
                 $cacheKeys = [
                     'emergency_contact_city_distribution',
                     'emergency_contact_state_distribution',

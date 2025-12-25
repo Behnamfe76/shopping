@@ -2,22 +2,25 @@
 
 namespace App\Events\EmployeePosition;
 
-use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Queue\SerializesModels;
+use App\DTOs\EmployeePositionDTO;
+use App\Models\EmployeePosition;
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use App\Models\EmployeePosition;
-use App\DTOs\EmployeePositionDTO;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class EmployeePositionUpdated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public EmployeePosition $position;
+
     public EmployeePositionDTO $positionDTO;
+
     public array $changes;
+
     public array $metadata;
 
     /**
@@ -48,7 +51,7 @@ class EmployeePositionUpdated implements ShouldBroadcast
     {
         $channels = [
             new PrivateChannel('employee-positions'),
-            new PrivateChannel('departments.' . $this->position->department_id),
+            new PrivateChannel('departments.'.$this->position->department_id),
         ];
 
         // Add role-based channels

@@ -3,13 +3,10 @@
 namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
 use Fereydooni\Shopping\app\Http\Controllers\Controller;
-use Fereydooni\Shopping\app\DTOs\ProviderDTO;
 use Fereydooni\Shopping\app\Models\Provider;
 use Fereydooni\Shopping\app\Services\ProviderService;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
 class ProviderController extends Controller
@@ -36,7 +33,7 @@ class ProviderController extends Controller
                 'last_page' => $providers->lastPage(),
                 'per_page' => $providers->perPage(),
                 'total' => $providers->total(),
-            ]
+            ],
         ]);
     }
 
@@ -76,18 +73,18 @@ class ProviderController extends Controller
 
             return response()->json([
                 'message' => 'Provider created successfully',
-                'data' => $provider
+                'data' => $provider,
             ], 201);
 
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Validation failed',
-                'errors' => $e->errors()
+                'errors' => $e->errors(),
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to create provider',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -99,14 +96,14 @@ class ProviderController extends Controller
     {
         $provider = $this->providerService->getProvider($id);
 
-        if (!$provider) {
+        if (! $provider) {
             return response()->json([
-                'message' => 'Provider not found'
+                'message' => 'Provider not found',
             ], 404);
         }
 
         return response()->json([
-            'data' => $provider
+            'data' => $provider,
         ]);
     }
 
@@ -118,16 +115,16 @@ class ProviderController extends Controller
         try {
             $provider = $this->providerService->getProvider($id);
 
-            if (!$provider) {
+            if (! $provider) {
                 return response()->json([
-                    'message' => 'Provider not found'
+                    'message' => 'Provider not found',
                 ], 404);
             }
 
             $validated = $request->validate([
                 'company_name' => 'sometimes|string|max:255',
                 'contact_person' => 'sometimes|string|max:255',
-                'email' => 'sometimes|email|unique:providers,email,' . $id,
+                'email' => 'sometimes|email|unique:providers,email,'.$id,
                 'phone' => 'sometimes|string|max:20',
                 'website' => 'nullable|url|max:255',
                 'tax_id' => 'nullable|string|max:100',
@@ -153,25 +150,26 @@ class ProviderController extends Controller
 
             if ($updated) {
                 $provider->refresh();
+
                 return response()->json([
                     'message' => 'Provider updated successfully',
-                    'data' => $provider
+                    'data' => $provider,
                 ]);
             }
 
             return response()->json([
-                'message' => 'Failed to update provider'
+                'message' => 'Failed to update provider',
             ], 500);
 
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Validation failed',
-                'errors' => $e->errors()
+                'errors' => $e->errors(),
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to update provider',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -183,9 +181,9 @@ class ProviderController extends Controller
     {
         $provider = $this->providerService->getProvider($id);
 
-        if (!$provider) {
+        if (! $provider) {
             return response()->json([
-                'message' => 'Provider not found'
+                'message' => 'Provider not found',
             ], 404);
         }
 
@@ -193,12 +191,12 @@ class ProviderController extends Controller
 
         if ($deleted) {
             return response()->json([
-                'message' => 'Provider deleted successfully'
+                'message' => 'Provider deleted successfully',
             ]);
         }
 
         return response()->json([
-            'message' => 'Failed to delete provider'
+            'message' => 'Failed to delete provider',
         ], 500);
     }
 
@@ -209,9 +207,9 @@ class ProviderController extends Controller
     {
         $provider = $this->providerService->getProvider($id);
 
-        if (!$provider) {
+        if (! $provider) {
             return response()->json([
-                'message' => 'Provider not found'
+                'message' => 'Provider not found',
             ], 404);
         }
 
@@ -219,12 +217,12 @@ class ProviderController extends Controller
 
         if ($activated) {
             return response()->json([
-                'message' => 'Provider activated successfully'
+                'message' => 'Provider activated successfully',
             ]);
         }
 
         return response()->json([
-            'message' => 'Failed to activate provider'
+            'message' => 'Failed to activate provider',
         ], 500);
     }
 
@@ -235,9 +233,9 @@ class ProviderController extends Controller
     {
         $provider = $this->providerService->getProvider($id);
 
-        if (!$provider) {
+        if (! $provider) {
             return response()->json([
-                'message' => 'Provider not found'
+                'message' => 'Provider not found',
             ], 404);
         }
 
@@ -245,12 +243,12 @@ class ProviderController extends Controller
 
         if ($deactivated) {
             return response()->json([
-                'message' => 'Provider deactivated successfully'
+                'message' => 'Provider deactivated successfully',
             ]);
         }
 
         return response()->json([
-            'message' => 'Failed to deactivate provider'
+            'message' => 'Failed to deactivate provider',
         ], 500);
     }
 
@@ -261,26 +259,26 @@ class ProviderController extends Controller
     {
         $provider = $this->providerService->getProvider($id);
 
-        if (!$provider) {
+        if (! $provider) {
             return response()->json([
-                'message' => 'Provider not found'
+                'message' => 'Provider not found',
             ], 404);
         }
 
         $validated = $request->validate([
-            'reason' => 'nullable|string|max:500'
+            'reason' => 'nullable|string|max:500',
         ]);
 
         $suspended = $this->providerService->suspendProvider($provider, $validated['reason'] ?? null);
 
         if ($suspended) {
             return response()->json([
-                'message' => 'Provider suspended successfully'
+                'message' => 'Provider suspended successfully',
             ]);
         }
 
         return response()->json([
-            'message' => 'Failed to suspend provider'
+            'message' => 'Failed to suspend provider',
         ], 500);
     }
 
@@ -291,26 +289,26 @@ class ProviderController extends Controller
     {
         $provider = $this->providerService->getProvider($id);
 
-        if (!$provider) {
+        if (! $provider) {
             return response()->json([
-                'message' => 'Provider not found'
+                'message' => 'Provider not found',
             ], 404);
         }
 
         $validated = $request->validate([
-            'rating' => 'required|numeric|min:0|max:5'
+            'rating' => 'required|numeric|min:0|max:5',
         ]);
 
         $updated = $this->providerService->updateProviderRating($provider, $validated['rating']);
 
         if ($updated) {
             return response()->json([
-                'message' => 'Provider rating updated successfully'
+                'message' => 'Provider rating updated successfully',
             ]);
         }
 
         return response()->json([
-            'message' => 'Failed to update provider rating'
+            'message' => 'Failed to update provider rating',
         ], 500);
     }
 
@@ -321,26 +319,26 @@ class ProviderController extends Controller
     {
         $provider = $this->providerService->getProvider($id);
 
-        if (!$provider) {
+        if (! $provider) {
             return response()->json([
-                'message' => 'Provider not found'
+                'message' => 'Provider not found',
             ], 404);
         }
 
         $validated = $request->validate([
-            'quality_rating' => 'required|numeric|min:0|max:5'
+            'quality_rating' => 'required|numeric|min:0|max:5',
         ]);
 
         $updated = $this->providerService->updateProviderQualityRating($provider, $validated['quality_rating']);
 
         if ($updated) {
             return response()->json([
-                'message' => 'Provider quality rating updated successfully'
+                'message' => 'Provider quality rating updated successfully',
             ]);
         }
 
         return response()->json([
-            'message' => 'Failed to update provider quality rating'
+            'message' => 'Failed to update provider quality rating',
         ], 500);
     }
 
@@ -351,26 +349,26 @@ class ProviderController extends Controller
     {
         $provider = $this->providerService->getProvider($id);
 
-        if (!$provider) {
+        if (! $provider) {
             return response()->json([
-                'message' => 'Provider not found'
+                'message' => 'Provider not found',
             ], 404);
         }
 
         $validated = $request->validate([
-            'delivery_rating' => 'required|numeric|min:0|max:5'
+            'delivery_rating' => 'required|numeric|min:0|max:5',
         ]);
 
         $updated = $this->providerService->updateProviderDeliveryRating($provider, $validated['delivery_rating']);
 
         if ($updated) {
             return response()->json([
-                'message' => 'Provider delivery rating updated successfully'
+                'message' => 'Provider delivery rating updated successfully',
             ]);
         }
 
         return response()->json([
-            'message' => 'Failed to update provider delivery rating'
+            'message' => 'Failed to update provider delivery rating',
         ], 500);
     }
 
@@ -381,26 +379,26 @@ class ProviderController extends Controller
     {
         $provider = $this->providerService->getProvider($id);
 
-        if (!$provider) {
+        if (! $provider) {
             return response()->json([
-                'message' => 'Provider not found'
+                'message' => 'Provider not found',
             ], 404);
         }
 
         $validated = $request->validate([
-            'communication_rating' => 'required|numeric|min:0|max:5'
+            'communication_rating' => 'required|numeric|min:0|max:5',
         ]);
 
         $updated = $this->providerService->updateProviderCommunicationRating($provider, $validated['communication_rating']);
 
         if ($updated) {
             return response()->json([
-                'message' => 'Provider communication rating updated successfully'
+                'message' => 'Provider communication rating updated successfully',
             ]);
         }
 
         return response()->json([
-            'message' => 'Failed to update provider communication rating'
+            'message' => 'Failed to update provider communication rating',
         ], 500);
     }
 
@@ -411,26 +409,26 @@ class ProviderController extends Controller
     {
         $provider = $this->providerService->getProvider($id);
 
-        if (!$provider) {
+        if (! $provider) {
             return response()->json([
-                'message' => 'Provider not found'
+                'message' => 'Provider not found',
             ], 404);
         }
 
         $validated = $request->validate([
-            'credit_limit' => 'required|numeric|min:0'
+            'credit_limit' => 'required|numeric|min:0',
         ]);
 
         $updated = $this->providerService->updateProviderCreditLimit($provider, $validated['credit_limit']);
 
         if ($updated) {
             return response()->json([
-                'message' => 'Provider credit limit updated successfully'
+                'message' => 'Provider credit limit updated successfully',
             ]);
         }
 
         return response()->json([
-            'message' => 'Failed to update provider credit limit'
+            'message' => 'Failed to update provider credit limit',
         ], 500);
     }
 
@@ -441,26 +439,26 @@ class ProviderController extends Controller
     {
         $provider = $this->providerService->getProvider($id);
 
-        if (!$provider) {
+        if (! $provider) {
             return response()->json([
-                'message' => 'Provider not found'
+                'message' => 'Provider not found',
             ], 404);
         }
 
         $validated = $request->validate([
-            'commission_rate' => 'required|numeric|min:0|max:1'
+            'commission_rate' => 'required|numeric|min:0|max:1',
         ]);
 
         $updated = $this->providerService->updateProviderCommissionRate($provider, $validated['commission_rate']);
 
         if ($updated) {
             return response()->json([
-                'message' => 'Provider commission rate updated successfully'
+                'message' => 'Provider commission rate updated successfully',
             ]);
         }
 
         return response()->json([
-            'message' => 'Failed to update provider commission rate'
+            'message' => 'Failed to update provider commission rate',
         ], 500);
     }
 
@@ -471,26 +469,26 @@ class ProviderController extends Controller
     {
         $provider = $this->providerService->getProvider($id);
 
-        if (!$provider) {
+        if (! $provider) {
             return response()->json([
-                'message' => 'Provider not found'
+                'message' => 'Provider not found',
             ], 404);
         }
 
         $validated = $request->validate([
-            'discount_rate' => 'required|numeric|min:0|max:1'
+            'discount_rate' => 'required|numeric|min:0|max:1',
         ]);
 
         $updated = $this->providerService->updateProviderDiscountRate($provider, $validated['discount_rate']);
 
         if ($updated) {
             return response()->json([
-                'message' => 'Provider discount rate updated successfully'
+                'message' => 'Provider discount rate updated successfully',
             ]);
         }
 
         return response()->json([
-            'message' => 'Failed to update provider discount rate'
+            'message' => 'Failed to update provider discount rate',
         ], 500);
     }
 
@@ -501,26 +499,26 @@ class ProviderController extends Controller
     {
         $provider = $this->providerService->getProvider($id);
 
-        if (!$provider) {
+        if (! $provider) {
             return response()->json([
-                'message' => 'Provider not found'
+                'message' => 'Provider not found',
             ], 404);
         }
 
         $validated = $request->validate([
-            'contract_end_date' => 'required|date|after:today'
+            'contract_end_date' => 'required|date|after:today',
         ]);
 
         $extended = $this->providerService->extendProviderContract($provider, $validated['contract_end_date']);
 
         if ($extended) {
             return response()->json([
-                'message' => 'Provider contract extended successfully'
+                'message' => 'Provider contract extended successfully',
             ]);
         }
 
         return response()->json([
-            'message' => 'Failed to extend provider contract'
+            'message' => 'Failed to extend provider contract',
         ], 500);
     }
 
@@ -531,26 +529,26 @@ class ProviderController extends Controller
     {
         $provider = $this->providerService->getProvider($id);
 
-        if (!$provider) {
+        if (! $provider) {
             return response()->json([
-                'message' => 'Provider not found'
+                'message' => 'Provider not found',
             ], 404);
         }
 
         $validated = $request->validate([
-            'reason' => 'nullable|string|max:500'
+            'reason' => 'nullable|string|max:500',
         ]);
 
         $terminated = $this->providerService->terminateProviderContract($provider, $validated['reason'] ?? null);
 
         if ($terminated) {
             return response()->json([
-                'message' => 'Provider contract terminated successfully'
+                'message' => 'Provider contract terminated successfully',
             ]);
         }
 
         return response()->json([
-            'message' => 'Failed to terminate provider contract'
+            'message' => 'Failed to terminate provider contract',
         ], 500);
     }
 
@@ -561,16 +559,16 @@ class ProviderController extends Controller
     {
         $provider = $this->providerService->getProvider($id);
 
-        if (!$provider) {
+        if (! $provider) {
             return response()->json([
-                'message' => 'Provider not found'
+                'message' => 'Provider not found',
             ], 404);
         }
 
         $orders = $this->providerService->getProviderOrders($provider);
 
         return response()->json([
-            'data' => $orders
+            'data' => $orders,
         ]);
     }
 
@@ -581,16 +579,16 @@ class ProviderController extends Controller
     {
         $provider = $this->providerService->getProvider($id);
 
-        if (!$provider) {
+        if (! $provider) {
             return response()->json([
-                'message' => 'Provider not found'
+                'message' => 'Provider not found',
             ], 404);
         }
 
         $products = $this->providerService->getProviderProducts($provider);
 
         return response()->json([
-            'data' => $products
+            'data' => $products,
         ]);
     }
 
@@ -601,16 +599,16 @@ class ProviderController extends Controller
     {
         $provider = $this->providerService->getProvider($id);
 
-        if (!$provider) {
+        if (! $provider) {
             return response()->json([
-                'message' => 'Provider not found'
+                'message' => 'Provider not found',
             ], 404);
         }
 
         $analytics = $this->providerService->getProviderAnalytics($provider);
 
         return response()->json([
-            'data' => $analytics
+            'data' => $analytics,
         ]);
     }
 
@@ -621,16 +619,16 @@ class ProviderController extends Controller
     {
         $provider = $this->providerService->getProvider($id);
 
-        if (!$provider) {
+        if (! $provider) {
             return response()->json([
-                'message' => 'Provider not found'
+                'message' => 'Provider not found',
             ], 404);
         }
 
         $metrics = $this->providerService->getProviderPerformanceMetrics($provider);
 
         return response()->json([
-            'data' => $metrics
+            'data' => $metrics,
         ]);
     }
 
@@ -641,27 +639,27 @@ class ProviderController extends Controller
     {
         $provider = $this->providerService->getProvider($id);
 
-        if (!$provider) {
+        if (! $provider) {
             return response()->json([
-                'message' => 'Provider not found'
+                'message' => 'Provider not found',
             ], 404);
         }
 
         $validated = $request->validate([
             'note' => 'required|string|max:1000',
-            'type' => 'nullable|string|max:50'
+            'type' => 'nullable|string|max:50',
         ]);
 
         $added = $this->providerService->addProviderNote($provider, $validated['note'], $validated['type'] ?? 'general');
 
         if ($added) {
             return response()->json([
-                'message' => 'Provider note added successfully'
+                'message' => 'Provider note added successfully',
             ]);
         }
 
         return response()->json([
-            'message' => 'Failed to add provider note'
+            'message' => 'Failed to add provider note',
         ], 500);
     }
 
@@ -672,16 +670,16 @@ class ProviderController extends Controller
     {
         $provider = $this->providerService->getProvider($id);
 
-        if (!$provider) {
+        if (! $provider) {
             return response()->json([
-                'message' => 'Provider not found'
+                'message' => 'Provider not found',
             ], 404);
         }
 
         $notes = $this->providerService->getProviderNotes($provider);
 
         return response()->json([
-            'data' => $notes
+            'data' => $notes,
         ]);
     }
 
@@ -692,26 +690,26 @@ class ProviderController extends Controller
     {
         $provider = $this->providerService->getProvider($id);
 
-        if (!$provider) {
+        if (! $provider) {
             return response()->json([
-                'message' => 'Provider not found'
+                'message' => 'Provider not found',
             ], 404);
         }
 
         $validated = $request->validate([
-            'specializations' => 'required|array'
+            'specializations' => 'required|array',
         ]);
 
         $updated = $this->providerService->updateProviderSpecializations($provider, $validated['specializations']);
 
         if ($updated) {
             return response()->json([
-                'message' => 'Provider specializations updated successfully'
+                'message' => 'Provider specializations updated successfully',
             ]);
         }
 
         return response()->json([
-            'message' => 'Failed to update provider specializations'
+            'message' => 'Failed to update provider specializations',
         ], 500);
     }
 
@@ -722,26 +720,26 @@ class ProviderController extends Controller
     {
         $provider = $this->providerService->getProvider($id);
 
-        if (!$provider) {
+        if (! $provider) {
             return response()->json([
-                'message' => 'Provider not found'
+                'message' => 'Provider not found',
             ], 404);
         }
 
         $validated = $request->validate([
-            'certifications' => 'required|array'
+            'certifications' => 'required|array',
         ]);
 
         $updated = $this->providerService->updateProviderCertifications($provider, $validated['certifications']);
 
         if ($updated) {
             return response()->json([
-                'message' => 'Provider certifications updated successfully'
+                'message' => 'Provider certifications updated successfully',
             ]);
         }
 
         return response()->json([
-            'message' => 'Failed to update provider certifications'
+            'message' => 'Failed to update provider certifications',
         ], 500);
     }
 
@@ -752,26 +750,26 @@ class ProviderController extends Controller
     {
         $provider = $this->providerService->getProvider($id);
 
-        if (!$provider) {
+        if (! $provider) {
             return response()->json([
-                'message' => 'Provider not found'
+                'message' => 'Provider not found',
             ], 404);
         }
 
         $validated = $request->validate([
-            'insurance_info' => 'required|array'
+            'insurance_info' => 'required|array',
         ]);
 
         $updated = $this->providerService->updateProviderInsurance($provider, $validated['insurance_info']);
 
         if ($updated) {
             return response()->json([
-                'message' => 'Provider insurance updated successfully'
+                'message' => 'Provider insurance updated successfully',
             ]);
         }
 
         return response()->json([
-            'message' => 'Failed to update provider insurance'
+            'message' => 'Failed to update provider insurance',
         ], 500);
     }
 }

@@ -2,10 +2,9 @@
 
 namespace Fereydooni\Shopping\App\Actions\ProviderInvoice;
 
-use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderInvoiceRepositoryInterface;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Exception;
+use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderInvoiceRepositoryInterface;
+use Illuminate\Support\Facades\Log;
 
 class CalculateInvoiceMetricsAction
 {
@@ -31,7 +30,7 @@ class CalculateInvoiceMetricsAction
                 'provider_id' => $providerId,
                 'start_date' => $startDate,
                 'end_date' => $endDate,
-                'metrics_count' => count($metrics)
+                'metrics_count' => count($metrics),
             ]);
 
             return $metrics;
@@ -39,7 +38,7 @@ class CalculateInvoiceMetricsAction
         } catch (Exception $e) {
             Log::error('Failed to calculate invoice metrics', [
                 'provider_id' => $providerId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -116,14 +115,14 @@ class CalculateInvoiceMetricsAction
             Log::info('Payment trends calculated successfully', [
                 'start_date' => $startDate,
                 'end_date' => $endDate,
-                'trends_count' => count($trends)
+                'trends_count' => count($trends),
             ]);
 
             return $trends;
 
         } catch (Exception $e) {
             Log::error('Failed to calculate payment trends', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -140,7 +139,7 @@ class CalculateInvoiceMetricsAction
             } catch (Exception $e) {
                 Log::error('Failed to calculate metrics for provider', [
                     'provider_id' => $providerId,
-                    'error' => $e->getMessage()
+                    'error' => $e->getMessage(),
                 ]);
                 $comparison[$providerId] = null;
             }
@@ -149,4 +148,3 @@ class CalculateInvoiceMetricsAction
         return $comparison;
     }
 }
-

@@ -23,7 +23,7 @@ class CalculateBenefitsCostAction
             $adjustedCosts = $this->applyCoverageLevelAdjustments($benefit, [
                 'total_premium' => $totalPremium,
                 'employee_contribution' => $employeeContribution,
-                'employer_contribution' => $employerContribution
+                'employer_contribution' => $employerContribution,
             ]);
 
             // Apply discounts
@@ -34,7 +34,7 @@ class CalculateBenefitsCostAction
         } catch (\Exception $e) {
             Log::error('Failed to calculate benefits cost', [
                 'error' => $e->getMessage(),
-                'benefit_id' => $benefit->id
+                'benefit_id' => $benefit->id,
             ]);
             throw $e;
         }
@@ -106,7 +106,7 @@ class CalculateBenefitsCostAction
         return [
             'total_premium' => $costs['total_premium'] * $multiplier,
             'employee_contribution' => $costs['employee_contribution'] * $multiplier,
-            'employer_contribution' => $costs['employer_contribution'] * $multiplier
+            'employer_contribution' => $costs['employer_contribution'] * $multiplier,
         ];
     }
 
@@ -129,7 +129,7 @@ class CalculateBenefitsCostAction
             'total_premium' => round($costs['total_premium'] * $discountMultiplier, 2),
             'employee_contribution' => round($costs['employee_contribution'] * $discountMultiplier, 2),
             'employer_contribution' => round($costs['employer_contribution'] * $discountMultiplier, 2),
-            'discounts_applied' => $discounts
+            'discounts_applied' => $discounts,
         ];
     }
 
@@ -185,15 +185,21 @@ class CalculateBenefitsCostAction
     {
         // Calculate based on employee tenure
         $employee = $benefit->employee;
-        if (!$employee || !$employee->hire_date) {
+        if (! $employee || ! $employee->hire_date) {
             return 0;
         }
 
         $tenureYears = \now()->diffInYears($employee->hire_date);
 
-        if ($tenureYears >= 10) return 15.0;
-        if ($tenureYears >= 5) return 10.0;
-        if ($tenureYears >= 2) return 5.0;
+        if ($tenureYears >= 10) {
+            return 15.0;
+        }
+        if ($tenureYears >= 5) {
+            return 10.0;
+        }
+        if ($tenureYears >= 2) {
+            return 5.0;
+        }
 
         return 0;
     }

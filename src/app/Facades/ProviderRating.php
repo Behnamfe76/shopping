@@ -2,13 +2,13 @@
 
 namespace Fereydooni\Shopping\App\Facades;
 
-use Illuminate\Support\Facades\Facade;
-use App\Models\ProviderRating;
 use App\DTOs\ProviderRatingDTO;
-use Illuminate\Support\Collection;
+use App\Models\ProviderRating;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static Collection all()
@@ -88,7 +88,6 @@ use Illuminate\Pagination\CursorPaginator;
  * @method static Collection getMostHelpfulRatingsDTO(int $limit = 10)
  * @method static Collection getTopRatedProviders(int $limit = 10)
  * @method static Collection getTopRatedProvidersDTO(int $limit = 10)
- *
  * @method static Collection getPendingRatingsForModeration()
  * @method static Collection getFlaggedRatingsForReview()
  * @method static Collection getRejectedRatings()
@@ -102,7 +101,6 @@ use Illuminate\Pagination\CursorPaginator;
  * @method static Collection getRatingsRequiringAttention()
  * @method static bool isRatingContentAppropriate(string $content)
  * @method static int autoFlagSuspiciousRatings()
- *
  * @method static bool addHelpfulVote(int $ratingId, int $userId)
  * @method static bool removeHelpfulVote(int $ratingId, int $userId)
  * @method static bool addVote(int $ratingId, int $userId, bool $isHelpful)
@@ -118,7 +116,6 @@ use Illuminate\Pagination\CursorPaginator;
  * @method static Collection getControversialRatings(int $limit = 10)
  * @method static float getUserVotingImpactScore(int $userId)
  * @method static float getRatingQualityScore(int $ratingId)
- *
  * @method static array getRatingStatistics()
  * @method static array getProviderRatingStatistics(int $providerId)
  * @method static array getRatingTrends(string $startDate = null, string $endDate = null)

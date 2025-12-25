@@ -22,16 +22,16 @@ class CalculatePerformanceRequest extends FormRequest
         return [
             'recalculate_metrics' => [
                 'sometimes',
-                'boolean'
+                'boolean',
             ],
             'update_grade' => [
                 'sometimes',
-                'boolean'
+                'boolean',
             ],
             'force_recalculation' => [
                 'sometimes',
-                'boolean'
-            ]
+                'boolean',
+            ],
         ];
     }
 
@@ -43,7 +43,7 @@ class CalculatePerformanceRequest extends FormRequest
         return [
             'recalculate_metrics.boolean' => 'Recalculate metrics must be true or false.',
             'update_grade.boolean' => 'Update grade must be true or false.',
-            'force_recalculation.boolean' => 'Force recalculation must be true or false.'
+            'force_recalculation.boolean' => 'Force recalculation must be true or false.',
         ];
     }
 
@@ -55,7 +55,7 @@ class CalculatePerformanceRequest extends FormRequest
         return [
             'recalculate_metrics' => 'recalculate metrics',
             'update_grade' => 'update grade',
-            'force_recalculation' => 'force recalculation'
+            'force_recalculation' => 'force recalculation',
         ];
     }
 }

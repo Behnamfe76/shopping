@@ -2,24 +2,25 @@
 
 namespace App\Repositories;
 
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
-use App\Repositories\Interfaces\ProviderCommunicationRepositoryInterface;
-use App\Models\ProviderCommunication;
 use App\DTOs\ProviderCommunicationDTO;
 use App\Enums\Status;
-use App\Enums\Priority;
+use App\Models\ProviderCommunication;
+use App\Repositories\Interfaces\ProviderCommunicationRepositoryInterface;
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ProviderCommunicationRepository implements ProviderCommunicationRepositoryInterface
 {
     protected $model;
+
     protected $cachePrefix = 'provider_communication_';
+
     protected $cacheTtl = 3600; // 1 hour
 
     public function __construct(ProviderCommunication $model)
@@ -30,7 +31,7 @@ class ProviderCommunicationRepository implements ProviderCommunicationRepository
     // Basic CRUD operations
     public function all(): Collection
     {
-        return Cache::remember($this->cachePrefix . 'all', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'all', $this->cacheTtl, function () {
             return $this->model->with(['provider', 'user'])->get();
         });
     }
@@ -49,7 +50,7 @@ class ProviderCommunicationRepository implements ProviderCommunicationRepository
             ->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->model->with(['provider', 'user'])
             ->orderBy('created_at', 'desc')
@@ -58,7 +59,7 @@ class ProviderCommunicationRepository implements ProviderCommunicationRepository
 
     public function find(int $id): ?ProviderCommunication
     {
-        return Cache::remember($this->cachePrefix . 'find_' . $id, $this->cacheTtl, function () use ($id) {
+        return Cache::remember($this->cachePrefix.'find_'.$id, $this->cacheTtl, function () use ($id) {
             return $this->model->with(['provider', 'user', 'replies', 'thread'])->find($id);
         });
     }
@@ -66,12 +67,13 @@ class ProviderCommunicationRepository implements ProviderCommunicationRepository
     public function findDTO(int $id): ?ProviderCommunicationDTO
     {
         $model = $this->find($id);
+
         return $model ? ProviderCommunicationDTO::fromModel($model) : null;
     }
 
     public function findByProviderId(int $providerId): Collection
     {
-        return Cache::remember($this->cachePrefix . 'provider_' . $providerId, $this->cacheTtl, function () use ($providerId) {
+        return Cache::remember($this->cachePrefix.'provider_'.$providerId, $this->cacheTtl, function () use ($providerId) {
             return $this->model->byProvider($providerId)
                 ->with(['user', 'replies'])
                 ->orderBy('created_at', 'desc')
@@ -88,7 +90,7 @@ class ProviderCommunicationRepository implements ProviderCommunicationRepository
 
     public function findByUserId(int $userId): Collection
     {
-        return Cache::remember($this->cachePrefix . 'user_' . $userId, $this->cacheTtl, function () use ($userId) {
+        return Cache::remember($this->cachePrefix.'user_'.$userId, $this->cacheTtl, function () use ($userId) {
             return $this->model->byUser($userId)
                 ->with(['provider', 'replies'])
                 ->orderBy('created_at', 'desc')
@@ -273,7 +275,7 @@ class ProviderCommunicationRepository implements ProviderCommunicationRepository
             return $communication->load(['provider', 'user']);
         } catch (Exception $e) {
             DB::rollBack();
-            Log::error('Failed to create provider communication: ' . $e->getMessage());
+            Log::error('Failed to create provider communication: '.$e->getMessage());
             throw $e;
         }
     }
@@ -281,6 +283,7 @@ class ProviderCommunicationRepository implements ProviderCommunicationRepository
     public function createAndReturnDTO(array $data): ProviderCommunicationDTO
     {
         $communication = $this->create($data);
+
         return ProviderCommunicationDTO::fromModel($communication);
     }
 
@@ -297,7 +300,7 @@ class ProviderCommunicationRepository implements ProviderCommunicationRepository
             return $result;
         } catch (Exception $e) {
             DB::rollBack();
-            Log::error('Failed to update provider communication: ' . $e->getMessage());
+            Log::error('Failed to update provider communication: '.$e->getMessage());
             throw $e;
         }
     }
@@ -305,6 +308,7 @@ class ProviderCommunicationRepository implements ProviderCommunicationRepository
     public function updateAndReturnDTO(ProviderCommunication $providerCommunication, array $data): ?ProviderCommunicationDTO
     {
         $result = $this->update($providerCommunication, $data);
+
         return $result ? ProviderCommunicationDTO::fromModel($providerCommunication->fresh()) : null;
     }
 
@@ -321,7 +325,7 @@ class ProviderCommunicationRepository implements ProviderCommunicationRepository
             return $result;
         } catch (Exception $e) {
             DB::rollBack();
-            Log::error('Failed to delete provider communication: ' . $e->getMessage());
+            Log::error('Failed to delete provider communication: '.$e->getMessage());
             throw $e;
         }
     }
@@ -365,21 +369,21 @@ class ProviderCommunicationRepository implements ProviderCommunicationRepository
     // Count operations
     public function getCommunicationCount(int $providerId): int
     {
-        return Cache::remember($this->cachePrefix . 'count_provider_' . $providerId, $this->cacheTtl, function () use ($providerId) {
+        return Cache::remember($this->cachePrefix.'count_provider_'.$providerId, $this->cacheTtl, function () use ($providerId) {
             return $this->model->byProvider($providerId)->count();
         });
     }
 
     public function getUnreadCount(int $providerId): int
     {
-        return Cache::remember($this->cachePrefix . 'unread_count_provider_' . $providerId, $this->cacheTtl, function () use ($providerId) {
+        return Cache::remember($this->cachePrefix.'unread_count_provider_'.$providerId, $this->cacheTtl, function () use ($providerId) {
             return $this->model->byProvider($providerId)->unread()->count();
         });
     }
 
     public function getUrgentCount(int $providerId): int
     {
-        return Cache::remember($this->cachePrefix . 'urgent_count_provider_' . $providerId, $this->cacheTtl, function () use ($providerId) {
+        return Cache::remember($this->cachePrefix.'urgent_count_provider_'.$providerId, $this->cacheTtl, function () use ($providerId) {
             return $this->model->byProvider($providerId)->urgent()->count();
         });
     }
@@ -389,12 +393,12 @@ class ProviderCommunicationRepository implements ProviderCommunicationRepository
     {
         return $this->model->where(function ($q) use ($query) {
             $q->where('subject', 'like', "%{$query}%")
-              ->orWhere('message', 'like', "%{$query}%")
-              ->orWhere('notes', 'like', "%{$query}%");
+                ->orWhere('message', 'like', "%{$query}%")
+                ->orWhere('notes', 'like', "%{$query}%");
         })
-        ->with(['provider', 'user'])
-        ->orderBy('created_at', 'desc')
-        ->get();
+            ->with(['provider', 'user'])
+            ->orderBy('created_at', 'desc')
+            ->get();
     }
 
     public function searchCommunicationsDTO(string $query): Collection

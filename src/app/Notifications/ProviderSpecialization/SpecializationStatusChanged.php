@@ -2,17 +2,18 @@
 
 namespace Fereydooni\Shopping\App\Notifications\ProviderSpecialization;
 
+use Fereydooni\Shopping\App\Models\ProviderSpecialization;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Fereydooni\Shopping\App\Models\ProviderSpecialization;
 
 class SpecializationStatusChanged extends Notification implements ShouldQueue
 {
     use Queueable;
 
     public $specialization;
+
     public $status;
 
     /**
@@ -45,7 +46,7 @@ class SpecializationStatusChanged extends Notification implements ShouldQueue
             ->greeting("Hello {$notifiable->name}!")
             ->line("Your specialization '{$specializationName}' has been {$this->status}.")
             ->line("Status: {$status}")
-            ->line("This change affects the visibility and availability of your specialization.")
+            ->line('This change affects the visibility and availability of your specialization.')
             ->action('View Specialization', url("/provider/specializations/{$this->specialization->id}"))
             ->line('Thank you for using our platform!');
     }

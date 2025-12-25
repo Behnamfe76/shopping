@@ -15,7 +15,7 @@ enum PositionLevel: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::ENTRY => 'Entry Level',
             self::JUNIOR => 'Junior',
             self::MID => 'Mid Level',
@@ -29,7 +29,7 @@ enum PositionLevel: string
 
     public function shortLabel(): string
     {
-        return match($this) {
+        return match ($this) {
             self::ENTRY => 'Entry',
             self::JUNIOR => 'Junior',
             self::MID => 'Mid',
@@ -43,7 +43,7 @@ enum PositionLevel: string
 
     public function color(): string
     {
-        return match($this) {
+        return match ($this) {
             self::ENTRY => 'blue',
             self::JUNIOR => 'cyan',
             self::MID => 'green',
@@ -77,7 +77,7 @@ enum PositionLevel: string
 
     public function getHierarchyLevel(): int
     {
-        return match($this) {
+        return match ($this) {
             self::ENTRY => 1,
             self::JUNIOR => 2,
             self::MID => 3,
@@ -91,7 +91,7 @@ enum PositionLevel: string
 
     public function requiresExperience(): int
     {
-        return match($this) {
+        return match ($this) {
             self::ENTRY => 0,
             self::JUNIOR => 1,
             self::MID => 3,

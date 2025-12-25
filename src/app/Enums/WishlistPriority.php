@@ -22,7 +22,7 @@ enum WishlistPriority: string
      */
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::LOW => 'Low',
             self::MEDIUM => 'Medium',
             self::HIGH => 'High',
@@ -35,7 +35,7 @@ enum WishlistPriority: string
      */
     public function color(): string
     {
-        return match($this) {
+        return match ($this) {
             self::LOW => 'gray',
             self::MEDIUM => 'blue',
             self::HIGH => 'orange',
@@ -48,7 +48,7 @@ enum WishlistPriority: string
      */
     public function level(): int
     {
-        return match($this) {
+        return match ($this) {
             self::LOW => 1,
             self::MEDIUM => 2,
             self::HIGH => 3,
@@ -69,7 +69,7 @@ enum WishlistPriority: string
      */
     public function next(): ?self
     {
-        return match($this) {
+        return match ($this) {
             self::LOW => self::MEDIUM,
             self::MEDIUM => self::HIGH,
             self::HIGH => self::URGENT,
@@ -82,7 +82,7 @@ enum WishlistPriority: string
      */
     public function previous(): ?self
     {
-        return match($this) {
+        return match ($this) {
             self::LOW => null,
             self::MEDIUM => self::LOW,
             self::HIGH => self::MEDIUM,

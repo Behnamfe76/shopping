@@ -2,12 +2,10 @@
 
 namespace Fereydooni\Shopping\App\Traits;
 
-use App\Models\ProviderRating;
-use App\DTOs\ProviderRatingDTO;
 use App\Repositories\Interfaces\ProviderRatingRepositoryInterface;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 trait HasProviderRatingVoting
 {
@@ -21,13 +19,15 @@ trait HasProviderRatingVoting
         try {
             $rating = $this->providerRatingRepository->find($ratingId);
 
-            if (!$rating) {
+            if (! $rating) {
                 Log::warning("Attempted to vote on non-existent rating: {$ratingId}");
+
                 return false;
             }
 
-            if (!$rating->canBeVotedOn()) {
+            if (! $rating->canBeVotedOn()) {
                 Log::warning("Rating {$ratingId} cannot be voted on");
+
                 return false;
             }
 
@@ -43,7 +43,8 @@ trait HasProviderRatingVoting
 
             return $result;
         } catch (\Exception $e) {
-            Log::error("Error adding helpful vote to rating {$ratingId}: " . $e->getMessage());
+            Log::error("Error adding helpful vote to rating {$ratingId}: ".$e->getMessage());
+
             return false;
         }
     }
@@ -56,8 +57,9 @@ trait HasProviderRatingVoting
         try {
             $rating = $this->providerRatingRepository->find($ratingId);
 
-            if (!$rating) {
+            if (! $rating) {
                 Log::warning("Attempted to remove vote from non-existent rating: {$ratingId}");
+
                 return false;
             }
 
@@ -73,7 +75,8 @@ trait HasProviderRatingVoting
 
             return $result;
         } catch (\Exception $e) {
-            Log::error("Error removing helpful vote from rating {$ratingId}: " . $e->getMessage());
+            Log::error("Error removing helpful vote from rating {$ratingId}: ".$e->getMessage());
+
             return false;
         }
     }
@@ -86,13 +89,15 @@ trait HasProviderRatingVoting
         try {
             $rating = $this->providerRatingRepository->find($ratingId);
 
-            if (!$rating) {
+            if (! $rating) {
                 Log::warning("Attempted to vote on non-existent rating: {$ratingId}");
+
                 return false;
             }
 
-            if (!$rating->canBeVotedOn()) {
+            if (! $rating->canBeVotedOn()) {
                 Log::warning("Rating {$ratingId} cannot be voted on");
+
                 return false;
             }
 
@@ -103,12 +108,13 @@ trait HasProviderRatingVoting
                 Cache::forget("rating_{$ratingId}_votes");
                 Cache::forget("provider_rating_stats_{$rating->provider_id}");
 
-                Log::info("Vote added to rating {$ratingId} by user {$userId}. Helpful: " . ($isHelpful ? 'yes' : 'no'));
+                Log::info("Vote added to rating {$ratingId} by user {$userId}. Helpful: ".($isHelpful ? 'yes' : 'no'));
             }
 
             return $result;
         } catch (\Exception $e) {
-            Log::error("Error adding vote to rating {$ratingId}: " . $e->getMessage());
+            Log::error("Error adding vote to rating {$ratingId}: ".$e->getMessage());
+
             return false;
         }
     }
@@ -158,7 +164,7 @@ trait HasProviderRatingVoting
     {
         $rating = $this->providerRatingRepository->find($ratingId);
 
-        if (!$rating) {
+        if (! $rating) {
             return false;
         }
 
@@ -172,7 +178,7 @@ trait HasProviderRatingVoting
     {
         $rating = $this->providerRatingRepository->find($ratingId);
 
-        if (!$rating) {
+        if (! $rating) {
             return null;
         }
 
@@ -188,12 +194,12 @@ trait HasProviderRatingVoting
     {
         $rating = $this->providerRatingRepository->find($ratingId);
 
-        if (!$rating) {
+        if (! $rating) {
             return [
                 'helpful_votes' => 0,
                 'total_votes' => 0,
                 'helpful_percentage' => 0,
-                'user_vote' => null
+                'user_vote' => null,
             ];
         }
 
@@ -201,7 +207,7 @@ trait HasProviderRatingVoting
             'helpful_votes' => $rating->helpful_votes,
             'total_votes' => $rating->total_votes,
             'helpful_percentage' => $rating->helpful_percentage,
-            'user_vote' => null // Would need to be set by caller with user context
+            'user_vote' => null, // Would need to be set by caller with user context
         ];
     }
 
@@ -228,7 +234,7 @@ trait HasProviderRatingVoting
             'total_votes' => $totalVotes,
             'total_helpful_votes' => $totalHelpfulVotes,
             'average_helpful_percentage' => $ratingCount > 0 ? round($averageHelpfulPercentage / $ratingCount, 2) : 0,
-            'rating_count' => $ratingCount
+            'rating_count' => $ratingCount,
         ];
     }
 
@@ -259,6 +265,7 @@ trait HasProviderRatingVoting
         // Filter ratings with mixed votes (not too high or too low helpful percentage)
         $controversial = $ratings->filter(function ($rating) {
             $percentage = $rating->helpful_percentage;
+
             return $percentage >= 30 && $percentage <= 70 && $rating->total_votes >= 5;
         });
 
@@ -284,7 +291,7 @@ trait HasProviderRatingVoting
     {
         $rating = $this->providerRatingRepository->find($ratingId);
 
-        if (!$rating) {
+        if (! $rating) {
             return 0.0;
         }
 

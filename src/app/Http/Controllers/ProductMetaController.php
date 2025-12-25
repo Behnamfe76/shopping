@@ -2,18 +2,18 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Fereydooni\Shopping\app\Models\ProductMeta;
-use Fereydooni\Shopping\app\Services\ProductMetaService;
-use Fereydooni\Shopping\app\Http\Resources\ProductMetaResource;
-use Fereydooni\Shopping\app\Http\Resources\ProductMetaCollection;
-use Fereydooni\Shopping\app\Http\Requests\StoreProductMetaRequest;
-use Fereydooni\Shopping\app\Http\Requests\UpdateProductMetaRequest;
-use Fereydooni\Shopping\app\Http\Requests\ToggleProductMetaStatusRequest;
-use Fereydooni\Shopping\app\Http\Requests\SearchProductMetaRequest;
 use Fereydooni\Shopping\app\Http\Requests\BulkProductMetaRequest;
 use Fereydooni\Shopping\app\Http\Requests\ImportProductMetaRequest;
+use Fereydooni\Shopping\app\Http\Requests\SearchProductMetaRequest;
+use Fereydooni\Shopping\app\Http\Requests\StoreProductMetaRequest;
+use Fereydooni\Shopping\app\Http\Requests\ToggleProductMetaStatusRequest;
+use Fereydooni\Shopping\app\Http\Requests\UpdateProductMetaRequest;
+use Fereydooni\Shopping\app\Http\Resources\ProductMetaCollection;
+use Fereydooni\Shopping\app\Http\Resources\ProductMetaResource;
+use Fereydooni\Shopping\app\Models\ProductMeta;
+use Fereydooni\Shopping\app\Services\ProductMetaService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class ProductMetaController extends Controller
 {

@@ -11,6 +11,7 @@ class EmployeeSkillExpiring
     use Dispatchable, SerializesModels;
 
     public EmployeeSkill $employeeSkill;
+
     public int $daysUntilExpiry;
 
     /**

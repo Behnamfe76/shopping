@@ -2,30 +2,25 @@
 
 namespace Fereydooni\Shopping\App\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Email;
-use Spatie\LaravelData\Attributes\Validation\Url;
-use Spatie\LaravelData\Attributes\Validation\Numeric;
-use Spatie\LaravelData\Attributes\Validation\Min;
-use Spatie\LaravelData\Attributes\Validation\Max;
-use Spatie\LaravelData\Attributes\Validation\Date;
-use Spatie\LaravelData\Attributes\Validation\Nullable;
-use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
-use Spatie\LaravelData\Attributes\Validation\FloatType;
-use Spatie\LaravelData\Attributes\Validation\ArrayType;
-use Spatie\LaravelData\Attributes\Validation\In;
-use Spatie\LaravelData\Attributes\Validation\Unique;
-use Spatie\LaravelData\Attributes\Validation\After;
-use Spatie\LaravelData\Attributes\Validation\Before;
-use Spatie\LaravelData\Attributes\Validation\Regex;
-use Fereydooni\Shopping\App\Enums\InsuranceType;
-use Fereydooni\Shopping\App\Enums\InsuranceStatus;
-use Fereydooni\Shopping\App\Enums\VerificationStatus;
-use Fereydooni\Shopping\App\Models\ProviderInsurance;
-use Fereydooni\Shopping\App\Models\Provider;
-use Fereydooni\Shopping\App\Models\User;
 use Carbon\Carbon;
+use Fereydooni\Shopping\App\Enums\InsuranceStatus;
+use Fereydooni\Shopping\App\Enums\InsuranceType;
+use Fereydooni\Shopping\App\Enums\VerificationStatus;
+use Fereydooni\Shopping\App\Models\Provider;
+use Fereydooni\Shopping\App\Models\ProviderInsurance;
+use Fereydooni\Shopping\App\Models\User;
+use Spatie\LaravelData\Attributes\Validation\After;
+use Spatie\LaravelData\Attributes\Validation\ArrayType;
+use Spatie\LaravelData\Attributes\Validation\Date;
+use Spatie\LaravelData\Attributes\Validation\FloatType;
+use Spatie\LaravelData\Attributes\Validation\In;
+use Spatie\LaravelData\Attributes\Validation\IntegerType;
+use Spatie\LaravelData\Attributes\Validation\Max;
+use Spatie\LaravelData\Attributes\Validation\Min;
+use Spatie\LaravelData\Attributes\Validation\Nullable;
+use Spatie\LaravelData\Attributes\Validation\Regex;
+use Spatie\LaravelData\Attributes\Validation\StringType;
+use Spatie\LaravelData\Data;
 
 class ProviderInsuranceDTO extends Data
 {
@@ -77,8 +72,7 @@ class ProviderInsuranceDTO extends Data
 
         #[Date, Nullable]
         public ?string $updated_at = null,
-    ) {
-    }
+    ) {}
 
     /**
      * Create DTO from ProviderInsurance model
@@ -134,16 +128,16 @@ class ProviderInsuranceDTO extends Data
     {
         return [
             'provider_id' => ['required', 'integer', 'min:1', 'exists:providers,id'],
-            'insurance_type' => ['required', 'string', 'in:' . implode(',', InsuranceType::values())],
+            'insurance_type' => ['required', 'string', 'in:'.implode(',', InsuranceType::values())],
             'policy_number' => ['required', 'string', 'min:5', 'max:50', 'regex:/^[A-Z0-9\-]+$/', 'unique:provider_insurances,policy_number'],
             'provider_name' => ['required', 'string', 'min:2', 'max:255'],
             'coverage_amount' => ['required', 'numeric', 'min:0'],
             'start_date' => ['required', 'date', 'after:today'],
             'end_date' => ['required', 'date', 'after:start_date'],
-            'status' => ['sometimes', 'string', 'in:' . implode(',', InsuranceStatus::values())],
+            'status' => ['sometimes', 'string', 'in:'.implode(',', InsuranceStatus::values())],
             'documents' => ['sometimes', 'array'],
             'documents.*' => ['string', 'max:255'],
-            'verification_status' => ['sometimes', 'string', 'in:' . implode(',', VerificationStatus::values())],
+            'verification_status' => ['sometimes', 'string', 'in:'.implode(',', VerificationStatus::values())],
             'verified_by' => ['sometimes', 'integer', 'min:1', 'exists:users,id'],
             'verified_at' => ['sometimes', 'date'],
             'notes' => ['sometimes', 'string', 'max:1000'],
@@ -156,9 +150,9 @@ class ProviderInsuranceDTO extends Data
     public static function updateRules(int $insuranceId): array
     {
         $rules = self::rules();
-        $rules['policy_number'] = ['required', 'string', 'min:5', 'max:50', 'regex:/^[A-Z0-9\-]+$/', 'unique:provider_insurances,policy_number,' . $insuranceId];
+        $rules['policy_number'] = ['required', 'string', 'min:5', 'max:50', 'regex:/^[A-Z0-9\-]+$/', 'unique:provider_insurances,policy_number,'.$insuranceId];
         $rules['provider_id'] = ['sometimes', 'integer', 'min:1', 'exists:providers,id'];
-        $rules['insurance_type'] = ['sometimes', 'string', 'in:' . implode(',', InsuranceType::values())];
+        $rules['insurance_type'] = ['sometimes', 'string', 'in:'.implode(',', InsuranceType::values())];
         $rules['provider_name'] = ['sometimes', 'string', 'min:2', 'max:255'];
         $rules['coverage_amount'] = ['sometimes', 'numeric', 'min:0'];
         $rules['start_date'] = ['sometimes', 'date'];
@@ -247,7 +241,7 @@ class ProviderInsuranceDTO extends Data
         $endDate = Carbon::parse($this->end_date);
         $now = Carbon::now();
 
-        return $endDate->diffInDays($now) <= $days && !$this->isExpired();
+        return $endDate->diffInDays($now) <= $days && ! $this->isExpired();
     }
 
     /**
@@ -331,7 +325,7 @@ class ProviderInsuranceDTO extends Data
      */
     public function getFormattedCoverageAmount(): string
     {
-        return '$' . number_format($this->coverage_amount, 2);
+        return '$'.number_format($this->coverage_amount, 2);
     }
 
     /**

@@ -16,12 +16,12 @@ return new class extends Migration
             $table->foreignId('employee_id')->constrained('employees')->onDelete('cascade');
             $table->enum('training_type', [
                 'technical',
-                'soft_skills', 
+                'soft_skills',
                 'compliance',
                 'safety',
                 'leadership',
                 'product',
-                'other'
+                'other',
             ]);
             $table->string('training_name');
             $table->string('provider');
@@ -34,7 +34,7 @@ return new class extends Migration
                 'in_progress',
                 'completed',
                 'failed',
-                'cancelled'
+                'cancelled',
             ])->default('not_started');
             $table->decimal('score', 5, 2)->nullable();
             $table->string('grade', 10)->nullable();
@@ -56,7 +56,7 @@ return new class extends Migration
                 'hybrid',
                 'self_study',
                 'workshop',
-                'seminar'
+                'seminar',
             ]);
             $table->json('materials')->nullable();
             $table->text('notes')->nullable();

@@ -48,7 +48,7 @@ enum MetaType: string
 
     public function getLabel(): string
     {
-        return match($this) {
+        return match ($this) {
             self::TEXT => 'Text',
             self::NUMBER => 'Number',
             self::BOOLEAN => 'Boolean',
@@ -95,7 +95,7 @@ enum MetaType: string
 
     public function getDescription(): string
     {
-        return match($this) {
+        return match ($this) {
             self::TEXT => 'Plain text value',
             self::NUMBER => 'Numeric value',
             self::BOOLEAN => 'True or false value',
@@ -142,7 +142,7 @@ enum MetaType: string
 
     public function getValidationRules(): array
     {
-        return match($this) {
+        return match ($this) {
             self::TEXT => ['string', 'max:65535'],
             self::NUMBER => ['numeric'],
             self::BOOLEAN => ['boolean'],
@@ -186,5 +186,4 @@ enum MetaType: string
             self::CUSTOM => ['string', 'max:65535'],
         };
     }
-
 }

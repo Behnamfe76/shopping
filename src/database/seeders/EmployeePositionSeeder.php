@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\database\seeders;
 
-use Illuminate\Database\Seeder;
-use Fereydooni\Shopping\app\Models\EmployeePosition;
-use Fereydooni\Shopping\app\Models\EmployeeDepartment;
-use Fereydooni\Shopping\app\Enums\PositionStatus;
 use Fereydooni\Shopping\app\Enums\PositionLevel;
+use Fereydooni\Shopping\app\Enums\PositionStatus;
+use Fereydooni\Shopping\app\Models\EmployeeDepartment;
+use Fereydooni\Shopping\app\Models\EmployeePosition;
+use Illuminate\Database\Seeder;
 
 class EmployeePositionSeeder extends Seeder
 {
@@ -56,23 +56,23 @@ class EmployeePositionSeeder extends Seeder
                     'Bachelor\'s degree in Computer Science or related field',
                     'Basic knowledge of programming languages',
                     'Strong problem-solving skills',
-                    'Willingness to learn new technologies'
+                    'Willingness to learn new technologies',
                 ],
                 'responsibilities' => [
                     'Write clean, maintainable code',
                     'Participate in code reviews',
                     'Learn from senior developers',
-                    'Contribute to team projects'
+                    'Contribute to team projects',
                 ],
                 'skills_required' => [
                     'programming',
                     'problem_solving',
                     'teamwork',
-                    'communication'
+                    'communication',
                 ],
                 'education_required' => [
-                    'Bachelor\'s degree in Computer Science or related field'
-                ]
+                    'Bachelor\'s degree in Computer Science or related field',
+                ],
             ],
             [
                 'title' => 'Marketing Assistant',
@@ -90,23 +90,23 @@ class EmployeePositionSeeder extends Seeder
                     'Bachelor\'s degree in Marketing or related field',
                     'Strong written and verbal communication skills',
                     'Proficiency in Microsoft Office',
-                    'Creative thinking abilities'
+                    'Creative thinking abilities',
                 ],
                 'responsibilities' => [
                     'Assist with marketing campaigns',
                     'Create social media content',
                     'Support event planning',
-                    'Conduct market research'
+                    'Conduct market research',
                 ],
                 'skills_required' => [
                     'marketing',
                     'communication',
                     'creativity',
-                    'organization'
+                    'organization',
                 ],
                 'education_required' => [
-                    'Bachelor\'s degree in Marketing or related field'
-                ]
+                    'Bachelor\'s degree in Marketing or related field',
+                ],
             ],
 
             // Mid Level Positions
@@ -126,23 +126,23 @@ class EmployeePositionSeeder extends Seeder
                     'Bachelor\'s degree in Computer Science or related field',
                     '3+ years of software development experience',
                     'Proficiency in multiple programming languages',
-                    'Experience with software development methodologies'
+                    'Experience with software development methodologies',
                 ],
                 'responsibilities' => [
                     'Design and implement software solutions',
                     'Collaborate with cross-functional teams',
                     'Mentor junior developers',
-                    'Participate in technical architecture decisions'
+                    'Participate in technical architecture decisions',
                 ],
                 'skills_required' => [
                     'software_development',
                     'system_design',
                     'mentoring',
-                    'project_management'
+                    'project_management',
                 ],
                 'education_required' => [
-                    'Bachelor\'s degree in Computer Science or related field'
-                ]
+                    'Bachelor\'s degree in Computer Science or related field',
+                ],
             ],
             [
                 'title' => 'Marketing Specialist',
@@ -160,23 +160,23 @@ class EmployeePositionSeeder extends Seeder
                     'Bachelor\'s degree in Marketing or related field',
                     '3+ years of marketing experience',
                     'Experience with digital marketing tools',
-                    'Analytical and creative thinking skills'
+                    'Analytical and creative thinking skills',
                 ],
                 'responsibilities' => [
                     'Develop and execute marketing strategies',
                     'Manage digital marketing campaigns',
                     'Analyze marketing performance metrics',
-                    'Collaborate with creative teams'
+                    'Collaborate with creative teams',
                 ],
                 'skills_required' => [
                     'digital_marketing',
                     'strategy_development',
                     'analytics',
-                    'project_management'
+                    'project_management',
                 ],
                 'education_required' => [
-                    'Bachelor\'s degree in Marketing or related field'
-                ]
+                    'Bachelor\'s degree in Marketing or related field',
+                ],
             ],
 
             // Senior Level Positions
@@ -196,23 +196,23 @@ class EmployeePositionSeeder extends Seeder
                     'Bachelor\'s degree in Computer Science or related field',
                     '6+ years of software development experience',
                     'Experience with system architecture',
-                    'Strong leadership and mentoring skills'
+                    'Strong leadership and mentoring skills',
                 ],
                 'responsibilities' => [
                     'Lead technical projects and initiatives',
                     'Mentor and guide development teams',
                     'Make architectural decisions',
-                    'Collaborate with product and business teams'
+                    'Collaborate with product and business teams',
                 ],
                 'skills_required' => [
                     'system_architecture',
                     'technical_leadership',
                     'mentoring',
-                    'strategic_thinking'
+                    'strategic_thinking',
                 ],
                 'education_required' => [
-                    'Bachelor\'s degree in Computer Science or related field (Master\'s preferred)'
-                ]
+                    'Bachelor\'s degree in Computer Science or related field (Master\'s preferred)',
+                ],
             ],
             [
                 'title' => 'Senior Marketing Manager',
@@ -230,23 +230,23 @@ class EmployeePositionSeeder extends Seeder
                     'Bachelor\'s degree in Marketing or related field',
                     '6+ years of marketing experience',
                     'Experience with team leadership',
-                    'Strategic planning and execution skills'
+                    'Strategic planning and execution skills',
                 ],
                 'responsibilities' => [
                     'Develop comprehensive marketing strategies',
                     'Lead marketing teams and initiatives',
                     'Analyze market trends and opportunities',
-                    'Collaborate with executive leadership'
+                    'Collaborate with executive leadership',
                 ],
                 'skills_required' => [
                     'strategic_planning',
                     'team_leadership',
                     'market_analysis',
-                    'executive_communication'
+                    'executive_communication',
                 ],
                 'education_required' => [
-                    'Bachelor\'s degree in Marketing or related field (Master\'s preferred)'
-                ]
+                    'Bachelor\'s degree in Marketing or related field (Master\'s preferred)',
+                ],
             ],
 
             // Management Positions
@@ -266,23 +266,23 @@ class EmployeePositionSeeder extends Seeder
                     'Bachelor\'s degree in Computer Science or related field',
                     '8+ years of software development experience',
                     '3+ years of team leadership experience',
-                    'Strong project management skills'
+                    'Strong project management skills',
                 ],
                 'responsibilities' => [
                     'Manage engineering teams and projects',
                     'Set technical direction and strategy',
                     'Hire and develop engineering talent',
-                    'Collaborate with product and business stakeholders'
+                    'Collaborate with product and business stakeholders',
                 ],
                 'skills_required' => [
                     'people_management',
                     'technical_strategy',
                     'project_management',
-                    'stakeholder_management'
+                    'stakeholder_management',
                 ],
                 'education_required' => [
-                    'Bachelor\'s degree in Computer Science or related field (Master\'s preferred)'
-                ]
+                    'Bachelor\'s degree in Computer Science or related field (Master\'s preferred)',
+                ],
             ],
             [
                 'title' => 'Marketing Director',
@@ -300,24 +300,24 @@ class EmployeePositionSeeder extends Seeder
                     'Bachelor\'s degree in Marketing or related field',
                     '10+ years of marketing experience',
                     '5+ years of leadership experience',
-                    'Experience with budget management and strategic planning'
+                    'Experience with budget management and strategic planning',
                 ],
                 'responsibilities' => [
                     'Set overall marketing strategy and vision',
                     'Manage marketing budget and resources',
                     'Lead cross-functional marketing initiatives',
-                    'Represent marketing to executive leadership'
+                    'Represent marketing to executive leadership',
                 ],
                 'skills_required' => [
                     'executive_leadership',
                     'strategic_planning',
                     'budget_management',
-                    'stakeholder_management'
+                    'stakeholder_management',
                 ],
                 'education_required' => [
-                    'Bachelor\'s degree in Marketing or related field (Master\'s preferred)'
-                ]
-            ]
+                    'Bachelor\'s degree in Marketing or related field (Master\'s preferred)',
+                ],
+            ],
         ];
 
         foreach ($positions as $positionData) {
@@ -330,7 +330,7 @@ class EmployeePositionSeeder extends Seeder
                     'work_schedule' => 'flexible',
                     'overtime_eligible' => false,
                     'probation_period' => 90,
-                ]
+                ],
             ]));
         }
     }
@@ -358,23 +358,23 @@ class EmployeePositionSeeder extends Seeder
                     'Master\'s degree in Data Science, Statistics, or related field',
                     '5+ years of experience in data analysis and machine learning',
                     'Proficiency in Python, R, and SQL',
-                    'Experience with big data technologies'
+                    'Experience with big data technologies',
                 ],
                 'responsibilities' => [
                     'Develop predictive models and algorithms',
                     'Analyze complex datasets',
                     'Communicate insights to stakeholders',
-                    'Collaborate with engineering teams'
+                    'Collaborate with engineering teams',
                 ],
                 'skills_required' => [
                     'machine_learning',
                     'statistical_analysis',
                     'data_visualization',
-                    'programming'
+                    'programming',
                 ],
                 'education_required' => [
-                    'Master\'s degree in Data Science, Statistics, or related field'
-                ]
+                    'Master\'s degree in Data Science, Statistics, or related field',
+                ],
             ],
             [
                 'title' => 'UX/UI Designer',
@@ -393,24 +393,24 @@ class EmployeePositionSeeder extends Seeder
                     'Bachelor\'s degree in Design or related field',
                     '3+ years of UX/UI design experience',
                     'Proficiency in design tools (Figma, Sketch, Adobe Creative Suite)',
-                    'Portfolio demonstrating user-centered design'
+                    'Portfolio demonstrating user-centered design',
                 ],
                 'responsibilities' => [
                     'Create user interface designs',
                     'Conduct user research and testing',
                     'Collaborate with product and development teams',
-                    'Maintain design system and guidelines'
+                    'Maintain design system and guidelines',
                 ],
                 'skills_required' => [
                     'user_experience_design',
                     'user_interface_design',
                     'user_research',
-                    'design_tools'
+                    'design_tools',
                 ],
                 'education_required' => [
-                    'Bachelor\'s degree in Design or related field'
-                ]
-            ]
+                    'Bachelor\'s degree in Design or related field',
+                ],
+            ],
         ];
 
         foreach ($specializedPositions as $positionData) {
@@ -422,7 +422,7 @@ class EmployeePositionSeeder extends Seeder
                     'work_schedule' => 'flexible',
                     'overtime_eligible' => false,
                     'probation_period' => 90,
-                ]
+                ],
             ]));
         }
     }
@@ -440,7 +440,7 @@ class EmployeePositionSeeder extends Seeder
             PositionLevel::LEAD => "A lead {$title} position that requires strong technical leadership skills and the ability to guide teams toward successful project delivery.",
             PositionLevel::MANAGER => "A management role for {$title} that requires strong leadership skills and the ability to manage teams and projects effectively.",
             PositionLevel::DIRECTOR => "A director-level {$title} position that requires strategic thinking and the ability to set direction for entire departments.",
-            PositionLevel::EXECUTIVE => "An executive-level {$title} role that requires strategic vision and the ability to lead organizational change and growth."
+            PositionLevel::EXECUTIVE => "An executive-level {$title} role that requires strategic vision and the ability to lead organizational change and growth.",
         ];
 
         return $descriptions[$level] ?? $descriptions[PositionLevel::MID];

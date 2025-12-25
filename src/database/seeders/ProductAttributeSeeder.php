@@ -2,12 +2,11 @@
 
 namespace Fereydooni\Shopping\database\seeders;
 
-use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
+use Fereydooni\Shopping\app\Enums\ProductAttributeInputType;
+use Fereydooni\Shopping\app\Enums\ProductAttributeType;
 use Fereydooni\Shopping\app\Models\ProductAttribute;
 use Fereydooni\Shopping\app\Models\ProductAttributeValue;
-use Fereydooni\Shopping\app\Enums\ProductAttributeType;
-use Fereydooni\Shopping\app\Enums\ProductAttributeInputType;
+use Illuminate\Database\Seeder;
 
 class ProductAttributeSeeder extends Seeder
 {

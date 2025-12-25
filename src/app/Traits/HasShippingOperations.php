@@ -11,7 +11,7 @@ trait HasShippingOperations
     /**
      * Mark item as shipped
      */
-    public function markAsShipped(object $item, int $shippedQuantity = null): bool
+    public function markAsShipped(object $item, ?int $shippedQuantity = null): bool
     {
         try {
             DB::beginTransaction();
@@ -20,12 +20,13 @@ trait HasShippingOperations
 
             if ($shippedQuantity > $item->quantity) {
                 DB::rollBack();
+
                 return false;
             }
 
             $data = [
                 'is_shipped' => $shippedQuantity >= $item->quantity,
-                'shipped_quantity' => $shippedQuantity
+                'shipped_quantity' => $shippedQuantity,
             ];
 
             $updated = $this->repository->update($item, $data);
@@ -39,14 +40,16 @@ trait HasShippingOperations
             }
 
             DB::commit();
+
             return $updated;
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error marking item as shipped', [
                 'item_id' => $item->id,
                 'shipped_quantity' => $shippedQuantity,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -54,16 +57,17 @@ trait HasShippingOperations
     /**
      * Mark item as shipped and return DTO
      */
-    public function markAsShippedDTO(object $item, int $shippedQuantity = null): ?object
+    public function markAsShippedDTO(object $item, ?int $shippedQuantity = null): ?object
     {
         $updated = $this->markAsShipped($item, $shippedQuantity);
+
         return $updated ? $this->repository->findDTO($item->id) : null;
     }
 
     /**
      * Mark item as returned
      */
-    public function markAsReturned(object $item, int $returnedQuantity = null): bool
+    public function markAsReturned(object $item, ?int $returnedQuantity = null): bool
     {
         try {
             DB::beginTransaction();
@@ -72,11 +76,12 @@ trait HasShippingOperations
 
             if ($returnedQuantity > $item->shipped_quantity) {
                 DB::rollBack();
+
                 return false;
             }
 
             $data = [
-                'returned_quantity' => $returnedQuantity
+                'returned_quantity' => $returnedQuantity,
             ];
 
             $updated = $this->repository->update($item, $data);
@@ -90,14 +95,16 @@ trait HasShippingOperations
             }
 
             DB::commit();
+
             return $updated;
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error marking item as returned', [
                 'item_id' => $item->id,
                 'returned_quantity' => $returnedQuantity,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -105,16 +112,17 @@ trait HasShippingOperations
     /**
      * Mark item as returned and return DTO
      */
-    public function markAsReturnedDTO(object $item, int $returnedQuantity = null): ?object
+    public function markAsReturnedDTO(object $item, ?int $returnedQuantity = null): ?object
     {
         $updated = $this->markAsReturned($item, $returnedQuantity);
+
         return $updated ? $this->repository->findDTO($item->id) : null;
     }
 
     /**
      * Process refund for item
      */
-    public function processRefund(object $item, float $refundAmount = null): bool
+    public function processRefund(object $item, ?float $refundAmount = null): bool
     {
         try {
             DB::beginTransaction();
@@ -123,11 +131,12 @@ trait HasShippingOperations
 
             if ($refundAmount > $item->total_amount) {
                 DB::rollBack();
+
                 return false;
             }
 
             $data = [
-                'refunded_amount' => $refundAmount
+                'refunded_amount' => $refundAmount,
             ];
 
             $updated = $this->repository->update($item, $data);
@@ -141,14 +150,16 @@ trait HasShippingOperations
             }
 
             DB::commit();
+
             return $updated;
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Error processing refund', [
                 'item_id' => $item->id,
                 'refund_amount' => $refundAmount,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -156,9 +167,10 @@ trait HasShippingOperations
     /**
      * Process refund and return DTO
      */
-    public function processRefundDTO(object $item, float $refundAmount = null): ?object
+    public function processRefundDTO(object $item, ?float $refundAmount = null): ?object
     {
         $updated = $this->processRefund($item, $refundAmount);
+
         return $updated ? $this->repository->findDTO($item->id) : null;
     }
 
@@ -208,8 +220,9 @@ trait HasShippingOperations
         } catch (\Exception $e) {
             Log::error('Error calculating shipping costs', [
                 'item_id' => $item->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return 0.0;
         }
     }
@@ -259,7 +272,7 @@ trait HasShippingOperations
     /**
      * Log shipping action
      */
-    protected function logShippingAction(object $item, string $action, int $quantity = null, float $amount = null): void
+    protected function logShippingAction(object $item, string $action, ?int $quantity = null, ?float $amount = null): void
     {
         try {
             Log::info('Shipping action logged', [
@@ -267,13 +280,13 @@ trait HasShippingOperations
                 'action' => $action,
                 'quantity' => $quantity,
                 'amount' => $amount,
-                'timestamp' => now()
+                'timestamp' => now(),
             ]);
         } catch (\Exception $e) {
             Log::error('Error logging shipping action', [
                 'item_id' => $item->id,
                 'action' => $action,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -291,7 +304,7 @@ trait HasShippingOperations
             Log::error('Error updating inventory for shipping', [
                 'item_id' => $item->id,
                 'shipped_quantity' => $shippedQuantity,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -309,7 +322,7 @@ trait HasShippingOperations
             Log::error('Error updating inventory for return', [
                 'item_id' => $item->id,
                 'returned_quantity' => $returnedQuantity,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -323,13 +336,13 @@ trait HasShippingOperations
             // This would typically integrate with a payment gateway
             Log::info('Payment refund processed', [
                 'item_id' => $item->id,
-                'refund_amount' => $refundAmount
+                'refund_amount' => $refundAmount,
             ]);
         } catch (\Exception $e) {
             Log::error('Error processing payment refund', [
                 'item_id' => $item->id,
                 'refund_amount' => $refundAmount,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -341,13 +354,14 @@ trait HasShippingOperations
     {
         try {
             // This would typically query a shipping history table
-            return new Collection();
+            return new Collection;
         } catch (\Exception $e) {
             Log::error('Error getting shipping history', [
                 'item_id' => $item->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
-            return new Collection();
+
+            return new Collection;
         }
     }
 }

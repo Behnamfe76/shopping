@@ -3,8 +3,8 @@
 namespace Fereydooni\Shopping\app\Actions\ProviderNote;
 
 use Fereydooni\Shopping\app\DTOs\ProviderNoteDTO;
-use Fereydooni\Shopping\app\Repositories\Interfaces\ProviderNoteRepositoryInterface;
 use Fereydooni\Shopping\app\Models\ProviderNote;
+use Fereydooni\Shopping\app\Repositories\Interfaces\ProviderNoteRepositoryInterface;
 use Illuminate\Support\Facades\Log;
 
 class AddProviderNoteTagsAction
@@ -31,14 +31,14 @@ class AddProviderNoteTagsAction
             // Add tags to the note
             $added = $this->providerNoteRepository->addTags($providerNote, $processedTags);
 
-            if (!$added) {
+            if (! $added) {
                 throw new \Exception('Failed to add tags to provider note');
             }
 
             // Get the updated DTO
             $providerNoteDTO = $this->providerNoteRepository->findDTO($providerNote->id);
 
-            if (!$providerNoteDTO) {
+            if (! $providerNoteDTO) {
                 throw new \Exception('Failed to retrieve updated provider note');
             }
 
@@ -66,6 +66,7 @@ class AddProviderNoteTagsAction
         // Clean and validate tags
         $processedTags = array_map(function ($tag) {
             $tag = trim($tag);
+
             return strlen($tag) > 0 ? $tag : null;
         }, $tags);
 

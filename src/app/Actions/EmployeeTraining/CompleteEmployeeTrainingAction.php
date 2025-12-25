@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\Actions\EmployeeTraining;
 
+use Fereydooni\Shopping\DTOs\EmployeeTrainingDTO;
+use Fereydooni\Shopping\Enums\TrainingStatus;
+use Fereydooni\Shopping\Models\EmployeeTraining;
+use Fereydooni\Shopping\Repositories\Interfaces\EmployeeTrainingRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Fereydooni\Shopping\Models\EmployeeTraining;
-use Fereydooni\Shopping\DTOs\EmployeeTrainingDTO;
-use Fereydooni\Shopping\Repositories\Interfaces\EmployeeTrainingRepositoryInterface;
-use Fereydooni\Shopping\Enums\TrainingStatus;
 
 class CompleteEmployeeTrainingAction
 {
@@ -26,7 +26,7 @@ class CompleteEmployeeTrainingAction
             // Complete the training
             $completed = $this->repository->complete($training, $score, $grade);
 
-            if (!$completed) {
+            if (! $completed) {
                 throw new \Exception('Failed to complete employee training');
             }
 
@@ -52,7 +52,7 @@ class CompleteEmployeeTrainingAction
                 'training_id' => $training->id,
                 'error' => $e->getMessage(),
                 'score' => $score,
-                'grade' => $grade
+                'grade' => $grade,
             ]);
             throw $e;
         }
@@ -75,7 +75,7 @@ class CompleteEmployeeTrainingAction
         // Validate grade if provided
         if ($grade !== null) {
             $validGrades = ['A+', 'A', 'A-', 'B+', 'B', 'B-', 'C+', 'C', 'C-', 'D+', 'D', 'D-', 'F', 'P', 'NP'];
-            if (!in_array($grade, $validGrades)) {
+            if (! in_array($grade, $validGrades)) {
                 throw new \Exception('Invalid grade provided');
             }
         }
@@ -89,7 +89,7 @@ class CompleteEmployeeTrainingAction
     private function generateCertificate(EmployeeTraining $training): void
     {
         // Only generate certificate for certification trainings
-        if (!$training->is_certification) {
+        if (! $training->is_certification) {
             return;
         }
 
@@ -103,7 +103,7 @@ class CompleteEmployeeTrainingAction
         $training->update([
             'certificate_number' => $certificateNumber,
             'certificate_url' => $certificateUrl,
-            'completion_date' => now()
+            'completion_date' => now(),
         ]);
     }
 
@@ -114,7 +114,7 @@ class CompleteEmployeeTrainingAction
         $year = date('Y');
         $trainingId = str_pad($training->id, 6, '0', STR_PAD_LEFT);
         $employeeId = str_pad($training->employee_id, 4, '0', STR_PAD_LEFT);
-        
+
         return "{$prefix}-{$year}-{$trainingId}-{$employeeId}";
     }
 
@@ -155,7 +155,7 @@ class CompleteEmployeeTrainingAction
         // Update employee's training status
         $training->employee->update([
             'current_training_id' => null,
-            'training_status' => 'available'
+            'training_status' => 'available',
         ]);
 
         // Update employee's skills based on training

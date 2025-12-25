@@ -12,11 +12,11 @@ trait HasCustomerNoteStatusManagement
     public function pinCustomerNote(CustomerNote $note): bool
     {
         $result = $this->repository->pin($note);
-        
+
         if ($result) {
             $this->fireCustomerNotePinnedEvent($note);
         }
-        
+
         return $result;
     }
 
@@ -26,11 +26,11 @@ trait HasCustomerNoteStatusManagement
     public function unpinCustomerNote(CustomerNote $note): bool
     {
         $result = $this->repository->unpin($note);
-        
+
         if ($result) {
             $this->fireCustomerNoteUnpinnedEvent($note);
         }
-        
+
         return $result;
     }
 
@@ -40,11 +40,11 @@ trait HasCustomerNoteStatusManagement
     public function makeCustomerNotePrivate(CustomerNote $note): bool
     {
         $result = $this->repository->makePrivate($note);
-        
+
         if ($result) {
             $this->fireCustomerNoteMadePrivateEvent($note);
         }
-        
+
         return $result;
     }
 
@@ -54,11 +54,11 @@ trait HasCustomerNoteStatusManagement
     public function makeCustomerNotePublic(CustomerNote $note): bool
     {
         $result = $this->repository->makePublic($note);
-        
+
         if ($result) {
             $this->fireCustomerNoteMadePublicEvent($note);
         }
-        
+
         return $result;
     }
 
@@ -68,11 +68,11 @@ trait HasCustomerNoteStatusManagement
     public function addCustomerNoteTag(CustomerNote $note, string $tag): bool
     {
         $result = $this->repository->addTag($note, $tag);
-        
+
         if ($result) {
             $this->fireCustomerNoteTagAddedEvent($note, $tag);
         }
-        
+
         return $result;
     }
 
@@ -82,11 +82,11 @@ trait HasCustomerNoteStatusManagement
     public function removeCustomerNoteTag(CustomerNote $note, string $tag): bool
     {
         $result = $this->repository->removeTag($note, $tag);
-        
+
         if ($result) {
             $this->fireCustomerNoteTagRemovedEvent($note, $tag);
         }
-        
+
         return $result;
     }
 
@@ -96,11 +96,11 @@ trait HasCustomerNoteStatusManagement
     public function addCustomerNoteAttachment(CustomerNote $note, $file): bool
     {
         $result = $this->repository->addAttachment($note, $file);
-        
+
         if ($result) {
             $this->fireCustomerNoteAttachmentAddedEvent($note, $file);
         }
-        
+
         return $result;
     }
 
@@ -110,11 +110,11 @@ trait HasCustomerNoteStatusManagement
     public function removeCustomerNoteAttachment(CustomerNote $note, int $mediaId): bool
     {
         $result = $this->repository->removeAttachment($note, $mediaId);
-        
+
         if ($result) {
             $this->fireCustomerNoteAttachmentRemovedEvent($note, $mediaId);
         }
-        
+
         return $result;
     }
 
@@ -125,8 +125,8 @@ trait HasCustomerNoteStatusManagement
     {
         // Check if user has permission to perform the action
         $userId = auth()->id();
-        
-        return match($action) {
+
+        return match ($action) {
             'pin', 'unpin' => $this->canEditCustomerNote($note, $userId),
             'make_private', 'make_public' => $this->canEditCustomerNote($note, $userId),
             'add_tag', 'remove_tag' => $this->canEditCustomerNote($note, $userId),
@@ -140,13 +140,13 @@ trait HasCustomerNoteStatusManagement
      */
     protected function getCustomerNoteStatusChangeNote(string $action, array $data = []): string
     {
-        return match($action) {
+        return match ($action) {
             'pin' => 'Note pinned',
             'unpin' => 'Note unpinned',
             'make_private' => 'Note made private',
             'make_public' => 'Note made public',
-            'add_tag' => 'Tag "' . ($data['tag'] ?? '') . '" added',
-            'remove_tag' => 'Tag "' . ($data['tag'] ?? '') . '" removed',
+            'add_tag' => 'Tag "'.($data['tag'] ?? '').'" added',
+            'remove_tag' => 'Tag "'.($data['tag'] ?? '').'" removed',
             'add_attachment' => 'Attachment added',
             'remove_attachment' => 'Attachment removed',
             default => 'Status changed',

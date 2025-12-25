@@ -2,153 +2,142 @@
 
 namespace Fereydooni\Shopping\app\Providers;
 
-use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Fereydooni\Shopping\app\Events\ProductTagCreated;
-use Fereydooni\Shopping\app\Events\ProductTagUpdated;
-use Fereydooni\Shopping\app\Events\ProductTagDeleted;
-use Fereydooni\Shopping\app\Events\ProductTagStatusChanged;
-use Fereydooni\Shopping\app\Events\ProductTagBulkOperation;
-use Fereydooni\Shopping\app\Events\ProductTagImported;
-use Fereydooni\Shopping\app\Events\ProductTagExported;
-use Fereydooni\Shopping\app\Events\ProductTagSynced;
-use Fereydooni\Shopping\app\Listeners\SendProductTagCreatedNotification;
-use Fereydooni\Shopping\app\Listeners\UpdateProductTagCache;
-use Fereydooni\Shopping\app\Listeners\UpdateProductSearchIndex;
-use Fereydooni\Shopping\app\Listeners\UpdateProductFilterCache;
-use Fereydooni\Shopping\app\Listeners\UpdateProductTagIndex;
-use Fereydooni\Shopping\app\Listeners\GenerateProductTagReport;
-use Fereydooni\Shopping\app\Events\ProductVariantCreated;
-use Fereydooni\Shopping\app\Events\ProductVariantUpdated;
-use Fereydooni\Shopping\app\Events\ProductVariantDeleted;
-use Fereydooni\Shopping\app\Events\ProductVariantStatusChanged;
-use Fereydooni\Shopping\app\Events\ProductVariantStockUpdated;
-use Fereydooni\Shopping\app\Events\ProductVariantPriceUpdated;
-use Fereydooni\Shopping\app\Events\ProductVariantLowStock;
-use Fereydooni\Shopping\app\Events\ProductVariantOutOfStock;
-use Fereydooni\Shopping\app\Listeners\SendProductVariantCreatedNotification;
-use Fereydooni\Shopping\app\Listeners\UpdateProductVariantCache;
-use Fereydooni\Shopping\app\Listeners\UpdateProductInventoryCache;
-use Fereydooni\Shopping\app\Listeners\UpdateProductPricingCache;
-use Fereydooni\Shopping\app\Listeners\SendLowStockNotification;
-use Fereydooni\Shopping\app\Listeners\SendOutOfStockNotification;
-use Fereydooni\Shopping\app\Listeners\GenerateProductVariantReport;
-use Fereydooni\Shopping\app\Events\Customer\CustomerCreated;
-use Fereydooni\Shopping\app\Events\Customer\CustomerUpdated;
-use Fereydooni\Shopping\app\Events\Customer\CustomerDeleted;
 use Fereydooni\Shopping\app\Events\Customer\CustomerActivated;
+use Fereydooni\Shopping\app\Events\Customer\CustomerCreated;
 use Fereydooni\Shopping\app\Events\Customer\CustomerDeactivated;
+use Fereydooni\Shopping\app\Events\Customer\CustomerDeleted;
 use Fereydooni\Shopping\app\Events\Customer\CustomerSuspended;
+use Fereydooni\Shopping\app\Events\Customer\CustomerUpdated;
 use Fereydooni\Shopping\app\Events\Customer\LoyaltyPointsAdded;
 use Fereydooni\Shopping\app\Events\Customer\LoyaltyPointsDeducted;
-use Fereydooni\Shopping\app\Listeners\Customer\UpdateCustomerAnalytics;
-use Fereydooni\Shopping\app\Listeners\Customer\NotifyCustomerStatusChange;
-use Fereydooni\Shopping\app\Listeners\Customer\UpdateLoyaltyProgram;
-use Fereydooni\Shopping\app\Listeners\Customer\LogCustomerActivity;
-
-// EmployeeDepartment Events
+use Fereydooni\Shopping\app\Events\EmployeeDepartment\EmployeeDepartmentArchived;
 use Fereydooni\Shopping\app\Events\EmployeeDepartment\EmployeeDepartmentCreated;
-use Fereydooni\Shopping\app\Events\EmployeeDepartment\EmployeeDepartmentUpdated;
 use Fereydooni\Shopping\app\Events\EmployeeDepartment\EmployeeDepartmentManagerAssigned;
 use Fereydooni\Shopping\app\Events\EmployeeDepartment\EmployeeDepartmentMoved;
-use Fereydooni\Shopping\app\Events\EmployeeDepartment\EmployeeDepartmentArchived;
-
-// EmployeeDepartment Listeners
-use Fereydooni\Shopping\app\Listeners\EmployeeDepartment\SendDepartmentNotification;
-use Fereydooni\Shopping\app\Listeners\EmployeeDepartment\UpdateDepartmentHierarchy;
-use Fereydooni\Shopping\app\Listeners\EmployeeDepartment\LogDepartmentActivity;
-use Fereydooni\Shopping\app\Listeners\EmployeeDepartment\UpdateEmployeeDepartmentRecords;
-use Fereydooni\Shopping\app\Listeners\EmployeeDepartment\UpdateDepartmentMetrics;
-
-// EmployeePosition Events
+use Fereydooni\Shopping\app\Events\EmployeeDepartment\EmployeeDepartmentUpdated;
+use Fereydooni\Shopping\app\Events\EmployeePosition\EmployeePositionArchived;
 use Fereydooni\Shopping\app\Events\EmployeePosition\EmployeePositionCreated;
-use Fereydooni\Shopping\app\Events\EmployeePosition\EmployeePositionUpdated;
 use Fereydooni\Shopping\app\Events\EmployeePosition\EmployeePositionSalaryUpdated;
 use Fereydooni\Shopping\app\Events\EmployeePosition\EmployeePositionSetHiring;
-use Fereydooni\Shopping\app\Events\EmployeePosition\EmployeePositionArchived;
-
-// EmployeePosition Listeners
-use Fereydooni\Shopping\app\Listeners\EmployeePosition\SendPositionNotification;
-use Fereydooni\Shopping\app\Listeners\EmployeePosition\UpdatePositionMetrics;
-use Fereydooni\Shopping\app\Listeners\EmployeePosition\LogPositionActivity;
-use Fereydooni\Shopping\app\Listeners\EmployeePosition\UpdateEmployeePositionRecords;
-use Fereydooni\Shopping\app\Listeners\EmployeePosition\CreateJobPosting;
-
-// Provider Events
-use Fereydooni\Shopping\app\Events\Provider\ProviderCreated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderUpdated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderDeleted;
-use Fereydooni\Shopping\app\Events\Provider\ProviderStatusChanged;
+use Fereydooni\Shopping\app\Events\EmployeePosition\EmployeePositionUpdated;
+use Fereydooni\Shopping\app\Events\ProductTagBulkOperation;
+use Fereydooni\Shopping\app\Events\ProductTagCreated;
+use Fereydooni\Shopping\app\Events\ProductTagDeleted;
+use Fereydooni\Shopping\app\Events\ProductTagExported;
+use Fereydooni\Shopping\app\Events\ProductTagImported;
+use Fereydooni\Shopping\app\Events\ProductTagStatusChanged;
+use Fereydooni\Shopping\app\Events\ProductTagSynced;
+use Fereydooni\Shopping\app\Events\ProductTagUpdated;
+use Fereydooni\Shopping\app\Events\ProductVariantCreated;
+use Fereydooni\Shopping\app\Events\ProductVariantDeleted;
+use Fereydooni\Shopping\app\Events\ProductVariantLowStock;
+use Fereydooni\Shopping\app\Events\ProductVariantOutOfStock;
+use Fereydooni\Shopping\app\Events\ProductVariantPriceUpdated;
+use Fereydooni\Shopping\app\Events\ProductVariantStatusChanged;
+use Fereydooni\Shopping\app\Events\ProductVariantStockUpdated;
+use Fereydooni\Shopping\app\Events\ProductVariantUpdated;
+use Fereydooni\Shopping\app\Events\Provider\LocationCoordinatesUpdated;
+use Fereydooni\Shopping\app\Events\Provider\LocationGeocoded;
+use Fereydooni\Shopping\app\Events\Provider\LocationOperatingHoursUpdated;
+use Fereydooni\Shopping\app\Events\Provider\PrimaryLocationChanged;
 use Fereydooni\Shopping\app\Events\Provider\ProviderActivated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderDeactivated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderSuspended;
-use Fereydooni\Shopping\app\Events\Provider\ProviderRatingUpdated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderQualityRatingUpdated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderDeliveryRatingUpdated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderCommunicationRatingUpdated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderCreditLimitUpdated;
 use Fereydooni\Shopping\app\Events\Provider\ProviderCommissionRateUpdated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderDiscountRateUpdated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderCommunicationRatingUpdated;
 use Fereydooni\Shopping\app\Events\Provider\ProviderContractCreated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderContractUpdated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderContractSigned;
-use Fereydooni\Shopping\app\Events\Provider\ProviderContractRenewed;
-use Fereydooni\Shopping\app\Events\Provider\ProviderContractExtended;
-use Fereydooni\Shopping\app\Events\Provider\ProviderContractTerminated;
+// EmployeeDepartment Events
 use Fereydooni\Shopping\app\Events\Provider\ProviderContractExpiring;
-
-// ProviderInsurance Events
+use Fereydooni\Shopping\app\Events\Provider\ProviderContractExtended;
+use Fereydooni\Shopping\app\Events\Provider\ProviderContractRenewed;
+use Fereydooni\Shopping\app\Events\Provider\ProviderContractSigned;
+use Fereydooni\Shopping\app\Events\Provider\ProviderContractTerminated;
+// EmployeeDepartment Listeners
+use Fereydooni\Shopping\app\Events\Provider\ProviderContractUpdated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderCreated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderCreditLimitUpdated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderDeactivated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderDeleted;
+// EmployeePosition Events
+use Fereydooni\Shopping\app\Events\Provider\ProviderDeliveryRatingUpdated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderDiscountRateUpdated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderLocationCreated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderLocationDeleted;
+use Fereydooni\Shopping\app\Events\Provider\ProviderLocationUpdated;
+// EmployeePosition Listeners
+use Fereydooni\Shopping\app\Events\Provider\ProviderQualityRatingUpdated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderRatingUpdated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderStatusChanged;
+use Fereydooni\Shopping\app\Events\Provider\ProviderSuspended;
+use Fereydooni\Shopping\app\Events\Provider\ProviderUpdated;
+// Provider Events
 use Fereydooni\Shopping\app\Events\ProviderInsuranceCreated;
-use Fereydooni\Shopping\app\Events\ProviderInsuranceUpdated;
 use Fereydooni\Shopping\app\Events\ProviderInsuranceDeleted;
-use Fereydooni\Shopping\app\Events\ProviderInsuranceVerified;
+use Fereydooni\Shopping\app\Events\ProviderInsuranceDocumentUploaded;
 use Fereydooni\Shopping\app\Events\ProviderInsuranceExpired;
 use Fereydooni\Shopping\app\Events\ProviderInsuranceRenewed;
-use Fereydooni\Shopping\app\Events\ProviderInsuranceDocumentUploaded;
-
-// ProviderInsurance Listeners
-use Fereydooni\Shopping\app\Listeners\SendInsuranceVerificationNotification;
-use Fereydooni\Shopping\app\Listeners\SendInsuranceExpirationNotification;
-use Fereydooni\Shopping\app\Listeners\SendInsuranceRenewalReminder;
-use Fereydooni\Shopping\app\Listeners\UpdateProviderComplianceStatus;
+use Fereydooni\Shopping\app\Events\ProviderInsuranceUpdated;
+use Fereydooni\Shopping\app\Events\ProviderInsuranceVerified;
+use Fereydooni\Shopping\app\Listeners\Customer\LogCustomerActivity;
+use Fereydooni\Shopping\app\Listeners\Customer\NotifyCustomerStatusChange;
+use Fereydooni\Shopping\app\Listeners\Customer\UpdateCustomerAnalytics;
+use Fereydooni\Shopping\app\Listeners\Customer\UpdateLoyaltyProgram;
+use Fereydooni\Shopping\app\Listeners\EmployeeDepartment\LogDepartmentActivity;
+use Fereydooni\Shopping\app\Listeners\EmployeeDepartment\SendDepartmentNotification;
+use Fereydooni\Shopping\app\Listeners\EmployeeDepartment\UpdateDepartmentHierarchy;
+use Fereydooni\Shopping\app\Listeners\EmployeeDepartment\UpdateDepartmentMetrics;
+use Fereydooni\Shopping\app\Listeners\EmployeeDepartment\UpdateEmployeeDepartmentRecords;
+use Fereydooni\Shopping\app\Listeners\EmployeePosition\CreateJobPosting;
+use Fereydooni\Shopping\app\Listeners\EmployeePosition\LogPositionActivity;
+use Fereydooni\Shopping\app\Listeners\EmployeePosition\SendPositionNotification;
+use Fereydooni\Shopping\app\Listeners\EmployeePosition\UpdateEmployeePositionRecords;
+use Fereydooni\Shopping\app\Listeners\EmployeePosition\UpdatePositionMetrics;
+// ProviderInsurance Events
+use Fereydooni\Shopping\app\Listeners\GenerateProductTagReport;
+use Fereydooni\Shopping\app\Listeners\GenerateProductVariantReport;
 use Fereydooni\Shopping\app\Listeners\LogInsuranceActivity;
+use Fereydooni\Shopping\app\Listeners\LogLocationActivity;
 use Fereydooni\Shopping\app\Listeners\ProcessInsuranceDocument;
-use Fereydooni\Shopping\app\Listeners\UpdateInsuranceAnalytics;
-
-// ProviderLocation Events
-use Fereydooni\Shopping\app\Events\Provider\ProviderLocationCreated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderLocationUpdated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderLocationDeleted;
-use Fereydooni\Shopping\app\Events\Provider\PrimaryLocationChanged;
-use Fereydooni\Shopping\app\Events\Provider\LocationCoordinatesUpdated;
-use Fereydooni\Shopping\app\Events\Provider\LocationOperatingHoursUpdated;
-use Fereydooni\Shopping\app\Events\Provider\LocationGeocoded;
-
-// Provider Listeners
+use Fereydooni\Shopping\app\Listeners\ProcessLocationGeocoding;
+use Fereydooni\Shopping\app\Listeners\Provider\LogProviderActivity;
+// ProviderInsurance Listeners
+use Fereydooni\Shopping\app\Listeners\Provider\NotifyProviderStatusChange;
+use Fereydooni\Shopping\app\Listeners\Provider\NotifyQualityIssues;
+use Fereydooni\Shopping\app\Listeners\Provider\SendContractExpirationReminder;
 use Fereydooni\Shopping\app\Listeners\Provider\SendWelcomeEmail;
 use Fereydooni\Shopping\app\Listeners\Provider\UpdateProviderAnalytics;
-use Fereydooni\Shopping\app\Listeners\Provider\NotifyProviderStatusChange;
-use Fereydooni\Shopping\app\Listeners\Provider\UpdateProviderScore;
-use Fereydooni\Shopping\app\Listeners\Provider\LogProviderActivity;
-
-// ProviderLocation Listeners
-use Fereydooni\Shopping\app\Listeners\SendLocationCreatedNotification;
-use Fereydooni\Shopping\app\Listeners\SendPrimaryLocationChangedNotification;
-use Fereydooni\Shopping\app\Listeners\UpdateLocationAnalytics;
-use Fereydooni\Shopping\app\Listeners\LogLocationActivity;
-use Fereydooni\Shopping\app\Listeners\UpdateProviderLocationCount;
-use Fereydooni\Shopping\app\Listeners\ProcessLocationGeocoding;
-use Fereydooni\Shopping\app\Listeners\UpdateLocationMaps;
-use Fereydooni\Shopping\app\Listeners\ValidateLocationData;
-use Fereydooni\Shopping\app\Listeners\Provider\SendContractExpirationReminder;
 use Fereydooni\Shopping\app\Listeners\Provider\UpdateProviderPerformanceMetrics;
-use Fereydooni\Shopping\app\Listeners\Provider\NotifyQualityIssues;
-
-// ProviderContract Listeners
-use Fereydooni\Shopping\app\Listeners\ProviderContract\SendProviderContractNotification;
-use Fereydooni\Shopping\app\Listeners\ProviderContract\UpdateProviderContractRecord;
+use Fereydooni\Shopping\app\Listeners\Provider\UpdateProviderScore;
+// ProviderLocation Events
 use Fereydooni\Shopping\app\Listeners\ProviderContract\LogProviderContractActivity;
-use Fereydooni\Shopping\app\Listeners\ProviderContract\UpdateProviderContractMetrics;
 use Fereydooni\Shopping\app\Listeners\ProviderContract\ProcessContractRenewal;
+use Fereydooni\Shopping\app\Listeners\ProviderContract\SendProviderContractNotification;
+use Fereydooni\Shopping\app\Listeners\ProviderContract\UpdateProviderContractMetrics;
+use Fereydooni\Shopping\app\Listeners\ProviderContract\UpdateProviderContractRecord;
+use Fereydooni\Shopping\app\Listeners\SendInsuranceExpirationNotification;
+use Fereydooni\Shopping\app\Listeners\SendInsuranceRenewalReminder;
+// Provider Listeners
+use Fereydooni\Shopping\app\Listeners\SendInsuranceVerificationNotification;
+use Fereydooni\Shopping\app\Listeners\SendLocationCreatedNotification;
+use Fereydooni\Shopping\app\Listeners\SendLowStockNotification;
+use Fereydooni\Shopping\app\Listeners\SendOutOfStockNotification;
+use Fereydooni\Shopping\app\Listeners\SendPrimaryLocationChangedNotification;
+// ProviderLocation Listeners
+use Fereydooni\Shopping\app\Listeners\SendProductTagCreatedNotification;
+use Fereydooni\Shopping\app\Listeners\SendProductVariantCreatedNotification;
+use Fereydooni\Shopping\app\Listeners\UpdateInsuranceAnalytics;
+use Fereydooni\Shopping\app\Listeners\UpdateLocationAnalytics;
+use Fereydooni\Shopping\app\Listeners\UpdateLocationMaps;
+use Fereydooni\Shopping\app\Listeners\UpdateProductFilterCache;
+use Fereydooni\Shopping\app\Listeners\UpdateProductInventoryCache;
+use Fereydooni\Shopping\app\Listeners\UpdateProductPricingCache;
+use Fereydooni\Shopping\app\Listeners\UpdateProductSearchIndex;
+use Fereydooni\Shopping\app\Listeners\UpdateProductTagCache;
+use Fereydooni\Shopping\app\Listeners\UpdateProductTagIndex;
+// ProviderContract Listeners
+use Fereydooni\Shopping\app\Listeners\UpdateProductVariantCache;
+use Fereydooni\Shopping\app\Listeners\UpdateProviderComplianceStatus;
+use Fereydooni\Shopping\app\Listeners\UpdateProviderLocationCount;
+use Fereydooni\Shopping\app\Listeners\ValidateLocationData;
+use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
 {

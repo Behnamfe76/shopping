@@ -2,16 +2,16 @@
 
 namespace App\Listeners\EmployeeBenefits;
 
-use App\Events\EmployeeBenefits\EmployeeBenefitsCreated;
-use App\Events\EmployeeBenefits\EmployeeBenefitsUpdated;
-use App\Events\EmployeeBenefits\EmployeeBenefitsEnrolled;
-use App\Events\EmployeeBenefits\EmployeeBenefitsTerminated;
 use App\Events\EmployeeBenefits\EmployeeBenefitsCancelled;
+use App\Events\EmployeeBenefits\EmployeeBenefitsCreated;
+use App\Events\EmployeeBenefits\EmployeeBenefitsEnrolled;
 use App\Events\EmployeeBenefits\EmployeeBenefitsExpiring;
+use App\Events\EmployeeBenefits\EmployeeBenefitsTerminated;
+use App\Events\EmployeeBenefits\EmployeeBenefitsUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class UpdatePayrollDeductions implements ShouldQueue
 {
@@ -36,7 +36,7 @@ class UpdatePayrollDeductions implements ShouldQueue
             Log::error('Error updating payroll deductions', [
                 'event' => get_class($event),
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
         }
     }
@@ -56,7 +56,7 @@ class UpdatePayrollDeductions implements ShouldQueue
 
         Log::info('Payroll deductions updated for benefits creation', [
             'benefit_id' => $benefit->id,
-            'employee_id' => $benefit->employee_id
+            'employee_id' => $benefit->employee_id,
         ]);
     }
 
@@ -82,7 +82,7 @@ class UpdatePayrollDeductions implements ShouldQueue
         Log::info('Payroll deductions updated for benefits modification', [
             'benefit_id' => $benefit->id,
             'employee_id' => $benefit->employee_id,
-            'changes' => $changes
+            'changes' => $changes,
         ]);
     }
 
@@ -101,7 +101,7 @@ class UpdatePayrollDeductions implements ShouldQueue
 
         Log::info('Payroll deductions activated for enrollment', [
             'benefit_id' => $benefit->id,
-            'employee_id' => $benefit->employee_id
+            'employee_id' => $benefit->employee_id,
         ]);
     }
 
@@ -120,7 +120,7 @@ class UpdatePayrollDeductions implements ShouldQueue
 
         Log::info('Payroll deductions deactivated for termination', [
             'benefit_id' => $benefit->id,
-            'employee_id' => $benefit->employee_id
+            'employee_id' => $benefit->employee_id,
         ]);
     }
 
@@ -139,7 +139,7 @@ class UpdatePayrollDeductions implements ShouldQueue
 
         Log::info('Payroll deductions deactivated for cancellation', [
             'benefit_id' => $benefit->id,
-            'employee_id' => $benefit->employee_id
+            'employee_id' => $benefit->employee_id,
         ]);
     }
 
@@ -155,7 +155,7 @@ class UpdatePayrollDeductions implements ShouldQueue
 
         Log::info('Payroll deduction flagged for renewal', [
             'benefit_id' => $benefit->id,
-            'employee_id' => $benefit->employee_id
+            'employee_id' => $benefit->employee_id,
         ]);
     }
 
@@ -179,7 +179,7 @@ class UpdatePayrollDeductions implements ShouldQueue
                     'status' => 'active',
                     'is_percentage' => false,
                     'created_at' => now(),
-                    'updated_at' => now()
+                    'updated_at' => now(),
                 ]);
             }
 
@@ -194,7 +194,7 @@ class UpdatePayrollDeductions implements ShouldQueue
             Log::error('Error creating payroll deduction', [
                 'benefit_id' => $benefit->id,
                 'employee_id' => $benefit->employee_id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -210,7 +210,7 @@ class UpdatePayrollDeductions implements ShouldQueue
                     ->where('benefit_id', $benefit->id)
                     ->update([
                         'amount' => $benefit->employee_contribution,
-                        'updated_at' => now()
+                        'updated_at' => now(),
                     ]);
             }
 
@@ -223,7 +223,7 @@ class UpdatePayrollDeductions implements ShouldQueue
             Log::error('Error updating payroll deduction', [
                 'benefit_id' => $benefit->id,
                 'employee_id' => $benefit->employee_id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -235,7 +235,7 @@ class UpdatePayrollDeductions implements ShouldQueue
     {
         try {
             if (DB::getSchemaBuilder()->hasTable('payroll_deductions')) {
-                $status = match($benefit->status) {
+                $status = match ($benefit->status) {
                     'enrolled' => 'active',
                     'pending' => 'pending',
                     'terminated', 'cancelled' => 'inactive',
@@ -246,7 +246,7 @@ class UpdatePayrollDeductions implements ShouldQueue
                     ->where('benefit_id', $benefit->id)
                     ->update([
                         'status' => $status,
-                        'updated_at' => now()
+                        'updated_at' => now(),
                     ]);
             }
 
@@ -254,7 +254,7 @@ class UpdatePayrollDeductions implements ShouldQueue
             Log::error('Error updating deduction status', [
                 'benefit_id' => $benefit->id,
                 'employee_id' => $benefit->employee_id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -271,7 +271,7 @@ class UpdatePayrollDeductions implements ShouldQueue
                     ->update([
                         'status' => 'active',
                         'start_date' => $benefit->effective_date,
-                        'updated_at' => now()
+                        'updated_at' => now(),
                     ]);
             }
 
@@ -279,7 +279,7 @@ class UpdatePayrollDeductions implements ShouldQueue
             Log::error('Error activating payroll deduction', [
                 'benefit_id' => $benefit->id,
                 'employee_id' => $benefit->employee_id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -297,7 +297,7 @@ class UpdatePayrollDeductions implements ShouldQueue
                         'status' => 'inactive',
                         'end_date' => now(),
                         'notes' => "Deactivated due to benefits {$reason}",
-                        'updated_at' => now()
+                        'updated_at' => now(),
                     ]);
             }
 
@@ -305,7 +305,7 @@ class UpdatePayrollDeductions implements ShouldQueue
             Log::error('Error deactivating payroll deduction', [
                 'benefit_id' => $benefit->id,
                 'employee_id' => $benefit->employee_id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -322,7 +322,7 @@ class UpdatePayrollDeductions implements ShouldQueue
                     ->update([
                         'status' => 'renewal_required',
                         'notes' => 'Benefits expiring - renewal required',
-                        'updated_at' => now()
+                        'updated_at' => now(),
                     ]);
             }
 
@@ -330,7 +330,7 @@ class UpdatePayrollDeductions implements ShouldQueue
             Log::error('Error flagging deduction for renewal', [
                 'benefit_id' => $benefit->id,
                 'employee_id' => $benefit->employee_id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -348,7 +348,7 @@ class UpdatePayrollDeductions implements ShouldQueue
         } catch (\Exception $e) {
             Log::error('Error updating employee total deductions', [
                 'employee_id' => $employeeId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -369,13 +369,13 @@ class UpdatePayrollDeductions implements ShouldQueue
                 ->where('id', $employeeId)
                 ->update([
                     'total_benefit_deductions' => $totalDeductions,
-                    'updated_at' => now()
+                    'updated_at' => now(),
                 ]);
 
         } catch (\Exception $e) {
             Log::error('Error recalculating employee deductions', [
                 'employee_id' => $employeeId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }

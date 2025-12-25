@@ -3,11 +3,8 @@
 namespace App\Events\EmployeeSkill;
 
 use App\Models\EmployeeSkill;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -33,7 +30,7 @@ class EmployeeSkillCreated
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('employee-skill.' . $this->employeeSkill->employee_id),
+            new PrivateChannel('employee-skill.'.$this->employeeSkill->employee_id),
         ];
     }
 

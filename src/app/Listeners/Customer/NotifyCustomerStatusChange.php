@@ -29,7 +29,7 @@ class NotifyCustomerStatusChange implements ShouldQueue
 
         // Send activation notification
         // Mail::to($customer->email)->send(new CustomerActivatedEmail($customer));
-        \Log::info('Activation notification sent to customer: ' . $customer->email);
+        \Log::info('Activation notification sent to customer: '.$customer->email);
     }
 
     /**
@@ -41,7 +41,7 @@ class NotifyCustomerStatusChange implements ShouldQueue
 
         // Send deactivation notification
         // Mail::to($customer->email)->send(new CustomerDeactivatedEmail($customer));
-        \Log::info('Deactivation notification sent to customer: ' . $customer->email);
+        \Log::info('Deactivation notification sent to customer: '.$customer->email);
     }
 
     /**
@@ -54,6 +54,6 @@ class NotifyCustomerStatusChange implements ShouldQueue
 
         // Send suspension notification
         // Mail::to($customer->email)->send(new CustomerSuspendedEmail($customer, $reason));
-        \Log::info('Suspension notification sent to customer: ' . $customer->email . ' (Reason: ' . $reason . ')');
+        \Log::info('Suspension notification sent to customer: '.$customer->email.' (Reason: '.$reason.')');
     }
 }

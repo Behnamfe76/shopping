@@ -2,8 +2,8 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 trait HasSlugGeneration
 {
@@ -13,8 +13,8 @@ trait HasSlugGeneration
         $originalSlug = $slug;
         $counter = 1;
 
-        while (!$this->isSlugUnique($slug)) {
-            $slug = $originalSlug . '-' . $counter;
+        while (! $this->isSlugUnique($slug)) {
+            $slug = $originalSlug.'-'.$counter;
             $counter++;
         }
 
@@ -29,7 +29,7 @@ trait HasSlugGeneration
             $query->where('id', '!=', $excludeId);
         }
 
-        return !$query->exists();
+        return ! $query->exists();
     }
 
     public function regenerateSlug(Model $model, string $newTitle): bool
@@ -38,6 +38,7 @@ trait HasSlugGeneration
 
         if ($newSlug !== $model->slug) {
             $model->slug = $newSlug;
+
             return $model->save();
         }
 

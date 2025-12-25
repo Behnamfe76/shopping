@@ -36,7 +36,7 @@ class SendLowStockAlert implements ShouldQueue
             'current_stock' => $currentStock,
             'threshold' => $threshold,
             'category_id' => $product->category_id,
-            'brand_id' => $product->brand_id
+            'brand_id' => $product->brand_id,
         ]);
 
         // Send notification to inventory managers
@@ -83,7 +83,7 @@ class SendLowStockAlert implements ShouldQueue
     {
         Log::error('Failed to send low stock alert', [
             'product_id' => $event->product->id,
-            'error' => $exception->getMessage()
+            'error' => $exception->getMessage(),
         ]);
     }
 }

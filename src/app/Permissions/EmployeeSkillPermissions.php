@@ -190,7 +190,7 @@ class EmployeeSkillPermissions
     private function isOwnSkill(User $user, EmployeeSkill $employeeSkill): bool
     {
         // Check if user has an employee record
-        if (!$user->employee) {
+        if (! $user->employee) {
             return false;
         }
 
@@ -203,7 +203,7 @@ class EmployeeSkillPermissions
     private function isOwnEmployee(User $user, int $employeeId): bool
     {
         // Check if user has an employee record
-        if (!$user->employee) {
+        if (! $user->employee) {
             return false;
         }
 
@@ -216,12 +216,12 @@ class EmployeeSkillPermissions
     private function isInSameDepartment(User $user, EmployeeSkill $employeeSkill): bool
     {
         // Check if user has an employee record
-        if (!$user->employee || !$user->employee->department_id) {
+        if (! $user->employee || ! $user->employee->department_id) {
             return false;
         }
 
         // Check if the skill's employee is in the same department
-        return $employeeSkill->employee && 
+        return $employeeSkill->employee &&
                $employeeSkill->employee->department_id === $user->employee->department_id;
     }
 
@@ -231,7 +231,7 @@ class EmployeeSkillPermissions
     private function isInSameTeam(User $user, EmployeeSkill $employeeSkill): bool
     {
         // Check if user has an employee record
-        if (!$user->employee) {
+        if (! $user->employee) {
             return false;
         }
 

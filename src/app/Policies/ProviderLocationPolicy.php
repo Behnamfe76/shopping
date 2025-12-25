@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Policies;
 
+use Fereydooni\Shopping\app\Models\Provider;
+use Fereydooni\Shopping\app\Models\ProviderLocation;
+use Fereydooni\Shopping\app\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Auth\Access\Response;
-use Fereydooni\Shopping\app\Models\User;
-use Fereydooni\Shopping\app\Models\ProviderLocation;
-use Fereydooni\Shopping\app\Models\Provider;
 
 class ProviderLocationPolicy
 {
@@ -109,6 +109,7 @@ class ProviderLocationPolicy
             if ($providerLocation->is_primary) {
                 return Response::deny('Cannot delete primary location.');
             }
+
             return Response::allow();
         }
 

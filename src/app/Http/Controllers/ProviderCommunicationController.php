@@ -2,22 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
+use App\Http\Requests\MarkAsReadRequest;
+use App\Http\Requests\ReplyToCommunicationRequest;
+use App\Http\Requests\SearchCommunicationRequest;
+use App\Http\Requests\SendCommunicationRequest;
 use App\Http\Requests\StoreProviderCommunicationRequest;
 use App\Http\Requests\UpdateProviderCommunicationRequest;
-use App\Http\Requests\SendCommunicationRequest;
-use App\Http\Requests\ReplyToCommunicationRequest;
-use App\Http\Requests\MarkAsReadRequest;
-use App\Http\Requests\SearchCommunicationRequest;
-use App\Services\ProviderCommunicationService;
 use App\Models\ProviderCommunication;
-use App\DTOs\ProviderCommunicationDTO;
+use App\Services\ProviderCommunicationService;
 use Exception;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\View\View;
 
 class ProviderCommunicationController extends Controller
 {
@@ -53,6 +52,7 @@ class ProviderCommunicationController extends Controller
             return view('provider-communications.index', compact('communications', 'search', 'status', 'priority', 'type', 'direction'));
         } catch (Exception $e) {
             Log::error('Failed to display provider communications index', ['error' => $e->getMessage()]);
+
             return view('provider-communications.index')->with('error', 'Failed to load communications.');
         }
     }
@@ -82,7 +82,7 @@ class ProviderCommunicationController extends Controller
 
             Log::info('Provider communication created', [
                 'id' => $communication->id,
-                'user_id' => Auth::id()
+                'user_id' => Auth::id(),
             ]);
 
             return redirect()->route('provider-communications.show', $communication)
@@ -90,7 +90,7 @@ class ProviderCommunicationController extends Controller
         } catch (Exception $e) {
             Log::error('Failed to create provider communication', [
                 'error' => $e->getMessage(),
-                'user_id' => Auth::id()
+                'user_id' => Auth::id(),
             ]);
 
             return back()->withInput()->with('error', 'Failed to create communication.');
@@ -120,7 +120,7 @@ class ProviderCommunicationController extends Controller
         } catch (Exception $e) {
             Log::error('Failed to display provider communication', [
                 'id' => $providerCommunication->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             return back()->with('error', 'Failed to load communication.');
@@ -151,7 +151,7 @@ class ProviderCommunicationController extends Controller
             if ($result) {
                 Log::info('Provider communication updated', [
                     'id' => $providerCommunication->id,
-                    'user_id' => Auth::id()
+                    'user_id' => Auth::id(),
                 ]);
 
                 return redirect()->route('provider-communications.show', $providerCommunication)
@@ -162,7 +162,7 @@ class ProviderCommunicationController extends Controller
         } catch (Exception $e) {
             Log::error('Failed to update provider communication', [
                 'id' => $providerCommunication->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             return back()->withInput()->with('error', 'Failed to update communication.');
@@ -182,7 +182,7 @@ class ProviderCommunicationController extends Controller
             if ($result) {
                 Log::info('Provider communication deleted', [
                     'id' => $providerCommunication->id,
-                    'user_id' => Auth::id()
+                    'user_id' => Auth::id(),
                 ]);
 
                 return redirect()->route('provider-communications.index')
@@ -193,7 +193,7 @@ class ProviderCommunicationController extends Controller
         } catch (Exception $e) {
             Log::error('Failed to delete provider communication', [
                 'id' => $providerCommunication->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             return back()->with('error', 'Failed to delete communication.');
@@ -218,7 +218,7 @@ class ProviderCommunicationController extends Controller
             Log::info('Communication sent', [
                 'id' => $communication->id,
                 'provider_id' => $communication->provider_id,
-                'user_id' => Auth::id()
+                'user_id' => Auth::id(),
             ]);
 
             return redirect()->route('provider-communications.show', $communication)
@@ -226,7 +226,7 @@ class ProviderCommunicationController extends Controller
         } catch (Exception $e) {
             Log::error('Failed to send communication', [
                 'error' => $e->getMessage(),
-                'user_id' => Auth::id()
+                'user_id' => Auth::id(),
             ]);
 
             return back()->withInput()->with('error', 'Failed to send communication.');
@@ -254,7 +254,7 @@ class ProviderCommunicationController extends Controller
             Log::info('Reply sent', [
                 'id' => $reply->id,
                 'parent_id' => $providerCommunication->id,
-                'user_id' => Auth::id()
+                'user_id' => Auth::id(),
             ]);
 
             return redirect()->route('provider-communications.show', $providerCommunication)
@@ -262,7 +262,7 @@ class ProviderCommunicationController extends Controller
         } catch (Exception $e) {
             Log::error('Failed to send reply', [
                 'parent_id' => $providerCommunication->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             return back()->withInput()->with('error', 'Failed to send reply.');
@@ -287,7 +287,7 @@ class ProviderCommunicationController extends Controller
         } catch (Exception $e) {
             Log::error('Failed to mark communication as read', [
                 'id' => $providerCommunication->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             return response()->json(['success' => false, 'message' => 'Failed to mark as read'], 500);
@@ -307,7 +307,7 @@ class ProviderCommunicationController extends Controller
         } catch (Exception $e) {
             Log::error('Failed to search communications', [
                 'query' => $request->get('q'),
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             return view('provider-communications.search')->with('error', 'Search failed.');
@@ -326,7 +326,7 @@ class ProviderCommunicationController extends Controller
         } catch (Exception $e) {
             Log::error('Failed to get communications by provider', [
                 'provider_id' => $providerId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             return back()->with('error', 'Failed to load communications.');
@@ -345,7 +345,7 @@ class ProviderCommunicationController extends Controller
         } catch (Exception $e) {
             Log::error('Failed to get communications by user', [
                 'user_id' => $userId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             return back()->with('error', 'Failed to load communications.');
@@ -365,7 +365,7 @@ class ProviderCommunicationController extends Controller
             Log::error('Failed to get conversation', [
                 'provider_id' => $providerId,
                 'user_id' => $userId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             return back()->with('error', 'Failed to load conversation.');
@@ -384,7 +384,7 @@ class ProviderCommunicationController extends Controller
         } catch (Exception $e) {
             Log::error('Failed to get thread', [
                 'thread_id' => $threadId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             return back()->with('error', 'Failed to load thread.');
@@ -409,7 +409,7 @@ class ProviderCommunicationController extends Controller
         } catch (Exception $e) {
             Log::error('Failed to archive communication', [
                 'id' => $providerCommunication->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             return back()->with('error', 'Failed to archive communication.');
@@ -434,7 +434,7 @@ class ProviderCommunicationController extends Controller
         } catch (Exception $e) {
             Log::error('Failed to unarchive communication', [
                 'id' => $providerCommunication->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             return back()->with('error', 'Failed to unarchive communication.');
@@ -459,7 +459,7 @@ class ProviderCommunicationController extends Controller
         } catch (Exception $e) {
             Log::error('Failed to set communication as urgent', [
                 'id' => $providerCommunication->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             return back()->with('error', 'Failed to mark communication as urgent.');
@@ -484,7 +484,7 @@ class ProviderCommunicationController extends Controller
         } catch (Exception $e) {
             Log::error('Failed to unset communication as urgent', [
                 'id' => $providerCommunication->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             return back()->with('error', 'Failed to unmark communication as urgent.');

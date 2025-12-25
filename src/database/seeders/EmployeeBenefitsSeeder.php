@@ -2,14 +2,9 @@
 
 namespace Fereydooni\Shopping\database\seeders;
 
-use Illuminate\Database\Seeder;
-use Fereydooni\Shopping\app\Models\EmployeeBenefits;
 use Fereydooni\Shopping\app\Models\Employee;
-use Fereydooni\Shopping\database\factories\EmployeeBenefitsFactory;
-use Fereydooni\Shopping\app\Enums\BenefitType;
-use Fereydooni\Shopping\app\Enums\BenefitStatus;
-use Fereydooni\Shopping\app\Enums\CoverageLevel;
-use Fereydooni\Shopping\app\Enums\NetworkType;
+use Fereydooni\Shopping\app\Models\EmployeeBenefits;
+use Illuminate\Database\Seeder;
 
 class EmployeeBenefitsSeeder extends Seeder
 {
@@ -25,6 +20,7 @@ class EmployeeBenefitsSeeder extends Seeder
 
         if ($employees->isEmpty()) {
             $this->command->warn('No employees found. Please seed employees first.');
+
             return;
         }
 
@@ -67,7 +63,7 @@ class EmployeeBenefitsSeeder extends Seeder
                 $benefit = EmployeeBenefits::factory()->create([
                     'employee_id' => $employee->id,
                     'benefit_type' => 'health',
-                    'benefit_name' => $provider . ' ' . strtoupper($networkType),
+                    'benefit_name' => $provider.' '.strtoupper($networkType),
                     'provider' => $provider,
                     'network_type' => $networkType,
                     'coverage_level' => $coverageLevel,
@@ -92,7 +88,7 @@ class EmployeeBenefitsSeeder extends Seeder
             'MetLife Dental',
             'Aetna Dental',
             'Cigna Dental',
-            'Humana Dental'
+            'Humana Dental',
         ];
 
         foreach ($employees as $employee) {
@@ -105,7 +101,7 @@ class EmployeeBenefitsSeeder extends Seeder
                 $benefit = EmployeeBenefits::factory()->create([
                     'employee_id' => $employee->id,
                     'benefit_type' => 'dental',
-                    'benefit_name' => $provider . ' PPO',
+                    'benefit_name' => $provider.' PPO',
                     'provider' => $provider,
                     'network_type' => 'ppo',
                     'coverage_level' => $coverageLevel,
@@ -130,7 +126,7 @@ class EmployeeBenefitsSeeder extends Seeder
             'EyeMed Vision',
             'Davis Vision',
             'Superior Vision',
-            'Anthem Vision'
+            'Anthem Vision',
         ];
 
         foreach ($employees as $employee) {
@@ -168,7 +164,7 @@ class EmployeeBenefitsSeeder extends Seeder
             'Prudential',
             'AIG',
             'Lincoln Financial',
-            'Guardian'
+            'Guardian',
         ];
 
         foreach ($employees as $employee) {
@@ -181,7 +177,7 @@ class EmployeeBenefitsSeeder extends Seeder
                 $benefit = EmployeeBenefits::factory()->create([
                     'employee_id' => $employee->id,
                     'benefit_type' => 'life',
-                    'benefit_name' => $provider . ' Life Insurance',
+                    'benefit_name' => $provider.' Life Insurance',
                     'provider' => $provider,
                     'network_type' => 'ppo',
                     'coverage_level' => $coverageLevel,
@@ -206,7 +202,7 @@ class EmployeeBenefitsSeeder extends Seeder
             'Prudential',
             'Guardian',
             'Unum',
-            'Lincoln Financial'
+            'Lincoln Financial',
         ];
 
         foreach ($employees as $employee) {
@@ -219,7 +215,7 @@ class EmployeeBenefitsSeeder extends Seeder
                 $benefit = EmployeeBenefits::factory()->create([
                     'employee_id' => $employee->id,
                     'benefit_type' => 'disability',
-                    'benefit_name' => $provider . ' Disability',
+                    'benefit_name' => $provider.' Disability',
                     'provider' => $provider,
                     'network_type' => 'ppo',
                     'coverage_level' => $coverageLevel,
@@ -244,7 +240,7 @@ class EmployeeBenefitsSeeder extends Seeder
             'Vanguard',
             'T. Rowe Price',
             'American Funds',
-            'Principal'
+            'Principal',
         ];
 
         foreach ($employees as $employee) {
@@ -257,7 +253,7 @@ class EmployeeBenefitsSeeder extends Seeder
                 $benefit = EmployeeBenefits::factory()->create([
                     'employee_id' => $employee->id,
                     'benefit_type' => 'retirement',
-                    'benefit_name' => $provider . ' 401(k)',
+                    'benefit_name' => $provider.' 401(k)',
                     'provider' => $provider,
                     'network_type' => 'ppo',
                     'coverage_level' => $coverageLevel,
@@ -282,7 +278,7 @@ class EmployeeBenefitsSeeder extends Seeder
             'Health Savings Account' => 'Internal',
             'Commuter Benefits' => 'Internal',
             'Legal Services' => 'Internal',
-            'Pet Insurance' => 'Various Providers'
+            'Pet Insurance' => 'Various Providers',
         ];
 
         foreach ($employees as $employee) {
@@ -318,7 +314,7 @@ class EmployeeBenefitsSeeder extends Seeder
             'individual' => 40,
             'employee_plus_spouse' => 25,
             'employee_plus_children' => 20,
-            'family' => 15
+            'family' => 15,
         ];
 
         $random = rand(1, 100);
@@ -343,7 +339,7 @@ class EmployeeBenefitsSeeder extends Seeder
             'enrolled' => 70,
             'pending' => 20,
             'terminated' => 7,
-            'cancelled' => 3
+            'cancelled' => 3,
         ];
 
         $random = rand(1, 100);

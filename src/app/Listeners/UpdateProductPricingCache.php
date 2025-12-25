@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
+use Fereydooni\Shopping\app\Events\ProductVariantPriceUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Fereydooni\Shopping\app\Events\ProductVariantPriceUpdated;
 
 class UpdateProductPricingCache implements ShouldQueue
 {

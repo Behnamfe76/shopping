@@ -2,18 +2,17 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Http\Resources\Json\ResourceCollection;
 use App\Http\Controllers\Controller;
-use Fereydooni\Shopping\app\Services\CustomerNoteService;
-use Fereydooni\Shopping\app\Models\CustomerNote;
-use Fereydooni\Shopping\app\DTOs\CustomerNoteDTO;
-use Fereydooni\Shopping\app\Http\Resources\CustomerNoteResource;
-use Fereydooni\Shopping\app\Http\Resources\CustomerNoteCollection;
 use Fereydooni\Shopping\app\Http\Requests\CustomerNote\StoreCustomerNoteRequest;
 use Fereydooni\Shopping\app\Http\Requests\CustomerNote\UpdateCustomerNoteRequest;
+use Fereydooni\Shopping\app\Http\Resources\CustomerNoteCollection;
+use Fereydooni\Shopping\app\Http\Resources\CustomerNoteResource;
+use Fereydooni\Shopping\app\Models\CustomerNote;
+use Fereydooni\Shopping\app\Services\CustomerNoteService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class CustomerNoteController extends Controller
 {
@@ -71,7 +70,7 @@ class CustomerNoteController extends Controller
         $data = $request->validated();
         $updated = $this->customerNoteService->updateNote($customerNote, $data);
 
-        if (!$updated) {
+        if (! $updated) {
             abort(500, 'Failed to update customer note');
         }
 
@@ -89,7 +88,7 @@ class CustomerNoteController extends Controller
 
         $deleted = $this->customerNoteService->deleteNote($customerNote);
 
-        if (!$deleted) {
+        if (! $deleted) {
             abort(500, 'Failed to delete customer note');
         }
 
@@ -105,7 +104,7 @@ class CustomerNoteController extends Controller
 
         $pinned = $this->customerNoteService->pinCustomerNote($customerNote);
 
-        if (!$pinned) {
+        if (! $pinned) {
             abort(500, 'Failed to pin customer note');
         }
 
@@ -121,7 +120,7 @@ class CustomerNoteController extends Controller
 
         $unpinned = $this->customerNoteService->unpinCustomerNote($customerNote);
 
-        if (!$unpinned) {
+        if (! $unpinned) {
             abort(500, 'Failed to unpin customer note');
         }
 
@@ -137,7 +136,7 @@ class CustomerNoteController extends Controller
 
         $madePrivate = $this->customerNoteService->makeCustomerNotePrivate($customerNote);
 
-        if (!$madePrivate) {
+        if (! $madePrivate) {
             abort(500, 'Failed to make customer note private');
         }
 
@@ -153,7 +152,7 @@ class CustomerNoteController extends Controller
 
         $madePublic = $this->customerNoteService->makeCustomerNotePublic($customerNote);
 
-        if (!$madePublic) {
+        if (! $madePublic) {
             abort(500, 'Failed to make customer note public');
         }
 
@@ -173,7 +172,7 @@ class CustomerNoteController extends Controller
 
         $tagAdded = $this->customerNoteService->addCustomerNoteTag($customerNote, $request->tag);
 
-        if (!$tagAdded) {
+        if (! $tagAdded) {
             abort(500, 'Failed to add tag to customer note');
         }
 
@@ -189,7 +188,7 @@ class CustomerNoteController extends Controller
 
         $tagRemoved = $this->customerNoteService->removeCustomerNoteTag($customerNote, $tag);
 
-        if (!$tagRemoved) {
+        if (! $tagRemoved) {
             abort(500, 'Failed to remove tag from customer note');
         }
 
@@ -209,7 +208,7 @@ class CustomerNoteController extends Controller
 
         $attachmentAdded = $this->customerNoteService->addCustomerNoteAttachment($customerNote, $request->file('file'));
 
-        if (!$attachmentAdded) {
+        if (! $attachmentAdded) {
             abort(500, 'Failed to add attachment to customer note');
         }
 
@@ -225,7 +224,7 @@ class CustomerNoteController extends Controller
 
         $attachmentRemoved = $this->customerNoteService->removeCustomerNoteAttachment($customerNote, $mediaId);
 
-        if (!$attachmentRemoved) {
+        if (! $attachmentRemoved) {
             abort(500, 'Failed to remove attachment from customer note');
         }
 
@@ -269,7 +268,7 @@ class CustomerNoteController extends Controller
         $this->authorize('viewStats');
 
         $customerId = $request->get('customer_id');
-        
+
         if ($customerId) {
             $stats = $this->customerNoteService->getNoteStatsByCustomer($customerId);
         } else {
@@ -329,7 +328,7 @@ class CustomerNoteController extends Controller
         $format = $request->get('format', 'json');
         $exported = $this->customerNoteService->exportCustomerNotes($customerId, $format);
 
-        $filename = "customer_notes_{$customerId}_" . now()->format('Y-m-d_H-i-s') . ".{$format}";
+        $filename = "customer_notes_{$customerId}_".now()->format('Y-m-d_H-i-s').".{$format}";
 
         return response($exported)
             ->header('Content-Type', $format === 'json' ? 'application/json' : 'text/csv')

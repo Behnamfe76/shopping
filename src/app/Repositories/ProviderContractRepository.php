@@ -2,25 +2,22 @@
 
 namespace Fereydooni\Shopping\App\Repositories;
 
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Cache;
-use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderContractRepositoryInterface;
-use Fereydooni\Shopping\App\Models\ProviderContract;
 use Fereydooni\Shopping\App\DTOs\ProviderContractDTO;
 use Fereydooni\Shopping\App\Enums\ContractStatus;
 use Fereydooni\Shopping\App\Enums\ContractType;
-use Carbon\Carbon;
+use Fereydooni\Shopping\App\Models\ProviderContract;
+use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderContractRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ProviderContractRepository implements ProviderContractRepositoryInterface
 {
-    public function __construct(protected ProviderContract $model)
-    {
-    }
+    public function __construct(protected ProviderContract $model) {}
 
     // Basic CRUD operations
     public function all(): Collection
@@ -44,7 +41,7 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
             ->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->model->with(['provider', 'signedBy'])
             ->orderBy('created_at', 'desc')
@@ -62,6 +59,7 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
     public function findDTO(int $id): ?ProviderContractDTO
     {
         $contract = $this->find($id);
+
         return $contract ? ProviderContractDTO::fromModel($contract) : null;
     }
 
@@ -78,7 +76,8 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
     public function findByProviderIdDTO(int $providerId): Collection
     {
         $contracts = $this->findByProviderId($providerId);
-        return $contracts->map(fn($contract) => ProviderContractDTO::fromModel($contract));
+
+        return $contracts->map(fn ($contract) => ProviderContractDTO::fromModel($contract));
     }
 
     public function findByContractNumber(string $contractNumber): ?ProviderContract
@@ -91,6 +90,7 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
     public function findByContractNumberDTO(string $contractNumber): ?ProviderContractDTO
     {
         $contract = $this->findByContractNumber($contractNumber);
+
         return $contract ? ProviderContractDTO::fromModel($contract) : null;
     }
 
@@ -105,7 +105,8 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
     public function findByContractTypeDTO(string $contractType): Collection
     {
         $contracts = $this->findByContractType($contractType);
-        return $contracts->map(fn($contract) => ProviderContractDTO::fromModel($contract));
+
+        return $contracts->map(fn ($contract) => ProviderContractDTO::fromModel($contract));
     }
 
     public function findByStatus(string $status): Collection
@@ -119,7 +120,8 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
     public function findByStatusDTO(string $status): Collection
     {
         $contracts = $this->findByStatus($status);
-        return $contracts->map(fn($contract) => ProviderContractDTO::fromModel($contract));
+
+        return $contracts->map(fn ($contract) => ProviderContractDTO::fromModel($contract));
     }
 
     public function findByDateRange(string $startDate, string $endDate): Collection
@@ -134,7 +136,8 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
     public function findByDateRangeDTO(string $startDate, string $endDate): Collection
     {
         $contracts = $this->findByDateRange($startDate, $endDate);
-        return $contracts->map(fn($contract) => ProviderContractDTO::fromModel($contract));
+
+        return $contracts->map(fn ($contract) => ProviderContractDTO::fromModel($contract));
     }
 
     public function findByProviderAndType(int $providerId, string $contractType): Collection
@@ -149,7 +152,8 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
     public function findByProviderAndTypeDTO(int $providerId, string $contractType): Collection
     {
         $contracts = $this->findByProviderAndType($providerId, $contractType);
-        return $contracts->map(fn($contract) => ProviderContractDTO::fromModel($contract));
+
+        return $contracts->map(fn ($contract) => ProviderContractDTO::fromModel($contract));
     }
 
     // Status-based queries
@@ -166,7 +170,8 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
     public function findActiveDTO(): Collection
     {
         $contracts = $this->findActive();
-        return $contracts->map(fn($contract) => ProviderContractDTO::fromModel($contract));
+
+        return $contracts->map(fn ($contract) => ProviderContractDTO::fromModel($contract));
     }
 
     public function findExpired(): Collection
@@ -180,7 +185,8 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
     public function findExpiredDTO(): Collection
     {
         $contracts = $this->findExpired();
-        return $contracts->map(fn($contract) => ProviderContractDTO::fromModel($contract));
+
+        return $contracts->map(fn ($contract) => ProviderContractDTO::fromModel($contract));
     }
 
     public function findTerminated(): Collection
@@ -194,7 +200,8 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
     public function findTerminatedDTO(): Collection
     {
         $contracts = $this->findTerminated();
-        return $contracts->map(fn($contract) => ProviderContractDTO::fromModel($contract));
+
+        return $contracts->map(fn ($contract) => ProviderContractDTO::fromModel($contract));
     }
 
     public function findPendingRenewal(): Collection
@@ -208,12 +215,14 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
     public function findPendingRenewalDTO(): Collection
     {
         $contracts = $this->findPendingRenewal();
-        return $contracts->map(fn($contract) => ProviderContractDTO::fromModel($contract));
+
+        return $contracts->map(fn ($contract) => ProviderContractDTO::fromModel($contract));
     }
 
     public function findExpiringSoon(int $days = 30): Collection
     {
         $expiryDate = now()->addDays($days);
+
         return $this->model->where('status', ContractStatus::ACTIVE)
             ->where('end_date', '<=', $expiryDate)
             ->where('end_date', '>=', now())
@@ -225,7 +234,8 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
     public function findExpiringSoonDTO(int $days = 30): Collection
     {
         $contracts = $this->findExpiringSoon($days);
-        return $contracts->map(fn($contract) => ProviderContractDTO::fromModel($contract));
+
+        return $contracts->map(fn ($contract) => ProviderContractDTO::fromModel($contract));
     }
 
     // User-based queries
@@ -240,7 +250,8 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
     public function findBySignedByDTO(int $signedBy): Collection
     {
         $contracts = $this->findBySignedBy($signedBy);
-        return $contracts->map(fn($contract) => ProviderContractDTO::fromModel($contract));
+
+        return $contracts->map(fn ($contract) => ProviderContractDTO::fromModel($contract));
     }
 
     public function findByRenewalDate(string $renewalDate): Collection
@@ -254,7 +265,8 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
     public function findByRenewalDateDTO(string $renewalDate): Collection
     {
         $contracts = $this->findByRenewalDate($renewalDate);
-        return $contracts->map(fn($contract) => ProviderContractDTO::fromModel($contract));
+
+        return $contracts->map(fn ($contract) => ProviderContractDTO::fromModel($contract));
     }
 
     // Financial queries
@@ -269,7 +281,8 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
     public function findByCommissionRateRangeDTO(float $minRate, float $maxRate): Collection
     {
         $contracts = $this->findByCommissionRateRange($minRate, $maxRate);
-        return $contracts->map(fn($contract) => ProviderContractDTO::fromModel($contract));
+
+        return $contracts->map(fn ($contract) => ProviderContractDTO::fromModel($contract));
     }
 
     public function findByContractValueRange(float $minValue, float $maxValue): Collection
@@ -283,7 +296,8 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
     public function findByContractValueRangeDTO(float $minValue, float $maxValue): Collection
     {
         $contracts = $this->findByContractValueRange($minValue, $maxValue);
-        return $contracts->map(fn($contract) => ProviderContractDTO::fromModel($contract));
+
+        return $contracts->map(fn ($contract) => ProviderContractDTO::fromModel($contract));
     }
 
     // Create and update operations
@@ -312,6 +326,7 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
     public function createAndReturnDTO(array $data): ProviderContractDTO
     {
         $contract = $this->create($data);
+
         return ProviderContractDTO::fromModel($contract);
     }
 
@@ -342,6 +357,7 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
     public function updateAndReturnDTO(ProviderContract $contract, array $data): ?ProviderContractDTO
     {
         $updated = $this->update($contract, $data);
+
         return $updated ? ProviderContractDTO::fromModel($contract->fresh()) : null;
     }
 
@@ -378,7 +394,7 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
 
         return $this->update($contract, [
             'status' => ContractStatus::ACTIVE,
-            'start_date' => now()
+            'start_date' => now(),
         ]);
     }
 
@@ -391,34 +407,34 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
         return $this->update($contract, ['status' => ContractStatus::EXPIRED]);
     }
 
-    public function terminate(ProviderContract $contract, string $reason = null): bool
+    public function terminate(ProviderContract $contract, ?string $reason = null): bool
     {
-        if (!$contract->canBeTerminated()) {
+        if (! $contract->canBeTerminated()) {
             return false;
         }
 
         return $this->update($contract, [
             'status' => ContractStatus::TERMINATED,
             'termination_date' => now(),
-            'termination_reason' => $reason
+            'termination_reason' => $reason,
         ]);
     }
 
-    public function suspend(ProviderContract $contract, string $reason = null): bool
+    public function suspend(ProviderContract $contract, ?string $reason = null): bool
     {
-        if (!$contract->canBeModified()) {
+        if (! $contract->canBeModified()) {
             return false;
         }
 
         return $this->update($contract, [
             'status' => ContractStatus::SUSPENDED,
-            'notes' => $contract->notes . "\nSuspended: " . $reason
+            'notes' => $contract->notes."\nSuspended: ".$reason,
         ]);
     }
 
-    public function renew(ProviderContract $contract, string $newEndDate = null): bool
+    public function renew(ProviderContract $contract, ?string $newEndDate = null): bool
     {
-        if (!$contract->canBeRenewed()) {
+        if (! $contract->canBeRenewed()) {
             return false;
         }
 
@@ -427,7 +443,7 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
         return $this->update($contract, [
             'end_date' => $newEndDate,
             'status' => ContractStatus::ACTIVE,
-            'renewal_date' => now()
+            'renewal_date' => now(),
         ]);
     }
 
@@ -440,14 +456,14 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
         return $this->update($contract, [
             'signed_by' => $signedBy,
             'signed_at' => now(),
-            'status' => ContractStatus::ACTIVE
+            'status' => ContractStatus::ACTIVE,
         ]);
     }
 
     // Contract modifications
     public function updateCommissionRate(ProviderContract $contract, float $newRate): bool
     {
-        if (!$contract->canBeModified()) {
+        if (! $contract->canBeModified()) {
             return false;
         }
 
@@ -456,7 +472,7 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
 
     public function updatePaymentTerms(ProviderContract $contract, array $newTerms): bool
     {
-        if (!$contract->canBeModified()) {
+        if (! $contract->canBeModified()) {
             return false;
         }
 
@@ -465,7 +481,7 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
 
     public function extendContract(ProviderContract $contract, string $newEndDate): bool
     {
-        if (!$contract->canBeModified()) {
+        if (! $contract->canBeModified()) {
             return false;
         }
 
@@ -508,7 +524,8 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
     public function getProviderActiveContractsDTO(int $providerId): Collection
     {
         $contracts = $this->getProviderActiveContracts($providerId);
-        return $contracts->map(fn($contract) => ProviderContractDTO::fromModel($contract));
+
+        return $contracts->map(fn ($contract) => ProviderContractDTO::fromModel($contract));
     }
 
     public function getProviderExpiredContracts(int $providerId): Collection
@@ -523,7 +540,8 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
     public function getProviderExpiredContractsDTO(int $providerId): Collection
     {
         $contracts = $this->getProviderExpiredContracts($providerId);
-        return $contracts->map(fn($contract) => ProviderContractDTO::fromModel($contract));
+
+        return $contracts->map(fn ($contract) => ProviderContractDTO::fromModel($contract));
     }
 
     // Global statistics
@@ -571,6 +589,7 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
     public function getExpiringContractCount(int $days = 30): int
     {
         $expiryDate = now()->addDays($days);
+
         return $this->model->where('status', ContractStatus::ACTIVE)
             ->where('end_date', '<=', $expiryDate)
             ->where('end_date', '>=', now())
@@ -602,21 +621,22 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
     {
         return $this->model->where(function ($q) use ($query) {
             $q->where('title', 'like', "%{$query}%")
-              ->orWhere('description', 'like', "%{$query}%")
-              ->orWhere('contract_number', 'like', "%{$query}%")
-              ->orWhereHas('provider', function ($providerQuery) use ($query) {
-                  $providerQuery->where('company_name', 'like', "%{$query}%");
-              });
+                ->orWhere('description', 'like', "%{$query}%")
+                ->orWhere('contract_number', 'like', "%{$query}%")
+                ->orWhereHas('provider', function ($providerQuery) use ($query) {
+                    $providerQuery->where('company_name', 'like', "%{$query}%");
+                });
         })
-        ->with(['provider', 'signedBy'])
-        ->orderBy('created_at', 'desc')
-        ->get();
+            ->with(['provider', 'signedBy'])
+            ->orderBy('created_at', 'desc')
+            ->get();
     }
 
     public function searchContractsDTO(string $query): Collection
     {
         $contracts = $this->searchContracts($query);
-        return $contracts->map(fn($contract) => ProviderContractDTO::fromModel($contract));
+
+        return $contracts->map(fn ($contract) => ProviderContractDTO::fromModel($contract));
     }
 
     public function searchContractsByProvider(int $providerId, string $query): Collection
@@ -624,8 +644,8 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
         return $this->model->where('provider_id', $providerId)
             ->where(function ($q) use ($query) {
                 $q->where('title', 'like', "%{$query}%")
-                  ->orWhere('description', 'like', "%{$query}%")
-                  ->orWhere('contract_number', 'like', "%{$query}%");
+                    ->orWhere('description', 'like', "%{$query}%")
+                    ->orWhere('contract_number', 'like', "%{$query}%");
             })
             ->with(['provider', 'signedBy'])
             ->orderBy('created_at', 'desc')
@@ -635,7 +655,8 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
     public function searchContractsByProviderDTO(int $providerId, string $query): Collection
     {
         $contracts = $this->searchContractsByProvider($providerId, $query);
-        return $contracts->map(fn($contract) => ProviderContractDTO::fromModel($contract));
+
+        return $contracts->map(fn ($contract) => ProviderContractDTO::fromModel($contract));
     }
 
     // Data operations
@@ -679,7 +700,9 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
             $headers = str_getcsv(array_shift($lines));
 
             foreach ($lines as $line) {
-                if (empty(trim($line))) continue;
+                if (empty(trim($line))) {
+                    continue;
+                }
 
                 $row = array_combine($headers, str_getcsv($line));
 
@@ -701,10 +724,12 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
             }
 
             DB::commit();
+
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Failed to import contract data', ['error' => $e->getMessage()]);
+
             return false;
         }
     }
@@ -738,7 +763,7 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
         ];
     }
 
-    public function getContractTrends(string $startDate = null, string $endDate = null): array
+    public function getContractTrends(?string $startDate = null, ?string $endDate = null): array
     {
         $startDate = $startDate ?: now()->subYear()->format('Y-m-d');
         $endDate = $endDate ?: now()->format('Y-m-d');
@@ -760,7 +785,7 @@ class ProviderContractRepository implements ProviderContractRepositoryInterface
 
     public function isContractNumberUnique(string $contractNumber): bool
     {
-        return !$this->model->where('contract_number', $contractNumber)->exists();
+        return ! $this->model->where('contract_number', $contractNumber)->exists();
     }
 
     // Private helper methods

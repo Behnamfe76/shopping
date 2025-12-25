@@ -2,23 +2,19 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Gate;
-use Fereydooni\Shopping\app\Models\Customer;
-use Fereydooni\Shopping\app\DTOs\CustomerDTO;
 use Fereydooni\Shopping\app\Enums\CustomerStatus;
-use Illuminate\Validation\ValidationException;
 use Fereydooni\Shopping\app\Enums\CustomerType;
-use Illuminate\Http\Resources\Json\JsonResource;
-use Fereydooni\Shopping\app\Services\CustomerService;
-use Illuminate\Http\Resources\Json\ResourceCollection;
-use Fereydooni\Shopping\app\Http\Resources\CustomerResource;
 use Fereydooni\Shopping\app\Facades\Customer as CustomerFacade;
 use Fereydooni\Shopping\app\Http\Requests\CustomerStoreRequest;
 use Fereydooni\Shopping\app\Http\Requests\CustomerUpdateRequest;
-
+use Fereydooni\Shopping\app\Http\Resources\CustomerResource;
+use Fereydooni\Shopping\app\Models\Customer;
+use Fereydooni\Shopping\app\Services\CustomerService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\ValidationException;
 
 class CustomerController extends Controller
 {
@@ -62,9 +58,9 @@ class CustomerController extends Controller
 
         try {
             return response()->json([
-                'data' => array_map(fn($status) => [
+                'data' => array_map(fn ($status) => [
                     'id' => $status->value,
-                    'name' => __('customers.customer_types.' . $status->value),
+                    'name' => __('customers.customer_types.'.$status->value),
                 ], CustomerType::cases()),
             ], 200);
         } catch (\Exception $e) {
@@ -84,9 +80,9 @@ class CustomerController extends Controller
 
         try {
             return response()->json([
-                'data' => array_map(fn($status) => [
+                'data' => array_map(fn ($status) => [
                     'id' => $status->value,
-                    'name' => __('customers.statuses.' . $status->value),
+                    'name' => __('customers.statuses.'.$status->value),
                 ], CustomerStatus::cases()),
             ], 200);
         } catch (\Exception $e) {
@@ -111,12 +107,12 @@ class CustomerController extends Controller
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Validation failed',
-                'errors' => $e->errors()
+                'errors' => $e->errors(),
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to create customer',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -148,25 +144,25 @@ class CustomerController extends Controller
         try {
             $updatedCustomer = $this->customerService->updateCustomer($customer, $request->validated());
 
-            if (!$updatedCustomer) {
+            if (! $updatedCustomer) {
                 return response()->json([
-                    'message' => 'Failed to update customer'
+                    'message' => 'Failed to update customer',
                 ], 500);
             }
 
             return response()->json([
                 'message' => 'Customer updated successfully',
-                'data' => $updatedCustomer
+                'data' => $updatedCustomer,
             ]);
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Validation failed',
-                'errors' => $e->errors()
+                'errors' => $e->errors(),
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to update customer',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -181,19 +177,19 @@ class CustomerController extends Controller
         try {
             $deleted = $this->customerService->deleteCustomer($customer);
 
-            if (!$deleted) {
+            if (! $deleted) {
                 return response()->json([
-                    'message' => 'Failed to delete customer'
+                    'message' => 'Failed to delete customer',
                 ], 500);
             }
 
             return response()->json([
-                'message' => 'Customer deleted successfully'
+                'message' => 'Customer deleted successfully',
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to delete customer',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -208,19 +204,19 @@ class CustomerController extends Controller
         try {
             $activated = $this->customerService->activateCustomer($customer);
 
-            if (!$activated) {
+            if (! $activated) {
                 return response()->json([
-                    'message' => 'Failed to activate customer'
+                    'message' => 'Failed to activate customer',
                 ], 500);
             }
 
             return response()->json([
-                'message' => 'Customer activated successfully'
+                'message' => 'Customer activated successfully',
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to activate customer',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -235,19 +231,19 @@ class CustomerController extends Controller
         try {
             $deactivated = $this->customerService->deactivateCustomer($customer);
 
-            if (!$deactivated) {
+            if (! $deactivated) {
                 return response()->json([
-                    'message' => 'Failed to deactivate customer'
+                    'message' => 'Failed to deactivate customer',
                 ], 500);
             }
 
             return response()->json([
-                'message' => 'Customer deactivated successfully'
+                'message' => 'Customer deactivated successfully',
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to deactivate customer',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -263,19 +259,19 @@ class CustomerController extends Controller
             $reason = $request->get('reason');
             $suspended = $this->customerService->suspendCustomer($customer, $reason);
 
-            if (!$suspended) {
+            if (! $suspended) {
                 return response()->json([
-                    'message' => 'Failed to suspend customer'
+                    'message' => 'Failed to suspend customer',
                 ], 500);
             }
 
             return response()->json([
-                'message' => 'Customer suspended successfully'
+                'message' => 'Customer suspended successfully',
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to suspend customer',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -292,9 +288,9 @@ class CustomerController extends Controller
             $points = $request->get('points');
             $reason = $request->get('reason');
 
-            if (!in_array($action, ['add', 'deduct'])) {
+            if (! in_array($action, ['add', 'deduct'])) {
                 return response()->json([
-                    'message' => 'Invalid action. Use "add" or "deduct"'
+                    'message' => 'Invalid action. Use "add" or "deduct"',
                 ], 400);
             }
 
@@ -304,20 +300,20 @@ class CustomerController extends Controller
                 $success = $this->customerService->deductLoyaltyPoints($customer, $points, $reason);
             }
 
-            if (!$success) {
+            if (! $success) {
                 return response()->json([
-                    'message' => "Failed to {$action} loyalty points"
+                    'message' => "Failed to {$action} loyalty points",
                 ], 500);
             }
 
             return response()->json([
                 'message' => "Loyalty points {$action}ed successfully",
-                'new_balance' => $this->customerService->getLoyaltyBalance($customer)
+                'new_balance' => $this->customerService->getLoyaltyBalance($customer),
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to manage loyalty points',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -332,7 +328,7 @@ class CustomerController extends Controller
         $orders = $this->customerService->getCustomerOrderHistory($customer->id);
 
         return response()->json([
-            'data' => $orders
+            'data' => $orders,
         ]);
     }
 
@@ -346,7 +342,7 @@ class CustomerController extends Controller
         $addresses = $this->customerService->getCustomerAddresses($customer->id);
 
         return response()->json([
-            'data' => $addresses
+            'data' => $addresses,
         ]);
     }
 
@@ -360,7 +356,7 @@ class CustomerController extends Controller
         $reviews = $this->customerService->getCustomerReviews($customer->id);
 
         return response()->json([
-            'data' => $reviews
+            'data' => $reviews,
         ]);
     }
 
@@ -374,7 +370,7 @@ class CustomerController extends Controller
         $wishlist = $this->customerService->getCustomerWishlist($customer->id);
 
         return response()->json([
-            'data' => $wishlist
+            'data' => $wishlist,
         ]);
     }
 
@@ -397,7 +393,7 @@ class CustomerController extends Controller
                 'average_order_value' => $customer->average_order_value,
                 'last_order_date' => $customer->last_order_date,
                 'first_order_date' => $customer->first_order_date,
-            ]
+            ],
         ]);
     }
 
@@ -411,7 +407,7 @@ class CustomerController extends Controller
         try {
             $request->validate([
                 'note' => 'required|string|max:1000',
-                'type' => 'nullable|string|max:50'
+                'type' => 'nullable|string|max:50',
             ]);
 
             $note = $request->get('note');
@@ -419,24 +415,24 @@ class CustomerController extends Controller
 
             $success = $this->customerService->addCustomerNote($customer, $note, $type);
 
-            if (!$success) {
+            if (! $success) {
                 return response()->json([
-                    'message' => 'Failed to add note'
+                    'message' => 'Failed to add note',
                 ], 500);
             }
 
             return response()->json([
-                'message' => 'Note added successfully'
+                'message' => 'Note added successfully',
             ]);
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Validation failed',
-                'errors' => $e->errors()
+                'errors' => $e->errors(),
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to add note',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -451,7 +447,7 @@ class CustomerController extends Controller
         $notes = $this->customerService->getCustomerNotes($customer);
 
         return response()->json([
-            'data' => $notes
+            'data' => $notes,
         ]);
     }
 
@@ -465,24 +461,24 @@ class CustomerController extends Controller
         try {
             $success = $this->customerService->updatePreferences($customer, $request->all());
 
-            if (!$success) {
+            if (! $success) {
                 return response()->json([
-                    'message' => 'Failed to update preferences'
+                    'message' => 'Failed to update preferences',
                 ], 500);
             }
 
             return response()->json([
-                'message' => 'Preferences updated successfully'
+                'message' => 'Preferences updated successfully',
             ]);
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Validation failed',
-                'errors' => $e->errors()
+                'errors' => $e->errors(),
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to update preferences',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -496,24 +492,24 @@ class CustomerController extends Controller
 
         try {
             $request->validate([
-                'query' => 'required|string|min:2'
+                'query' => 'required|string|min:2',
             ]);
 
             $query = $request->get('query');
             $customers = $this->customerService->searchCustomers($query);
 
             return response()->json([
-                'data' => $customers
+                'data' => $customers,
             ]);
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Validation failed',
-                'errors' => $e->errors()
+                'errors' => $e->errors(),
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Search failed',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -533,8 +529,8 @@ class CustomerController extends Controller
             'data' => [
                 'overall' => $stats,
                 'by_status' => $statsByStatus,
-                'by_type' => $statsByType
-            ]
+                'by_type' => $statsByType,
+            ],
         ]);
     }
 }

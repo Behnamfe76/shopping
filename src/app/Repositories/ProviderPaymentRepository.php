@@ -2,19 +2,18 @@
 
 namespace Fereydooni\Shopping\App\Repositories;
 
+use Fereydooni\Shopping\App\DTOs\ProviderPaymentDTO;
+use Fereydooni\Shopping\App\Enums\ProviderPaymentMethod;
+use Fereydooni\Shopping\App\Enums\ProviderPaymentStatus;
+use Fereydooni\Shopping\App\Models\ProviderPayment;
+use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderPaymentRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Cache;
-use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderPaymentRepositoryInterface;
-use Fereydooni\Shopping\App\Models\ProviderPayment;
-use Fereydooni\Shopping\App\DTOs\ProviderPaymentDTO;
-use Fereydooni\Shopping\App\Enums\ProviderPaymentStatus;
-use Fereydooni\Shopping\App\Enums\ProviderPaymentMethod;
-use Carbon\Carbon;
 
 class ProviderPaymentRepository implements ProviderPaymentRepositoryInterface
 {
@@ -45,7 +44,7 @@ class ProviderPaymentRepository implements ProviderPaymentRepositoryInterface
             ->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->model
             ->with(['provider', 'invoice', 'processor'])
@@ -63,6 +62,7 @@ class ProviderPaymentRepository implements ProviderPaymentRepositoryInterface
     public function findDTO(int $id): ?ProviderPaymentDTO
     {
         $payment = $this->find($id);
+
         return $payment ? ProviderPaymentDTO::fromModel($payment) : null;
     }
 
@@ -113,6 +113,7 @@ class ProviderPaymentRepository implements ProviderPaymentRepositoryInterface
     public function findByPaymentNumberDTO(string $paymentNumber): ?ProviderPaymentDTO
     {
         $payment = $this->findByPaymentNumber($paymentNumber);
+
         return $payment ? ProviderPaymentDTO::fromModel($payment) : null;
     }
 
@@ -196,6 +197,7 @@ class ProviderPaymentRepository implements ProviderPaymentRepositoryInterface
     public function findByTransactionIdDTO(string $transactionId): ?ProviderPaymentDTO
     {
         $payment = $this->findByTransactionId($transactionId);
+
         return $payment ? ProviderPaymentDTO::fromModel($payment) : null;
     }
 
@@ -344,6 +346,7 @@ class ProviderPaymentRepository implements ProviderPaymentRepositoryInterface
     public function createAndReturnDTO(array $data): ProviderPaymentDTO
     {
         $payment = $this->create($data);
+
         return ProviderPaymentDTO::fromModel($payment);
     }
 
@@ -374,6 +377,7 @@ class ProviderPaymentRepository implements ProviderPaymentRepositoryInterface
     public function updateAndReturnDTO(ProviderPayment $payment, array $data): ?ProviderPaymentDTO
     {
         $updated = $this->update($payment, $data);
+
         return $updated ? ProviderPaymentDTO::fromModel($payment->fresh()) : null;
     }
 
@@ -403,8 +407,9 @@ class ProviderPaymentRepository implements ProviderPaymentRepositoryInterface
 
     public function process(ProviderPayment $payment, int $processedBy): bool
     {
-        if (!$payment->canBeProcessed()) {
+        if (! $payment->canBeProcessed()) {
             Log::warning('Cannot process payment', ['payment_id' => $payment->id, 'status' => $payment->status]);
+
             return false;
         }
 
@@ -419,8 +424,9 @@ class ProviderPaymentRepository implements ProviderPaymentRepositoryInterface
 
     public function complete(ProviderPayment $payment): bool
     {
-        if (!$payment->canBeCompleted()) {
+        if (! $payment->canBeCompleted()) {
             Log::warning('Cannot complete payment', ['payment_id' => $payment->id, 'status' => $payment->status]);
+
             return false;
         }
 
@@ -431,41 +437,42 @@ class ProviderPaymentRepository implements ProviderPaymentRepositoryInterface
         return $this->update($payment, $data);
     }
 
-    public function fail(ProviderPayment $payment, string $reason = null): bool
+    public function fail(ProviderPayment $payment, ?string $reason = null): bool
     {
         $data = [
             'status' => ProviderPaymentStatus::FAILED,
-            'notes' => $reason ? ($payment->notes ? $payment->notes . "\n" . $reason : $reason) : $payment->notes,
+            'notes' => $reason ? ($payment->notes ? $payment->notes."\n".$reason : $reason) : $payment->notes,
         ];
 
         return $this->update($payment, $data);
     }
 
-    public function cancel(ProviderPayment $payment, string $reason = null): bool
+    public function cancel(ProviderPayment $payment, ?string $reason = null): bool
     {
         $data = [
             'status' => ProviderPaymentStatus::CANCELLED,
-            'notes' => $reason ? ($payment->notes ? $payment->notes . "\n" . $reason : $reason) : $payment->notes,
+            'notes' => $reason ? ($payment->notes ? $payment->notes."\n".$reason : $reason) : $payment->notes,
         ];
 
         return $this->update($payment, $data);
     }
 
-    public function refund(ProviderPayment $payment, float $refundAmount, string $reason = null): bool
+    public function refund(ProviderPayment $payment, float $refundAmount, ?string $reason = null): bool
     {
         $data = [
             'status' => ProviderPaymentStatus::REFUNDED,
             'amount' => $refundAmount,
-            'notes' => $reason ? ($payment->notes ? $payment->notes . "\n" . $reason : $reason) : $payment->notes,
+            'notes' => $reason ? ($payment->notes ? $payment->notes."\n".$reason : $reason) : $payment->notes,
         ];
 
         return $this->update($payment, $data);
     }
 
-    public function reconcile(ProviderPayment $payment, string $reconciliationNotes = null): bool
+    public function reconcile(ProviderPayment $payment, ?string $reconciliationNotes = null): bool
     {
-        if (!$payment->canBeReconciled()) {
+        if (! $payment->canBeReconciled()) {
             Log::warning('Cannot reconcile payment', ['payment_id' => $payment->id, 'status' => $payment->status]);
+
             return false;
         }
 
@@ -481,10 +488,12 @@ class ProviderPaymentRepository implements ProviderPaymentRepositoryInterface
     {
         if ($newAmount <= 0) {
             Log::warning('Invalid amount for payment update', ['payment_id' => $payment->id, 'amount' => $newAmount]);
+
             return false;
         }
 
         $data = ['amount' => $newAmount];
+
         return $this->update($payment, $data);
     }
 
@@ -509,9 +518,9 @@ class ProviderPaymentRepository implements ProviderPaymentRepositoryInterface
         });
     }
 
-    public function getProviderTotalPaid(int $providerId, string $startDate = null, string $endDate = null): float
+    public function getProviderTotalPaid(int $providerId, ?string $startDate = null, ?string $endDate = null): float
     {
-        $cacheKey = "provider_total_paid_{$providerId}_" . ($startDate ?? 'all') . "_" . ($endDate ?? 'all');
+        $cacheKey = "provider_total_paid_{$providerId}_".($startDate ?? 'all').'_'.($endDate ?? 'all');
 
         return Cache::remember($cacheKey, 1800, function () use ($providerId, $startDate, $endDate) {
             $query = $this->model->where('provider_id', $providerId)->where('status', ProviderPaymentStatus::COMPLETED);
@@ -611,9 +620,9 @@ class ProviderPaymentRepository implements ProviderPaymentRepositoryInterface
         });
     }
 
-    public function getTotalPaidAmount(string $startDate = null, string $endDate = null): float
+    public function getTotalPaidAmount(?string $startDate = null, ?string $endDate = null): float
     {
-        $cacheKey = 'total_paid_amount_' . ($startDate ?? 'all') . '_' . ($endDate ?? 'all');
+        $cacheKey = 'total_paid_amount_'.($startDate ?? 'all').'_'.($endDate ?? 'all');
 
         return Cache::remember($cacheKey, 1800, function () use ($startDate, $endDate) {
             $query = $this->model->where('status', ProviderPaymentStatus::COMPLETED);
@@ -675,12 +684,12 @@ class ProviderPaymentRepository implements ProviderPaymentRepositoryInterface
             ->with(['provider', 'invoice', 'processor'])
             ->where(function ($q) use ($query) {
                 $q->where('payment_number', 'like', "%{$query}%")
-                  ->orWhere('reference_number', 'like', "%{$query}%")
-                  ->orWhere('transaction_id', 'like', "%{$query}%")
-                  ->orWhere('notes', 'like', "%{$query}%")
-                  ->orWhereHas('provider', function ($providerQuery) use ($query) {
-                      $providerQuery->where('company_name', 'like', "%{$query}%");
-                  });
+                    ->orWhere('reference_number', 'like', "%{$query}%")
+                    ->orWhere('transaction_id', 'like', "%{$query}%")
+                    ->orWhere('notes', 'like', "%{$query}%")
+                    ->orWhereHas('provider', function ($providerQuery) use ($query) {
+                        $providerQuery->where('company_name', 'like', "%{$query}%");
+                    });
             })
             ->orderBy('created_at', 'desc')
             ->get();
@@ -700,9 +709,9 @@ class ProviderPaymentRepository implements ProviderPaymentRepositoryInterface
             ->where('provider_id', $providerId)
             ->where(function ($q) use ($query) {
                 $q->where('payment_number', 'like', "%{$query}%")
-                  ->orWhere('reference_number', 'like', "%{$query}%")
-                  ->orWhere('transaction_id', 'like', "%{$query}%")
-                  ->orWhere('notes', 'like', "%{$query}%");
+                    ->orWhere('reference_number', 'like', "%{$query}%")
+                    ->orWhere('transaction_id', 'like', "%{$query}%")
+                    ->orWhere('notes', 'like', "%{$query}%");
             })
             ->orderBy('created_at', 'desc')
             ->get();
@@ -728,10 +737,12 @@ class ProviderPaymentRepository implements ProviderPaymentRepositoryInterface
         // This would typically parse CSV, Excel, or JSON format
         try {
             $importData = json_decode($data, true);
+
             // Process import data and create payments
             return true;
         } catch (\Exception $e) {
             Log::error('Failed to import payment data', ['error' => $e->getMessage()]);
+
             return false;
         }
     }
@@ -770,9 +781,9 @@ class ProviderPaymentRepository implements ProviderPaymentRepositoryInterface
         });
     }
 
-    public function getPaymentTrends(string $startDate = null, string $endDate = null): array
+    public function getPaymentTrends(?string $startDate = null, ?string $endDate = null): array
     {
-        $cacheKey = 'payment_trends_' . ($startDate ?? 'all') . '_' . ($endDate ?? 'all');
+        $cacheKey = 'payment_trends_'.($startDate ?? 'all').'_'.($endDate ?? 'all');
 
         return Cache::remember($cacheKey, 3600, function () use ($startDate, $endDate) {
             $query = $this->model->selectRaw('DATE(payment_date) as date, COUNT(*) as count, SUM(amount) as total_amount')
@@ -792,7 +803,7 @@ class ProviderPaymentRepository implements ProviderPaymentRepositoryInterface
     {
         do {
             $paymentNumber = ProviderPayment::generatePaymentNumber();
-        } while (!$this->isPaymentNumberUnique($paymentNumber));
+        } while (! $this->isPaymentNumberUnique($paymentNumber));
 
         return $paymentNumber;
     }
@@ -805,7 +816,7 @@ class ProviderPaymentRepository implements ProviderPaymentRepositoryInterface
     public function calculatePaymentTotals(int $paymentId): array
     {
         $payment = $this->find($paymentId);
-        if (!$payment) {
+        if (! $payment) {
             return [];
         }
 
@@ -833,6 +844,7 @@ class ProviderPaymentRepository implements ProviderPaymentRepositoryInterface
             foreach (ProviderPaymentStatus::cases() as $status) {
                 $counts[$status->value] = $this->getTotalPaymentCountByStatus($status->value);
             }
+
             return $counts;
         });
     }
@@ -847,6 +859,7 @@ class ProviderPaymentRepository implements ProviderPaymentRepositoryInterface
             foreach (ProviderPaymentMethod::cases() as $method) {
                 $counts[$method->value] = $this->getTotalPaymentCountByMethod($method->value);
             }
+
             return $counts;
         });
     }
@@ -860,6 +873,7 @@ class ProviderPaymentRepository implements ProviderPaymentRepositoryInterface
         foreach (ProviderPaymentStatus::cases() as $status) {
             $counts[$status->value] = $this->getProviderPaymentCountByStatus($providerId, $status->value);
         }
+
         return $counts;
     }
 
@@ -872,6 +886,7 @@ class ProviderPaymentRepository implements ProviderPaymentRepositoryInterface
         foreach (ProviderPaymentMethod::cases() as $method) {
             $counts[$method->value] = $this->getProviderPaymentCountByMethod($providerId, $method->value);
         }
+
         return $counts;
     }
 

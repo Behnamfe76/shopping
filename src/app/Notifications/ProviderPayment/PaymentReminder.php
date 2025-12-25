@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\App\Notifications\ProviderPayment;
 
+use Fereydooni\Shopping\App\Models\ProviderPayment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Fereydooni\Shopping\App\Models\ProviderPayment;
 
 class PaymentReminder extends Notification implements ShouldQueue
 {
@@ -43,13 +43,13 @@ class PaymentReminder extends Notification implements ShouldQueue
             ->greeting('Hello!')
             ->line('This is a reminder about your pending provider payment.')
             ->line('Payment Details:')
-            ->line('Payment Number: ' . $this->payment->payment_number)
-            ->line('Amount: ' . $this->payment->currency . ' ' . number_format($this->payment->amount, 2))
-            ->line('Payment Method: ' . $this->payment->payment_method)
-            ->line('Status: ' . ucfirst($this->payment->status))
-            ->line('Payment Date: ' . $this->payment->payment_date->format('M d, Y'))
+            ->line('Payment Number: '.$this->payment->payment_number)
+            ->line('Amount: '.$this->payment->currency.' '.number_format($this->payment->amount, 2))
+            ->line('Payment Method: '.$this->payment->payment_method)
+            ->line('Status: '.ucfirst($this->payment->status))
+            ->line('Payment Date: '.$this->payment->payment_date->format('M d, Y'))
             ->line('Please take necessary action to process this payment.')
-            ->action('View Payment', url('/provider-payments/' . $this->payment->id))
+            ->action('View Payment', url('/provider-payments/'.$this->payment->id))
             ->line('Thank you for using our application!');
     }
 
@@ -68,7 +68,7 @@ class PaymentReminder extends Notification implements ShouldQueue
             'status' => $this->payment->status,
             'payment_date' => $this->payment->payment_date,
             'type' => 'payment_reminder',
-            'message' => 'Payment reminder for: ' . $this->payment->payment_number
+            'message' => 'Payment reminder for: '.$this->payment->payment_number,
         ];
     }
 }

@@ -2,12 +2,12 @@
 
 namespace App\Traits;
 
-use App\Models\EmployeeSkill;
 use App\DTOs\EmployeeSkillDTO;
+use App\Models\EmployeeSkill;
 use App\Repositories\Interfaces\EmployeeSkillRepositoryInterface;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 trait HasEmployeeSkillVerificationManagement
 {
@@ -20,27 +20,28 @@ trait HasEmployeeSkillVerificationManagement
     {
         try {
             $result = $this->employeeSkillRepository->verify($skill, $verifiedBy);
-            
+
             if ($result) {
                 // Clear related caches
                 $this->clearVerificationCaches($skill->employee_id);
-                
+
                 // Log the verification
                 Log::info('Employee skill verified', [
                     'skill_id' => $skill->id,
                     'employee_id' => $skill->employee_id,
                     'verified_by' => $verifiedBy,
-                    'skill_name' => $skill->skill_name
+                    'skill_name' => $skill->skill_name,
                 ]);
             }
-            
+
             return $result;
         } catch (\Exception $e) {
             Log::error('Failed to verify employee skill', [
                 'skill_id' => $skill->id,
                 'verified_by' => $verifiedBy,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -52,23 +53,24 @@ trait HasEmployeeSkillVerificationManagement
     {
         try {
             $result = $this->employeeSkillRepository->unverify($skill);
-            
+
             if ($result) {
                 $this->clearVerificationCaches($skill->employee_id);
-                
+
                 Log::info('Employee skill unverified', [
                     'skill_id' => $skill->id,
                     'employee_id' => $skill->employee_id,
-                    'skill_name' => $skill->skill_name
+                    'skill_name' => $skill->skill_name,
                 ]);
             }
-            
+
             return $result;
         } catch (\Exception $e) {
             Log::error('Failed to unverify employee skill', [
                 'skill_id' => $skill->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -123,7 +125,7 @@ trait HasEmployeeSkillVerificationManagement
         $totalSkills = $this->employeeSkillRepository->getEmployeeSkillCount($employeeId);
         $verifiedSkills = $this->getEmployeeVerifiedSkills($employeeId)->count();
         $unverifiedSkills = $this->getEmployeeUnverifiedSkills($employeeId)->count();
-        
+
         return [
             'total_skills' => $totalSkills,
             'verified_skills' => $verifiedSkills,
@@ -141,7 +143,7 @@ trait HasEmployeeSkillVerificationManagement
         $totalSkills = $this->employeeSkillRepository->getTotalSkillCount();
         $verifiedSkills = $this->employeeSkillRepository->getTotalVerifiedSkillsCount();
         $unverifiedSkills = $totalSkills - $verifiedSkills;
-        
+
         return [
             'total_skills' => $totalSkills,
             'verified_skills' => $verifiedSkills,
@@ -228,7 +230,7 @@ trait HasEmployeeSkillVerificationManagement
     {
         $verifiedSkills = $this->getEmployeeVerifiedSkills($employeeId);
         $unverifiedSkills = $this->getEmployeeUnverifiedSkills($employeeId);
-        
+
         return [
             'employee_id' => $employeeId,
             'total_skills' => $verifiedSkills->count() + $unverifiedSkills->count(),
@@ -247,7 +249,7 @@ trait HasEmployeeSkillVerificationManagement
     private function getVerificationStatus(int $employeeId): string
     {
         $stats = $this->getEmployeeVerificationStats($employeeId);
-        
+
         if ($stats['verification_rate'] >= 90) {
             return 'Excellent';
         } elseif ($stats['verification_rate'] >= 75) {

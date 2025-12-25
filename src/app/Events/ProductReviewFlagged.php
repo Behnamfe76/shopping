@@ -12,7 +12,9 @@ class ProductReviewFlagged
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public ProductReview $review;
+
     public string $reason;
+
     public int $userId;
 
     /**

@@ -3,11 +3,8 @@
 namespace Fereydooni\Shopping\app\Events\EmployeeBenefits;
 
 use Fereydooni\Shopping\app\Models\EmployeeBenefits;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -34,7 +31,7 @@ class EmployeeBenefitsCreated
     {
         return [
             new PrivateChannel('employee-benefits'),
-            new PrivateChannel('employee.' . $this->benefit->employee_id),
+            new PrivateChannel('employee.'.$this->benefit->employee_id),
         ];
     }
 

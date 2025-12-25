@@ -35,7 +35,7 @@ class UpdateSegmentAnalytics implements ShouldQueue
                 $this->handleSegmentCalculated($event);
             }
         } catch (\Exception $e) {
-            Log::error('Error updating segment analytics: ' . $e->getMessage());
+            Log::error('Error updating segment analytics: '.$e->getMessage());
         }
     }
 
@@ -45,10 +45,10 @@ class UpdateSegmentAnalytics implements ShouldQueue
     private function handleSegmentCreated(CustomerSegmentCreated $event): void
     {
         $segment = $event->segment;
-        
+
         // Update analytics for new segment
         Log::info("Segment analytics updated for new segment: {$segment->name}");
-        
+
         // Here you would typically update analytics cache, metrics, etc.
         // For example:
         // - Update segment count metrics
@@ -62,10 +62,10 @@ class UpdateSegmentAnalytics implements ShouldQueue
     private function handleSegmentUpdated(CustomerSegmentUpdated $event): void
     {
         $segment = $event->segment;
-        
+
         // Update analytics for updated segment
         Log::info("Segment analytics updated for segment: {$segment->name}");
-        
+
         // Here you would typically update analytics cache, metrics, etc.
         // For example:
         // - Update segment performance metrics
@@ -80,10 +80,10 @@ class UpdateSegmentAnalytics implements ShouldQueue
     {
         $segment = $event->segment;
         $customerCount = $event->customerCount;
-        
+
         // Update analytics for calculated segment
         Log::info("Segment analytics updated for calculated segment: {$segment->name} with {$customerCount} customers");
-        
+
         // Here you would typically update analytics cache, metrics, etc.
         // For example:
         // - Update customer count metrics

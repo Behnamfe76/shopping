@@ -2,10 +2,10 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
-use Illuminate\Validation\Rule;
-use Illuminate\Foundation\Http\FormRequest;
-use Fereydooni\Shopping\app\Enums\ProductType;
 use Fereydooni\Shopping\app\Enums\ProductStatus;
+use Fereydooni\Shopping\app\Enums\ProductType;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreProductRequest extends FormRequest
 {
@@ -22,13 +22,13 @@ class StoreProductRequest extends FormRequest
      */
     public function rules(): array
     {
-        
+
         $productAttributeRules = ['nullable'];
         $productMultiAttributeRules = ['nullable'];
         if ($this->has('has_variant')) {
             if ($this->input('has_variant') === 'one') {
                 $productAttributeRules = ['required_if:has_variant,one', 'string', 'max:64'];
-            } else if ($this->input('has_variant') === 'more_than_one') {
+            } elseif ($this->input('has_variant') === 'more_than_one') {
                 $productMultiAttributeRules = ['required_if:has_variant,more_than_one', 'array', 'min:1'];
             }
         }
@@ -38,47 +38,47 @@ class StoreProductRequest extends FormRequest
         if ($this->has('product_multi_attributes')) {
             $attrs = $this->input('product_multi_attributes');
             if (is_array($attrs) && count($attrs) > 0) {
-            // Rules for the base variant fields
-            $additionalRules['product_multiple_variants.*.variant_stock'] = ['required_with:product_multi_attributes', 'integer', 'min:0'];
-            $additionalRules['product_multiple_variants.*.variant_price'] = ['required_with:product_multi_attributes', 'numeric', 'min:0', 'decimal:0,10'];
-            $additionalRules['product_multiple_variants.*.variant_sale_price'] = ['nullable', 'numeric', 'min:0', 'decimal:0,10'];
-            $additionalRules['product_multiple_variants.*.variant_cost_price'] = ['nullable', 'numeric', 'min:0', 'decimal:0,10'];
-            $additionalRules['product_multiple_variants.*.variant_description'] = ['nullable', 'string', 'max:65535'];
+                // Rules for the base variant fields
+                $additionalRules['product_multiple_variants.*.variant_stock'] = ['required_with:product_multi_attributes', 'integer', 'min:0'];
+                $additionalRules['product_multiple_variants.*.variant_price'] = ['required_with:product_multi_attributes', 'numeric', 'min:0', 'decimal:0,10'];
+                $additionalRules['product_multiple_variants.*.variant_sale_price'] = ['nullable', 'numeric', 'min:0', 'decimal:0,10'];
+                $additionalRules['product_multiple_variants.*.variant_cost_price'] = ['nullable', 'numeric', 'min:0', 'decimal:0,10'];
+                $additionalRules['product_multiple_variants.*.variant_description'] = ['nullable', 'string', 'max:65535'];
 
-            // Rules for each attribute
-            foreach ($attrs as $attribute) {
-                $additionalRules["product_multiple_variants.*.$attribute"] = ['required_with:product_multi_attributes', 'array'];
-                $additionalRules["product_multiple_variants.*.$attribute.variant_name"] = ['required_with:product_multi_attributes', 'string', 'max:64'];
-            }
+                // Rules for each attribute
+                foreach ($attrs as $attribute) {
+                    $additionalRules["product_multiple_variants.*.$attribute"] = ['required_with:product_multi_attributes', 'array'];
+                    $additionalRules["product_multiple_variants.*.$attribute.variant_name"] = ['required_with:product_multi_attributes', 'string', 'max:64'];
+                }
             }
         }
 
         $images = $this->file('images', []);
-        if (!empty($images)) {
+        if (! empty($images)) {
             if (is_array($images)) {
-                $additionalRules["images"] = ['nullable', 'max:45', 'array'];
-                $additionalRules["images.*"] = ['required_with:images', 'max:15200', 'image'];
+                $additionalRules['images'] = ['nullable', 'max:45', 'array'];
+                $additionalRules['images.*'] = ['required_with:images', 'max:15200', 'image'];
             } else {
-                $additionalRules["images"] = ['nullable', 'max:15200', 'image'];
+                $additionalRules['images'] = ['nullable', 'max:15200', 'image'];
             }
         }
         $videos = $this->file('videos', []);
 
-        if (!empty($videos)) {
+        if (! empty($videos)) {
             if (is_array($videos)) {
                 $additionalRules['videos'] = ['nullable', 'array', 'max:45'];
                 $additionalRules['videos.*'] = [
                     'required_with:videos',
                     'file',
                     'max:51200', // in kilobytes (50 MB)
-                    'mimetypes:video/mp4,video/avi,video/mpeg,video/quicktime'
+                    'mimetypes:video/mp4,video/avi,video/mpeg,video/quicktime',
                 ];
             } else {
                 $additionalRules['videos'] = [
                     'nullable',
                     'file',
                     'max:51200', // 50 MB
-                    'mimetypes:video/mp4,video/avi,video/mpeg,video/quicktime'
+                    'mimetypes:video/mp4,video/avi,video/mpeg,video/quicktime',
                 ];
             }
         }
@@ -199,13 +199,13 @@ class StoreProductRequest extends FormRequest
             ]);
         }
 
-        if($this->has('status')) {
+        if ($this->has('status')) {
             $this->merge([
                 'status' => ProductStatus::fromString($this->input('status'))->value,
             ]);
         }
 
-        if($this->has('product_type')) {
+        if ($this->has('product_type')) {
             $this->merge([
                 'product_type' => ProductType::fromString($this->input('product_type'))->value,
             ]);

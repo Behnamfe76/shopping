@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Http\Resources;
 
+use Fereydooni\Shopping\app\Models\ProductTag;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Fereydooni\Shopping\app\Models\ProductTag;
 
 class ProductTagSearchResource extends JsonResource
 {
@@ -56,7 +56,7 @@ class ProductTagSearchResource extends JsonResource
         }
 
         $highlighted = preg_replace(
-            '/(' . preg_quote($query, '/') . ')/i',
+            '/('.preg_quote($query, '/').')/i',
             '<mark>$1</mark>',
             $text
         );
@@ -148,7 +148,7 @@ class ProductTagSearchResource extends JsonResource
         $snippet = substr($this->description, $start, $length);
 
         if ($start > 0) {
-            $snippet = '...' . $snippet;
+            $snippet = '...'.$snippet;
         }
 
         if (strlen($this->description) > $start + $length) {

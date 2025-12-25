@@ -3,12 +3,11 @@
 namespace Fereydooni\Shopping\app\Actions\ProviderNote;
 
 use Fereydooni\Shopping\app\DTOs\ProviderNoteDTO;
+use Fereydooni\Shopping\app\Notifications\ProviderNote\ProviderNoteCreated;
 use Fereydooni\Shopping\app\Repositories\Interfaces\ProviderNoteRepositoryInterface;
-use Fereydooni\Shopping\app\Models\ProviderNote;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
-use Fereydooni\Shopping\app\Notifications\ProviderNote\ProviderNoteCreated;
+use Illuminate\Support\Facades\Validator;
 
 class CreateProviderNoteAction
 {
@@ -44,12 +43,12 @@ class CreateProviderNoteAction
             $data['attachments'] = $data['attachments'] ?? [];
 
             // Process tags if provided
-            if (!empty($data['tags'])) {
+            if (! empty($data['tags'])) {
                 $data['tags'] = $this->processTags($data['tags']);
             }
 
             // Process attachments if provided
-            if (!empty($data['attachments'])) {
+            if (! empty($data['attachments'])) {
                 $data['attachments'] = $this->processAttachments($data['attachments']);
             }
 
@@ -85,6 +84,7 @@ class CreateProviderNoteAction
         // Clean and validate tags
         $processedTags = array_map(function ($tag) {
             $tag = trim($tag);
+
             return strlen($tag) > 0 ? $tag : null;
         }, $tags);
 
@@ -102,6 +102,7 @@ class CreateProviderNoteAction
             if (is_string($attachment) && file_exists($attachment)) {
                 return $attachment;
             }
+
             return null;
         }, $attachments);
 

@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Repositories\Interfaces;
 
-use Fereydooni\Shopping\app\Models\Category;
 use Fereydooni\Shopping\app\DTOs\CategoryDTO;
+use Fereydooni\Shopping\app\Models\Category;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 
 interface CategoryRepositoryInterface

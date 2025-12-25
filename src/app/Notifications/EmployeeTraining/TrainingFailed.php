@@ -2,17 +2,18 @@
 
 namespace Fereydooni\Shopping\Notifications\EmployeeTraining;
 
+use Fereydooni\Shopping\Models\EmployeeTraining;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Fereydooni\Shopping\Models\EmployeeTraining;
 
 class TrainingFailed extends Notification implements ShouldQueue
 {
     use Queueable;
 
     public EmployeeTraining $training;
+
     public ?string $reason;
 
     /**
@@ -42,16 +43,16 @@ class TrainingFailed extends Notification implements ShouldQueue
         $employeeName = $this->training->employee->name ?? 'Employee';
 
         $message = (new MailMessage)
-            ->subject('Training Failed: ' . $this->training->training_name)
-            ->greeting('Hello ' . $notifiable->name . ',')
-            ->line($employeeName . ' has failed to complete their training.')
-            ->line('Training: ' . $this->training->training_name)
-            ->line('Employee: ' . $employeeName)
-            ->line('Failure Date: ' . now()->format('M d, Y H:i'))
-            ->line('Total Hours: ' . $this->training->total_hours . ' hours');
+            ->subject('Training Failed: '.$this->training->training_name)
+            ->greeting('Hello '.$notifiable->name.',')
+            ->line($employeeName.' has failed to complete their training.')
+            ->line('Training: '.$this->training->training_name)
+            ->line('Employee: '.$employeeName)
+            ->line('Failure Date: '.now()->format('M d, Y H:i'))
+            ->line('Total Hours: '.$this->training->total_hours.' hours');
 
         if ($this->reason) {
-            $message->line('Failure Reason: ' . $this->reason);
+            $message->line('Failure Reason: '.$this->reason);
         }
 
         if ($this->training->is_mandatory) {
@@ -59,7 +60,7 @@ class TrainingFailed extends Notification implements ShouldQueue
         }
 
         return $message
-            ->action('View Training Details', url('/training/' . $this->training->id))
+            ->action('View Training Details', url('/training/'.$this->training->id))
             ->line('Please review the training failure and take appropriate action.')
             ->line('Thank you for your attention to this matter.');
     }
@@ -82,9 +83,9 @@ class TrainingFailed extends Notification implements ShouldQueue
             'total_hours' => $this->training->total_hours,
             'failure_reason' => $this->reason,
             'is_mandatory' => $this->training->is_mandatory,
-            'message' => $employeeName . ' has failed training: ' . $this->training->training_name,
-            'action_url' => '/training/' . $this->training->id,
-            'type' => 'training_failed'
+            'message' => $employeeName.' has failed training: '.$this->training->training_name,
+            'action_url' => '/training/'.$this->training->id,
+            'type' => 'training_failed',
         ];
     }
 }

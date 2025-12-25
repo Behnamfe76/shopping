@@ -2,19 +2,19 @@
 
 namespace Fereydooni\Shopping\app\Listeners\CustomerCommunication;
 
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
+use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationBounced;
+use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationCancelled;
+use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationClicked;
 use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationCreated;
-use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationUpdated;
 use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationDeleted;
-use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationScheduled;
-use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationSent;
 use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationDelivered;
 use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationOpened;
-use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationClicked;
-use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationBounced;
+use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationScheduled;
+use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationSent;
 use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationUnsubscribed;
-use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationCancelled;
+use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationUpdated;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
 
 class LogCommunicationActivity implements ShouldQueue
 {
@@ -26,7 +26,7 @@ class LogCommunicationActivity implements ShouldQueue
     public function handle($event): void
     {
         $communication = $event->communication;
-        
+
         // Log communication activity based on event type
         switch (get_class($event)) {
             case CustomerCommunicationCreated::class:

@@ -2,17 +2,18 @@
 
 namespace Fereydooni\Shopping\App\Notifications\ProviderSpecialization;
 
+use Fereydooni\Shopping\App\Models\ProviderSpecialization;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Fereydooni\Shopping\App\Models\ProviderSpecialization;
 
 class PrimarySpecializationChanged extends Notification implements ShouldQueue
 {
     use Queueable;
 
     public $specialization;
+
     public $previousPrimary;
 
     /**
@@ -43,10 +44,10 @@ class PrimarySpecializationChanged extends Notification implements ShouldQueue
         return (new MailMessage)
             ->subject("Primary Specialization Changed to: {$newPrimaryName}")
             ->greeting("Hello {$notifiable->name}!")
-            ->line("Your primary specialization has been updated.")
+            ->line('Your primary specialization has been updated.')
             ->line("New Primary: {$newPrimaryName}")
             ->line("Previous Primary: {$previousPrimaryName}")
-            ->line("This specialization will now be highlighted as your main area of expertise.")
+            ->line('This specialization will now be highlighted as your main area of expertise.')
             ->action('View Specialization', url("/provider/specializations/{$this->specialization->id}"))
             ->line('Thank you for keeping your profile updated!');
     }

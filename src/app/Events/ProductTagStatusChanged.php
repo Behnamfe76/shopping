@@ -3,11 +3,8 @@
 namespace Fereydooni\Shopping\app\Events;
 
 use Fereydooni\Shopping\app\Models\ProductTag;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -16,8 +13,11 @@ class ProductTagStatusChanged
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $tag;
+
     public $oldStatus;
+
     public $newStatus;
+
     public $statusType;
 
     /**

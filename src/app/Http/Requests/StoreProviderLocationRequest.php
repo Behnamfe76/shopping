@@ -3,7 +3,6 @@
 namespace Fereydooni\Shopping\app\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class StoreProviderLocationRequest extends FormRequest
 {
@@ -24,121 +23,121 @@ class StoreProviderLocationRequest extends FormRequest
             'provider_id' => [
                 'required',
                 'integer',
-                'exists:providers,id'
+                'exists:providers,id',
             ],
             'location_name' => [
                 'required',
                 'string',
-                'max:255'
+                'max:255',
             ],
             'address' => [
                 'required',
                 'string',
-                'max:255'
+                'max:255',
             ],
             'city' => [
                 'required',
                 'string',
-                'max:100'
+                'max:100',
             ],
             'state' => [
                 'required',
                 'string',
-                'max:100'
+                'max:100',
             ],
             'postal_code' => [
                 'nullable',
                 'string',
-                'max:20'
+                'max:20',
             ],
             'country' => [
                 'required',
                 'string',
                 'size:2',
-                'in:US,CA,MX,GB,DE,FR,IT,ES,NL,BE,CH,AT,SE,NO,DK,FI,PL,CZ,HU,RO,BG,HR,SI,SK,EE,LV,LT,MT,CY,GR,PT,IE,LU,AU,NZ,JP,CN,IN,BR,AR,CL,PE,CO,VE,EC,BO,PY,UY,GY,SR,GF,FK,ZA,EG,NG,KE,UG,TZ,ET,GH,CI,SN,ML,BF,NE,TD,SD,LY,TN,DZ,MA,MR,AO,CD,CG,GA,CM,CF,SS'
+                'in:US,CA,MX,GB,DE,FR,IT,ES,NL,BE,CH,AT,SE,NO,DK,FI,PL,CZ,HU,RO,BG,HR,SI,SK,EE,LV,LT,MT,CY,GR,PT,IE,LU,AU,NZ,JP,CN,IN,BR,AR,CL,PE,CO,VE,EC,BO,PY,UY,GY,SR,GF,FK,ZA,EG,NG,KE,UG,TZ,ET,GH,CI,SN,ML,BF,NE,TD,SD,LY,TN,DZ,MA,MR,AO,CD,CG,GA,CM,CF,SS',
             ],
             'phone' => [
                 'nullable',
                 'string',
                 'max:20',
-                'regex:/^[\+]?[1-9][\d]{0,15}$/'
+                'regex:/^[\+]?[1-9][\d]{0,15}$/',
             ],
             'email' => [
                 'nullable',
                 'email',
-                'max:255'
+                'max:255',
             ],
             'website' => [
                 'nullable',
                 'url',
-                'max:255'
+                'max:255',
             ],
             'is_primary' => [
-                'boolean'
+                'boolean',
             ],
             'is_active' => [
-                'boolean'
+                'boolean',
             ],
             'location_type' => [
                 'required',
                 'string',
-                'in:headquarters,warehouse,store,office,factory,distribution_center,retail_outlet,service_center,other'
+                'in:headquarters,warehouse,store,office,factory,distribution_center,retail_outlet,service_center,other',
             ],
             'operating_hours' => [
                 'nullable',
-                'array'
+                'array',
             ],
             'operating_hours.*.day' => [
                 'required_with:operating_hours',
                 'string',
-                'in:monday,tuesday,wednesday,thursday,friday,saturday,sunday'
+                'in:monday,tuesday,wednesday,thursday,friday,saturday,sunday',
             ],
             'operating_hours.*.open' => [
                 'required_with:operating_hours',
                 'string',
-                'regex:/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/'
+                'regex:/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/',
             ],
             'operating_hours.*.close' => [
                 'required_with:operating_hours',
                 'string',
-                'regex:/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/'
+                'regex:/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/',
             ],
             'timezone' => [
                 'nullable',
                 'string',
-                'timezone'
+                'timezone',
             ],
             'latitude' => [
                 'nullable',
                 'numeric',
-                'between:-90,90'
+                'between:-90,90',
             ],
             'longitude' => [
                 'nullable',
                 'numeric',
-                'between:-180,180'
+                'between:-180,180',
             ],
             'contact_person' => [
                 'nullable',
                 'string',
-                'max:100'
+                'max:100',
             ],
             'contact_phone' => [
                 'nullable',
                 'string',
                 'max:20',
-                'regex:/^[\+]?[1-9][\d]{0,15}$/'
+                'regex:/^[\+]?[1-9][\d]{0,15}$/',
             ],
             'contact_email' => [
                 'nullable',
                 'email',
-                'max:255'
+                'max:255',
             ],
             'notes' => [
                 'nullable',
                 'string',
-                'max:1000'
-            ]
+                'max:1000',
+            ],
         ];
     }
 
@@ -184,7 +183,7 @@ class StoreProviderLocationRequest extends FormRequest
             'contact_phone.max' => 'Contact phone number cannot exceed 20 characters.',
             'contact_email.email' => 'Contact email format is invalid.',
             'contact_email.max' => 'Contact email cannot exceed 255 characters.',
-            'notes.max' => 'Notes cannot exceed 1000 characters.'
+            'notes.max' => 'Notes cannot exceed 1000 characters.',
         ];
     }
 
@@ -214,7 +213,7 @@ class StoreProviderLocationRequest extends FormRequest
             'contact_person' => 'contact person',
             'contact_phone' => 'contact phone',
             'contact_email' => 'contact email',
-            'notes' => 'notes'
+            'notes' => 'notes',
         ];
     }
 
@@ -236,7 +235,7 @@ class StoreProviderLocationRequest extends FormRequest
             'contact_person' => trim($this->contact_person),
             'contact_phone' => trim($this->contact_phone),
             'contact_email' => trim($this->contact_email),
-            'notes' => trim($this->notes)
+            'notes' => trim($this->notes),
         ]);
 
         // Normalize email addresses
@@ -249,8 +248,8 @@ class StoreProviderLocationRequest extends FormRequest
         }
 
         // Normalize website URL
-        if ($this->website && !preg_match("~^(?:f|ht)tps?://~i", $this->website)) {
-            $this->merge(['website' => 'https://' . $this->website]);
+        if ($this->website && ! preg_match('~^(?:f|ht)tps?://~i', $this->website)) {
+            $this->merge(['website' => 'https://'.$this->website]);
         }
 
         // Normalize country code
@@ -264,11 +263,11 @@ class StoreProviderLocationRequest extends FormRequest
         }
 
         // Set default values
-        if (!$this->has('is_primary')) {
+        if (! $this->has('is_primary')) {
             $this->merge(['is_primary' => false]);
         }
 
-        if (!$this->has('is_active')) {
+        if (! $this->has('is_active')) {
             $this->merge(['is_active' => true]);
         }
     }

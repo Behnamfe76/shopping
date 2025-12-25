@@ -2,10 +2,10 @@
 
 namespace Fereydooni\Shopping\app\Facades;
 
-use Illuminate\Support\Facades\Facade;
-use Fereydooni\Shopping\app\Services\EmployeeNoteService;
 use Fereydooni\Shopping\app\DTOs\EmployeeNoteDTO;
+use Fereydooni\Shopping\app\Services\EmployeeNoteService;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static EmployeeNoteDTO create(array $data)
@@ -38,11 +38,10 @@ class EmployeeNote extends Facade
     {
         $instance = static::getFacadeRoot();
 
-        if (!$instance) {
+        if (! $instance) {
             throw new \RuntimeException('A facade root has not been set.');
         }
 
         return $instance->$name(...$arguments);
     }
 }
-

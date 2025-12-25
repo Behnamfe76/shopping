@@ -2,9 +2,8 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Fereydooni\Shopping\app\DTOs\ProductVariantDTO;
-use Fereydooni\Shopping\app\Models\ProductVariant;
+use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateProductVariantRequest extends FormRequest
 {
@@ -14,6 +13,7 @@ class UpdateProductVariantRequest extends FormRequest
     public function authorize(): bool
     {
         $variant = $this->route('variant');
+
         return $this->user()->can('update', $variant);
     }
 
@@ -26,8 +26,8 @@ class UpdateProductVariantRequest extends FormRequest
         $rules = ProductVariantDTO::rules();
 
         // Update unique rules to exclude current variant
-        $rules['sku'] = ['required', 'string', 'max:255', 'unique:product_variants,sku,' . $variant->id];
-        $rules['barcode'] = ['nullable', 'string', 'max:255', 'unique:product_variants,barcode,' . $variant->id];
+        $rules['sku'] = ['required', 'string', 'max:255', 'unique:product_variants,sku,'.$variant->id];
+        $rules['barcode'] = ['nullable', 'string', 'max:255', 'unique:product_variants,barcode,'.$variant->id];
 
         return $rules;
     }

@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
+use Fereydooni\Shopping\app\Enums\CustomerPreferenceType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Fereydooni\Shopping\app\Enums\CustomerPreferenceType;
 
 class CustomerPreference extends Model
 {
@@ -104,8 +104,8 @@ class CustomerPreference extends Model
     {
         return $query->where(function ($q) use ($search) {
             $q->where('preference_key', 'like', "%{$search}%")
-              ->orWhere('preference_value', 'like', "%{$search}%")
-              ->orWhere('description', 'like', "%{$search}%");
+                ->orWhere('preference_value', 'like', "%{$search}%")
+                ->orWhere('description', 'like', "%{$search}%");
         });
     }
 
@@ -114,9 +114,10 @@ class CustomerPreference extends Model
      */
     public function getCastedValueAttribute(): mixed
     {
-        if (!$this->preference_type) {
+        if (! $this->preference_type) {
             return $this->preference_value;
         }
+
         return $this->preference_type->castValue($this->preference_value);
     }
 
@@ -162,7 +163,7 @@ class CustomerPreference extends Model
      */
     public function isInactive(): bool
     {
-        return !$this->is_active;
+        return ! $this->is_active;
     }
 
     /**
@@ -172,6 +173,7 @@ class CustomerPreference extends Model
     {
         $array = parent::toArray();
         $array['casted_value'] = $this->casted_value;
+
         return $array;
     }
 

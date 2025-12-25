@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
+use Exception;
 use Fereydooni\Shopping\app\Events\Provider\ProviderLocationCreated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
-use Exception;
 
 class SendLocationCreatedNotification implements ShouldQueue
 {
@@ -55,14 +55,14 @@ class SendLocationCreatedNotification implements ShouldQueue
             Log::info('Location created notifications sent successfully', [
                 'location_id' => $location->id,
                 'provider_id' => $location->provider_id,
-                'user_id' => $user?->id
+                'user_id' => $user?->id,
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to send location created notifications', [
                 'location_id' => $event->providerLocation->id,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             // Re-throw the exception to mark the job as failed
@@ -79,11 +79,12 @@ class SendLocationCreatedNotification implements ShouldQueue
             // Get provider email
             $providerEmail = $location->provider->email ?? null;
 
-            if (!$providerEmail) {
+            if (! $providerEmail) {
                 Log::warning('No provider email found for location notification', [
                     'location_id' => $location->id,
-                    'provider_id' => $location->provider_id
+                    'provider_id' => $location->provider_id,
                 ]);
+
                 return;
             }
 
@@ -93,13 +94,13 @@ class SendLocationCreatedNotification implements ShouldQueue
 
             Log::info('Email notification sent for location creation', [
                 'location_id' => $location->id,
-                'provider_email' => $providerEmail
+                'provider_email' => $providerEmail,
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to send email notification for location creation', [
                 'location_id' => $location->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -112,7 +113,7 @@ class SendLocationCreatedNotification implements ShouldQueue
         try {
             $phone = $location->phone;
 
-            if (!$phone) {
+            if (! $phone) {
                 return;
             }
 
@@ -122,13 +123,13 @@ class SendLocationCreatedNotification implements ShouldQueue
 
             Log::info('SMS notification sent for location creation', [
                 'location_id' => $location->id,
-                'phone' => $phone
+                'phone' => $phone,
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to send SMS notification for location creation', [
                 'location_id' => $location->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -149,14 +150,14 @@ class SendLocationCreatedNotification implements ShouldQueue
 
                 Log::info('In-app notification sent for location creation', [
                     'location_id' => $location->id,
-                    'user_id' => $notifyUser->id
+                    'user_id' => $notifyUser->id,
                 ]);
             }
 
         } catch (Exception $e) {
             Log::error('Failed to send in-app notification for location creation', [
                 'location_id' => $location->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -189,7 +190,7 @@ class SendLocationCreatedNotification implements ShouldQueue
         } catch (Exception $e) {
             Log::error('Failed to get users to notify for location creation', [
                 'location_id' => $location->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
 
@@ -204,7 +205,7 @@ class SendLocationCreatedNotification implements ShouldQueue
         Log::error('Location created notification job failed', [
             'location_id' => $event->providerLocation->id,
             'error' => $exception->getMessage(),
-            'trace' => $exception->getTraceAsString()
+            'trace' => $exception->getTraceAsString(),
         ]);
     }
 }

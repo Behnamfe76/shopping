@@ -2,10 +2,10 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
-use Fereydooni\Shopping\app\Models\ProductMeta;
 use Fereydooni\Shopping\app\Enums\MetaType;
+use Fereydooni\Shopping\app\Models\ProductMeta;
 use Illuminate\Support\Carbon;
+use Spatie\LaravelData\Data;
 
 class ProductMetaDTO extends Data
 {
@@ -25,8 +25,7 @@ class ProductMetaDTO extends Data
         public ?Carbon $created_at = null,
         public ?Carbon $updated_at = null,
         public ?int $id = null,
-    ) {
-    }
+    ) {}
 
     public static function fromModel(ProductMeta $productMeta): self
     {
@@ -55,7 +54,7 @@ class ProductMetaDTO extends Data
             'product_id' => ['required', 'integer', 'exists:products,id'],
             'meta_key' => ['required', 'string', 'max:255'],
             'meta_value' => ['required', 'string', 'max:65535'],
-            'meta_type' => ['required', 'string', 'in:' . implode(',', array_column(MetaType::cases(), 'value'))],
+            'meta_type' => ['required', 'string', 'in:'.implode(',', array_column(MetaType::cases(), 'value'))],
             'is_public' => ['boolean'],
             'is_searchable' => ['boolean'],
             'is_filterable' => ['boolean'],
@@ -112,7 +111,7 @@ class ProductMetaDTO extends Data
 
     public function getValidationRulesArray(): array
     {
-        if (!$this->validation_rules) {
+        if (! $this->validation_rules) {
             return $this->getMetaTypeEnum()->getValidationRules();
         }
 
@@ -127,7 +126,7 @@ class ProductMetaDTO extends Data
         $rules = $this->getValidationRulesArray();
         $validator = validator(['value' => $this->meta_value], ['value' => $rules]);
 
-        return !$validator->fails();
+        return ! $validator->fails();
     }
 
     public function toArray(): array

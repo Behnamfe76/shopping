@@ -2,10 +2,10 @@
 
 namespace Database\Factories;
 
-use App\Models\EmployeeSalaryHistory;
-use App\Models\Employee;
-use App\Models\User;
 use App\Enums\SalaryChangeType;
+use App\Models\Employee;
+use App\Models\EmployeeSalaryHistory;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class EmployeeSalaryHistoryFactory extends Factory
@@ -312,7 +312,7 @@ class EmployeeSalaryHistoryFactory extends Factory
      */
     private function generateReason(SalaryChangeType $changeType): string
     {
-        return match($changeType) {
+        return match ($changeType) {
             SalaryChangeType::PROMOTION => $this->faker->randomElement([
                 'Promotion to Senior Developer',
                 'Promotion to Team Lead',

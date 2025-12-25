@@ -2,18 +2,16 @@
 
 namespace Fereydooni\Shopping\app\Repositories;
 
-use Fereydooni\Shopping\app\Models\Employee;
 use Fereydooni\Shopping\app\DTOs\EmployeeDTO;
-use Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeRepositoryInterface;
 use Fereydooni\Shopping\app\Enums\EmployeeStatus;
 use Fereydooni\Shopping\app\Enums\EmploymentType;
+use Fereydooni\Shopping\app\Models\Employee;
+use Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Illuminate\Support\Carbon;
 
 class EmployeeRepository implements EmployeeRepositoryInterface
 {
@@ -32,7 +30,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
         return Employee::simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return Employee::cursorPaginate($perPage, ['*'], 'id', $cursor);
     }
@@ -45,6 +43,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
     public function findDTO(int $id): ?EmployeeDTO
     {
         $employee = $this->find($id);
+
         return $employee ? EmployeeDTO::fromModel($employee) : null;
     }
 
@@ -56,6 +55,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
     public function findByUserIdDTO(int $userId): ?EmployeeDTO
     {
         $employee = $this->findByUserId($userId);
+
         return $employee ? EmployeeDTO::fromModel($employee) : null;
     }
 
@@ -67,6 +67,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
     public function findByEmailDTO(string $email): ?EmployeeDTO
     {
         $employee = $this->findByEmail($email);
+
         return $employee ? EmployeeDTO::fromModel($employee) : null;
     }
 
@@ -78,6 +79,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
     public function findByPhoneDTO(string $phone): ?EmployeeDTO
     {
         $employee = $this->findByPhone($phone);
+
         return $employee ? EmployeeDTO::fromModel($employee) : null;
     }
 
@@ -89,6 +91,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
     public function findByEmployeeNumberDTO(string $employeeNumber): ?EmployeeDTO
     {
         $employee = $this->findByEmployeeNumber($employeeNumber);
+
         return $employee ? EmployeeDTO::fromModel($employee) : null;
     }
 
@@ -99,7 +102,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
 
     public function findByStatusDTO(string $status): Collection
     {
-        return Employee::where('status', $status)->get()->map(fn($employee) => EmployeeDTO::fromModel($employee));
+        return Employee::where('status', $status)->get()->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function findActive(): Collection
@@ -109,7 +112,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
 
     public function findActiveDTO(): Collection
     {
-        return Employee::active()->get()->map(fn($employee) => EmployeeDTO::fromModel($employee));
+        return Employee::active()->get()->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function findInactive(): Collection
@@ -119,7 +122,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
 
     public function findInactiveDTO(): Collection
     {
-        return Employee::inactive()->get()->map(fn($employee) => EmployeeDTO::fromModel($employee));
+        return Employee::inactive()->get()->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function findTerminated(): Collection
@@ -129,7 +132,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
 
     public function findTerminatedDTO(): Collection
     {
-        return Employee::terminated()->get()->map(fn($employee) => EmployeeDTO::fromModel($employee));
+        return Employee::terminated()->get()->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function findByEmploymentType(string $employmentType): Collection
@@ -139,7 +142,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
 
     public function findByEmploymentTypeDTO(string $employmentType): Collection
     {
-        return Employee::where('employment_type', $employmentType)->get()->map(fn($employee) => EmployeeDTO::fromModel($employee));
+        return Employee::where('employment_type', $employmentType)->get()->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function findByDepartment(string $department): Collection
@@ -149,7 +152,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
 
     public function findByDepartmentDTO(string $department): Collection
     {
-        return Employee::byDepartment($department)->get()->map(fn($employee) => EmployeeDTO::fromModel($employee));
+        return Employee::byDepartment($department)->get()->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function findByPosition(string $position): Collection
@@ -159,7 +162,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
 
     public function findByPositionDTO(string $position): Collection
     {
-        return Employee::byPosition($position)->get()->map(fn($employee) => EmployeeDTO::fromModel($employee));
+        return Employee::byPosition($position)->get()->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function findByManagerId(int $managerId): Collection
@@ -169,7 +172,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
 
     public function findByManagerIdDTO(int $managerId): Collection
     {
-        return Employee::byManager($managerId)->get()->map(fn($employee) => EmployeeDTO::fromModel($employee));
+        return Employee::byManager($managerId)->get()->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function findByHireDateRange(string $startDate, string $endDate): Collection
@@ -179,7 +182,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
 
     public function findByHireDateRangeDTO(string $startDate, string $endDate): Collection
     {
-        return Employee::byHireDateRange($startDate, $endDate)->get()->map(fn($employee) => EmployeeDTO::fromModel($employee));
+        return Employee::byHireDateRange($startDate, $endDate)->get()->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function findBySalaryRange(float $minSalary, float $maxSalary): Collection
@@ -189,7 +192,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
 
     public function findBySalaryRangeDTO(float $minSalary, float $maxSalary): Collection
     {
-        return Employee::bySalaryRange($minSalary, $maxSalary)->get()->map(fn($employee) => EmployeeDTO::fromModel($employee));
+        return Employee::bySalaryRange($minSalary, $maxSalary)->get()->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function findByPerformanceRating(float $minRating, float $maxRating): Collection
@@ -199,13 +202,13 @@ class EmployeeRepository implements EmployeeRepositoryInterface
 
     public function findByPerformanceRatingDTO(float $minRating, float $maxRating): Collection
     {
-        return Employee::byPerformanceRange($minRating, $maxRating)->get()->map(fn($employee) => EmployeeDTO::fromModel($employee));
+        return Employee::byPerformanceRange($minRating, $maxRating)->get()->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function create(array $data): Employee
     {
         // Generate employee number if not provided
-        if (!isset($data['employee_number'])) {
+        if (! isset($data['employee_number'])) {
             $data['employee_number'] = $this->generateEmployeeNumber();
         }
 
@@ -216,12 +219,12 @@ class EmployeeRepository implements EmployeeRepositoryInterface
         $data['sick_days_used'] = $data['sick_days_used'] ?? 0;
 
         // Set default vacation and sick days based on employment type
-        if (!isset($data['vacation_days_total'])) {
+        if (! isset($data['vacation_days_total'])) {
             $employmentType = EmploymentType::from($data['employment_type']);
             $data['vacation_days_total'] = $employmentType->getDefaultVacationDays();
         }
 
-        if (!isset($data['sick_days_total'])) {
+        if (! isset($data['sick_days_total'])) {
             $employmentType = EmploymentType::from($data['employment_type']);
             $data['sick_days_total'] = $employmentType->getDefaultSickDays();
         }
@@ -232,6 +235,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
     public function createAndReturnDTO(array $data): EmployeeDTO
     {
         $employee = $this->create($data);
+
         return EmployeeDTO::fromModel($employee);
     }
 
@@ -243,6 +247,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
     public function updateAndReturnDTO(Employee $employee, array $data): ?EmployeeDTO
     {
         $updated = $this->update($employee, $data);
+
         return $updated ? EmployeeDTO::fromModel($employee->fresh()) : null;
     }
 
@@ -261,7 +266,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
         return $employee->update(['status' => EmployeeStatus::INACTIVE]);
     }
 
-    public function terminate(Employee $employee, string $reason = null, string $terminationDate = null): bool
+    public function terminate(Employee $employee, ?string $reason = null, ?string $terminationDate = null): bool
     {
         $data = ['status' => EmployeeStatus::TERMINATED];
 
@@ -272,17 +277,17 @@ class EmployeeRepository implements EmployeeRepositoryInterface
         }
 
         if ($reason) {
-            $data['notes'] = ($employee->notes ? $employee->notes . "\n" : '') . "Termination reason: {$reason}";
+            $data['notes'] = ($employee->notes ? $employee->notes."\n" : '')."Termination reason: {$reason}";
         }
 
         return $employee->update($data);
     }
 
-    public function rehire(Employee $employee, string $hireDate = null): bool
+    public function rehire(Employee $employee, ?string $hireDate = null): bool
     {
         $data = [
             'status' => EmployeeStatus::ACTIVE,
-            'termination_date' => null
+            'termination_date' => null,
         ];
 
         if ($hireDate) {
@@ -292,34 +297,34 @@ class EmployeeRepository implements EmployeeRepositoryInterface
         return $employee->update($data);
     }
 
-    public function updateSalary(Employee $employee, float $newSalary, string $effectiveDate = null): bool
+    public function updateSalary(Employee $employee, float $newSalary, ?string $effectiveDate = null): bool
     {
         $data = ['salary' => $newSalary];
 
         if ($effectiveDate) {
-            $data['notes'] = ($employee->notes ? $employee->notes . "\n" : '') . "Salary updated to {$newSalary} effective {$effectiveDate}";
+            $data['notes'] = ($employee->notes ? $employee->notes."\n" : '')."Salary updated to {$newSalary} effective {$effectiveDate}";
         }
 
         return $employee->update($data);
     }
 
-    public function updatePosition(Employee $employee, string $newPosition, string $effectiveDate = null): bool
+    public function updatePosition(Employee $employee, string $newPosition, ?string $effectiveDate = null): bool
     {
         $data = ['position' => $newPosition];
 
         if ($effectiveDate) {
-            $data['notes'] = ($employee->notes ? $employee->notes . "\n" : '') . "Position updated to {$newPosition} effective {$effectiveDate}";
+            $data['notes'] = ($employee->notes ? $employee->notes."\n" : '')."Position updated to {$newPosition} effective {$effectiveDate}";
         }
 
         return $employee->update($data);
     }
 
-    public function updateDepartment(Employee $employee, string $newDepartment, string $effectiveDate = null): bool
+    public function updateDepartment(Employee $employee, string $newDepartment, ?string $effectiveDate = null): bool
     {
         $data = ['department' => $newDepartment];
 
         if ($effectiveDate) {
-            $data['notes'] = ($employee->notes ? $employee->notes . "\n" : '') . "Department updated to {$newDepartment} effective {$effectiveDate}";
+            $data['notes'] = ($employee->notes ? $employee->notes."\n" : '')."Department updated to {$newDepartment} effective {$effectiveDate}";
         }
 
         return $employee->update($data);
@@ -363,12 +368,12 @@ class EmployeeRepository implements EmployeeRepositoryInterface
         return $employee->update(['sick_days_used' => $employee->sick_days_used + $days]);
     }
 
-    public function updatePerformanceRating(Employee $employee, float $rating, string $reviewDate = null): bool
+    public function updatePerformanceRating(Employee $employee, float $rating, ?string $reviewDate = null): bool
     {
         $data = [
             'performance_rating' => $rating,
             'last_review_date' => $reviewDate ?: now(),
-            'next_review_date' => now()->addYear()
+            'next_review_date' => now()->addYear(),
         ];
 
         return $employee->update($data);
@@ -446,7 +451,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
 
     public function searchDTO(string $query): Collection
     {
-        return Employee::search($query)->get()->map(fn($employee) => EmployeeDTO::fromModel($employee));
+        return Employee::search($query)->get()->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function searchByDepartment(string $department, string $query): Collection
@@ -456,7 +461,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
 
     public function searchByDepartmentDTO(string $department, string $query): Collection
     {
-        return Employee::byDepartment($department)->search($query)->get()->map(fn($employee) => EmployeeDTO::fromModel($employee));
+        return Employee::byDepartment($department)->search($query)->get()->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function searchByPosition(string $position, string $query): Collection
@@ -466,7 +471,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
 
     public function searchByPositionDTO(string $position, string $query): Collection
     {
-        return Employee::byPosition($position)->search($query)->get()->map(fn($employee) => EmployeeDTO::fromModel($employee));
+        return Employee::byPosition($position)->search($query)->get()->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function getTopPerformers(int $limit = 10): Collection
@@ -476,7 +481,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
 
     public function getTopPerformersDTO(int $limit = 10): Collection
     {
-        return Employee::topPerformers()->orderBy('performance_rating', 'desc')->limit($limit)->get()->map(fn($employee) => EmployeeDTO::fromModel($employee));
+        return Employee::topPerformers()->orderBy('performance_rating', 'desc')->limit($limit)->get()->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function getLongestServing(int $limit = 10): Collection
@@ -486,7 +491,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
 
     public function getLongestServingDTO(int $limit = 10): Collection
     {
-        return Employee::orderBy('hire_date', 'asc')->limit($limit)->get()->map(fn($employee) => EmployeeDTO::fromModel($employee));
+        return Employee::orderBy('hire_date', 'asc')->limit($limit)->get()->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function getNewestHires(int $limit = 10): Collection
@@ -496,7 +501,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
 
     public function getNewestHiresDTO(int $limit = 10): Collection
     {
-        return Employee::orderBy('hire_date', 'desc')->limit($limit)->get()->map(fn($employee) => EmployeeDTO::fromModel($employee));
+        return Employee::orderBy('hire_date', 'desc')->limit($limit)->get()->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function getEmployeesBySalaryRange(float $minSalary, float $maxSalary): Collection
@@ -506,7 +511,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
 
     public function getEmployeesBySalaryRangeDTO(float $minSalary, float $maxSalary): Collection
     {
-        return Employee::bySalaryRange($minSalary, $maxSalary)->get()->map(fn($employee) => EmployeeDTO::fromModel($employee));
+        return Employee::bySalaryRange($minSalary, $maxSalary)->get()->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function getEmployeesWithUpcomingReviews(int $daysAhead = 30): Collection
@@ -516,7 +521,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
 
     public function getEmployeesWithUpcomingReviewsDTO(int $daysAhead = 30): Collection
     {
-        return Employee::withUpcomingReviews($daysAhead)->get()->map(fn($employee) => EmployeeDTO::fromModel($employee));
+        return Employee::withUpcomingReviews($daysAhead)->get()->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function getEmployeesWithLowVacationDays(int $threshold = 5): Collection
@@ -526,7 +531,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
 
     public function getEmployeesWithLowVacationDaysDTO(int $threshold = 5): Collection
     {
-        return Employee::withLowVacationDays($threshold)->get()->map(fn($employee) => EmployeeDTO::fromModel($employee));
+        return Employee::withLowVacationDays($threshold)->get()->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function getEmployeesByCertification(string $certification): Collection
@@ -536,7 +541,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
 
     public function getEmployeesByCertificationDTO(string $certification): Collection
     {
-        return Employee::whereJsonContains('certifications', $certification)->get()->map(fn($employee) => EmployeeDTO::fromModel($employee));
+        return Employee::whereJsonContains('certifications', $certification)->get()->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function getEmployeesBySkill(string $skill): Collection
@@ -546,7 +551,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
 
     public function getEmployeesBySkillDTO(string $skill): Collection
     {
-        return Employee::whereJsonContains('skills', $skill)->get()->map(fn($employee) => EmployeeDTO::fromModel($employee));
+        return Employee::whereJsonContains('skills', $skill)->get()->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function validateEmployee(array $data): bool
@@ -555,18 +560,18 @@ class EmployeeRepository implements EmployeeRepositoryInterface
         $required = ['user_id', 'first_name', 'last_name', 'email', 'employee_number', 'position', 'department', 'employment_type'];
 
         foreach ($required as $field) {
-            if (!isset($data[$field]) || empty($data[$field])) {
+            if (! isset($data[$field]) || empty($data[$field])) {
                 return false;
             }
         }
 
         // Email validation
-        if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+        if (! filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
             return false;
         }
 
         // Employee number uniqueness
-        if (!$this->isEmployeeNumberUnique($data['employee_number'])) {
+        if (! $this->isEmployeeNumberUnique($data['employee_number'])) {
             return false;
         }
 
@@ -576,15 +581,15 @@ class EmployeeRepository implements EmployeeRepositoryInterface
     public function generateEmployeeNumber(): string
     {
         do {
-            $number = 'EMP' . strtoupper(Str::random(6));
-        } while (!$this->isEmployeeNumberUnique($number));
+            $number = 'EMP'.strtoupper(Str::random(6));
+        } while (! $this->isEmployeeNumberUnique($number));
 
         return $number;
     }
 
     public function isEmployeeNumberUnique(string $employeeNumber): bool
     {
-        return !Employee::where('employee_number', $employeeNumber)->exists();
+        return ! Employee::where('employee_number', $employeeNumber)->exists();
     }
 
     public function getEmployeeStats(): array
@@ -606,6 +611,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
         foreach (EmployeeStatus::cases() as $status) {
             $stats[$status->value] = $this->getEmployeeCountByStatus($status->value);
         }
+
         return $stats;
     }
 
@@ -631,6 +637,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
         foreach (EmploymentType::cases() as $type) {
             $stats[$type->value] = $this->getEmployeeCountByEmploymentType($type->value);
         }
+
         return $stats;
     }
 
@@ -673,7 +680,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
     public function getEmployeeHierarchy(int $employeeId): array
     {
         $employee = $this->find($employeeId);
-        if (!$employee) {
+        if (! $employee) {
             return [];
         }
 
@@ -693,13 +700,13 @@ class EmployeeRepository implements EmployeeRepositoryInterface
 
     public function getEmployeeSubordinatesDTO(int $employeeId): Collection
     {
-        return Employee::byManager($employeeId)->get()->map(fn($employee) => EmployeeDTO::fromModel($employee));
+        return Employee::byManager($employeeId)->get()->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function getEmployeeManagers(int $employeeId): Collection
     {
         $employee = $this->find($employeeId);
-        if (!$employee || !$employee->manager_id) {
+        if (! $employee || ! $employee->manager_id) {
             return collect();
         }
 
@@ -716,7 +723,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
 
     public function getEmployeeManagersDTO(int $employeeId): Collection
     {
-        return $this->getEmployeeManagers($employeeId)->map(fn($employee) => EmployeeDTO::fromModel($employee));
+        return $this->getEmployeeManagers($employeeId)->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function addEmployeeNote(Employee $employee, string $note, string $type = 'general'): bool
@@ -725,7 +732,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
         $formattedNote = "[{$timestamp}] [{$type}] {$note}";
 
         $currentNotes = $employee->notes ?: '';
-        $newNotes = $currentNotes ? $currentNotes . "\n" . $formattedNote : $formattedNote;
+        $newNotes = $currentNotes ? $currentNotes."\n".$formattedNote : $formattedNote;
 
         return $employee->update(['notes' => $newNotes]);
     }
@@ -734,11 +741,12 @@ class EmployeeRepository implements EmployeeRepositoryInterface
     {
         // This would typically return a separate notes table
         // For now, we'll return the notes as a collection
-        if (!$employee->notes) {
+        if (! $employee->notes) {
             return collect();
         }
 
         $notes = explode("\n", $employee->notes);
+
         return collect($notes)->filter()->map(function ($note) {
             // Parse note format: [timestamp] [type] content
             if (preg_match('/^\[(.*?)\] \[(.*?)\] (.*)$/', $note, $matches)) {
@@ -765,6 +773,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
     public function getEmployeeBenefits(int $employeeId): array
     {
         $employee = $this->find($employeeId);
+
         return $employee && $employee->benefits_enrolled ? ['enrolled' => true] : [];
     }
 
@@ -776,6 +785,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
     public function getEmployeeSkills(int $employeeId): array
     {
         $employee = $this->find($employeeId);
+
         return $employee ? ($employee->skills ?? []) : [];
     }
 
@@ -787,7 +797,7 @@ class EmployeeRepository implements EmployeeRepositoryInterface
     public function getEmployeeCertifications(int $employeeId): array
     {
         $employee = $this->find($employeeId);
+
         return $employee ? ($employee->certifications ?? []) : [];
     }
 }
-

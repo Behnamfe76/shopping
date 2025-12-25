@@ -6,7 +6,6 @@ use App\Events\ProviderInsuranceDocumentUploaded;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 
 class ProcessInsuranceDocument implements ShouldQueue
 {
@@ -45,13 +44,13 @@ class ProcessInsuranceDocument implements ShouldQueue
             Log::info('Insurance document processed successfully', [
                 'insurance_id' => $providerInsurance->id,
                 'document_info' => $documentInfo,
-                'uploader_id' => $uploader
+                'uploader_id' => $uploader,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to process insurance document', [
                 'insurance_id' => $event->providerInsurance->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             // Update document status to failed
@@ -68,7 +67,7 @@ class ProcessInsuranceDocument implements ShouldQueue
         // This could include file validation, virus scanning, etc.
         Log::info('Document processing started', [
             'insurance_id' => $providerInsurance->id,
-            'document_path' => $documentInfo['path'] ?? null
+            'document_path' => $documentInfo['path'] ?? null,
         ]);
     }
 
@@ -81,7 +80,7 @@ class ProcessInsuranceDocument implements ShouldQueue
         // This could include extracting text, dates, policy numbers, etc.
         Log::info('Metadata extraction started', [
             'insurance_id' => $providerInsurance->id,
-            'document_type' => $documentInfo['type'] ?? null
+            'document_type' => $documentInfo['type'] ?? null,
         ]);
     }
 
@@ -94,7 +93,7 @@ class ProcessInsuranceDocument implements ShouldQueue
         // This could use third-party OCR services
         Log::info('OCR processing started', [
             'insurance_id' => $providerInsurance->id,
-            'document_path' => $documentInfo['path'] ?? null
+            'document_path' => $documentInfo['path'] ?? null,
         ]);
     }
 
@@ -107,7 +106,7 @@ class ProcessInsuranceDocument implements ShouldQueue
         // This would typically update the database
         Log::info('Document status updated', [
             'insurance_id' => $providerInsurance->id,
-            'status' => $status
+            'status' => $status,
         ]);
     }
 }

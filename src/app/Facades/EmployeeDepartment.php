@@ -2,13 +2,13 @@
 
 namespace App\Facades;
 
-use App\Repositories\Interfaces\EmployeeDepartmentRepositoryInterface;
 use App\Repositories\EmployeeDepartmentRepository;
-use Illuminate\Support\Facades\Facade;
-use Illuminate\Support\Collection;
+use App\Repositories\Interfaces\EmployeeDepartmentRepositoryInterface;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static Collection all()
@@ -143,7 +143,7 @@ class EmployeeDepartment extends Facade
         } catch (\Exception $e) {
             \Log::error('Error creating department', [
                 'data' => $data,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -156,7 +156,7 @@ class EmployeeDepartment extends Facade
     {
         try {
             $department = static::repository()->find($departmentId);
-            if (!$department) {
+            if (! $department) {
                 throw new \InvalidArgumentException("Department with ID {$departmentId} not found");
             }
 
@@ -181,7 +181,7 @@ class EmployeeDepartment extends Facade
             \Log::error('Error updating department', [
                 'department_id' => $departmentId,
                 'data' => $data,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -194,7 +194,7 @@ class EmployeeDepartment extends Facade
     {
         try {
             $department = static::repository()->find($departmentId);
-            if (!$department) {
+            if (! $department) {
                 throw new \InvalidArgumentException("Department with ID {$departmentId} not found");
             }
 
@@ -214,7 +214,7 @@ class EmployeeDepartment extends Facade
         } catch (\Exception $e) {
             \Log::error('Error deleting department', [
                 'department_id' => $departmentId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -227,7 +227,7 @@ class EmployeeDepartment extends Facade
     {
         try {
             $department = static::repository()->find($departmentId);
-            if (!$department) {
+            if (! $department) {
                 throw new \InvalidArgumentException("Department with ID {$departmentId} not found");
             }
 
@@ -239,7 +239,7 @@ class EmployeeDepartment extends Facade
             \Log::error('Error assigning manager', [
                 'department_id' => $departmentId,
                 'manager_id' => $managerId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -252,26 +252,26 @@ class EmployeeDepartment extends Facade
     {
         try {
             $department = static::repository()->find($departmentId);
-            if (!$department) {
+            if (! $department) {
                 throw new \InvalidArgumentException("Department with ID {$departmentId} not found");
             }
 
             // Check if new parent exists
             if ($newParentId !== 0) {
                 $newParent = static::repository()->find($newParentId);
-                if (!$newParent) {
+                if (! $newParent) {
                     throw new \InvalidArgumentException("Parent department with ID {$newParentId} not found");
                 }
 
                 // Check for circular reference
                 if ($newParentId === $departmentId) {
-                    throw new \InvalidArgumentException("Department cannot be its own parent");
+                    throw new \InvalidArgumentException('Department cannot be its own parent');
                 }
 
                 // Check if new parent is a descendant of current department
                 $descendants = static::repository()->findDescendants($departmentId);
                 if ($descendants->contains('id', $newParentId)) {
-                    throw new \InvalidArgumentException("Cannot move department to its own descendant");
+                    throw new \InvalidArgumentException('Cannot move department to its own descendant');
                 }
             }
 
@@ -280,7 +280,7 @@ class EmployeeDepartment extends Facade
             \Log::error('Error moving department', [
                 'department_id' => $departmentId,
                 'new_parent_id' => $newParentId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -295,8 +295,9 @@ class EmployeeDepartment extends Facade
             return static::repository()->getDepartmentTree();
         } catch (\Exception $e) {
             \Log::error('Error getting hierarchy tree', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return [];
         }
     }
@@ -324,8 +325,9 @@ class EmployeeDepartment extends Facade
         } catch (\Exception $e) {
             \Log::error('Error searching departments paginated', [
                 'query' => $query,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return new LengthAwarePaginator([], 0, $perPage, 1);
         }
     }
@@ -342,13 +344,14 @@ class EmployeeDepartment extends Facade
                 'hierarchy_info' => [
                     'depth' => static::repository()->calculateHierarchyDepth(),
                     'root_departments' => static::repository()->findRoot()->count(),
-                    'child_departments' => static::repository()->findAll()->whereNotNull('parent_id')->count()
-                ]
+                    'child_departments' => static::repository()->findAll()->whereNotNull('parent_id')->count(),
+                ],
             ];
         } catch (\Exception $e) {
             \Log::error('Error getting analytics summary', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return [];
         }
     }
@@ -363,8 +366,9 @@ class EmployeeDepartment extends Facade
         } catch (\Exception $e) {
             \Log::error('Error exporting department data', [
                 'filters' => $filters,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return json_encode(['error' => 'Failed to export data']);
         }
     }
@@ -378,8 +382,9 @@ class EmployeeDepartment extends Facade
             return static::repository()->importDepartmentData($data);
         } catch (\Exception $e) {
             \Log::error('Error importing department data', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }

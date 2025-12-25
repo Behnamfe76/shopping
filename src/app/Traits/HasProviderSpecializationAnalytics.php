@@ -2,13 +2,10 @@
 
 namespace Fereydooni\Shopping\App\Traits;
 
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
-use Fereydooni\Shopping\App\Models\ProviderSpecialization;
-use Fereydooni\Shopping\App\Enums\SpecializationCategory;
 use Fereydooni\Shopping\App\Enums\ProficiencyLevel;
+use Fereydooni\Shopping\App\Enums\SpecializationCategory;
 use Fereydooni\Shopping\App\Enums\VerificationStatus;
+use Illuminate\Database\Eloquent\Collection;
 
 trait HasProviderSpecializationAnalytics
 {
@@ -285,6 +282,7 @@ trait HasProviderSpecializationAnalytics
         // Check if provider has no specializations
         if ($analytics['total_specializations'] === 0) {
             $recommendations[] = 'Add your first specialization to showcase your expertise.';
+
             return $recommendations;
         }
 
@@ -419,13 +417,13 @@ trait HasProviderSpecializationAnalytics
 
             foreach ($fields as $field) {
                 $totalFields++;
-                if (!empty($specialization->$field)) {
+                if (! empty($specialization->$field)) {
                     $filledFields++;
                 }
             }
 
             // Bonus for certifications
-            if (!empty($specialization->certifications)) {
+            if (! empty($specialization->certifications)) {
                 $filledFields++;
             }
             $totalFields++;

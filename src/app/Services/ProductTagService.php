@@ -2,28 +2,28 @@
 
 namespace Fereydooni\Shopping\app\Services;
 
-use Fereydooni\Shopping\app\Traits\HasLens;
-use Illuminate\Database\Eloquent\Collection;
-use Fereydooni\Shopping\app\Models\ProductTag;
 use Fereydooni\Shopping\app\DTOs\ProductTagDTO;
-use Fereydooni\Shopping\app\Traits\HasStatusToggle;
+use Fereydooni\Shopping\app\Models\ProductTag;
+use Fereydooni\Shopping\app\Repositories\Interfaces\ProductTagRepositoryInterface;
+use Fereydooni\Shopping\app\Traits\HasAnalyticsOperations;
 use Fereydooni\Shopping\app\Traits\HasBulkOperations;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
-use Fereydooni\Shopping\app\Traits\HasSlugGeneration;
+use Fereydooni\Shopping\app\Traits\HasLens;
 use Fereydooni\Shopping\app\Traits\HasSearchOperations;
-use Fereydooni\Shopping\app\Traits\HasAnalyticsOperations;
-use Fereydooni\Shopping\app\Repositories\Interfaces\ProductTagRepositoryInterface;
+use Fereydooni\Shopping\app\Traits\HasSlugGeneration;
+use Fereydooni\Shopping\app\Traits\HasStatusToggle;
+use Illuminate\Database\Eloquent\Collection;
 
 class ProductTagService
 {
-    use HasCrudOperations, HasSearchOperations {
-        HasSearchOperations::getSearchableFields insteadOf HasCrudOperations;
-    }
-    use HasStatusToggle;
-    use HasSlugGeneration;
-    use HasBulkOperations;
     use HasAnalyticsOperations;
+    use HasBulkOperations;
+    use HasCrudOperations, HasSearchOperations {
+        HasSearchOperations::getSearchableFields insteadof HasCrudOperations;
+    }
     use HasLens;
+    use HasSlugGeneration;
+    use HasStatusToggle;
 
     public array $searchableFields = ['name', 'slug', 'description'];
 
@@ -74,28 +74,31 @@ class ProductTagService
     public function create(array $data): ProductTag
     {
         // Generate slug if not provided
-        if (!isset($data['slug']) && isset($data['name'])) {
+        if (! isset($data['slug']) && isset($data['name'])) {
             $data['slug'] = $this->generateSlug($data['name']);
         }
 
         $this->validateData($data);
+
         return $this->repository->create($data);
     }
 
     public function createAndReturnDTO(array $data): ProductTagDTO
     {
         // Generate slug if not provided
-        if (!isset($data['slug']) && isset($data['name'])) {
+        if (! isset($data['slug']) && isset($data['name'])) {
             $data['slug'] = $this->generateSlug($data['name']);
         }
 
         $this->validateData($data);
+
         return $this->repository->createAndReturnDTO($data);
     }
 
     public function update(ProductTag $tag, array $data): bool
     {
         $this->validateData($data, $tag->id);
+
         return $this->repository->update($tag, $data);
     }
 

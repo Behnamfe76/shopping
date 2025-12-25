@@ -2,14 +2,11 @@
 
 namespace App\Events;
 
-use Illuminate\Broadcasting\Channel;
+use App\Models\ProviderCommunication;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use App\Models\ProviderCommunication;
 
 class ProviderCommunicationCreated
 {
@@ -34,8 +31,8 @@ class ProviderCommunicationCreated
     {
         return [
             new PrivateChannel('provider-communications'),
-            new PrivateChannel('provider.' . $this->communication->provider_id),
-            new PrivateChannel('user.' . $this->communication->user_id),
+            new PrivateChannel('provider.'.$this->communication->provider_id),
+            new PrivateChannel('user.'.$this->communication->user_id),
         ];
     }
 

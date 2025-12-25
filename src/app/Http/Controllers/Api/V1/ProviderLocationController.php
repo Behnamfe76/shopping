@@ -2,27 +2,25 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
+use Exception;
 use Fereydooni\Shopping\app\Http\Controllers\Controller;
-use Fereydooni\Shopping\app\Models\ProviderLocation;
-use Fereydooni\Shopping\app\DTOs\ProviderLocationDTO;
-use Fereydooni\Shopping\app\Services\ProviderLocationService;
-use Fereydooni\Shopping\app\Http\Requests\StoreProviderLocationRequest;
-use Fereydooni\Shopping\app\Http\Requests\UpdateProviderLocationRequest;
-use Fereydooni\Shopping\app\Http\Requests\SetPrimaryLocationRequest;
-use Fereydooni\Shopping\app\Http\Requests\UpdateCoordinatesRequest;
-use Fereydooni\Shopping\app\Http\Requests\SearchLocationRequest;
 use Fereydooni\Shopping\app\Http\Requests\GeocodeLocationRequest;
-use Fereydooni\Shopping\app\Http\Resources\ProviderLocationResource;
+use Fereydooni\Shopping\app\Http\Requests\SearchLocationRequest;
+use Fereydooni\Shopping\app\Http\Requests\SetPrimaryLocationRequest;
+use Fereydooni\Shopping\app\Http\Requests\StoreProviderLocationRequest;
+use Fereydooni\Shopping\app\Http\Requests\UpdateCoordinatesRequest;
+use Fereydooni\Shopping\app\Http\Requests\UpdateProviderLocationRequest;
 use Fereydooni\Shopping\app\Http\Resources\ProviderLocationCollection;
+use Fereydooni\Shopping\app\Http\Resources\ProviderLocationMapResource;
+use Fereydooni\Shopping\app\Http\Resources\ProviderLocationResource;
 use Fereydooni\Shopping\app\Http\Resources\ProviderLocationSearchResource;
 use Fereydooni\Shopping\app\Http\Resources\ProviderLocationStatisticsResource;
-use Fereydooni\Shopping\app\Http\Resources\ProviderLocationMapResource;
-use Illuminate\Http\Request;
+use Fereydooni\Shopping\app\Models\ProviderLocation;
+use Fereydooni\Shopping\app\Services\ProviderLocationService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
-use Exception;
 
 class ProviderLocationController extends Controller
 {
@@ -63,15 +61,16 @@ class ProviderLocationController extends Controller
                 'city' => $city,
                 'is_active' => $isActive,
                 'sort_by' => $sortBy,
-                'sort_order' => $sortOrder
+                'sort_order' => $sortOrder,
             ]);
 
             return new ProviderLocationCollection($locations);
         } catch (Exception $e) {
-            Log::error('Error in ProviderLocationController@index: ' . $e->getMessage());
+            Log::error('Error in ProviderLocationController@index: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => 'An error occurred while loading provider locations.'
+                'message' => 'An error occurred while loading provider locations.',
             ], 500);
         }
     }
@@ -91,19 +90,20 @@ class ProviderLocationController extends Controller
                 return response()->json([
                     'success' => true,
                     'message' => 'Provider location created successfully.',
-                    'data' => new ProviderLocationResource($location)
+                    'data' => new ProviderLocationResource($location),
                 ], 201);
             }
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to create provider location.'
+                'message' => 'Failed to create provider location.',
             ], 422);
         } catch (Exception $e) {
-            Log::error('Error in ProviderLocationController@store: ' . $e->getMessage());
+            Log::error('Error in ProviderLocationController@store: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => 'An error occurred while creating the provider location.'
+                'message' => 'An error occurred while creating the provider location.',
             ], 500);
         }
     }
@@ -118,22 +118,23 @@ class ProviderLocationController extends Controller
 
             $location = $this->providerLocationService->find($providerLocation->id);
 
-            if (!$location) {
+            if (! $location) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Provider location not found.'
+                    'message' => 'Provider location not found.',
                 ], 404);
             }
 
             return response()->json([
                 'success' => true,
-                'data' => new ProviderLocationResource($location)
+                'data' => new ProviderLocationResource($location),
             ]);
         } catch (Exception $e) {
-            Log::error('Error in ProviderLocationController@show: ' . $e->getMessage());
+            Log::error('Error in ProviderLocationController@show: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => 'An error occurred while loading the provider location.'
+                'message' => 'An error occurred while loading the provider location.',
             ], 500);
         }
     }
@@ -151,22 +152,24 @@ class ProviderLocationController extends Controller
 
             if ($updated) {
                 $location = $this->providerLocationService->find($providerLocation->id);
+
                 return response()->json([
                     'success' => true,
                     'message' => 'Provider location updated successfully.',
-                    'data' => new ProviderLocationResource($location)
+                    'data' => new ProviderLocationResource($location),
                 ]);
             }
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to update provider location.'
+                'message' => 'Failed to update provider location.',
             ], 422);
         } catch (Exception $e) {
-            Log::error('Error in ProviderLocationController@update: ' . $e->getMessage());
+            Log::error('Error in ProviderLocationController@update: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => 'An error occurred while updating the provider location.'
+                'message' => 'An error occurred while updating the provider location.',
             ], 500);
         }
     }
@@ -184,19 +187,20 @@ class ProviderLocationController extends Controller
             if ($deleted) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Provider location deleted successfully.'
+                    'message' => 'Provider location deleted successfully.',
                 ]);
             }
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to delete provider location.'
+                'message' => 'Failed to delete provider location.',
             ], 422);
         } catch (Exception $e) {
-            Log::error('Error in ProviderLocationController@destroy: ' . $e->getMessage());
+            Log::error('Error in ProviderLocationController@destroy: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => 'An error occurred while deleting the provider location.'
+                'message' => 'An error occurred while deleting the provider location.',
             ], 500);
         }
     }
@@ -214,19 +218,20 @@ class ProviderLocationController extends Controller
             if ($set) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Primary location set successfully.'
+                    'message' => 'Primary location set successfully.',
                 ]);
             }
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to set primary location.'
+                'message' => 'Failed to set primary location.',
             ], 422);
         } catch (Exception $e) {
-            Log::error('Error in ProviderLocationController@setPrimary: ' . $e->getMessage());
+            Log::error('Error in ProviderLocationController@setPrimary: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => 'An error occurred while setting the primary location.'
+                'message' => 'An error occurred while setting the primary location.',
             ], 500);
         }
     }
@@ -249,19 +254,20 @@ class ProviderLocationController extends Controller
             if ($updated) {
                 return response()->json([
                     'success' => true,
-                    'message' => 'Coordinates updated successfully.'
+                    'message' => 'Coordinates updated successfully.',
                 ]);
             }
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to update coordinates.'
+                'message' => 'Failed to update coordinates.',
             ], 422);
         } catch (Exception $e) {
-            Log::error('Error in ProviderLocationController@updateCoordinates: ' . $e->getMessage());
+            Log::error('Error in ProviderLocationController@updateCoordinates: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => 'An error occurred while updating coordinates.'
+                'message' => 'An error occurred while updating coordinates.',
             ], 500);
         }
     }
@@ -280,10 +286,11 @@ class ProviderLocationController extends Controller
 
             return new ProviderLocationSearchResource($results, $searchStats);
         } catch (Exception $e) {
-            Log::error('Error in ProviderLocationController@search: ' . $e->getMessage());
+            Log::error('Error in ProviderLocationController@search: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => 'An error occurred while searching locations.'
+                'message' => 'An error occurred while searching locations.',
             ], 500);
         }
     }
@@ -302,19 +309,20 @@ class ProviderLocationController extends Controller
             if ($coordinates) {
                 return response()->json([
                     'success' => true,
-                    'data' => $coordinates
+                    'data' => $coordinates,
                 ]);
             }
 
             return response()->json([
                 'success' => false,
-                'message' => 'Unable to geocode the provided address.'
+                'message' => 'Unable to geocode the provided address.',
             ], 422);
         } catch (Exception $e) {
-            Log::error('Error in ProviderLocationController@geocode: ' . $e->getMessage());
+            Log::error('Error in ProviderLocationController@geocode: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => 'An error occurred while geocoding the address.'
+                'message' => 'An error occurred while geocoding the address.',
             ], 500);
         }
     }
@@ -338,18 +346,19 @@ class ProviderLocationController extends Controller
                 'location_type' => $locationType,
                 'country' => $country,
                 'state' => $state,
-                'city' => $city
+                'city' => $city,
             ]);
 
             return response()->json([
                 'success' => true,
-                'data' => new ProviderLocationStatisticsResource($analytics)
+                'data' => new ProviderLocationStatisticsResource($analytics),
             ]);
         } catch (Exception $e) {
-            Log::error('Error in ProviderLocationController@analytics: ' . $e->getMessage());
+            Log::error('Error in ProviderLocationController@analytics: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => 'An error occurred while loading analytics.'
+                'message' => 'An error occurred while loading analytics.',
             ], 500);
         }
     }
@@ -375,18 +384,19 @@ class ProviderLocationController extends Controller
                 'country' => $country,
                 'state' => $state,
                 'city' => $city,
-                'bounds' => $bounds
+                'bounds' => $bounds,
             ]);
 
             return response()->json([
                 'success' => true,
-                'data' => new ProviderLocationMapResource($locations)
+                'data' => new ProviderLocationMapResource($locations),
             ]);
         } catch (Exception $e) {
-            Log::error('Error in ProviderLocationController@map: ' . $e->getMessage());
+            Log::error('Error in ProviderLocationController@map: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => 'An error occurred while loading map data.'
+                'message' => 'An error occurred while loading map data.',
             ], 500);
         }
     }
@@ -403,21 +413,23 @@ class ProviderLocationController extends Controller
 
             if ($toggled) {
                 $status = $providerLocation->fresh()->is_active ? 'activated' : 'deactivated';
+
                 return response()->json([
                     'success' => true,
-                    'message' => "Location {$status} successfully."
+                    'message' => "Location {$status} successfully.",
                 ]);
             }
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to toggle location status.'
+                'message' => 'Failed to toggle location status.',
             ], 422);
         } catch (Exception $e) {
-            Log::error('Error in ProviderLocationController@toggleStatus: ' . $e->getMessage());
+            Log::error('Error in ProviderLocationController@toggleStatus: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => 'An error occurred while toggling the location status.'
+                'message' => 'An error occurred while toggling the location status.',
             ], 500);
         }
     }
@@ -434,7 +446,7 @@ class ProviderLocationController extends Controller
                 'latitude' => 'required|numeric|between:-90,90',
                 'longitude' => 'required|numeric|between:-180,180',
                 'radius' => 'numeric|min:0.1|max:1000',
-                'limit' => 'integer|min:1|max:100'
+                'limit' => 'integer|min:1|max:100',
             ]);
 
             $latitude = $request->get('latitude');
@@ -456,14 +468,15 @@ class ProviderLocationController extends Controller
                     'latitude' => $latitude,
                     'longitude' => $longitude,
                     'radius_km' => $radius,
-                    'count' => $locations->count()
-                ]
+                    'count' => $locations->count(),
+                ],
             ]);
         } catch (Exception $e) {
-            Log::error('Error in ProviderLocationController@nearby: ' . $e->getMessage());
+            Log::error('Error in ProviderLocationController@nearby: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => 'An error occurred while finding nearby locations.'
+                'message' => 'An error occurred while finding nearby locations.',
             ], 500);
         }
     }
@@ -485,7 +498,7 @@ class ProviderLocationController extends Controller
                 [
                     'per_page' => $perPage,
                     'location_type' => $locationType,
-                    'is_active' => $isActive
+                    'is_active' => $isActive,
                 ]
             );
 
@@ -494,14 +507,15 @@ class ProviderLocationController extends Controller
                 'data' => new ProviderLocationCollection($locations),
                 'meta' => [
                     'provider_id' => $providerId,
-                    'total_count' => $this->providerLocationService->getLocationCountByProvider($providerId)
-                ]
+                    'total_count' => $this->providerLocationService->getLocationCountByProvider($providerId),
+                ],
             ]);
         } catch (Exception $e) {
-            Log::error('Error in ProviderLocationController@byProvider: ' . $e->getMessage());
+            Log::error('Error in ProviderLocationController@byProvider: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => 'An error occurred while loading provider locations.'
+                'message' => 'An error occurred while loading provider locations.',
             ], 500);
         }
     }
@@ -521,7 +535,7 @@ class ProviderLocationController extends Controller
                 'country' => 'string|size:2',
                 'state' => 'string',
                 'city' => 'string',
-                'is_active' => 'boolean'
+                'is_active' => 'boolean',
             ]);
 
             $format = $request->get('format', 'csv');
@@ -531,13 +545,14 @@ class ProviderLocationController extends Controller
 
             return response()->json([
                 'success' => true,
-                'data' => $exportData
+                'data' => $exportData,
             ]);
         } catch (Exception $e) {
-            Log::error('Error in ProviderLocationController@export: ' . $e->getMessage());
+            Log::error('Error in ProviderLocationController@export: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => 'An error occurred while exporting locations.'
+                'message' => 'An error occurred while exporting locations.',
             ], 500);
         }
     }
@@ -553,7 +568,7 @@ class ProviderLocationController extends Controller
             $request->validate([
                 'action' => 'required|string|in:activate,deactivate,delete,export',
                 'location_ids' => 'required|array|min:1',
-                'location_ids.*' => 'integer|exists:provider_locations,id'
+                'location_ids.*' => 'integer|exists:provider_locations,id',
             ]);
 
             $action = $request->get('action');
@@ -564,13 +579,14 @@ class ProviderLocationController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => "Bulk {$action} operation completed successfully.",
-                'data' => $result
+                'data' => $result,
             ]);
         } catch (Exception $e) {
-            Log::error('Error in ProviderLocationController@bulk: ' . $e->getMessage());
+            Log::error('Error in ProviderLocationController@bulk: '.$e->getMessage());
+
             return response()->json([
                 'success' => false,
-                'message' => 'An error occurred while performing bulk operation.'
+                'message' => 'An error occurred while performing bulk operation.',
             ], 500);
         }
     }

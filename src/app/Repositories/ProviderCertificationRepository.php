@@ -2,24 +2,26 @@
 
 namespace Fereydooni\Shopping\App\Repositories;
 
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Cache;
-use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderCertificationRepositoryInterface;
-use Fereydooni\Shopping\App\Models\ProviderCertification;
+use Carbon\Carbon;
 use Fereydooni\Shopping\App\DTOs\ProviderCertificationDTO;
 use Fereydooni\Shopping\App\Enums\CertificationStatus;
 use Fereydooni\Shopping\App\Enums\VerificationStatus;
-use Carbon\Carbon;
+use Fereydooni\Shopping\App\Models\ProviderCertification;
+use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderCertificationRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ProviderCertificationRepository implements ProviderCertificationRepositoryInterface
 {
     protected $model;
+
     protected $cachePrefix = 'provider_certification';
+
     protected $cacheTtl = 3600; // 1 hour
 
     public function __construct(ProviderCertification $model)
@@ -42,7 +44,7 @@ class ProviderCertificationRepository implements ProviderCertificationRepository
      */
     public function paginate(int $perPage = 15): LengthAwarePaginator
     {
-        $cacheKey = "{$this->cachePrefix}:paginate:{$perPage}:" . request()->get('page', 1);
+        $cacheKey = "{$this->cachePrefix}:paginate:{$perPage}:".request()->get('page', 1);
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($perPage) {
             return $this->model->with(['provider', 'verifiedBy'])
@@ -64,7 +66,7 @@ class ProviderCertificationRepository implements ProviderCertificationRepository
     /**
      * Get cursor paginated provider certifications.
      */
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         $query = $this->model->with(['provider', 'verifiedBy'])
             ->orderBy('created_at', 'desc');
@@ -93,7 +95,7 @@ class ProviderCertificationRepository implements ProviderCertificationRepository
     {
         $certification = $this->find($id);
 
-        if (!$certification) {
+        if (! $certification) {
             return null;
         }
 
@@ -146,7 +148,7 @@ class ProviderCertificationRepository implements ProviderCertificationRepository
     {
         $certification = $this->findByCertificationNumber($certificationNumber);
 
-        if (!$certification) {
+        if (! $certification) {
             return null;
         }
 
@@ -577,6 +579,7 @@ class ProviderCertificationRepository implements ProviderCertificationRepository
     public function createAndReturnDTO(array $data): ProviderCertificationDTO
     {
         $certification = $this->create($data);
+
         return ProviderCertificationDTO::fromModel($certification);
     }
 
@@ -617,6 +620,7 @@ class ProviderCertificationRepository implements ProviderCertificationRepository
 
         if ($updated) {
             $certification->refresh();
+
             return ProviderCertificationDTO::fromModel($certification);
         }
 
@@ -670,7 +674,7 @@ class ProviderCertificationRepository implements ProviderCertificationRepository
     /**
      * Suspend provider certification.
      */
-    public function suspend(ProviderCertification $certification, string $reason = null): bool
+    public function suspend(ProviderCertification $certification, ?string $reason = null): bool
     {
         $data = ['status' => CertificationStatus::SUSPENDED];
 
@@ -686,7 +690,7 @@ class ProviderCertificationRepository implements ProviderCertificationRepository
     /**
      * Revoke provider certification.
      */
-    public function revoke(ProviderCertification $certification, string $reason = null): bool
+    public function revoke(ProviderCertification $certification, ?string $reason = null): bool
     {
         $data = ['status' => CertificationStatus::REVOKED];
 
@@ -730,7 +734,7 @@ class ProviderCertificationRepository implements ProviderCertificationRepository
     /**
      * Reject provider certification.
      */
-    public function reject(ProviderCertification $certification, string $reason = null): bool
+    public function reject(ProviderCertification $certification, ?string $reason = null): bool
     {
         $data = ['verification_status' => VerificationStatus::REJECTED];
 
@@ -981,9 +985,9 @@ class ProviderCertificationRepository implements ProviderCertificationRepository
         return $this->model->with(['provider', 'verifiedBy'])
             ->where(function ($q) use ($query) {
                 $q->where('certification_name', 'like', "%{$query}%")
-                  ->orWhere('certification_number', 'like', "%{$query}%")
-                  ->orWhere('issuing_organization', 'like', "%{$query}%")
-                  ->orWhere('description', 'like', "%{$query}%");
+                    ->orWhere('certification_number', 'like', "%{$query}%")
+                    ->orWhere('issuing_organization', 'like', "%{$query}%")
+                    ->orWhere('description', 'like', "%{$query}%");
             })
             ->orderBy('created_at', 'desc')
             ->get();
@@ -1010,9 +1014,9 @@ class ProviderCertificationRepository implements ProviderCertificationRepository
             ->where('provider_id', $providerId)
             ->where(function ($q) use ($query) {
                 $q->where('certification_name', 'like', "%{$query}%")
-                  ->orWhere('certification_number', 'like', "%{$query}%")
-                  ->orWhere('issuing_organization', 'like', "%{$query}%")
-                  ->orWhere('description', 'like', "%{$query}%");
+                    ->orWhere('certification_number', 'like', "%{$query}%")
+                    ->orWhere('issuing_organization', 'like', "%{$query}%")
+                    ->orWhere('description', 'like', "%{$query}%");
             })
             ->orderBy('created_at', 'desc')
             ->get();
@@ -1079,7 +1083,9 @@ class ProviderCertificationRepository implements ProviderCertificationRepository
 
             $imported = 0;
             foreach ($lines as $line) {
-                if (empty(trim($line))) continue;
+                if (empty(trim($line))) {
+                    continue;
+                }
 
                 $row = array_combine($headers, str_getcsv($line));
 
@@ -1157,7 +1163,7 @@ class ProviderCertificationRepository implements ProviderCertificationRepository
     /**
      * Get certification trends.
      */
-    public function getCertificationTrends(string $startDate = null, string $endDate = null): array
+    public function getCertificationTrends(?string $startDate = null, ?string $endDate = null): array
     {
         $startDate = $startDate ?: now()->subYear()->format('Y-m-d');
         $endDate = $endDate ?: now()->format('Y-m-d');

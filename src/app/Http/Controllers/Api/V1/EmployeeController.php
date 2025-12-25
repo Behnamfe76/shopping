@@ -3,18 +3,17 @@
 namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
 use Fereydooni\Shopping\app\Http\Controllers\Controller;
-use Fereydooni\Shopping\app\Models\Employee;
-use Fereydooni\Shopping\app\Services\EmployeeService;
+use Fereydooni\Shopping\app\Http\Requests\SearchEmployeeRequest;
 use Fereydooni\Shopping\app\Http\Requests\StoreEmployeeRequest;
 use Fereydooni\Shopping\app\Http\Requests\UpdateEmployeeRequest;
-use Fereydooni\Shopping\app\Http\Requests\SearchEmployeeRequest;
-use Fereydooni\Shopping\app\Http\Resources\EmployeeResource;
-use Fereydooni\Shopping\app\Http\Resources\EmployeeCollection;
-use Fereydooni\Shopping\app\Http\Resources\EmployeeSearchResource;
 use Fereydooni\Shopping\app\Http\Resources\EmployeeAnalyticsResource;
-use Illuminate\Http\Request;
+use Fereydooni\Shopping\app\Http\Resources\EmployeeCollection;
+use Fereydooni\Shopping\app\Http\Resources\EmployeeResource;
+use Fereydooni\Shopping\app\Http\Resources\EmployeeSearchResource;
+use Fereydooni\Shopping\app\Models\Employee;
+use Fereydooni\Shopping\app\Services\EmployeeService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Http\Request;
 
 class EmployeeController extends Controller
 {
@@ -45,12 +44,12 @@ class EmployeeController extends Controller
 
             return response()->json([
                 'message' => 'Employee created successfully',
-                'data' => new EmployeeResource($employee)
+                'data' => new EmployeeResource($employee),
             ], 201);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to create employee',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -61,7 +60,7 @@ class EmployeeController extends Controller
     public function show(Employee $employee): JsonResponse
     {
         return response()->json([
-            'data' => new EmployeeResource($employee)
+            'data' => new EmployeeResource($employee),
         ]);
     }
 
@@ -75,12 +74,12 @@ class EmployeeController extends Controller
 
             return response()->json([
                 'message' => 'Employee updated successfully',
-                'data' => new EmployeeResource($updatedEmployee)
+                'data' => new EmployeeResource($updatedEmployee),
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to update employee',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -94,12 +93,12 @@ class EmployeeController extends Controller
             $this->employeeService->deleteEmployee($employee);
 
             return response()->json([
-                'message' => 'Employee deleted successfully'
+                'message' => 'Employee deleted successfully',
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to delete employee',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -133,17 +132,17 @@ class EmployeeController extends Controller
             if ($success) {
                 return response()->json([
                     'message' => 'Employee activated successfully',
-                    'data' => new EmployeeResource($employee->fresh())
+                    'data' => new EmployeeResource($employee->fresh()),
                 ]);
             }
 
             return response()->json([
-                'message' => 'Failed to activate employee'
+                'message' => 'Failed to activate employee',
             ], 400);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to activate employee',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -161,17 +160,17 @@ class EmployeeController extends Controller
             if ($success) {
                 return response()->json([
                     'message' => 'Employee deactivated successfully',
-                    'data' => new EmployeeResource($employee->fresh())
+                    'data' => new EmployeeResource($employee->fresh()),
                 ]);
             }
 
             return response()->json([
-                'message' => 'Failed to deactivate employee'
+                'message' => 'Failed to deactivate employee',
             ], 400);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to deactivate employee',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -185,7 +184,7 @@ class EmployeeController extends Controller
 
         $request->validate([
             'reason' => 'nullable|string|max:500',
-            'termination_date' => 'nullable|date'
+            'termination_date' => 'nullable|date',
         ]);
 
         try {
@@ -198,17 +197,17 @@ class EmployeeController extends Controller
             if ($success) {
                 return response()->json([
                     'message' => 'Employee terminated successfully',
-                    'data' => new EmployeeResource($employee->fresh())
+                    'data' => new EmployeeResource($employee->fresh()),
                 ]);
             }
 
             return response()->json([
-                'message' => 'Failed to terminate employee'
+                'message' => 'Failed to terminate employee',
             ], 400);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to terminate employee',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -221,7 +220,7 @@ class EmployeeController extends Controller
         $this->authorize('rehire', $employee);
 
         $request->validate([
-            'hire_date' => 'nullable|date'
+            'hire_date' => 'nullable|date',
         ]);
 
         try {
@@ -233,17 +232,17 @@ class EmployeeController extends Controller
             if ($success) {
                 return response()->json([
                     'message' => 'Employee rehired successfully',
-                    'data' => new EmployeeResource($employee->fresh())
+                    'data' => new EmployeeResource($employee->fresh()),
                 ]);
             }
 
             return response()->json([
-                'message' => 'Failed to rehire employee'
+                'message' => 'Failed to rehire employee',
             ], 400);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to rehire employee',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -257,7 +256,7 @@ class EmployeeController extends Controller
 
         $request->validate([
             'salary' => 'required|numeric|min:0',
-            'effective_date' => 'nullable|date'
+            'effective_date' => 'nullable|date',
         ]);
 
         try {
@@ -270,17 +269,17 @@ class EmployeeController extends Controller
             if ($success) {
                 return response()->json([
                     'message' => 'Employee salary updated successfully',
-                    'data' => new EmployeeResource($employee->fresh())
+                    'data' => new EmployeeResource($employee->fresh()),
                 ]);
             }
 
             return response()->json([
-                'message' => 'Failed to update employee salary'
+                'message' => 'Failed to update employee salary',
             ], 400);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to update employee salary',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -294,7 +293,7 @@ class EmployeeController extends Controller
 
         $request->validate([
             'position' => 'required|string|max:100',
-            'effective_date' => 'nullable|date'
+            'effective_date' => 'nullable|date',
         ]);
 
         try {
@@ -307,17 +306,17 @@ class EmployeeController extends Controller
             if ($success) {
                 return response()->json([
                     'message' => 'Employee position updated successfully',
-                    'data' => new EmployeeResource($employee->fresh())
+                    'data' => new EmployeeResource($employee->fresh()),
                 ]);
             }
 
             return response()->json([
-                'message' => 'Failed to update employee position'
+                'message' => 'Failed to update employee position',
             ], 400);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to update employee position',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -331,7 +330,7 @@ class EmployeeController extends Controller
 
         $request->validate([
             'department' => 'required|string|max:100',
-            'effective_date' => 'nullable|date'
+            'effective_date' => 'nullable|date',
         ]);
 
         try {
@@ -344,17 +343,17 @@ class EmployeeController extends Controller
             if ($success) {
                 return response()->json([
                     'message' => 'Employee department updated successfully',
-                    'data' => new EmployeeResource($employee->fresh())
+                    'data' => new EmployeeResource($employee->fresh()),
                 ]);
             }
 
             return response()->json([
-                'message' => 'Failed to update employee department'
+                'message' => 'Failed to update employee department',
             ], 400);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to update employee department',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -368,7 +367,7 @@ class EmployeeController extends Controller
 
         $request->validate([
             'performance_rating' => 'required|numeric|min:1.0|max:5.0',
-            'review_date' => 'nullable|date'
+            'review_date' => 'nullable|date',
         ]);
 
         try {
@@ -381,17 +380,17 @@ class EmployeeController extends Controller
             if ($success) {
                 return response()->json([
                     'message' => 'Employee performance rating updated successfully',
-                    'data' => new EmployeeResource($employee->fresh())
+                    'data' => new EmployeeResource($employee->fresh()),
                 ]);
             }
 
             return response()->json([
-                'message' => 'Failed to update employee performance rating'
+                'message' => 'Failed to update employee performance rating',
             ], 400);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to update employee performance rating',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -404,7 +403,7 @@ class EmployeeController extends Controller
         $this->authorize('managePerformance', $employee);
 
         $request->validate([
-            'review_date' => 'required|date|after:today'
+            'review_date' => 'required|date|after:today',
         ]);
 
         try {
@@ -416,17 +415,17 @@ class EmployeeController extends Controller
             if ($success) {
                 return response()->json([
                     'message' => 'Performance review scheduled successfully',
-                    'data' => new EmployeeResource($employee->fresh())
+                    'data' => new EmployeeResource($employee->fresh()),
                 ]);
             }
 
             return response()->json([
-                'message' => 'Failed to schedule performance review'
+                'message' => 'Failed to schedule performance review',
             ], 400);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to schedule performance review',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -443,7 +442,7 @@ class EmployeeController extends Controller
             'days' => 'required|integer|min:1',
             'start_date' => 'required|date|after_or_equal:today',
             'end_date' => 'required|date|after:start_date',
-            'reason' => 'nullable|string|max:500'
+            'reason' => 'nullable|string|max:500',
         ]);
 
         try {
@@ -459,17 +458,17 @@ class EmployeeController extends Controller
             if ($success) {
                 return response()->json([
                     'message' => 'Time off request submitted successfully',
-                    'data' => new EmployeeResource($employee->fresh())
+                    'data' => new EmployeeResource($employee->fresh()),
                 ]);
             }
 
             return response()->json([
-                'message' => 'Failed to submit time off request'
+                'message' => 'Failed to submit time off request',
             ], 400);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to submit time off request',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -489,17 +488,17 @@ class EmployeeController extends Controller
                     'message' => $result['message'],
                     'data' => new EmployeeResource($employee->fresh()),
                     'enrollment_date' => $result['enrollment_date'],
-                    'coverage_start_date' => $result['coverage_start_date']
+                    'coverage_start_date' => $result['coverage_start_date'],
                 ]);
             }
 
             return response()->json([
-                'message' => $result['message']
+                'message' => $result['message'],
             ], 400);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to enroll in benefits',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -518,17 +517,17 @@ class EmployeeController extends Controller
                 return response()->json([
                     'message' => $result['message'],
                     'data' => new EmployeeResource($employee->fresh()),
-                    'unenrollment_date' => $result['unenrollment_date']
+                    'unenrollment_date' => $result['unenrollment_date'],
                 ]);
             }
 
             return response()->json([
-                'message' => $result['message']
+                'message' => $result['message'],
             ], 400);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to unenroll from benefits',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -541,7 +540,7 @@ class EmployeeController extends Controller
         $this->authorize('manageHierarchy', $employee);
 
         $request->validate([
-            'manager_id' => 'required|integer|exists:employees,id'
+            'manager_id' => 'required|integer|exists:employees,id',
         ]);
 
         try {
@@ -553,17 +552,17 @@ class EmployeeController extends Controller
             if ($success) {
                 return response()->json([
                     'message' => 'Manager assigned successfully',
-                    'data' => new EmployeeResource($employee->fresh())
+                    'data' => new EmployeeResource($employee->fresh()),
                 ]);
             }
 
             return response()->json([
-                'message' => 'Failed to assign manager'
+                'message' => 'Failed to assign manager',
             ], 400);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to assign manager',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -581,17 +580,17 @@ class EmployeeController extends Controller
             if ($success) {
                 return response()->json([
                     'message' => 'Manager removed successfully',
-                    'data' => new EmployeeResource($employee->fresh())
+                    'data' => new EmployeeResource($employee->fresh()),
                 ]);
             }
 
             return response()->json([
-                'message' => 'Failed to remove manager'
+                'message' => 'Failed to remove manager',
             ], 400);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to remove manager',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -606,7 +605,7 @@ class EmployeeController extends Controller
         $subordinates = $this->employeeService->getEmployeeSubordinates($employee->id);
 
         return response()->json([
-            'data' => EmployeeResource::collection($subordinates)
+            'data' => EmployeeResource::collection($subordinates),
         ]);
     }
 
@@ -620,7 +619,7 @@ class EmployeeController extends Controller
         $managers = $this->employeeService->getEmployeeManagers($employee->id);
 
         return response()->json([
-            'data' => EmployeeResource::collection($managers)
+            'data' => EmployeeResource::collection($managers),
         ]);
     }
 
@@ -634,7 +633,7 @@ class EmployeeController extends Controller
         $hierarchy = $this->employeeService->getEmployeeHierarchy($employee->id);
 
         return response()->json([
-            'data' => $hierarchy
+            'data' => $hierarchy,
         ]);
     }
 
@@ -651,7 +650,7 @@ class EmployeeController extends Controller
         $analytics = $this->employeeService->generateEmployeeReport($department, $period);
 
         return response()->json([
-            'data' => new EmployeeAnalyticsResource($analytics)
+            'data' => new EmployeeAnalyticsResource($analytics),
         ]);
     }
 
@@ -665,7 +664,7 @@ class EmployeeController extends Controller
         $dashboardData = $this->employeeService->getEmployeeDashboardData();
 
         return response()->json([
-            'data' => $dashboardData
+            'data' => $dashboardData,
         ]);
     }
 
@@ -678,7 +677,7 @@ class EmployeeController extends Controller
 
         $request->validate([
             'skills' => 'required|array',
-            'skills.*' => 'string|max:100'
+            'skills.*' => 'string|max:100',
         ]);
 
         try {
@@ -690,17 +689,17 @@ class EmployeeController extends Controller
             if ($success) {
                 return response()->json([
                     'message' => 'Employee skills updated successfully',
-                    'data' => new EmployeeResource($employee->fresh())
+                    'data' => new EmployeeResource($employee->fresh()),
                 ]);
             }
 
             return response()->json([
-                'message' => 'Failed to update employee skills'
+                'message' => 'Failed to update employee skills',
             ], 400);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to update employee skills',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -714,7 +713,7 @@ class EmployeeController extends Controller
 
         $request->validate([
             'certifications' => 'required|array',
-            'certifications.*' => 'string|max:100'
+            'certifications.*' => 'string|max:100',
         ]);
 
         try {
@@ -726,17 +725,17 @@ class EmployeeController extends Controller
             if ($success) {
                 return response()->json([
                     'message' => 'Employee certifications updated successfully',
-                    'data' => new EmployeeResource($employee->fresh())
+                    'data' => new EmployeeResource($employee->fresh()),
                 ]);
             }
 
             return response()->json([
-                'message' => 'Failed to update employee certifications'
+                'message' => 'Failed to update employee certifications',
             ], 400);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to update employee certifications',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -750,7 +749,7 @@ class EmployeeController extends Controller
 
         $request->validate([
             'training_completed' => 'required|array',
-            'training_completed.*' => 'string|max:100'
+            'training_completed.*' => 'string|max:100',
         ]);
 
         try {
@@ -762,19 +761,18 @@ class EmployeeController extends Controller
             if ($success) {
                 return response()->json([
                     'message' => 'Employee training records updated successfully',
-                    'data' => new EmployeeResource($employee->fresh())
+                    'data' => new EmployeeResource($employee->fresh()),
                 ]);
             }
 
             return response()->json([
-                'message' => 'Failed to update employee training records'
+                'message' => 'Failed to update employee training records',
             ], 400);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to update employee training records',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
 }
-

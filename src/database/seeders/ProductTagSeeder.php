@@ -2,8 +2,8 @@
 
 namespace Fereydooni\Shopping\database\seeders;
 
-use Illuminate\Database\Seeder;
 use Fereydooni\Shopping\app\Models\ProductTag;
+use Illuminate\Database\Seeder;
 
 class ProductTagSeeder extends Seeder
 {
@@ -19,7 +19,7 @@ class ProductTagSeeder extends Seeder
                 'is_active' => true,
                 'is_featured' => true,
                 'sort_order' => 1,
-                'usage_count' => 0
+                'usage_count' => 0,
             ],
             [
                 'name' => 'Best Seller',
@@ -30,7 +30,7 @@ class ProductTagSeeder extends Seeder
                 'is_active' => true,
                 'is_featured' => true,
                 'sort_order' => 2,
-                'usage_count' => 0
+                'usage_count' => 0,
             ],
             [
                 'name' => 'Sale',
@@ -41,7 +41,7 @@ class ProductTagSeeder extends Seeder
                 'is_active' => true,
                 'is_featured' => false,
                 'sort_order' => 3,
-                'usage_count' => 0
+                'usage_count' => 0,
             ],
             [
                 'name' => 'Featured',
@@ -52,7 +52,7 @@ class ProductTagSeeder extends Seeder
                 'is_active' => true,
                 'is_featured' => true,
                 'sort_order' => 4,
-                'usage_count' => 0
+                'usage_count' => 0,
             ],
             [
                 'name' => 'Trending',
@@ -63,7 +63,7 @@ class ProductTagSeeder extends Seeder
                 'is_active' => true,
                 'is_featured' => false,
                 'sort_order' => 5,
-                'usage_count' => 0
+                'usage_count' => 0,
             ],
             [
                 'name' => 'Limited Edition',
@@ -74,7 +74,7 @@ class ProductTagSeeder extends Seeder
                 'is_active' => true,
                 'is_featured' => false,
                 'sort_order' => 6,
-                'usage_count' => 0
+                'usage_count' => 0,
             ],
             [
                 'name' => 'Premium',
@@ -85,7 +85,7 @@ class ProductTagSeeder extends Seeder
                 'is_active' => true,
                 'is_featured' => false,
                 'sort_order' => 7,
-                'usage_count' => 0
+                'usage_count' => 0,
             ],
             [
                 'name' => 'Budget Friendly',
@@ -96,7 +96,7 @@ class ProductTagSeeder extends Seeder
                 'is_active' => true,
                 'is_featured' => false,
                 'sort_order' => 8,
-                'usage_count' => 0
+                'usage_count' => 0,
             ],
             [
                 'name' => 'Eco Friendly',
@@ -107,7 +107,7 @@ class ProductTagSeeder extends Seeder
                 'is_active' => true,
                 'is_featured' => false,
                 'sort_order' => 9,
-                'usage_count' => 0
+                'usage_count' => 0,
             ],
             [
                 'name' => 'Wireless',
@@ -118,7 +118,7 @@ class ProductTagSeeder extends Seeder
                 'is_active' => true,
                 'is_featured' => false,
                 'sort_order' => 10,
-                'usage_count' => 0
+                'usage_count' => 0,
             ],
             [
                 'name' => 'Waterproof',
@@ -129,7 +129,7 @@ class ProductTagSeeder extends Seeder
                 'is_active' => true,
                 'is_featured' => false,
                 'sort_order' => 11,
-                'usage_count' => 0
+                'usage_count' => 0,
             ],
             [
                 'name' => 'Lightweight',
@@ -140,7 +140,7 @@ class ProductTagSeeder extends Seeder
                 'is_active' => true,
                 'is_featured' => false,
                 'sort_order' => 12,
-                'usage_count' => 0
+                'usage_count' => 0,
             ],
             [
                 'name' => 'Durable',
@@ -151,7 +151,7 @@ class ProductTagSeeder extends Seeder
                 'is_active' => true,
                 'is_featured' => false,
                 'sort_order' => 13,
-                'usage_count' => 0
+                'usage_count' => 0,
             ],
             [
                 'name' => 'Fast Charging',
@@ -162,7 +162,7 @@ class ProductTagSeeder extends Seeder
                 'is_active' => true,
                 'is_featured' => false,
                 'sort_order' => 14,
-                'usage_count' => 0
+                'usage_count' => 0,
             ],
             [
                 'name' => 'High Performance',
@@ -173,7 +173,7 @@ class ProductTagSeeder extends Seeder
                 'is_active' => true,
                 'is_featured' => false,
                 'sort_order' => 15,
-                'usage_count' => 0
+                'usage_count' => 0,
             ],
         ];
 

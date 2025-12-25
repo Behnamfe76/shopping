@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
+use Fereydooni\Shopping\app\Events\OrderStatusChanged;
+use Fereydooni\Shopping\app\Notifications\OrderStatusChangedNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
-use Fereydooni\Shopping\app\Events\OrderStatusChanged;
-use Fereydooni\Shopping\app\Notifications\OrderStatusChangedNotification;
 
 class SendStatusChangeNotification implements ShouldQueue
 {
@@ -85,7 +85,7 @@ class SendStatusChangeNotification implements ShouldQueue
                 'newStatus' => $history->new_status,
             ], function ($message) use ($order) {
                 $message->to($order->user->email)
-                        ->subject("Order #{$order->id} Status Updated");
+                    ->subject("Order #{$order->id} Status Updated");
             });
         }
     }

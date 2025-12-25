@@ -9,7 +9,7 @@ enum AddressType: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::SHIPPING => 'Shipping',
             self::BILLING => 'Billing',
         };

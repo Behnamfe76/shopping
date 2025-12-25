@@ -3,9 +3,9 @@
 namespace App\Notifications\EmployeeSalaryHistory;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
 class SalaryChangeApproved extends Notification implements ShouldQueue
 {
@@ -29,11 +29,11 @@ class SalaryChangeApproved extends Notification implements ShouldQueue
 
         return (new MailMessage)
             ->subject('Salary Change Approved')
-            ->line("Your salary change has been approved!")
+            ->line('Your salary change has been approved!')
             ->line($changeDescription)
-            ->line('Effective Date: ' . $this->salaryHistory->effective_date->format('M d, Y'))
-            ->line('New Salary: $' . number_format($this->salaryHistory->new_salary, 2))
-            ->action('View Details', url('/salary-changes/' . $this->salaryHistory->id))
+            ->line('Effective Date: '.$this->salaryHistory->effective_date->format('M d, Y'))
+            ->line('New Salary: $'.number_format($this->salaryHistory->new_salary, 2))
+            ->action('View Details', url('/salary-changes/'.$this->salaryHistory->id))
             ->line('The change will be reflected in your next paycheck.');
     }
 

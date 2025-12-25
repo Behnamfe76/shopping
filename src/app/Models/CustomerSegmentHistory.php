@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Carbon;
 
 class CustomerSegmentHistory extends Model
@@ -76,7 +76,7 @@ class CustomerSegmentHistory extends Model
 
     public function getChangesAttribute(): array
     {
-        if (!$this->old_values || !$this->new_values) {
+        if (! $this->old_values || ! $this->new_values) {
             return [];
         }
 
@@ -101,7 +101,7 @@ class CustomerSegmentHistory extends Model
         string $description,
         array $oldValues = [],
         array $newValues = [],
-        int $performedBy = null,
+        ?int $performedBy = null,
         array $metadata = []
     ): self {
         return self::create([

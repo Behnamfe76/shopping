@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\Events\EmployeeTraining;
 
+use Fereydooni\Shopping\Models\EmployeeTraining;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Fereydooni\Shopping\Models\EmployeeTraining;
 
 class EmployeeTrainingCreated
 {

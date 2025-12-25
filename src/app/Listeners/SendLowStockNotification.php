@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
+use Fereydooni\Shopping\app\Events\ProductVariantLowStock;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Fereydooni\Shopping\app\Events\ProductVariantLowStock;
 
 class SendLowStockNotification implements ShouldQueue
 {

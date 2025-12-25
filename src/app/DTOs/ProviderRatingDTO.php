@@ -5,27 +5,27 @@ namespace App\DTOs;
 use App\Enums\RatingCategory;
 use App\Enums\RatingStatus;
 use App\Models\ProviderRating;
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\WithCast;
-use Spatie\LaravelData\Casts\EnumCast;
-use Spatie\LaravelData\Attributes\Validation\Max;
-use Spatie\LaravelData\Attributes\Validation\Min;
-use Spatie\LaravelData\Attributes\Validation\Required;
-use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\Numeric;
 use Spatie\LaravelData\Attributes\Validation\Boolean;
-use Spatie\LaravelData\Attributes\Validation\Nullable;
 use Spatie\LaravelData\Attributes\Validation\Date;
-use Spatie\LaravelData\Attributes\Validation\Ip;
-use Spatie\LaravelData\Attributes\Validation\Json;
 use Spatie\LaravelData\Attributes\Validation\Exists;
 use Spatie\LaravelData\Attributes\Validation\In;
+use Spatie\LaravelData\Attributes\Validation\Ip;
+use Spatie\LaravelData\Attributes\Validation\Json;
+use Spatie\LaravelData\Attributes\Validation\Max;
+use Spatie\LaravelData\Attributes\Validation\Min;
+use Spatie\LaravelData\Attributes\Validation\Nullable;
+use Spatie\LaravelData\Attributes\Validation\Numeric;
+use Spatie\LaravelData\Attributes\Validation\Required;
+use Spatie\LaravelData\Attributes\Validation\StringType;
+use Spatie\LaravelData\Attributes\WithCast;
+use Spatie\LaravelData\Casts\EnumCast;
+use Spatie\LaravelData\Data;
 
 class ProviderRatingDTO extends Data
 {
     public function __construct(
         #[Nullable]
-        public ?int $id = null,
+        public ?int $id,
 
         #[Required, Exists('providers', 'id')]
         public int $provider_id,
@@ -37,11 +37,11 @@ class ProviderRatingDTO extends Data
         public float $rating_value,
 
         #[Required, Numeric, Min(1), Max(10)]
-        public float $max_rating = 5.0,
+        public float $max_rating,
 
         #[Required, In(RatingCategory::class)]
         #[WithCast(EnumCast::class, RatingCategory::class)]
-        public RatingCategory $category = RatingCategory::OVERALL,
+        public RatingCategory $category,
 
         #[Required, StringType, Max(255)]
         public string $title,
@@ -85,8 +85,7 @@ class ProviderRatingDTO extends Data
 
         #[Nullable, Date]
         public ?string $updated_at = null,
-    ) {
-    }
+    ) {}
 
     public static function fromModel(ProviderRating $rating): static
     {
@@ -121,7 +120,7 @@ class ProviderRatingDTO extends Data
             'user_id' => ['required', 'integer', 'exists:users,id'],
             'rating_value' => ['required', 'numeric', 'min:1', 'max:5'],
             'max_rating' => ['required', 'numeric', 'min:1', 'max:10'],
-            'category' => ['required', 'string', 'in:' . implode(',', RatingCategory::values())],
+            'category' => ['required', 'string', 'in:'.implode(',', RatingCategory::values())],
             'title' => ['required', 'string', 'max:255'],
             'comment' => ['required', 'string', 'max:1000'],
             'pros' => ['nullable', 'string', 'max:500'],
@@ -131,7 +130,7 @@ class ProviderRatingDTO extends Data
             'helpful_votes' => ['numeric', 'min:0'],
             'total_votes' => ['numeric', 'min:0'],
             'is_verified' => ['boolean'],
-            'status' => ['required', 'string', 'in:' . implode(',', RatingStatus::values())],
+            'status' => ['required', 'string', 'in:'.implode(',', RatingStatus::values())],
             'ip_address' => ['nullable', 'ip'],
             'user_agent' => ['nullable', 'string', 'max:500'],
         ];

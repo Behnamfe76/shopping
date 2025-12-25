@@ -27,7 +27,7 @@ class ProviderInsuranceStatisticsResource extends JsonResource
             'type_distribution' => $this->getTypeDistribution(),
             'verification_status_distribution' => $this->getVerificationStatusDistribution(),
             'monthly_trends' => $this->getMonthlyTrends(),
-            'coverage_distribution' => $this->getCoverageDistribution()
+            'coverage_distribution' => $this->getCoverageDistribution(),
         ];
 
         // Add summary metrics
@@ -39,7 +39,7 @@ class ProviderInsuranceStatisticsResource extends JsonResource
             'verified_policies' => $data['verified_count'] ?? 0,
             'total_providers' => $data['unique_providers'] ?? 0,
             'average_policies_per_provider' => $this->calculateAveragePoliciesPerProvider(),
-            'renewal_rate' => $this->calculateRenewalRate()
+            'renewal_rate' => $this->calculateRenewalRate(),
         ];
 
         return $data;
@@ -50,7 +50,7 @@ class ProviderInsuranceStatisticsResource extends JsonResource
      */
     protected function formatCurrency(float $amount): string
     {
-        return '$' . number_format($amount, 2);
+        return '$'.number_format($amount, 2);
     }
 
     /**
@@ -61,7 +61,9 @@ class ProviderInsuranceStatisticsResource extends JsonResource
         $total = $this->resource['total_count'] ?? 0;
         $expiringSoon = $this->resource['expiring_soon_count'] ?? 0;
 
-        if ($total === 0) return 0.0;
+        if ($total === 0) {
+            return 0.0;
+        }
 
         return round(($expiringSoon / $total) * 100, 2);
     }
@@ -74,7 +76,9 @@ class ProviderInsuranceStatisticsResource extends JsonResource
         $total = $this->resource['total_count'] ?? 0;
         $verified = $this->resource['verified_count'] ?? 0;
 
-        if ($total === 0) return 0.0;
+        if ($total === 0) {
+            return 0.0;
+        }
 
         return round(($verified / $total) * 100, 2);
     }
@@ -87,7 +91,9 @@ class ProviderInsuranceStatisticsResource extends JsonResource
         $total = $this->resource['total_count'] ?? 0;
         $active = $this->resource['active_count'] ?? 0;
 
-        if ($total === 0) return 0.0;
+        if ($total === 0) {
+            return 0.0;
+        }
 
         return round(($active / $total) * 100, 2);
     }
@@ -100,7 +106,9 @@ class ProviderInsuranceStatisticsResource extends JsonResource
         $totalPolicies = $this->resource['total_count'] ?? 0;
         $uniqueProviders = $this->resource['unique_providers'] ?? 0;
 
-        if ($uniqueProviders === 0) return 0.0;
+        if ($uniqueProviders === 0) {
+            return 0.0;
+        }
 
         return round($totalPolicies / $uniqueProviders, 2);
     }
@@ -113,7 +121,9 @@ class ProviderInsuranceStatisticsResource extends JsonResource
         $total = $this->resource['total_count'] ?? 0;
         $renewed = $this->resource['renewed_count'] ?? 0;
 
-        if ($total === 0) return 0.0;
+        if ($total === 0) {
+            return 0.0;
+        }
 
         return round(($renewed / $total) * 100, 2);
     }
@@ -128,14 +138,14 @@ class ProviderInsuranceStatisticsResource extends JsonResource
             'expired' => $this->resource['expired_count'] ?? 0,
             'cancelled' => $this->resource['cancelled_count'] ?? 0,
             'pending' => $this->resource['pending_count'] ?? 0,
-            'suspended' => $this->resource['suspended_count'] ?? 0
+            'suspended' => $this->resource['suspended_count'] ?? 0,
         ];
 
         return array_map(function ($count, $status) {
             return [
                 'label' => ucfirst($status),
                 'value' => $count,
-                'color' => $this->getStatusColor($status)
+                'color' => $this->getStatusColor($status),
             ];
         }, $statuses, array_keys($statuses));
     }
@@ -151,7 +161,7 @@ class ProviderInsuranceStatisticsResource extends JsonResource
             return [
                 'label' => $this->getTypeLabel($type),
                 'value' => $count,
-                'color' => $this->getTypeColor($type)
+                'color' => $this->getTypeColor($type),
             ];
         }, $types, array_keys($types));
     }
@@ -165,14 +175,14 @@ class ProviderInsuranceStatisticsResource extends JsonResource
             'pending' => $this->resource['pending_verification_count'] ?? 0,
             'verified' => $this->resource['verified_count'] ?? 0,
             'rejected' => $this->resource['rejected_count'] ?? 0,
-            'expired' => $this->resource['verification_expired_count'] ?? 0
+            'expired' => $this->resource['verification_expired_count'] ?? 0,
         ];
 
         return array_map(function ($count, $status) {
             return [
                 'label' => $this->getVerificationStatusLabel($status),
                 'value' => $count,
-                'color' => $this->getVerificationStatusColor($status)
+                'color' => $this->getVerificationStatusColor($status),
             ];
         }, $statuses, array_keys($statuses));
     }
@@ -189,7 +199,7 @@ class ProviderInsuranceStatisticsResource extends JsonResource
                 'month' => $month,
                 'new_policies' => $data['new_policies'] ?? 0,
                 'expired_policies' => $data['expired_policies'] ?? 0,
-                'total_coverage' => $data['total_coverage'] ?? 0
+                'total_coverage' => $data['total_coverage'] ?? 0,
             ];
         }, $trends, array_keys($trends));
     }
@@ -204,7 +214,7 @@ class ProviderInsuranceStatisticsResource extends JsonResource
             '100k-500k' => ['min' => 100000, 'max' => 500000],
             '500k-1M' => ['min' => 500000, 'max' => 1000000],
             '1M-5M' => ['min' => 1000000, 'max' => 5000000],
-            '5M+' => ['min' => 5000000, 'max' => null]
+            '5M+' => ['min' => 5000000, 'max' => null],
         ];
 
         $distribution = [];
@@ -213,7 +223,7 @@ class ProviderInsuranceStatisticsResource extends JsonResource
             $distribution[] = [
                 'label' => $label,
                 'value' => $count,
-                'color' => $this->getCoverageRangeColor($label)
+                'color' => $this->getCoverageRangeColor($label),
             ];
         }
 
@@ -252,10 +262,11 @@ class ProviderInsuranceStatisticsResource extends JsonResource
     {
         $colors = [
             '#3B82F6', '#10B981', '#F59E0B', '#EF4444',
-            '#8B5CF6', '#06B6D4', '#84CC16', '#F97316'
+            '#8B5CF6', '#06B6D4', '#84CC16', '#F97316',
         ];
 
         $index = crc32($type) % count($colors);
+
         return $colors[$index];
     }
 

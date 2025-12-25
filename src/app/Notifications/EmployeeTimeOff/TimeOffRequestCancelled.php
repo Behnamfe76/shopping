@@ -32,14 +32,14 @@ class TimeOffRequestCancelled extends Notification implements ShouldQueue
 
         return (new MailMessage)
             ->subject('Time-Off Request Cancelled')
-            ->greeting('Hello ' . $notifiable->name)
+            ->greeting('Hello '.$notifiable->name)
             ->line('A time-off request has been cancelled.')
-            ->line('**Employee:** ' . $this->timeOff->employee->full_name)
-            ->line('**Type:** ' . ucfirst($this->timeOff->time_off_type))
-            ->line('**Dates:** ' . $startDate . ' to ' . $endDate)
-            ->line('**Total Days:** ' . $this->timeOff->total_days)
-            ->line('**Cancelled At:** ' . $this->timeOff->updated_at->format('M d, Y g:i A'))
-            ->action('View Details', URL::to('/admin/time-off/' . $this->timeOff->id))
+            ->line('**Employee:** '.$this->timeOff->employee->full_name)
+            ->line('**Type:** '.ucfirst($this->timeOff->time_off_type))
+            ->line('**Dates:** '.$startDate.' to '.$endDate)
+            ->line('**Total Days:** '.$this->timeOff->total_days)
+            ->line('**Cancelled At:** '.$this->timeOff->updated_at->format('M d, Y g:i A'))
+            ->action('View Details', URL::to('/admin/time-off/'.$this->timeOff->id))
             ->line('This cancellation has been processed and the employee\'s time-off balance has been updated accordingly.')
             ->salutation('Best regards, HR System');
     }
@@ -55,8 +55,8 @@ class TimeOffRequestCancelled extends Notification implements ShouldQueue
             'end_date' => $this->timeOff->end_date->toDateString(),
             'total_days' => $this->timeOff->total_days,
             'cancelled_at' => $this->timeOff->updated_at->toDateTimeString(),
-            'message' => 'Time-off request cancelled for ' . $this->timeOff->employee->full_name,
-            'action_url' => '/admin/time-off/' . $this->timeOff->id,
+            'message' => 'Time-off request cancelled for '.$this->timeOff->employee->full_name,
+            'action_url' => '/admin/time-off/'.$this->timeOff->id,
         ];
     }
 }

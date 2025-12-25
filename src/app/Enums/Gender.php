@@ -11,7 +11,7 @@ enum Gender: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::MALE => 'Male',
             self::FEMALE => 'Female',
             self::OTHER => 'Other',
@@ -21,7 +21,7 @@ enum Gender: string
 
     public function shortLabel(): string
     {
-        return match($this) {
+        return match ($this) {
             self::MALE => 'M',
             self::FEMALE => 'F',
             self::OTHER => 'O',

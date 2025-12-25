@@ -2,13 +2,12 @@
 
 namespace Fereydooni\Shopping\database\seeders;
 
-use Illuminate\Database\Seeder;
-use Fereydooni\Shopping\app\Models\Product;
-use Fereydooni\Shopping\app\Models\Category;
-use Fereydooni\Shopping\app\Models\Brand;
 use Fereydooni\Shopping\app\Enums\ProductStatus;
 use Fereydooni\Shopping\app\Enums\ProductType;
-use Illuminate\Support\Str;
+use Fereydooni\Shopping\app\Models\Brand;
+use Fereydooni\Shopping\app\Models\Category;
+use Fereydooni\Shopping\app\Models\Product;
+use Illuminate\Database\Seeder;
 
 class ProductSeeder extends Seeder
 {
@@ -20,6 +19,7 @@ class ProductSeeder extends Seeder
 
         if ($categories->isEmpty() || $brands->isEmpty()) {
             $this->command->warn('Please make sure CategorySeeder and BrandSeeder have been run first.');
+
             return;
         }
 

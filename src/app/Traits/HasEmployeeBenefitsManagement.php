@@ -2,8 +2,8 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
-use Fereydooni\Shopping\app\Models\Employee;
 use Fereydooni\Shopping\app\DTOs\EmployeeDTO;
+use Fereydooni\Shopping\app\Models\Employee;
 use Illuminate\Database\Eloquent\Collection;
 
 trait HasEmployeeBenefitsManagement
@@ -27,6 +27,7 @@ trait HasEmployeeBenefitsManagement
     public function isEmployeeEnrolledInBenefitsById(int $employeeId): bool
     {
         $employee = $this->repository->find($employeeId);
+
         return $employee ? $employee->benefits_enrolled : false;
     }
 
@@ -34,61 +35,61 @@ trait HasEmployeeBenefitsManagement
     public function getEmployeesEnrolledInBenefits(): Collection
     {
         return $this->repository->findActive()
-            ->filter(fn($employee) => $employee->benefits_enrolled);
+            ->filter(fn ($employee) => $employee->benefits_enrolled);
     }
 
     public function getEmployeesEnrolledInBenefitsDTO(): Collection
     {
         return $this->getEmployeesEnrolledInBenefits()
-            ->map(fn($employee) => EmployeeDTO::fromModel($employee));
+            ->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function getEmployeesNotEnrolledInBenefits(): Collection
     {
         return $this->repository->findActive()
-            ->filter(fn($employee) => !$employee->benefits_enrolled);
+            ->filter(fn ($employee) => ! $employee->benefits_enrolled);
     }
 
     public function getEmployeesNotEnrolledInBenefitsDTO(): Collection
     {
         return $this->getEmployeesNotEnrolledInBenefits()
-            ->map(fn($employee) => EmployeeDTO::fromModel($employee));
+            ->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function getEmployeesEnrolledInBenefitsByDepartment(string $department): Collection
     {
         return $this->repository->findByDepartment($department)
-            ->filter(fn($employee) => $employee->benefits_enrolled);
+            ->filter(fn ($employee) => $employee->benefits_enrolled);
     }
 
     public function getEmployeesEnrolledInBenefitsByDepartmentDTO(string $department): Collection
     {
         return $this->getEmployeesEnrolledInBenefitsByDepartment($department)
-            ->map(fn($employee) => EmployeeDTO::fromModel($employee));
+            ->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function getEmployeesEnrolledInBenefitsByEmploymentType(string $employmentType): Collection
     {
         return $this->repository->findByEmploymentType($employmentType)
-            ->filter(fn($employee) => $employee->benefits_enrolled);
+            ->filter(fn ($employee) => $employee->benefits_enrolled);
     }
 
     public function getEmployeesEnrolledInBenefitsByEmploymentTypeDTO(string $employmentType): Collection
     {
         return $this->getEmployeesEnrolledInBenefitsByEmploymentType($employmentType)
-            ->map(fn($employee) => EmployeeDTO::fromModel($employee));
+            ->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     // Benefits eligibility
     public function isEmployeeEligibleForBenefits(Employee $employee): bool
     {
         // Check if employee is active and meets eligibility criteria
-        if (!$employee->isActive()) {
+        if (! $employee->isActive()) {
             return false;
         }
 
         // Check employment type eligibility
-        if (!$employee->employment_type->isPermanent()) {
+        if (! $employee->employment_type->isPermanent()) {
             return false;
         }
 
@@ -104,25 +105,25 @@ trait HasEmployeeBenefitsManagement
     public function getEmployeesEligibleForBenefits(): Collection
     {
         return $this->repository->findActive()
-            ->filter(fn($employee) => $this->isEmployeeEligibleForBenefits($employee));
+            ->filter(fn ($employee) => $this->isEmployeeEligibleForBenefits($employee));
     }
 
     public function getEmployeesEligibleForBenefitsDTO(): Collection
     {
         return $this->getEmployeesEligibleForBenefits()
-            ->map(fn($employee) => EmployeeDTO::fromModel($employee));
+            ->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function getEmployeesNotEligibleForBenefits(): Collection
     {
         return $this->repository->findActive()
-            ->filter(fn($employee) => !$this->isEmployeeEligibleForBenefits($employee));
+            ->filter(fn ($employee) => ! $this->isEmployeeEligibleForBenefits($employee));
     }
 
     public function getEmployeesNotEligibleForBenefitsDTO(): Collection
     {
         return $this->getEmployeesNotEligibleForBenefits()
-            ->map(fn($employee) => EmployeeDTO::fromModel($employee));
+            ->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     // Benefits analytics
@@ -139,13 +140,13 @@ trait HasEmployeeBenefitsManagement
                 'enrollment_rate' => 0,
                 'eligible_count' => 0,
                 'not_eligible_count' => 0,
-                'eligible_enrollment_rate' => 0
+                'eligible_enrollment_rate' => 0,
             ];
         }
 
-        $enrolledCount = $employees->filter(fn($e) => $e->benefits_enrolled)->count();
-        $eligibleCount = $employees->filter(fn($e) => $this->isEmployeeEligibleForBenefits($e))->count();
-        $eligibleEnrolledCount = $employees->filter(fn($e) => $this->isEmployeeEligibleForBenefits($e) && $e->benefits_enrolled)->count();
+        $enrolledCount = $employees->filter(fn ($e) => $e->benefits_enrolled)->count();
+        $eligibleCount = $employees->filter(fn ($e) => $this->isEmployeeEligibleForBenefits($e))->count();
+        $eligibleEnrolledCount = $employees->filter(fn ($e) => $this->isEmployeeEligibleForBenefits($e) && $e->benefits_enrolled)->count();
 
         return [
             'total_employees' => $totalEmployees,
@@ -154,7 +155,7 @@ trait HasEmployeeBenefitsManagement
             'enrollment_rate' => round(($enrolledCount / $totalEmployees) * 100, 2),
             'eligible_count' => $eligibleCount,
             'not_eligible_count' => $totalEmployees - $eligibleCount,
-            'eligible_enrollment_rate' => $eligibleCount > 0 ? round(($eligibleEnrolledCount / $eligibleCount) * 100, 2) : 0
+            'eligible_enrollment_rate' => $eligibleCount > 0 ? round(($eligibleEnrolledCount / $eligibleCount) * 100, 2) : 0,
         ];
     }
 
@@ -175,9 +176,9 @@ trait HasEmployeeBenefitsManagement
                 continue;
             }
 
-            $enrolledCount = $employees->filter(fn($e) => $e->benefits_enrolled)->count();
-            $eligibleCount = $employees->filter(fn($e) => $this->isEmployeeEligibleForBenefits($e))->count();
-            $eligibleEnrolledCount = $employees->filter(fn($e) => $this->isEmployeeEligibleForBenefits($e) && $e->benefits_enrolled)->count();
+            $enrolledCount = $employees->filter(fn ($e) => $e->benefits_enrolled)->count();
+            $eligibleCount = $employees->filter(fn ($e) => $this->isEmployeeEligibleForBenefits($e))->count();
+            $eligibleEnrolledCount = $employees->filter(fn ($e) => $this->isEmployeeEligibleForBenefits($e) && $e->benefits_enrolled)->count();
 
             $stats[$department] = [
                 'total_employees' => $totalEmployees,
@@ -186,7 +187,7 @@ trait HasEmployeeBenefitsManagement
                 'enrollment_rate' => round(($enrolledCount / $totalEmployees) * 100, 2),
                 'eligible_count' => $eligibleCount,
                 'not_eligible_count' => $totalEmployees - $eligibleCount,
-                'eligible_enrollment_rate' => $eligibleCount > 0 ? round(($eligibleEnrolledCount / $eligibleCount) * 100, 2) : 0
+                'eligible_enrollment_rate' => $eligibleCount > 0 ? round(($eligibleEnrolledCount / $eligibleCount) * 100, 2) : 0,
             ];
         }
 
@@ -210,9 +211,9 @@ trait HasEmployeeBenefitsManagement
                 continue;
             }
 
-            $enrolledCount = $employees->filter(fn($e) => $e->benefits_enrolled)->count();
-            $eligibleCount = $employees->filter(fn($e) => $this->isEmployeeEligibleForBenefits($e))->count();
-            $eligibleEnrolledCount = $employees->filter(fn($e) => $this->isEmployeeEligibleForBenefits($e) && $e->benefits_enrolled)->count();
+            $enrolledCount = $employees->filter(fn ($e) => $e->benefits_enrolled)->count();
+            $eligibleCount = $employees->filter(fn ($e) => $this->isEmployeeEligibleForBenefits($e))->count();
+            $eligibleEnrolledCount = $employees->filter(fn ($e) => $this->isEmployeeEligibleForBenefits($e) && $e->benefits_enrolled)->count();
 
             $stats[$employmentType->value] = [
                 'employment_type' => $employmentType->label(),
@@ -222,7 +223,7 @@ trait HasEmployeeBenefitsManagement
                 'enrollment_rate' => round(($enrolledCount / $totalEmployees) * 100, 2),
                 'eligible_count' => $eligibleCount,
                 'not_eligible_count' => $totalEmployees - $eligibleCount,
-                'eligible_enrollment_rate' => $eligibleCount > 0 ? round(($eligibleEnrolledCount / $eligibleCount) * 100, 2) : 0
+                'eligible_enrollment_rate' => $eligibleCount > 0 ? round(($eligibleEnrolledCount / $eligibleCount) * 100, 2) : 0,
             ];
         }
 
@@ -244,35 +245,35 @@ trait HasEmployeeBenefitsManagement
             'eligibility_criteria' => [
                 'minimum_service_days' => 90,
                 'employment_type_requirement' => 'permanent',
-                'status_requirement' => 'active'
+                'status_requirement' => 'active',
             ],
             'available_benefits' => [
                 'health_insurance' => [
                     'available' => $this->isEmployeeEligibleForBenefits($employee),
                     'enrolled' => $employee->benefits_enrolled,
-                    'coverage_start_date' => $employee->benefits_enrolled ? $employee->hire_date->addDays(90)->format('Y-m-d') : null
+                    'coverage_start_date' => $employee->benefits_enrolled ? $employee->hire_date->addDays(90)->format('Y-m-d') : null,
                 ],
                 'dental_insurance' => [
                     'available' => $this->isEmployeeEligibleForBenefits($employee),
                     'enrolled' => $employee->benefits_enrolled,
-                    'coverage_start_date' => $employee->benefits_enrolled ? $employee->hire_date->addDays(90)->format('Y-m-d') : null
+                    'coverage_start_date' => $employee->benefits_enrolled ? $employee->hire_date->addDays(90)->format('Y-m-d') : null,
                 ],
                 'vision_insurance' => [
                     'available' => $this->isEmployeeEligibleForBenefits($employee),
                     'enrolled' => $employee->benefits_enrolled,
-                    'coverage_start_date' => $employee->benefits_enrolled ? $employee->hire_date->addDays(90)->format('Y-m-d') : null
+                    'coverage_start_date' => $employee->benefits_enrolled ? $employee->hire_date->addDays(90)->format('Y-m-d') : null,
                 ],
                 'life_insurance' => [
                     'available' => $this->isEmployeeEligibleForBenefits($employee),
                     'enrolled' => $employee->benefits_enrolled,
-                    'coverage_amount' => $employee->benefits_enrolled ? '1x annual salary' : null
+                    'coverage_amount' => $employee->benefits_enrolled ? '1x annual salary' : null,
                 ],
                 'retirement_plan' => [
                     'available' => $this->isEmployeeEligibleForBenefits($employee),
                     'enrolled' => $employee->benefits_enrolled,
-                    'employer_match' => $employee->benefits_enrolled ? '3%' : null
-                ]
-            ]
+                    'employer_match' => $employee->benefits_enrolled ? '3%' : null,
+                ],
+            ],
         ];
 
         return $policy;
@@ -285,16 +286,18 @@ trait HasEmployeeBenefitsManagement
             'success' => false,
             'message' => '',
             'enrollment_date' => null,
-            'coverage_start_date' => null
+            'coverage_start_date' => null,
         ];
 
-        if (!$this->isEmployeeEligibleForBenefits($employee)) {
+        if (! $this->isEmployeeEligibleForBenefits($employee)) {
             $result['message'] = 'Employee is not eligible for benefits';
+
             return $result;
         }
 
         if ($employee->benefits_enrolled) {
             $result['message'] = 'Employee is already enrolled in benefits';
+
             return $result;
         }
 
@@ -317,11 +320,12 @@ trait HasEmployeeBenefitsManagement
         $result = [
             'success' => false,
             'message' => '',
-            'unenrollment_date' => null
+            'unenrollment_date' => null,
         ];
 
-        if (!$employee->benefits_enrolled) {
+        if (! $employee->benefits_enrolled) {
             $result['message'] = 'Employee is not enrolled in benefits';
+
             return $result;
         }
 
@@ -339,7 +343,7 @@ trait HasEmployeeBenefitsManagement
     }
 
     // Benefits reporting
-    public function generateBenefitsReport(string $department = null, string $period = 'current'): array
+    public function generateBenefitsReport(?string $department = null, string $period = 'current'): array
     {
         $employees = $department
             ? $this->repository->findByDepartment($department)
@@ -350,18 +354,17 @@ trait HasEmployeeBenefitsManagement
             'department' => $department,
             'total_employees' => $employees->count(),
             'enrollment_stats' => $this->getBenefitsEnrollmentStats(),
-            'eligible_employees' => $employees->filter(fn($e) => $this->isEmployeeEligibleForBenefits($e))->count(),
-            'enrolled_employees' => $employees->filter(fn($e) => $e->benefits_enrolled)->count(),
-            'not_enrolled_employees' => $employees->filter(fn($e) => !$e->benefits_enrolled)->count(),
+            'eligible_employees' => $employees->filter(fn ($e) => $this->isEmployeeEligibleForBenefits($e))->count(),
+            'enrolled_employees' => $employees->filter(fn ($e) => $e->benefits_enrolled)->count(),
+            'not_enrolled_employees' => $employees->filter(fn ($e) => ! $e->benefits_enrolled)->count(),
             'enrollment_rate' => $employees->count() > 0
-                ? round(($employees->filter(fn($e) => $e->benefits_enrolled)->count() / $employees->count()) * 100, 2)
+                ? round(($employees->filter(fn ($e) => $e->benefits_enrolled)->count() / $employees->count()) * 100, 2)
                 : 0,
-            'eligible_enrollment_rate' => $employees->filter(fn($e) => $this->isEmployeeEligibleForBenefits($e))->count() > 0
-                ? round(($employees->filter(fn($e) => $this->isEmployeeEligibleForBenefits($e) && $e->benefits_enrolled)->count() / $employees->filter(fn($e) => $this->isEmployeeEligibleForBenefits($e))->count()) * 100, 2)
-                : 0
+            'eligible_enrollment_rate' => $employees->filter(fn ($e) => $this->isEmployeeEligibleForBenefits($e))->count() > 0
+                ? round(($employees->filter(fn ($e) => $this->isEmployeeEligibleForBenefits($e) && $e->benefits_enrolled)->count() / $employees->filter(fn ($e) => $this->isEmployeeEligibleForBenefits($e))->count()) * 100, 2)
+                : 0,
         ];
 
         return $report;
     }
 }
-

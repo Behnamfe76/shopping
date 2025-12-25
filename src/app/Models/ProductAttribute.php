@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Fereydooni\Shopping\app\Enums\ProductAttributeType;
 use Fereydooni\Shopping\app\Enums\ProductAttributeInputType;
+use Fereydooni\Shopping\app\Enums\ProductAttributeType;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ProductAttribute extends Model
 {

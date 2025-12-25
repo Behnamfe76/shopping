@@ -2,8 +2,8 @@
 
 namespace Fereydooni\Shopping\app\Listeners\Provider;
 
-use Fereydooni\Shopping\app\Events\Provider\ProviderQualityRatingUpdated;
 use Fereydooni\Shopping\app\Events\Provider\ProviderDeliveryRatingUpdated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderQualityRatingUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
@@ -26,7 +26,7 @@ class NotifyQualityIssues implements ShouldQueue
     {
         // Check if quality rating dropped below threshold and notify relevant parties
         if ($event->newRating < 3.0) {
-            \Log::warning('Provider quality rating dropped below threshold: ' . $event->provider->id . ' Rating: ' . $event->newRating);
+            \Log::warning('Provider quality rating dropped below threshold: '.$event->provider->id.' Rating: '.$event->newRating);
             // Send notification to quality management team
         }
     }
@@ -38,7 +38,7 @@ class NotifyQualityIssues implements ShouldQueue
     {
         // Check if delivery rating dropped below threshold and notify relevant parties
         if ($event->newRating < 3.0) {
-            \Log::warning('Provider delivery rating dropped below threshold: ' . $event->provider->id . ' Rating: ' . $event->newRating);
+            \Log::warning('Provider delivery rating dropped below threshold: '.$event->provider->id.' Rating: '.$event->newRating);
             // Send notification to logistics team
         }
     }

@@ -2,14 +2,13 @@
 
 namespace Fereydooni\Shopping\Models;
 
+use Fereydooni\Shopping\Enums\TrainingMethod;
+use Fereydooni\Shopping\Enums\TrainingStatus;
+use Fereydooni\Shopping\Enums\TrainingType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Fereydooni\Shopping\Enums\TrainingType;
-use Fereydooni\Shopping\Enums\TrainingStatus;
-use Fereydooni\Shopping\Enums\TrainingMethod;
-use Carbon\Carbon;
 
 class EmployeeTraining extends Model
 {
@@ -114,7 +113,7 @@ class EmployeeTraining extends Model
      */
     public function isExpired(): bool
     {
-        if (!$this->expiry_date) {
+        if (! $this->expiry_date) {
             return false;
         }
 
@@ -126,7 +125,7 @@ class EmployeeTraining extends Model
      */
     public function isExpiringSoon(int $days = 30): bool
     {
-        if (!$this->expiry_date) {
+        if (! $this->expiry_date) {
             return false;
         }
 
@@ -146,7 +145,7 @@ class EmployeeTraining extends Model
      */
     public function isOverdue(): bool
     {
-        if (!$this->end_date) {
+        if (! $this->end_date) {
             return false;
         }
 
@@ -158,7 +157,7 @@ class EmployeeTraining extends Model
      */
     public function getDaysUntilExpiryAttribute(): ?int
     {
-        if (!$this->expiry_date) {
+        if (! $this->expiry_date) {
             return null;
         }
 
@@ -170,7 +169,7 @@ class EmployeeTraining extends Model
      */
     public function getDaysUntilStartAttribute(): ?int
     {
-        if (!$this->start_date) {
+        if (! $this->start_date) {
             return null;
         }
 
@@ -182,7 +181,7 @@ class EmployeeTraining extends Model
      */
     public function getDaysUntilEndAttribute(): ?int
     {
-        if (!$this->end_date) {
+        if (! $this->end_date) {
             return null;
         }
 
@@ -227,7 +226,7 @@ class EmployeeTraining extends Model
     public function scopeExpiringSoon($query, int $days = 30)
     {
         return $query->where('expiry_date', '<=', now()->addDays($days))
-                    ->where('expiry_date', '>', now());
+            ->where('expiry_date', '>', now());
     }
 
     /**
@@ -236,7 +235,7 @@ class EmployeeTraining extends Model
     public function scopeOverdue($query)
     {
         return $query->where('end_date', '<', now())
-                    ->whereNotIn('status', [TrainingStatus::COMPLETED, TrainingStatus::CANCELLED]);
+            ->whereNotIn('status', [TrainingStatus::COMPLETED, TrainingStatus::CANCELLED]);
     }
 
     /**
@@ -247,18 +246,18 @@ class EmployeeTraining extends Model
         parent::boot();
 
         static::creating(function ($training) {
-            if (!$training->start_date && $training->status === TrainingStatus::IN_PROGRESS) {
+            if (! $training->start_date && $training->status === TrainingStatus::IN_PROGRESS) {
                 $training->start_date = now();
             }
         });
 
         static::updating(function ($training) {
             if ($training->isDirty('status')) {
-                if ($training->status === TrainingStatus::IN_PROGRESS && !$training->start_date) {
+                if ($training->status === TrainingStatus::IN_PROGRESS && ! $training->start_date) {
                     $training->start_date = now();
                 }
 
-                if ($training->status === TrainingStatus::COMPLETED && !$training->completion_date) {
+                if ($training->status === TrainingStatus::COMPLETED && ! $training->completion_date) {
                     $training->completion_date = now();
                 }
             }

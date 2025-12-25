@@ -2,8 +2,8 @@
 
 namespace Fereydooni\Shopping\app\Facades;
 
-use Illuminate\Support\Facades\Facade;
 use Fereydooni\Shopping\app\Services\CustomerPreferenceService;
+use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static \Illuminate\Database\Eloquent\Collection getAllPreferences()
@@ -123,4 +123,3 @@ class CustomerPreference extends Facade
         return CustomerPreferenceService::class;
     }
 }
-

@@ -2,8 +2,8 @@
 
 namespace Fereydooni\Shopping\App\Facades;
 
-use Illuminate\Support\Facades\Facade;
 use Fereydooni\Shopping\App\Services\ProviderLocationService;
+use Illuminate\Support\Facades\Facade;
 
 /**
  * ProviderLocation Facade
@@ -160,7 +160,7 @@ class ProviderLocation extends Facade
      */
     public static function model()
     {
-        return new \Fereydooni\Shopping\App\Models\ProviderLocation();
+        return new \Fereydooni\Shopping\App\Models\ProviderLocation;
     }
 
     /**
@@ -170,7 +170,7 @@ class ProviderLocation extends Facade
      */
     public static function dto()
     {
-        return new \Fereydooni\Shopping\App\DTOs\ProviderLocationDTO();
+        return new \Fereydooni\Shopping\App\DTOs\ProviderLocationDTO;
     }
 
     /**
@@ -230,6 +230,7 @@ class ProviderLocation extends Facade
                 'description' => $type->description(),
             ];
         }
+
         return $types;
     }
 
@@ -248,14 +249,12 @@ class ProviderLocation extends Facade
                 'currency' => $country->currency(),
             ];
         }
+
         return $countries;
     }
 
     /**
      * Check if a location exists.
-     *
-     * @param int $id
-     * @return bool
      */
     public static function exists(int $id): bool
     {
@@ -264,9 +263,6 @@ class ProviderLocation extends Facade
 
     /**
      * Check if a provider has locations.
-     *
-     * @param int $providerId
-     * @return bool
      */
     public static function providerHasLocations(int $providerId): bool
     {
@@ -275,9 +271,6 @@ class ProviderLocation extends Facade
 
     /**
      * Check if a provider has a primary location.
-     *
-     * @param int $providerId
-     * @return bool
      */
     public static function providerHasPrimaryLocation(int $providerId): bool
     {
@@ -286,9 +279,6 @@ class ProviderLocation extends Facade
 
     /**
      * Check if a provider has active locations.
-     *
-     * @param int $providerId
-     * @return bool
      */
     public static function providerHasActiveLocations(int $providerId): bool
     {
@@ -298,7 +288,6 @@ class ProviderLocation extends Facade
     /**
      * Get the primary location for a provider.
      *
-     * @param int $providerId
      * @return \Fereydooni\Shopping\App\Models\ProviderLocation|null
      */
     public static function getPrimaryLocation(int $providerId)
@@ -309,7 +298,6 @@ class ProviderLocation extends Facade
     /**
      * Get the primary location DTO for a provider.
      *
-     * @param int $providerId
      * @return \Fereydooni\Shopping\App\DTOs\ProviderLocationDTO|null
      */
     public static function getPrimaryLocationDTO(int $providerId)
@@ -320,7 +308,6 @@ class ProviderLocation extends Facade
     /**
      * Get active locations for a provider.
      *
-     * @param int $providerId
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function getActiveLocations(int $providerId)
@@ -331,7 +318,6 @@ class ProviderLocation extends Facade
     /**
      * Get active locations DTO for a provider.
      *
-     * @param int $providerId
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function getActiveLocationsDTO(int $providerId)
@@ -342,7 +328,6 @@ class ProviderLocation extends Facade
     /**
      * Get inactive locations for a provider.
      *
-     * @param int $providerId
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function getInactiveLocations(int $providerId)
@@ -353,7 +338,6 @@ class ProviderLocation extends Facade
     /**
      * Get inactive locations DTO for a provider.
      *
-     * @param int $providerId
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function getInactiveLocationsDTO(int $providerId)
@@ -364,8 +348,6 @@ class ProviderLocation extends Facade
     /**
      * Get locations by type for a provider.
      *
-     * @param int $providerId
-     * @param string $locationType
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function getLocationsByType(int $providerId, string $locationType)
@@ -376,8 +358,6 @@ class ProviderLocation extends Facade
     /**
      * Get locations by type DTO for a provider.
      *
-     * @param int $providerId
-     * @param string $locationType
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function getLocationsByTypeDTO(int $providerId, string $locationType)
@@ -388,8 +368,6 @@ class ProviderLocation extends Facade
     /**
      * Get locations by country for a provider.
      *
-     * @param int $providerId
-     * @param string $country
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function getLocationsByCountry(int $providerId, string $country)
@@ -400,8 +378,6 @@ class ProviderLocation extends Facade
     /**
      * Get locations by country DTO for a provider.
      *
-     * @param int $providerId
-     * @param string $country
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function getLocationsByCountryDTO(int $providerId, string $country)
@@ -412,10 +388,6 @@ class ProviderLocation extends Facade
     /**
      * Get nearby locations.
      *
-     * @param float $latitude
-     * @param float $longitude
-     * @param float $radius
-     * @param int $limit
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function getNearbyLocations(float $latitude, float $longitude, float $radius = 10, int $limit = 10)
@@ -426,10 +398,6 @@ class ProviderLocation extends Facade
     /**
      * Get nearby locations DTO.
      *
-     * @param float $latitude
-     * @param float $longitude
-     * @param float $radius
-     * @param int $limit
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function getNearbyLocationsDTO(float $latitude, float $longitude, float $radius = 10, int $limit = 10)
@@ -440,11 +408,6 @@ class ProviderLocation extends Facade
     /**
      * Get nearby locations for a specific provider.
      *
-     * @param int $providerId
-     * @param float $latitude
-     * @param float $longitude
-     * @param float $radius
-     * @param int $limit
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function getNearbyLocationsForProvider(int $providerId, float $latitude, float $longitude, float $radius = 10, int $limit = 10)
@@ -455,11 +418,6 @@ class ProviderLocation extends Facade
     /**
      * Get nearby locations DTO for a specific provider.
      *
-     * @param int $providerId
-     * @param float $latitude
-     * @param float $longitude
-     * @param float $radius
-     * @param int $limit
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function getNearbyLocationsForProviderDTO(int $providerId, float $latitude, float $longitude, float $radius = 10, int $limit = 10)
@@ -470,7 +428,6 @@ class ProviderLocation extends Facade
     /**
      * Search locations.
      *
-     * @param string $query
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function search(string $query)
@@ -481,7 +438,6 @@ class ProviderLocation extends Facade
     /**
      * Search locations DTO.
      *
-     * @param string $query
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function searchDTO(string $query)
@@ -492,8 +448,6 @@ class ProviderLocation extends Facade
     /**
      * Search locations for a specific provider.
      *
-     * @param int $providerId
-     * @param string $query
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function searchForProvider(int $providerId, string $query)
@@ -504,8 +458,6 @@ class ProviderLocation extends Facade
     /**
      * Search locations DTO for a specific provider.
      *
-     * @param int $providerId
-     * @param string $query
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function searchForProviderDTO(int $providerId, string $query)
@@ -516,7 +468,6 @@ class ProviderLocation extends Facade
     /**
      * Get analytics for a provider.
      *
-     * @param int $providerId
      * @return array
      */
     public static function getAnalytics(int $providerId)
@@ -537,7 +488,6 @@ class ProviderLocation extends Facade
     /**
      * Get distribution for a provider.
      *
-     * @param int $providerId
      * @return array
      */
     public static function getDistribution(int $providerId)
@@ -558,7 +508,6 @@ class ProviderLocation extends Facade
     /**
      * Get heatmap for a provider.
      *
-     * @param int $providerId
      * @return array
      */
     public static function getHeatmap(int $providerId)
@@ -579,7 +528,6 @@ class ProviderLocation extends Facade
     /**
      * Geocode a location.
      *
-     * @param \Fereydooni\Shopping\App\Models\ProviderLocation $providerLocation
      * @return bool
      */
     public static function geocode(\Fereydooni\Shopping\App\Models\ProviderLocation $providerLocation)
@@ -590,10 +538,6 @@ class ProviderLocation extends Facade
     /**
      * Calculate distance between two points.
      *
-     * @param float $lat1
-     * @param float $lon1
-     * @param float $lat2
-     * @param float $lon2
      * @return float
      */
     public static function distance(float $lat1, float $lon1, float $lat2, float $lon2)
@@ -604,10 +548,6 @@ class ProviderLocation extends Facade
     /**
      * Calculate distance in kilometers between two points.
      *
-     * @param float $lat1
-     * @param float $lon1
-     * @param float $lat2
-     * @param float $lon2
      * @return float
      */
     public static function distanceInKm(float $lat1, float $lon1, float $lat2, float $lon2)

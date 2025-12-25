@@ -2,20 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Services\ProviderPerformanceService;
-use App\Models\ProviderPerformance;
-use App\DTOs\ProviderPerformanceDTO;
 use App\Enums\PerformanceGrade;
 use App\Enums\PeriodType;
-use Illuminate\Http\Request;
+use App\Models\ProviderPerformance;
+use App\Services\ProviderPerformanceService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\View\View;
 
 class ProviderPerformanceController extends Controller
 {
@@ -74,7 +71,8 @@ class ProviderPerformanceController extends Controller
                 'verified'
             ));
         } catch (\Exception $e) {
-            Log::error('Failed to display provider performances: ' . $e->getMessage());
+            Log::error('Failed to display provider performances: '.$e->getMessage());
+
             return view('provider-performance.index')->with('error', 'Failed to load performances');
         }
     }
@@ -104,7 +102,7 @@ class ProviderPerformanceController extends Controller
                 'provider_id' => 'required|integer|exists:providers,id',
                 'period_start' => 'required|date',
                 'period_end' => 'required|date|after:period_start',
-                'period_type' => 'required|string|in:' . implode(',', PeriodType::values()),
+                'period_type' => 'required|string|in:'.implode(',', PeriodType::values()),
                 'total_orders' => 'required|integer|min:0',
                 'total_revenue' => 'required|numeric|min:0',
                 'average_order_value' => 'required|numeric|min:0',
@@ -138,7 +136,8 @@ class ProviderPerformanceController extends Controller
             return redirect()->route('provider-performance.show', $performance)
                 ->with('success', 'Provider performance created successfully');
         } catch (\Exception $e) {
-            Log::error('Failed to create provider performance: ' . $e->getMessage());
+            Log::error('Failed to create provider performance: '.$e->getMessage());
+
             return redirect()->back()
                 ->with('error', 'Failed to create provider performance')
                 ->withInput();
@@ -155,7 +154,7 @@ class ProviderPerformanceController extends Controller
         try {
             $performance = $this->service->getPerformanceById($providerPerformance->id);
 
-            if (!$performance) {
+            if (! $performance) {
                 abort(404);
             }
 
@@ -172,7 +171,8 @@ class ProviderPerformanceController extends Controller
                 'trend'
             ));
         } catch (\Exception $e) {
-            Log::error('Failed to display provider performance: ' . $e->getMessage());
+            Log::error('Failed to display provider performance: '.$e->getMessage());
+
             return view('provider-performance.show')->with('error', 'Failed to load performance');
         }
     }
@@ -201,7 +201,7 @@ class ProviderPerformanceController extends Controller
             $validator = Validator::make($request->all(), [
                 'period_start' => 'required|date',
                 'period_end' => 'required|date|after:period_start',
-                'period_type' => 'required|string|in:' . implode(',', PeriodType::values()),
+                'period_type' => 'required|string|in:'.implode(',', PeriodType::values()),
                 'total_orders' => 'required|integer|min:0',
                 'total_revenue' => 'required|numeric|min:0',
                 'average_order_value' => 'required|numeric|min:0',
@@ -233,7 +233,8 @@ class ProviderPerformanceController extends Controller
             return redirect()->route('provider-performance.show', $providerPerformance)
                 ->with('success', 'Provider performance updated successfully');
         } catch (\Exception $e) {
-            Log::error('Failed to update provider performance: ' . $e->getMessage());
+            Log::error('Failed to update provider performance: '.$e->getMessage());
+
             return redirect()->back()
                 ->with('error', 'Failed to update provider performance')
                 ->withInput();
@@ -253,7 +254,8 @@ class ProviderPerformanceController extends Controller
             return redirect()->route('provider-performance.index')
                 ->with('success', 'Provider performance deleted successfully');
         } catch (\Exception $e) {
-            Log::error('Failed to delete provider performance: ' . $e->getMessage());
+            Log::error('Failed to delete provider performance: '.$e->getMessage());
+
             return redirect()->back()
                 ->with('error', 'Failed to delete provider performance');
         }
@@ -285,7 +287,8 @@ class ProviderPerformanceController extends Controller
             return redirect()->route('provider-performance.show', $providerPerformance)
                 ->with('success', 'Provider performance verified successfully');
         } catch (\Exception $e) {
-            Log::error('Failed to verify provider performance: ' . $e->getMessage());
+            Log::error('Failed to verify provider performance: '.$e->getMessage());
+
             return redirect()->back()
                 ->with('error', 'Failed to verify provider performance');
         }
@@ -304,7 +307,8 @@ class ProviderPerformanceController extends Controller
             return redirect()->route('provider-performance.show', $providerPerformance)
                 ->with('success', 'Provider performance unverified successfully');
         } catch (\Exception $e) {
-            Log::error('Failed to unverify provider performance: ' . $e->getMessage());
+            Log::error('Failed to unverify provider performance: '.$e->getMessage());
+
             return redirect()->back()
                 ->with('error', 'Failed to unverify provider performance');
         }
@@ -323,7 +327,8 @@ class ProviderPerformanceController extends Controller
             return redirect()->route('provider-performance.show', $providerPerformance)
                 ->with('success', 'Performance score recalculated successfully');
         } catch (\Exception $e) {
-            Log::error('Failed to recalculate performance: ' . $e->getMessage());
+            Log::error('Failed to recalculate performance: '.$e->getMessage());
+
             return redirect()->back()
                 ->with('error', 'Failed to recalculate performance');
         }
@@ -379,7 +384,8 @@ class ProviderPerformanceController extends Controller
                 'grade'
             ));
         } catch (\Exception $e) {
-            Log::error('Failed to display analytics: ' . $e->getMessage());
+            Log::error('Failed to display analytics: '.$e->getMessage());
+
             return view('provider-performance.analytics')->with('error', 'Failed to load analytics');
         }
     }
@@ -425,7 +431,8 @@ class ProviderPerformanceController extends Controller
                 'periodType'
             ));
         } catch (\Exception $e) {
-            Log::error('Failed to display reports: ' . $e->getMessage());
+            Log::error('Failed to display reports: '.$e->getMessage());
+
             return view('provider-performance.reports')->with('error', 'Failed to load reports');
         }
     }
@@ -468,7 +475,8 @@ class ProviderPerformanceController extends Controller
                 'grade'
             ));
         } catch (\Exception $e) {
-            Log::error('Failed to display top performers: ' . $e->getMessage());
+            Log::error('Failed to display top performers: '.$e->getMessage());
+
             return view('provider-performance.top-performers')->with('error', 'Failed to load top performers');
         }
     }
@@ -498,7 +506,8 @@ class ProviderPerformanceController extends Controller
                 'providerId'
             ));
         } catch (\Exception $e) {
-            Log::error('Failed to display alerts: ' . $e->getMessage());
+            Log::error('Failed to display alerts: '.$e->getMessage());
+
             return view('provider-performance.alerts')->with('error', 'Failed to load alerts');
         }
     }
@@ -527,9 +536,10 @@ class ProviderPerformanceController extends Controller
                 'grade' => $grade,
             ]);
         } catch (\Exception $e) {
-            Log::error('Failed to export performance data: ' . $e->getMessage());
+            Log::error('Failed to export performance data: '.$e->getMessage());
+
             return response()->json([
-                'error' => 'Failed to export performance data'
+                'error' => 'Failed to export performance data',
             ], 500);
         }
     }

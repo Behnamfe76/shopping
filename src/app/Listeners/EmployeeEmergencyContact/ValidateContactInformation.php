@@ -2,8 +2,6 @@
 
 namespace App\Listeners\EmployeeEmergencyContact;
 
-use App\Events\EmployeeEmergencyContact\EmployeeEmergencyContactCreated;
-use App\Events\EmployeeEmergencyContact\EmployeeEmergencyContactUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
@@ -22,7 +20,7 @@ class ValidateContactInformation implements ShouldQueue
             $contact = $event->contact;
             $validationResult = $this->validateContact($contact);
 
-            if (!$validationResult['is_valid']) {
+            if (! $validationResult['is_valid']) {
                 Log::warning('Emergency contact validation failed', [
                     'contact_id' => $contact->id,
                     'employee_id' => $contact->employee_id,
@@ -77,7 +75,7 @@ class ValidateContactInformation implements ShouldQueue
 
         // Additional business logic validation
         $businessValidation = $this->validateBusinessRules($contact);
-        if (!$businessValidation['is_valid']) {
+        if (! $businessValidation['is_valid']) {
             return $businessValidation;
         }
 
@@ -107,16 +105,16 @@ class ValidateContactInformation implements ShouldQueue
         }
 
         // Validate phone number format (basic validation)
-        if (!empty($contact->phone_primary) && !$this->isValidPhoneNumber($contact->phone_primary)) {
+        if (! empty($contact->phone_primary) && ! $this->isValidPhoneNumber($contact->phone_primary)) {
             $errors['phone_primary'] = ['Invalid phone number format.'];
         }
 
-        if (!empty($contact->phone_secondary) && !$this->isValidPhoneNumber($contact->phone_secondary)) {
+        if (! empty($contact->phone_secondary) && ! $this->isValidPhoneNumber($contact->phone_secondary)) {
             $errors['phone_secondary'] = ['Invalid secondary phone number format.'];
         }
 
         // Validate email domain if provided
-        if (!empty($contact->email) && !$this->isValidEmailDomain($contact->email)) {
+        if (! empty($contact->email) && ! $this->isValidEmailDomain($contact->email)) {
             $errors['email'] = ['Email domain appears to be invalid.'];
         }
 
@@ -133,6 +131,7 @@ class ValidateContactInformation implements ShouldQueue
     {
         // Basic phone validation - can be enhanced with more sophisticated regex
         $phone = preg_replace('/[^0-9+\-\(\)\s]/', '', $phone);
+
         return strlen($phone) >= 10 && strlen($phone) <= 20;
     }
 
@@ -142,7 +141,8 @@ class ValidateContactInformation implements ShouldQueue
     private function isValidEmailDomain(string $email): bool
     {
         $domain = substr(strrchr($email, '@'), 1);
-        return !empty($domain) && strlen($domain) > 1;
+
+        return ! empty($domain) && strlen($domain) > 1;
     }
 
     /**

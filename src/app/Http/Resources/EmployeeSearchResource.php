@@ -8,9 +8,13 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 class EmployeeSearchResource extends ResourceCollection
 {
     protected string $query;
+
     protected ?string $department;
+
     protected ?string $position;
+
     protected ?string $status;
+
     protected ?string $employmentType;
 
     public function __construct($resource, string $query = '', ?string $department = null, ?string $position = null, ?string $status = null, ?string $employmentType = null)
@@ -44,11 +48,11 @@ class EmployeeSearchResource extends ResourceCollection
                 'to' => $this->lastItem(),
                 'has_more_pages' => $this->hasMorePages(),
                 'search_filters_applied' => [
-                    'has_query' => !empty($this->query),
-                    'has_department_filter' => !empty($this->department),
-                    'has_position_filter' => !empty($this->position),
-                    'has_status_filter' => !empty($this->status),
-                    'has_employment_type_filter' => !empty($this->employmentType),
+                    'has_query' => ! empty($this->query),
+                    'has_department_filter' => ! empty($this->department),
+                    'has_position_filter' => ! empty($this->position),
+                    'has_status_filter' => ! empty($this->status),
+                    'has_employment_type_filter' => ! empty($this->employmentType),
                 ],
             ],
             'links' => [
@@ -82,27 +86,26 @@ class EmployeeSearchResource extends ResourceCollection
             'search_criteria' => [],
         ];
 
-        if (!empty($this->query)) {
+        if (! empty($this->query)) {
             $summary['search_criteria'][] = "Query: '{$this->query}'";
         }
 
-        if (!empty($this->department)) {
+        if (! empty($this->department)) {
             $summary['search_criteria'][] = "Department: {$this->department}";
         }
 
-        if (!empty($this->position)) {
+        if (! empty($this->position)) {
             $summary['search_criteria'][] = "Position: {$this->position}";
         }
 
-        if (!empty($this->status)) {
+        if (! empty($this->status)) {
             $summary['search_criteria'][] = "Status: {$this->status}";
         }
 
-        if (!empty($this->employmentType)) {
+        if (! empty($this->employmentType)) {
             $summary['search_criteria'][] = "Employment Type: {$this->employmentType}";
         }
 
         return $summary;
     }
 }
-

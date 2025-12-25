@@ -5,13 +5,6 @@ namespace Fereydooni\Shopping\App\Listeners\ProviderSpecialization;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Cache;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationCreated;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationUpdated;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationVerified;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationRejected;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationActivated;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationDeactivated;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderPrimarySpecializationChanged;
 
 class UpdateProviderSpecializationMetrics implements ShouldQueue
 {
@@ -98,7 +91,7 @@ class UpdateProviderSpecializationMetrics implements ShouldQueue
     {
         $cacheKeys = [
             "proficiency_specialization_count_{$proficiencyLevel}",
-            "proficiency_distribution",
+            'proficiency_distribution',
         ];
 
         foreach ($cacheKeys as $key) {

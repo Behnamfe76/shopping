@@ -2,23 +2,21 @@
 
 namespace Fereydooni\Shopping\app\Repositories;
 
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-use Fereydooni\Shopping\app\Models\Address;
 use Fereydooni\Shopping\app\DTOs\AddressDTO;
 use Fereydooni\Shopping\app\Enums\AddressType;
+use Fereydooni\Shopping\app\Models\Address;
 use Fereydooni\Shopping\app\Repositories\Interfaces\AddressRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\DB;
 
 class AddressRepository implements AddressRepositoryInterface
 {
     public function __construct(
         private Address $model
-    ) {
-    }
+    ) {}
 
     // Basic CRUD Operations
     public function all(): Collection
@@ -62,7 +60,7 @@ class AddressRepository implements AddressRepositoryInterface
         return $this->model->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->model->cursorPaginate($perPage, ['*'], 'cursor', $cursor);
     }
@@ -78,7 +76,7 @@ class AddressRepository implements AddressRepositoryInterface
         return $this->model->where('user_id', $userId)->simplePaginate($perPage);
     }
 
-    public function cursorPaginateByUser(int $userId, int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginateByUser(int $userId, int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->model->where('user_id', $userId)->cursorPaginate($perPage, ['*'], 'cursor', $cursor);
     }
@@ -87,24 +85,28 @@ class AddressRepository implements AddressRepositoryInterface
     public function findDTO(int $id): ?AddressDTO
     {
         $address = $this->find($id);
+
         return $address ? AddressDTO::fromModel($address) : null;
     }
 
     public function findByUserDTO(int $userId): Collection
     {
         $addresses = $this->findByUser($userId);
-        return $addresses->map(fn($address) => AddressDTO::fromModel($address));
+
+        return $addresses->map(fn ($address) => AddressDTO::fromModel($address));
     }
 
     public function createAndReturnDTO(array $data): AddressDTO
     {
         $address = $this->create($data);
+
         return AddressDTO::fromModel($address);
     }
 
     public function updateAndReturnDTO(Address $address, array $data): ?AddressDTO
     {
         $updated = $this->update($address, $data);
+
         return $updated ? AddressDTO::fromModel($address->fresh()) : null;
     }
 
@@ -132,6 +134,7 @@ class AddressRepository implements AddressRepositoryInterface
     public function getDefaultDTOByUser(int $userId, AddressType $type): ?AddressDTO
     {
         $address = $this->getDefaultByUser($userId, $type);
+
         return $address ? AddressDTO::fromModel($address) : null;
     }
 
@@ -165,7 +168,8 @@ class AddressRepository implements AddressRepositoryInterface
     public function getDefaultAddressesDTO(int $userId): Collection
     {
         $addresses = $this->getDefaultAddresses($userId);
-        return $addresses->map(fn($address) => AddressDTO::fromModel($address));
+
+        return $addresses->map(fn ($address) => AddressDTO::fromModel($address));
     }
 
     // Search Methods
@@ -207,13 +211,15 @@ class AddressRepository implements AddressRepositoryInterface
     public function searchDTO(string $query): Collection
     {
         $addresses = $this->search($query);
-        return $addresses->map(fn($address) => AddressDTO::fromModel($address));
+
+        return $addresses->map(fn ($address) => AddressDTO::fromModel($address));
     }
 
     public function searchByUserDTO(int $userId, string $query): Collection
     {
         $addresses = $this->searchByUser($userId, $query);
-        return $addresses->map(fn($address) => AddressDTO::fromModel($address));
+
+        return $addresses->map(fn ($address) => AddressDTO::fromModel($address));
     }
 
     // Address Count Methods
@@ -245,7 +251,7 @@ class AddressRepository implements AddressRepositoryInterface
 
     public function canSetDefault(Address $address): bool
     {
-        return !$this->hasDefaultAddress($address->user_id, $address->type) || $address->is_default;
+        return ! $this->hasDefaultAddress($address->user_id, $address->type) || $address->is_default;
     }
 
     public function isDefault(Address $address): bool
@@ -360,14 +366,14 @@ class AddressRepository implements AddressRepositoryInterface
     public function getGeographicData(int $addressId): array
     {
         $address = $this->find($addressId);
-        if (!$address) {
+        if (! $address) {
             return [];
         }
 
         return $address->getGeographicData();
     }
 
-    public function getAddressesByGeographicHierarchy(int $countryId = null, int $provinceId = null, int $countyId = null, int $cityId = null): Collection
+    public function getAddressesByGeographicHierarchy(?int $countryId = null, ?int $provinceId = null, ?int $countyId = null, ?int $cityId = null): Collection
     {
         $query = $this->model->query();
 
@@ -395,18 +401,18 @@ class AddressRepository implements AddressRepositoryInterface
         // Basic validation
         $requiredFields = ['user_id', 'first_name', 'last_name', 'address_line_1', 'postal_code', 'type'];
         foreach ($requiredFields as $field) {
-            if (!isset($data[$field]) || empty($data[$field])) {
+            if (! isset($data[$field]) || empty($data[$field])) {
                 return false;
             }
         }
 
         // Geographic validation using the trait
         if (isset($data['country_id']) || isset($data['province_id']) || isset($data['county_id']) || isset($data['city_id']) || isset($data['village_id'])) {
-            $tempAddress = new Address();
+            $tempAddress = new Address;
             $tempAddress->fill($data);
             $geographicErrors = $tempAddress->validateGeographicRelationships();
 
-            if (!empty($geographicErrors)) {
+            if (! empty($geographicErrors)) {
                 return false;
             }
         }

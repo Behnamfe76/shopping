@@ -2,28 +2,28 @@
 
 namespace Fereydooni\Shopping\App\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Rule;
-use Fereydooni\Shopping\App\Models\ProviderSpecialization;
-use Fereydooni\Shopping\App\Enums\SpecializationCategory;
-use Fereydooni\Shopping\App\Enums\ProficiencyLevel;
-use Fereydooni\Shopping\App\Enums\VerificationStatus;
 use Carbon\Carbon;
+use Fereydooni\Shopping\App\Enums\ProficiencyLevel;
+use Fereydooni\Shopping\App\Enums\SpecializationCategory;
+use Fereydooni\Shopping\App\Enums\VerificationStatus;
+use Fereydooni\Shopping\App\Models\ProviderSpecialization;
+use Spatie\LaravelData\Attributes\Validation\Rule;
+use Spatie\LaravelData\Data;
 
 class ProviderSpecializationDTO extends Data
 {
     public function __construct(
-        public ?int $id = null,
+        public ?int $id,
         public int $provider_id,
         #[Rule('required|string|max:255')]
         public string $specialization_name,
-        #[Rule('required|string|in:' . implode(',', SpecializationCategory::values()))]
+        #[Rule('required|string|in:'.implode(',', SpecializationCategory::values()))]
         public string $category,
         #[Rule('nullable|string|max:1000')]
-        public ?string $description = null,
+        public ?string $description,
         #[Rule('nullable|integer|min:0|max:50')]
-        public ?int $years_experience = 0,
-        #[Rule('required|string|in:' . implode(',', ProficiencyLevel::values()))]
+        public ?int $years_experience,
+        #[Rule('required|string|in:'.implode(',', ProficiencyLevel::values()))]
         public string $proficiency_level,
         #[Rule('nullable|array')]
         public ?array $certifications = null,
@@ -31,7 +31,7 @@ class ProviderSpecializationDTO extends Data
         public bool $is_primary = false,
         #[Rule('boolean')]
         public bool $is_active = true,
-        #[Rule('required|string|in:' . implode(',', VerificationStatus::values()))]
+        #[Rule('required|string|in:'.implode(',', VerificationStatus::values()))]
         public string $verification_status = VerificationStatus::UNVERIFIED->value,
         #[Rule('nullable|date')]
         public ?Carbon $verified_at = null,
@@ -162,14 +162,14 @@ class ProviderSpecializationDTO extends Data
         return [
             'provider_id' => ['required', 'integer', 'exists:providers,id'],
             'specialization_name' => ['required', 'string', 'max:255'],
-            'category' => ['required', 'string', 'in:' . implode(',', SpecializationCategory::values())],
+            'category' => ['required', 'string', 'in:'.implode(',', SpecializationCategory::values())],
             'description' => ['nullable', 'string', 'max:1000'],
             'years_experience' => ['nullable', 'integer', 'min:0', 'max:50'],
-            'proficiency_level' => ['required', 'string', 'in:' . implode(',', ProficiencyLevel::values())],
+            'proficiency_level' => ['required', 'string', 'in:'.implode(',', ProficiencyLevel::values())],
             'certifications' => ['nullable', 'array'],
             'is_primary' => ['boolean'],
             'is_active' => ['boolean'],
-            'verification_status' => ['required', 'string', 'in:' . implode(',', VerificationStatus::values())],
+            'verification_status' => ['required', 'string', 'in:'.implode(',', VerificationStatus::values())],
             'verified_at' => ['nullable', 'date'],
             'verified_by' => ['nullable', 'integer', 'exists:users,id'],
             'notes' => ['nullable', 'array'],
@@ -184,14 +184,14 @@ class ProviderSpecializationDTO extends Data
         return [
             'provider_id' => ['sometimes', 'integer', 'exists:providers,id'],
             'specialization_name' => ['sometimes', 'string', 'max:255'],
-            'category' => ['sometimes', 'string', 'in:' . implode(',', SpecializationCategory::values())],
+            'category' => ['sometimes', 'string', 'in:'.implode(',', SpecializationCategory::values())],
             'description' => ['nullable', 'string', 'max:1000'],
             'years_experience' => ['nullable', 'integer', 'min:0', 'max:50'],
-            'proficiency_level' => ['sometimes', 'string', 'in:' . implode(',', ProficiencyLevel::values())],
+            'proficiency_level' => ['sometimes', 'string', 'in:'.implode(',', ProficiencyLevel::values())],
             'certifications' => ['nullable', 'array'],
             'is_primary' => ['sometimes', 'boolean'],
             'is_active' => ['sometimes', 'boolean'],
-            'verification_status' => ['sometimes', 'string', 'in:' . implode(',', VerificationStatus::values())],
+            'verification_status' => ['sometimes', 'string', 'in:'.implode(',', VerificationStatus::values())],
             'verified_at' => ['nullable', 'date'],
             'verified_by' => ['nullable', 'integer', 'exists:users,id'],
             'notes' => ['nullable', 'array'],
@@ -355,9 +355,10 @@ class ProviderSpecializationDTO extends Data
      */
     private function calculateAgeInDays(): int
     {
-        if (!$this->created_at) {
+        if (! $this->created_at) {
             return 0;
         }
+
         return $this->created_at->diffInDays(now());
     }
 
@@ -366,9 +367,10 @@ class ProviderSpecializationDTO extends Data
      */
     private function calculateDaysSinceVerification(): ?int
     {
-        if (!$this->verified_at) {
+        if (! $this->verified_at) {
             return null;
         }
+
         return $this->verified_at->diffInDays(now());
     }
 
@@ -377,9 +379,10 @@ class ProviderSpecializationDTO extends Data
      */
     private function calculateNeedsRenewal(int $renewalThresholdDays = 365): bool
     {
-        if (!$this->verified_at) {
+        if (! $this->verified_at) {
             return false;
         }
+
         return $this->verified_at->diffInDays(now()) > $renewalThresholdDays;
     }
 
@@ -402,17 +405,18 @@ class ProviderSpecializationDTO extends Data
      */
     public function getLatestNote(string $type = 'general'): ?array
     {
-        if (!$this->notes) {
+        if (! $this->notes) {
             return null;
         }
 
-        $typeNotes = array_filter($this->notes, fn($note) => $note['type'] === $type);
+        $typeNotes = array_filter($this->notes, fn ($note) => $note['type'] === $type);
 
         if (empty($typeNotes)) {
             return null;
         }
 
-        usort($typeNotes, fn($a, $b) => strtotime($b['timestamp']) - strtotime($a['timestamp']));
+        usort($typeNotes, fn ($a, $b) => strtotime($b['timestamp']) - strtotime($a['timestamp']));
+
         return reset($typeNotes);
     }
 
@@ -421,11 +425,11 @@ class ProviderSpecializationDTO extends Data
      */
     public function getNotesByType(string $type): array
     {
-        if (!$this->notes) {
+        if (! $this->notes) {
             return [];
         }
 
-        return array_filter($this->notes, fn($note) => $note['type'] === $type);
+        return array_filter($this->notes, fn ($note) => $note['type'] === $type);
     }
 
     /**
@@ -433,7 +437,7 @@ class ProviderSpecializationDTO extends Data
      */
     public function hasCertifications(): bool
     {
-        return !empty($this->certifications);
+        return ! empty($this->certifications);
     }
 
     /**
@@ -460,7 +464,7 @@ class ProviderSpecializationDTO extends Data
         }
 
         if ($this->is_primary) {
-            $parts[] = "[Primary]";
+            $parts[] = '[Primary]';
         }
 
         return implode(' ', $parts);

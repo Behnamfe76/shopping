@@ -11,6 +11,7 @@ class CustomerSuspended
     use Dispatchable, SerializesModels;
 
     public Customer $customer;
+
     public ?string $reason;
 
     /**

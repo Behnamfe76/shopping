@@ -2,31 +2,30 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Required;
-use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
-use Spatie\LaravelData\Attributes\Validation\Numeric;
-use Spatie\LaravelData\Attributes\Validation\Date;
-use Spatie\LaravelData\Attributes\Validation\In;
-use Spatie\LaravelData\Attributes\Validation\Nullable;
-use Spatie\LaravelData\Attributes\Validation\Boolean;
-use Spatie\LaravelData\Attributes\Validation\ArrayType;
-use Spatie\LaravelData\Attributes\Validation\Max;
-use Spatie\LaravelData\Attributes\Validation\Min;
-use Spatie\LaravelData\Attributes\Validation\Decimal;
-use Fereydooni\Shopping\app\Models\EmployeeBenefits;
-use Fereydooni\Shopping\app\Enums\BenefitType;
+use Carbon\Carbon;
 use Fereydooni\Shopping\app\Enums\BenefitStatus;
+use Fereydooni\Shopping\app\Enums\BenefitType;
 use Fereydooni\Shopping\app\Enums\CoverageLevel;
 use Fereydooni\Shopping\app\Enums\NetworkType;
-use Carbon\Carbon;
+use Fereydooni\Shopping\app\Models\EmployeeBenefits;
+use Spatie\LaravelData\Attributes\Validation\ArrayType;
+use Spatie\LaravelData\Attributes\Validation\Boolean;
+use Spatie\LaravelData\Attributes\Validation\Date;
+use Spatie\LaravelData\Attributes\Validation\In;
+use Spatie\LaravelData\Attributes\Validation\IntegerType;
+use Spatie\LaravelData\Attributes\Validation\Max;
+use Spatie\LaravelData\Attributes\Validation\Min;
+use Spatie\LaravelData\Attributes\Validation\Nullable;
+use Spatie\LaravelData\Attributes\Validation\Numeric;
+use Spatie\LaravelData\Attributes\Validation\Required;
+use Spatie\LaravelData\Attributes\Validation\StringType;
+use Spatie\LaravelData\Data;
 
 class EmployeeBenefitsDTO extends Data
 {
     public function __construct(
         #[Nullable]
-        public ?int $id = null,
+        public ?int $id,
 
         #[Required, IntegerType]
         public int $employee_id,
@@ -41,16 +40,16 @@ class EmployeeBenefitsDTO extends Data
         public string $provider,
 
         #[Nullable, StringType, Max(100)]
-        public ?string $plan_id = null,
+        public ?string $plan_id,
 
         #[Nullable, Date]
-        public ?string $enrollment_date = null,
+        public ?string $enrollment_date,
 
         #[Required, Date]
         public string $effective_date,
 
         #[Nullable, Date]
-        public ?string $end_date = null,
+        public ?string $end_date,
 
         #[Required, StringType, In(BenefitStatus::values())]
         public string $status,
@@ -71,16 +70,16 @@ class EmployeeBenefitsDTO extends Data
         public float $total_cost,
 
         #[Nullable, Numeric, Min(0)]
-        public ?float $deductible = null,
+        public ?float $deductible,
 
         #[Nullable, Numeric, Min(0)]
-        public ?float $co_pay = null,
+        public ?float $co_pay,
 
         #[Nullable, Numeric, Min(0)]
-        public ?float $co_insurance = null,
+        public ?float $co_insurance,
 
         #[Nullable, Numeric, Min(0)]
-        public ?float $max_out_of_pocket = null,
+        public ?float $max_out_of_pocket,
 
         #[Required, StringType, In(NetworkType::values())]
         public string $network_type,
@@ -99,8 +98,7 @@ class EmployeeBenefitsDTO extends Data
 
         #[Nullable]
         public ?string $updated_at = null,
-    ) {
-    }
+    ) {}
 
     /**
      * Create DTO from EmployeeBenefits model
@@ -143,15 +141,15 @@ class EmployeeBenefitsDTO extends Data
     {
         return [
             'employee_id' => ['required', 'integer', 'exists:employees,id'],
-            'benefit_type' => ['required', 'string', 'in:' . implode(',', BenefitType::values())],
+            'benefit_type' => ['required', 'string', 'in:'.implode(',', BenefitType::values())],
             'benefit_name' => ['required', 'string', 'max:255'],
             'provider' => ['required', 'string', 'max:255'],
             'plan_id' => ['nullable', 'string', 'max:100'],
             'enrollment_date' => ['nullable', 'date'],
             'effective_date' => ['required', 'date', 'after_or_equal:today'],
             'end_date' => ['nullable', 'date', 'after:effective_date'],
-            'status' => ['required', 'string', 'in:' . implode(',', BenefitStatus::values())],
-            'coverage_level' => ['required', 'string', 'in:' . implode(',', CoverageLevel::values())],
+            'status' => ['required', 'string', 'in:'.implode(',', BenefitStatus::values())],
+            'coverage_level' => ['required', 'string', 'in:'.implode(',', CoverageLevel::values())],
             'premium_amount' => ['required', 'numeric', 'min:0'],
             'employee_contribution' => ['required', 'numeric', 'min:0'],
             'employer_contribution' => ['required', 'numeric', 'min:0'],
@@ -160,7 +158,7 @@ class EmployeeBenefitsDTO extends Data
             'co_pay' => ['nullable', 'numeric', 'min:0'],
             'co_insurance' => ['nullable', 'numeric', 'min:0'],
             'max_out_of_pocket' => ['nullable', 'numeric', 'min:0'],
-            'network_type' => ['required', 'string', 'in:' . implode(',', NetworkType::values())],
+            'network_type' => ['required', 'string', 'in:'.implode(',', NetworkType::values())],
             'is_active' => ['required', 'boolean'],
             'notes' => ['nullable', 'string', 'max:1000'],
             'documents' => ['nullable', 'array'],
@@ -254,7 +252,7 @@ class EmployeeBenefitsDTO extends Data
     {
         return in_array($this->status, [
             BenefitStatus::PENDING->value,
-            BenefitStatus::ENROLLED->value
+            BenefitStatus::ENROLLED->value,
         ]);
     }
 
@@ -273,7 +271,7 @@ class EmployeeBenefitsDTO extends Data
     {
         return in_array($this->status, [
             BenefitStatus::PENDING->value,
-            BenefitStatus::ENROLLED->value
+            BenefitStatus::ENROLLED->value,
         ]);
     }
 

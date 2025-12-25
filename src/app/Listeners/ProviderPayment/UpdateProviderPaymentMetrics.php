@@ -2,15 +2,15 @@
 
 namespace Fereydooni\Shopping\App\Listeners\ProviderPayment;
 
+use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentCompleted;
+use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentCreated;
+use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentFailed;
+use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentProcessed;
+use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentReconciled;
+use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
-use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentCreated;
-use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentUpdated;
-use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentProcessed;
-use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentCompleted;
-use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentFailed;
-use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentReconciled;
 
 class UpdateProviderPaymentMetrics implements ShouldQueue
 {
@@ -30,14 +30,14 @@ class UpdateProviderPaymentMetrics implements ShouldQueue
 
             Log::info('Provider payment metrics updated successfully', [
                 'payment_id' => $payment->id,
-                'event_type' => $eventType
+                'event_type' => $eventType,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to update provider payment metrics', [
                 'error' => $e->getMessage(),
                 'event_type' => get_class($event),
-                'payment_id' => $event->payment->id ?? 'unknown'
+                'payment_id' => $event->payment->id ?? 'unknown',
             ]);
         }
     }
@@ -79,7 +79,7 @@ class UpdateProviderPaymentMetrics implements ShouldQueue
             'currency' => $payment->currency,
             'status' => $payment->status,
             'payment_method' => $payment->payment_method,
-            'timestamp' => now()
+            'timestamp' => now(),
         ];
 
         Log::info('Updating payment metrics', $metricsData);

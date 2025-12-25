@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Permissions;
 
-use Illuminate\Support\Facades\Gate;
-use Fereydooni\Shopping\app\Models\EmployeePosition;
 use App\Models\User;
+use Fereydooni\Shopping\app\Models\EmployeePosition;
+use Illuminate\Support\Facades\Gate;
 
 class EmployeePositionPermissions
 {
@@ -40,13 +40,13 @@ class EmployeePositionPermissions
         });
 
         // Edit permissions
-        Gate::define('employee-position.edit', function (User $user, EmployeePosition $position = null) {
-            if (!$user->hasPermissionTo('employee-position.edit')) {
+        Gate::define('employee-position.edit', function (User $user, ?EmployeePosition $position = null) {
+            if (! $user->hasPermissionTo('employee-position.edit')) {
                 return false;
             }
 
             // If no specific position, check general edit permission
-            if (!$position) {
+            if (! $position) {
                 return true;
             }
 
@@ -55,13 +55,13 @@ class EmployeePositionPermissions
         });
 
         // Delete permissions
-        Gate::define('employee-position.delete', function (User $user, EmployeePosition $position = null) {
-            if (!$user->hasPermissionTo('employee-position.delete')) {
+        Gate::define('employee-position.delete', function (User $user, ?EmployeePosition $position = null) {
+            if (! $user->hasPermissionTo('employee-position.delete')) {
                 return false;
             }
 
             // If no specific position, check general delete permission
-            if (!$position) {
+            if (! $position) {
                 return true;
             }
 
@@ -70,13 +70,13 @@ class EmployeePositionPermissions
         });
 
         // Special permissions
-        Gate::define('employee-position.update-salary', function (User $user, EmployeePosition $position = null) {
-            if (!$user->hasPermissionTo('employee-position.update-salary')) {
+        Gate::define('employee-position.update-salary', function (User $user, ?EmployeePosition $position = null) {
+            if (! $user->hasPermissionTo('employee-position.update-salary')) {
                 return false;
             }
 
             // If no specific position, check general salary update permission
-            if (!$position) {
+            if (! $position) {
                 return true;
             }
 
@@ -84,13 +84,13 @@ class EmployeePositionPermissions
             return $user->hasPermissionTo('employee-position.update-salary');
         });
 
-        Gate::define('employee-position.set-hiring', function (User $user, EmployeePosition $position = null) {
-            if (!$user->hasPermissionTo('employee-position.set-hiring')) {
+        Gate::define('employee-position.set-hiring', function (User $user, ?EmployeePosition $position = null) {
+            if (! $user->hasPermissionTo('employee-position.set-hiring')) {
                 return false;
             }
 
             // If no specific position, check general hiring permission
-            if (!$position) {
+            if (! $position) {
                 return true;
             }
 
@@ -224,7 +224,7 @@ class EmployeePositionPermissions
      */
     public static function getPermissionsByRole(string $role): array
     {
-        return match($role) {
+        return match ($role) {
             'basic' => self::getBasicPermissions(),
             'manager' => self::getManagerPermissions(),
             'hr' => self::getHRPermissions(),

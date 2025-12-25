@@ -2,31 +2,30 @@
 
 namespace Fereydooni\Shopping\app\Services;
 
-use Fereydooni\Shopping\app\Repositories\Interfaces\OrderStatusHistoryRepositoryInterface;
-use Fereydooni\Shopping\app\Models\OrderStatusHistory;
 use Fereydooni\Shopping\app\DTOs\OrderStatusHistoryDTO;
-use Fereydooni\Shopping\app\Traits\HasCrudOperations;
+use Fereydooni\Shopping\app\Models\OrderStatusHistory;
+use Fereydooni\Shopping\app\Repositories\Interfaces\OrderStatusHistoryRepositoryInterface;
+use Fereydooni\Shopping\app\Traits\HasAnalyticsOperations;
 use Fereydooni\Shopping\app\Traits\HasAuditTrail;
+use Fereydooni\Shopping\app\Traits\HasCrudOperations;
 use Fereydooni\Shopping\app\Traits\HasSearchOperations;
 use Fereydooni\Shopping\app\Traits\HasTimelineOperations;
-use Fereydooni\Shopping\app\Traits\HasAnalyticsOperations;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 
 class OrderStatusHistoryService
 {
-    use HasCrudOperations;
+    use HasAnalyticsOperations;
     use HasAuditTrail;
+    use HasCrudOperations;
     use HasSearchOperations;
     use HasTimelineOperations;
-    use HasAnalyticsOperations;
 
     public function __construct(
         protected OrderStatusHistoryRepositoryInterface $repository
-    ) {
-    }
+    ) {}
 
     /**
      * Get all status history records
@@ -55,7 +54,7 @@ class OrderStatusHistoryService
     /**
      * Get cursor paginated status history records
      */
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->repository->cursorPaginate($perPage, $cursor);
     }
@@ -335,7 +334,7 @@ class OrderStatusHistoryService
     /**
      * Log status change
      */
-    public function logStatusChange(int $orderId, string $oldStatus, string $newStatus, int $changedBy, string $note = null, array $metadata = []): OrderStatusHistory
+    public function logStatusChange(int $orderId, string $oldStatus, string $newStatus, int $changedBy, ?string $note = null, array $metadata = []): OrderStatusHistory
     {
         return $this->repository->logStatusChange($orderId, $oldStatus, $newStatus, $changedBy, $note, $metadata);
     }
@@ -343,7 +342,7 @@ class OrderStatusHistoryService
     /**
      * Log status change and return DTO
      */
-    public function logStatusChangeDTO(int $orderId, string $oldStatus, string $newStatus, int $changedBy, string $note = null, array $metadata = []): OrderStatusHistoryDTO
+    public function logStatusChangeDTO(int $orderId, string $oldStatus, string $newStatus, int $changedBy, ?string $note = null, array $metadata = []): OrderStatusHistoryDTO
     {
         return $this->repository->logStatusChangeDTO($orderId, $oldStatus, $newStatus, $changedBy, $note, $metadata);
     }

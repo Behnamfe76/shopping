@@ -2,16 +2,16 @@
 
 namespace App\Listeners\EmployeePosition;
 
+use App\Events\EmployeePosition\EmployeePositionArchived;
 use App\Events\EmployeePosition\EmployeePositionCreated;
-use App\Events\EmployeePosition\EmployeePositionUpdated;
 use App\Events\EmployeePosition\EmployeePositionSalaryUpdated;
 use App\Events\EmployeePosition\EmployeePositionSetHiring;
-use App\Events\EmployeePosition\EmployeePositionArchived;
+use App\Events\EmployeePosition\EmployeePositionUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class UpdatePositionMetrics implements ShouldQueue
 {
@@ -38,7 +38,7 @@ class UpdatePositionMetrics implements ShouldQueue
             Log::error('Failed to update position metrics', [
                 'event' => get_class($event),
                 'position_id' => $event->position->id ?? null,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -64,7 +64,7 @@ class UpdatePositionMetrics implements ShouldQueue
 
         Log::info('Position metrics updated for new position', [
             'position_id' => $position->id,
-            'title' => $position->title
+            'title' => $position->title,
         ]);
     }
 
@@ -97,7 +97,7 @@ class UpdatePositionMetrics implements ShouldQueue
         Log::info('Position metrics updated for position update', [
             'position_id' => $position->id,
             'title' => $position->title,
-            'changes' => $changes
+            'changes' => $changes,
         ]);
     }
 
@@ -122,7 +122,7 @@ class UpdatePositionMetrics implements ShouldQueue
 
         Log::info('Salary metrics updated for position', [
             'position_id' => $position->id,
-            'title' => $position->title
+            'title' => $position->title,
         ]);
     }
 
@@ -144,7 +144,7 @@ class UpdatePositionMetrics implements ShouldQueue
 
         Log::info('Hiring metrics updated for position', [
             'position_id' => $position->id,
-            'title' => $position->title
+            'title' => $position->title,
         ]);
     }
 
@@ -172,7 +172,7 @@ class UpdatePositionMetrics implements ShouldQueue
 
         Log::info('Archive metrics updated for position', [
             'position_id' => $position->id,
-            'title' => $position->title
+            'title' => $position->title,
         ]);
     }
 

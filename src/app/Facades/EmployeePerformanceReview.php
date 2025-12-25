@@ -2,8 +2,8 @@
 
 namespace App\Facades;
 
-use App\Services\EmployeePerformanceReviewService;
 use App\DTOs\EmployeePerformanceReviewDTO;
+use App\Services\EmployeePerformanceReviewService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Facade;
 
@@ -159,7 +159,7 @@ class EmployeePerformanceReview extends Facade
     /**
      * Get upcoming reviews
      */
-    public static function getUpcomingReviews(string $date = null): Collection
+    public static function getUpcomingReviews(?string $date = null): Collection
     {
         return static::getFacadeRoot()->getUpcomingReviews($date);
     }
@@ -271,7 +271,7 @@ class EmployeePerformanceReview extends Facade
     /**
      * Bulk reject reviews
      */
-    public static function bulkRejectReviews(array $reviewIds, string $reason = null): bool
+    public static function bulkRejectReviews(array $reviewIds, ?string $reason = null): bool
     {
         return static::getFacadeRoot()->bulkRejectReviews($reviewIds, $reason);
     }
@@ -303,7 +303,7 @@ class EmployeePerformanceReview extends Facade
     /**
      * Reject a review
      */
-    public static function rejectReview(int $id, int $rejectedBy, string $reason = null): bool
+    public static function rejectReview(int $id, int $rejectedBy, ?string $reason = null): bool
     {
         return static::getFacadeRoot()->rejectReview($id, $rejectedBy, $reason);
     }
@@ -383,7 +383,7 @@ class EmployeePerformanceReview extends Facade
     /**
      * Get completed reviews count
      */
-    public static function getCompletedReviewsCount(string $startDate = null, string $endDate = null): int
+    public static function getCompletedReviewsCount(?string $startDate = null, ?string $endDate = null): int
     {
         return static::getFacadeRoot()->repository->getCompletedReviewsCount($startDate, $endDate);
     }
@@ -442,6 +442,7 @@ class EmployeePerformanceReview extends Facade
     public static function canSubmitReview(int $reviewId): bool
     {
         $review = static::getFacadeRoot()->repository->find($reviewId);
+
         return $review ? $review->canBeSubmitted() : false;
     }
 
@@ -451,6 +452,7 @@ class EmployeePerformanceReview extends Facade
     public static function canApproveReview(int $reviewId): bool
     {
         $review = static::getFacadeRoot()->repository->find($reviewId);
+
         return $review ? $review->canBeApproved() : false;
     }
 
@@ -460,6 +462,7 @@ class EmployeePerformanceReview extends Facade
     public static function canRejectReview(int $reviewId): bool
     {
         $review = static::getFacadeRoot()->repository->find($reviewId);
+
         return $review ? $review->canBeRejected() : false;
     }
 
@@ -469,6 +472,7 @@ class EmployeePerformanceReview extends Facade
     public static function isReviewEditable(int $reviewId): bool
     {
         $review = static::getFacadeRoot()->repository->find($reviewId);
+
         return $review ? $review->isEditable() : false;
     }
 

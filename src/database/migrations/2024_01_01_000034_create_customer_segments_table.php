@@ -23,19 +23,19 @@ return new class extends Migration
                 'transactional',
                 'engagement',
                 'loyalty',
-                'custom'
+                'custom',
             ]);
             $table->enum('status', [
                 'active',
                 'inactive',
                 'draft',
-                'archived'
+                'archived',
             ])->default('active');
             $table->enum('priority', [
                 'low',
                 'normal',
                 'high',
-                'critical'
+                'critical',
             ])->default('normal');
             $table->json('criteria')->nullable();
             $table->json('conditions')->nullable();

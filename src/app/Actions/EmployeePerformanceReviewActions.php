@@ -2,15 +2,13 @@
 
 namespace App\Actions;
 
-use App\Models\EmployeePerformanceReview;
 use App\DTOs\EmployeePerformanceReviewDTO;
+use App\Models\EmployeePerformanceReview;
 use App\Repositories\Interfaces\EmployeePerformanceReviewRepositoryInterface;
-use App\Enums\EmployeePerformanceReviewStatus;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
-use Carbon\Carbon;
 
 class EmployeePerformanceReviewActions
 {
@@ -43,7 +41,7 @@ class EmployeePerformanceReviewActions
             Log::info('Performance review created', [
                 'review_id' => $review->id,
                 'employee_id' => $review->employee_id,
-                'reviewer_id' => $review->reviewer_id
+                'reviewer_id' => $review->reviewer_id,
             ]);
 
             DB::commit();
@@ -54,7 +52,7 @@ class EmployeePerformanceReviewActions
             DB::rollBack();
             Log::error('Failed to create performance review', [
                 'error' => $e->getMessage(),
-                'data' => $data
+                'data' => $data,
             ]);
             throw $e;
         }
@@ -69,7 +67,7 @@ class EmployeePerformanceReviewActions
             DB::beginTransaction();
 
             // Check if review can be edited
-            if (!$review->isEditable()) {
+            if (! $review->isEditable()) {
                 throw new \Exception('Review cannot be edited in its current status');
             }
 
@@ -85,7 +83,7 @@ class EmployeePerformanceReviewActions
             // Log the action
             Log::info('Performance review updated', [
                 'review_id' => $review->id,
-                'employee_id' => $review->employee_id
+                'employee_id' => $review->employee_id,
             ]);
 
             DB::commit();
@@ -97,7 +95,7 @@ class EmployeePerformanceReviewActions
             Log::error('Failed to update performance review', [
                 'error' => $e->getMessage(),
                 'review_id' => $review->id,
-                'data' => $data
+                'data' => $data,
             ]);
             throw $e;
         }
@@ -123,7 +121,7 @@ class EmployeePerformanceReviewActions
                 // Log the action
                 Log::info('Performance review deleted', [
                     'review_id' => $review->id,
-                    'employee_id' => $review->employee_id
+                    'employee_id' => $review->employee_id,
                 ]);
             }
 
@@ -135,7 +133,7 @@ class EmployeePerformanceReviewActions
             DB::rollBack();
             Log::error('Failed to delete performance review', [
                 'error' => $e->getMessage(),
-                'review_id' => $review->id
+                'review_id' => $review->id,
             ]);
             throw $e;
         }
@@ -150,7 +148,7 @@ class EmployeePerformanceReviewActions
             DB::beginTransaction();
 
             // Check if review can be submitted
-            if (!$review->canBeSubmitted()) {
+            if (! $review->canBeSubmitted()) {
                 throw new \Exception('Review cannot be submitted in its current state');
             }
 
@@ -161,7 +159,7 @@ class EmployeePerformanceReviewActions
                 // Log the action
                 Log::info('Performance review submitted', [
                     'review_id' => $review->id,
-                    'employee_id' => $review->employee_id
+                    'employee_id' => $review->employee_id,
                 ]);
 
                 // TODO: Send notification to employee
@@ -176,7 +174,7 @@ class EmployeePerformanceReviewActions
             DB::rollBack();
             Log::error('Failed to submit performance review', [
                 'error' => $e->getMessage(),
-                'review_id' => $review->id
+                'review_id' => $review->id,
             ]);
             throw $e;
         }
@@ -191,7 +189,7 @@ class EmployeePerformanceReviewActions
             DB::beginTransaction();
 
             // Check if review can be submitted for approval
-            if (!$review->isSubmitted()) {
+            if (! $review->isSubmitted()) {
                 throw new \Exception('Review must be submitted before it can be sent for approval');
             }
 
@@ -202,7 +200,7 @@ class EmployeePerformanceReviewActions
                 // Log the action
                 Log::info('Performance review submitted for approval', [
                     'review_id' => $review->id,
-                    'employee_id' => $review->employee_id
+                    'employee_id' => $review->employee_id,
                 ]);
 
                 // TODO: Send notification to approver
@@ -217,7 +215,7 @@ class EmployeePerformanceReviewActions
             DB::rollBack();
             Log::error('Failed to submit review for approval', [
                 'error' => $e->getMessage(),
-                'review_id' => $review->id
+                'review_id' => $review->id,
             ]);
             throw $e;
         }
@@ -232,7 +230,7 @@ class EmployeePerformanceReviewActions
             DB::beginTransaction();
 
             // Check if review can be approved
-            if (!$review->canBeApproved()) {
+            if (! $review->canBeApproved()) {
                 throw new \Exception('Review cannot be approved in its current status');
             }
 
@@ -244,7 +242,7 @@ class EmployeePerformanceReviewActions
                 Log::info('Performance review approved', [
                     'review_id' => $review->id,
                     'employee_id' => $review->employee_id,
-                    'approved_by' => $approvedBy
+                    'approved_by' => $approvedBy,
                 ]);
 
                 // TODO: Send notification to employee
@@ -260,7 +258,7 @@ class EmployeePerformanceReviewActions
             Log::error('Failed to approve performance review', [
                 'error' => $e->getMessage(),
                 'review_id' => $review->id,
-                'approved_by' => $approvedBy
+                'approved_by' => $approvedBy,
             ]);
             throw $e;
         }
@@ -269,13 +267,13 @@ class EmployeePerformanceReviewActions
     /**
      * Reject a performance review
      */
-    public function rejectReview(EmployeePerformanceReview $review, int $rejectedBy, string $reason = null): bool
+    public function rejectReview(EmployeePerformanceReview $review, int $rejectedBy, ?string $reason = null): bool
     {
         try {
             DB::beginTransaction();
 
             // Check if review can be rejected
-            if (!$review->canBeRejected()) {
+            if (! $review->canBeRejected()) {
                 throw new \Exception('Review cannot be rejected in its current status');
             }
 
@@ -288,7 +286,7 @@ class EmployeePerformanceReviewActions
                     'review_id' => $review->id,
                     'employee_id' => $review->employee_id,
                     'rejected_by' => $rejectedBy,
-                    'reason' => $reason
+                    'reason' => $reason,
                 ]);
 
                 // TODO: Send notification to employee
@@ -304,7 +302,7 @@ class EmployeePerformanceReviewActions
             Log::error('Failed to reject performance review', [
                 'error' => $e->getMessage(),
                 'review_id' => $review->id,
-                'rejected_by' => $rejectedBy
+                'rejected_by' => $rejectedBy,
             ]);
             throw $e;
         }
@@ -320,7 +318,7 @@ class EmployeePerformanceReviewActions
 
             Log::info('Employee rating calculated', [
                 'employee_id' => $employeeId,
-                'rating' => $rating
+                'rating' => $rating,
             ]);
 
             return $rating;
@@ -328,7 +326,7 @@ class EmployeePerformanceReviewActions
         } catch (\Exception $e) {
             Log::error('Failed to calculate employee rating', [
                 'error' => $e->getMessage(),
-                'employee_id' => $employeeId
+                'employee_id' => $employeeId,
             ]);
             throw $e;
         }
@@ -357,12 +355,12 @@ class EmployeePerformanceReviewActions
                 'approval_rate' => $statistics['approval_rate'],
                 'reviews' => $reviews ? [$reviews] : [],
                 'trends' => $this->calculateTrends($employeeId, $startDate, $endDate),
-                'recommendations' => $this->generateRecommendations($statistics)
+                'recommendations' => $this->generateRecommendations($statistics),
             ];
 
             Log::info('Performance report generated', [
                 'employee_id' => $employeeId,
-                'period' => $period
+                'period' => $period,
             ]);
 
             return $report;
@@ -371,7 +369,7 @@ class EmployeePerformanceReviewActions
             Log::error('Failed to generate performance report', [
                 'error' => $e->getMessage(),
                 'employee_id' => $employeeId,
-                'period' => $period
+                'period' => $period,
             ]);
             throw $e;
         }
@@ -384,7 +382,7 @@ class EmployeePerformanceReviewActions
     {
         try {
             // Check if reminder should be sent
-            if (!$this->shouldSendReminder($review)) {
+            if (! $this->shouldSendReminder($review)) {
                 return false;
             }
 
@@ -394,7 +392,7 @@ class EmployeePerformanceReviewActions
             // Log the action
             Log::info('Review reminder sent', [
                 'review_id' => $review->id,
-                'employee_id' => $review->employee_id
+                'employee_id' => $review->employee_id,
             ]);
 
             return true;
@@ -402,7 +400,7 @@ class EmployeePerformanceReviewActions
         } catch (\Exception $e) {
             Log::error('Failed to send review reminder', [
                 'error' => $e->getMessage(),
-                'review_id' => $review->id
+                'review_id' => $review->id,
             ]);
             throw $e;
         }
@@ -423,12 +421,12 @@ class EmployeePerformanceReviewActions
                     'performance_score',
                     'strengths',
                     'areas_for_improvement',
-                    'recommendations'
+                    'recommendations',
                 ],
                 'optional_fields' => $data['optional_fields'] ?? [
                     'employee_comments',
-                    'reviewer_comments'
-                ]
+                    'reviewer_comments',
+                ],
             ];
 
             Log::info('Review template created', ['template' => $template]);
@@ -438,7 +436,7 @@ class EmployeePerformanceReviewActions
         } catch (\Exception $e) {
             Log::error('Failed to create review template', [
                 'error' => $e->getMessage(),
-                'data' => $data
+                'data' => $data,
             ]);
             throw $e;
         }
@@ -464,7 +462,7 @@ class EmployeePerformanceReviewActions
                 // Log the action
                 Log::info('Reviewer assigned to performance review', [
                     'review_id' => $review->id,
-                    'reviewer_id' => $reviewerId
+                    'reviewer_id' => $reviewerId,
                 ]);
 
                 // TODO: Send notification to new reviewer
@@ -480,7 +478,7 @@ class EmployeePerformanceReviewActions
             Log::error('Failed to assign reviewer', [
                 'error' => $e->getMessage(),
                 'review_id' => $review->id,
-                'reviewer_id' => $reviewerId
+                'reviewer_id' => $reviewerId,
             ]);
             throw $e;
         }
@@ -507,7 +505,7 @@ class EmployeePerformanceReviewActions
                 'next_review_date' => Carbon::parse($reviewDate)->addMonths(6)->toDateString(),
                 'overall_rating' => 0.0,
                 'performance_score' => 0.0,
-                'status' => 'draft'
+                'status' => 'draft',
             ];
 
             $review = $this->createReview($data);
@@ -515,7 +513,7 @@ class EmployeePerformanceReviewActions
             Log::info('Review scheduled', [
                 'employee_id' => $employeeId,
                 'review_date' => $reviewDate,
-                'review_id' => $review->id
+                'review_id' => $review->id,
             ]);
 
             return true;
@@ -524,7 +522,7 @@ class EmployeePerformanceReviewActions
             Log::error('Failed to schedule review', [
                 'error' => $e->getMessage(),
                 'employee_id' => $employeeId,
-                'review_date' => $reviewDate
+                'review_date' => $reviewDate,
             ]);
             throw $e;
         }
@@ -545,7 +543,7 @@ class EmployeePerformanceReviewActions
         } catch (\Exception $e) {
             Log::error('Failed to export performance data', [
                 'error' => $e->getMessage(),
-                'filters' => $filters
+                'filters' => $filters,
             ]);
             throw $e;
         }
@@ -565,7 +563,7 @@ class EmployeePerformanceReviewActions
 
         } catch (\Exception $e) {
             Log::error('Failed to import performance data', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -588,7 +586,7 @@ class EmployeePerformanceReviewActions
                 'trends' => $this->calculateCompanyTrends($filters),
                 'department_performance' => $this->getDepartmentPerformance($filters),
                 'top_performers' => $this->getTopPerformers($filters),
-                'improvement_areas' => $this->getImprovementAreas($filters)
+                'improvement_areas' => $this->getImprovementAreas($filters),
             ];
 
             Log::info('Performance analytics generated', ['filters' => $filters]);
@@ -598,14 +596,14 @@ class EmployeePerformanceReviewActions
         } catch (\Exception $e) {
             Log::error('Failed to generate performance analytics', [
                 'error' => $e->getMessage(),
-                'filters' => $filters
+                'filters' => $filters,
             ]);
             throw $e;
         }
     }
 
     // Helper methods
-    protected function validateReviewData(array $data, int $reviewId = null): void
+    protected function validateReviewData(array $data, ?int $reviewId = null): void
     {
         $rules = EmployeePerformanceReviewDTO::rules();
 
@@ -648,7 +646,7 @@ class EmployeePerformanceReviewActions
         return [
             'rating_trend' => 'stable',
             'score_trend' => 'improving',
-            'completion_trend' => 'on_time'
+            'completion_trend' => 'on_time',
         ];
     }
 
@@ -676,6 +674,7 @@ class EmployeePerformanceReviewActions
 
         if ($review->next_review_date) {
             $daysUntilReview = now()->diffInDays($review->next_review_date, false);
+
             return $daysUntilReview <= 7 && $daysUntilReview > 0;
         }
 
@@ -688,7 +687,7 @@ class EmployeePerformanceReviewActions
         return [
             'overall_performance' => 'improving',
             'review_completion_rate' => 'stable',
-            'employee_satisfaction' => 'high'
+            'employee_satisfaction' => 'high',
         ];
     }
 
@@ -698,7 +697,7 @@ class EmployeePerformanceReviewActions
         return [
             'engineering' => ['avg_rating' => 4.2, 'completion_rate' => 95],
             'sales' => ['avg_rating' => 3.8, 'completion_rate' => 88],
-            'marketing' => ['avg_rating' => 4.0, 'completion_rate' => 92]
+            'marketing' => ['avg_rating' => 4.0, 'completion_rate' => 92],
         ];
     }
 
@@ -708,7 +707,7 @@ class EmployeePerformanceReviewActions
         return [
             ['employee_id' => 1, 'name' => 'John Doe', 'rating' => 4.8],
             ['employee_id' => 2, 'name' => 'Jane Smith', 'rating' => 4.7],
-            ['employee_id' => 3, 'name' => 'Bob Johnson', 'rating' => 4.6]
+            ['employee_id' => 3, 'name' => 'Bob Johnson', 'rating' => 4.6],
         ];
     }
 
@@ -719,7 +718,7 @@ class EmployeePerformanceReviewActions
             'communication_skills' => 15,
             'technical_expertise' => 12,
             'time_management' => 8,
-            'teamwork' => 6
+            'teamwork' => 6,
         ];
     }
 }

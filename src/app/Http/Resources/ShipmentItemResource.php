@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Http\Resources;
 
+use Fereydooni\Shopping\app\Models\ShipmentItem;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Fereydooni\Shopping\app\Models\ShipmentItem;
 
 class ShipmentItemResource extends JsonResource
 {

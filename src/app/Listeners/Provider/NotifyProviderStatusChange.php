@@ -26,7 +26,7 @@ class NotifyProviderStatusChange implements ShouldQueue
     public function handleProviderActivated(ProviderActivated $event): void
     {
         // Notify provider and relevant staff about activation
-        \Log::info('Provider activated notification sent for: ' . $event->provider->id);
+        \Log::info('Provider activated notification sent for: '.$event->provider->id);
     }
 
     /**
@@ -35,7 +35,7 @@ class NotifyProviderStatusChange implements ShouldQueue
     public function handleProviderDeactivated(ProviderDeactivated $event): void
     {
         // Notify provider and relevant staff about deactivation
-        \Log::info('Provider deactivated notification sent for: ' . $event->provider->id);
+        \Log::info('Provider deactivated notification sent for: '.$event->provider->id);
     }
 
     /**
@@ -44,6 +44,6 @@ class NotifyProviderStatusChange implements ShouldQueue
     public function handleProviderSuspended(ProviderSuspended $event): void
     {
         // Notify provider and relevant staff about suspension
-        \Log::info('Provider suspended notification sent for: ' . $event->provider->id . ' Reason: ' . $event->reason);
+        \Log::info('Provider suspended notification sent for: '.$event->provider->id.' Reason: '.$event->reason);
     }
 }

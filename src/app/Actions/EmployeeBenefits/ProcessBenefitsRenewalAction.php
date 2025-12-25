@@ -2,11 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Actions\EmployeeBenefits;
 
-use Fereydooni\Shopping\app\DTOs\EmployeeBenefitsDTO;
-use Fereydooni\Shopping\app\Models\EmployeeBenefits;
 use App\Repositories\EmployeeBenefitsRepository;
 use Fereydooni\Shopping\app\Events\EmployeeBenefits\EmployeeBenefitsExpiring;
-use Illuminate\Support\Collection;
+use Fereydooni\Shopping\app\Models\EmployeeBenefits;
 use Illuminate\Support\Facades\Log;
 
 class ProcessBenefitsRenewalAction
@@ -26,7 +24,7 @@ class ProcessBenefitsRenewalAction
                     'expiring_count' => 0,
                     'renewals_processed' => 0,
                     'auto_renewals' => 0,
-                    'manual_renewals' => 0
+                    'manual_renewals' => 0,
                 ];
             }
 
@@ -55,7 +53,7 @@ class ProcessBenefitsRenewalAction
                 } catch (\Exception $e) {
                     Log::error('Failed to process renewal for benefit', [
                         'benefit_id' => $benefit->id,
-                        'error' => $e->getMessage()
+                        'error' => $e->getMessage(),
                     ]);
                 }
             }
@@ -64,12 +62,12 @@ class ProcessBenefitsRenewalAction
                 'expiring_count' => $expiringBenefits->count(),
                 'renewals_processed' => $renewalsProcessed,
                 'auto_renewals' => $autoRenewals,
-                'manual_renewals' => $manualRenewals
+                'manual_renewals' => $manualRenewals,
             ];
 
         } catch (\Exception $e) {
             Log::error('Failed to process benefits renewal', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -91,12 +89,12 @@ class ProcessBenefitsRenewalAction
     {
         // Check if benefit type supports auto-renewal
         $autoRenewableTypes = ['health', 'dental', 'vision'];
-        if (!in_array($benefit->benefit_type->value, $autoRenewableTypes)) {
+        if (! in_array($benefit->benefit_type->value, $autoRenewableTypes)) {
             return false;
         }
 
         // Check if employee is still active
-        if (!$benefit->employee || !$benefit->employee->is_active) {
+        if (! $benefit->employee || ! $benefit->employee->is_active) {
             return false;
         }
 
@@ -124,14 +122,14 @@ class ProcessBenefitsRenewalAction
             'employer_contribution' => $renewalCosts['employer_contribution'],
             'total_cost' => $renewalCosts['total_cost'],
             'status' => 'enrolled',
-            'is_active' => true
+            'is_active' => true,
         ]);
 
         return [
             'auto_renewed' => true,
             'new_effective_date' => $newEffectiveDate,
             'renewal_costs' => $renewalCosts,
-            'renewal_type' => 'automatic'
+            'renewal_type' => 'automatic',
         ];
     }
 
@@ -143,20 +141,21 @@ class ProcessBenefitsRenewalAction
         // Set status to pending for manual review
         $this->repository->update($benefit, [
             'status' => 'pending',
-            'is_active' => false
+            'is_active' => false,
         ]);
 
         return [
             'auto_renewed' => false,
             'renewal_costs' => $renewalCosts,
             'renewal_type' => 'manual',
-            'requires_approval' => true
+            'requires_approval' => true,
         ];
     }
 
     private function calculateNewEffectiveDate(EmployeeBenefits $benefit): string
     {
         $currentEndDate = $benefit->end_date ?? $benefit->effective_date;
+
         return \now()->addDays(1)->format('Y-m-d');
     }
 
@@ -178,7 +177,7 @@ class ProcessBenefitsRenewalAction
             'employee_contribution' => round($employeeContribution, 2),
             'employer_contribution' => round($employerContribution, 2),
             'total_cost' => round($totalCost, 2),
-            'annual_increase' => $annualIncrease * 100
+            'annual_increase' => $annualIncrease * 100,
         ];
     }
 

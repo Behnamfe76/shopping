@@ -3,8 +3,8 @@
 namespace App\Listeners;
 
 use App\Events\ProviderPerformanceCreated;
-use App\Events\ProviderPerformanceUpdated;
 use App\Events\ProviderPerformanceDeleted;
+use App\Events\ProviderPerformanceUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Cache;
@@ -57,7 +57,7 @@ class UpdatePerformanceAnalytics implements ShouldQueue
             Log::info('Updating performance analytics', [
                 'action' => $action,
                 'provider_id' => $providerPerformance->provider_id,
-                'performance_id' => $providerPerformance->id
+                'performance_id' => $providerPerformance->id,
             ]);
 
             // Clear cached analytics data
@@ -77,7 +77,7 @@ class UpdatePerformanceAnalytics implements ShouldQueue
 
             Log::info('Performance analytics updated successfully', [
                 'action' => $action,
-                'provider_id' => $providerPerformance->provider_id
+                'provider_id' => $providerPerformance->provider_id,
             ]);
 
         } catch (\Exception $e) {
@@ -85,7 +85,7 @@ class UpdatePerformanceAnalytics implements ShouldQueue
                 'error' => $e->getMessage(),
                 'action' => $action,
                 'provider_id' => $providerPerformance->provider_id,
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
         }
     }
@@ -156,7 +156,7 @@ class UpdatePerformanceAnalytics implements ShouldQueue
         Log::error('Failed to update performance analytics', [
             'event' => $event,
             'error' => $exception->getMessage(),
-            'trace' => $exception->getTraceAsString()
+            'trace' => $exception->getTraceAsString(),
         ]);
     }
 }

@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Repositories\Interfaces;
 
-use Fereydooni\Shopping\app\Models\OrderStatusHistory;
 use Fereydooni\Shopping\app\DTOs\OrderStatusHistoryDTO;
+use Fereydooni\Shopping\app\Models\OrderStatusHistory;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 
 interface OrderStatusHistoryRepositoryInterface
@@ -29,7 +29,7 @@ interface OrderStatusHistoryRepositoryInterface
     /**
      * Get cursor paginated status history records
      */
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator;
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator;
 
     /**
      * Find status history by ID
@@ -204,12 +204,12 @@ interface OrderStatusHistoryRepositoryInterface
     /**
      * Log status change
      */
-    public function logStatusChange(int $orderId, string $oldStatus, string $newStatus, int $changedBy, string $note = null, array $metadata = []): OrderStatusHistory;
+    public function logStatusChange(int $orderId, string $oldStatus, string $newStatus, int $changedBy, ?string $note = null, array $metadata = []): OrderStatusHistory;
 
     /**
      * Log status change and return DTO
      */
-    public function logStatusChangeDTO(int $orderId, string $oldStatus, string $newStatus, int $changedBy, string $note = null, array $metadata = []): OrderStatusHistoryDTO;
+    public function logStatusChangeDTO(int $orderId, string $oldStatus, string $newStatus, int $changedBy, ?string $note = null, array $metadata = []): OrderStatusHistoryDTO;
 
     /**
      * Get status change frequency

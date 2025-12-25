@@ -2,10 +2,10 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
+use Fereydooni\Shopping\app\Events\OrderCancelled;
+use Fereydooni\Shopping\app\Events\OrderCreated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Fereydooni\Shopping\app\Events\OrderCreated;
-use Fereydooni\Shopping\app\Events\OrderCancelled;
 
 class UpdateInventory implements ShouldQueue
 {

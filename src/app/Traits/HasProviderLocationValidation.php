@@ -2,10 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
-use Fereydooni\Shopping\app\Models\ProviderLocation;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Log;
 use Exception;
+use Fereydooni\Shopping\app\Models\ProviderLocation;
+use Illuminate\Support\Facades\Log;
 
 trait HasProviderLocationValidation
 {
@@ -26,61 +25,61 @@ trait HasProviderLocationValidation
             }
 
             // Provider ID validation
-            if (isset($data['provider_id']) && !is_numeric($data['provider_id'])) {
+            if (isset($data['provider_id']) && ! is_numeric($data['provider_id'])) {
                 $errors['provider_id'] = 'Provider ID must be a valid number.';
             }
 
             // Phone number validation
-            if (isset($data['phone']) && !empty($data['phone'])) {
-                if (!$this->validatePhoneNumber($data['phone'])) {
+            if (isset($data['phone']) && ! empty($data['phone'])) {
+                if (! $this->validatePhoneNumber($data['phone'])) {
                     $errors['phone'] = 'Phone number format is invalid.';
                 }
             }
 
             // Email validation
-            if (isset($data['email']) && !empty($data['email'])) {
-                if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
+            if (isset($data['email']) && ! empty($data['email'])) {
+                if (! filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
                     $errors['email'] = 'Email format is invalid.';
                 }
             }
 
             // Website validation
-            if (isset($data['website']) && !empty($data['website'])) {
-                if (!$this->validateWebsite($data['website'])) {
+            if (isset($data['website']) && ! empty($data['website'])) {
+                if (! $this->validateWebsite($data['website'])) {
                     $errors['website'] = 'Website URL format is invalid.';
                 }
             }
 
             // Coordinates validation
             if (isset($data['latitude']) && isset($data['longitude'])) {
-                if (!$this->validateCoordinates($data['latitude'], $data['longitude'])) {
+                if (! $this->validateCoordinates($data['latitude'], $data['longitude'])) {
                     $errors['coordinates'] = 'Invalid coordinates provided.';
                 }
             }
 
             // Postal code validation
-            if (isset($data['postal_code']) && !empty($data['postal_code'])) {
-                if (!$this->validatePostalCode($data['postal_code'])) {
+            if (isset($data['postal_code']) && ! empty($data['postal_code'])) {
+                if (! $this->validatePostalCode($data['postal_code'])) {
                     $errors['postal_code'] = 'Postal code format is invalid.';
                 }
             }
 
             // Timezone validation
-            if (isset($data['timezone']) && !empty($data['timezone'])) {
-                if (!$this->validateTimezone($data['timezone'])) {
+            if (isset($data['timezone']) && ! empty($data['timezone'])) {
+                if (! $this->validateTimezone($data['timezone'])) {
                     $errors['timezone'] = 'Invalid timezone provided.';
                 }
             }
 
             // Operating hours validation
-            if (isset($data['operating_hours']) && !empty($data['operating_hours'])) {
-                if (!$this->validateOperatingHours($data['operating_hours'])) {
+            if (isset($data['operating_hours']) && ! empty($data['operating_hours'])) {
+                if (! $this->validateOperatingHours($data['operating_hours'])) {
                     $errors['operating_hours'] = 'Operating hours format is invalid.';
                 }
             }
 
         } catch (Exception $e) {
-            Log::error('Error validating location data: ' . $e->getMessage());
+            Log::error('Error validating location data: '.$e->getMessage());
             $errors['general'] = 'An error occurred during validation.';
         }
 
@@ -94,6 +93,7 @@ trait HasProviderLocationValidation
     {
         // Basic phone number validation - can be enhanced based on requirements
         $phone = preg_replace('/[^0-9+\-\(\)\s]/', '', $phone);
+
         return strlen($phone) >= 10 && strlen($phone) <= 20;
     }
 
@@ -103,8 +103,8 @@ trait HasProviderLocationValidation
     public function validateWebsite(string $website): bool
     {
         // Add protocol if missing
-        if (!preg_match("~^(?:f|ht)tps?://~i", $website)) {
-            $website = 'https://' . $website;
+        if (! preg_match('~^(?:f|ht)tps?://~i', $website)) {
+            $website = 'https://'.$website;
         }
 
         return filter_var($website, FILTER_VALIDATE_URL) !== false;
@@ -145,25 +145,25 @@ trait HasProviderLocationValidation
             $operatingHours = json_decode($operatingHours, true);
         }
 
-        if (!is_array($operatingHours)) {
+        if (! is_array($operatingHours)) {
             return false;
         }
 
         $validDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
         foreach ($operatingHours as $day => $hours) {
-            if (!in_array(strtolower($day), $validDays)) {
+            if (! in_array(strtolower($day), $validDays)) {
                 return false;
             }
 
             if (is_array($hours)) {
                 foreach ($hours as $timeSlot) {
-                    if (!isset($timeSlot['open']) || !isset($timeSlot['close'])) {
+                    if (! isset($timeSlot['open']) || ! isset($timeSlot['close'])) {
                         return false;
                     }
 
-                    if (!$this->validateTimeFormat($timeSlot['open']) ||
-                        !$this->validateTimeFormat($timeSlot['close'])) {
+                    if (! $this->validateTimeFormat($timeSlot['open']) ||
+                        ! $this->validateTimeFormat($timeSlot['close'])) {
                         return false;
                     }
                 }
@@ -199,7 +199,8 @@ trait HasProviderLocationValidation
 
             return $query->exists();
         } catch (Exception $e) {
-            Log::error('Error checking for duplicate location: ' . $e->getMessage());
+            Log::error('Error checking for duplicate location: '.$e->getMessage());
+
             return false;
         }
     }
@@ -238,7 +239,7 @@ trait HasProviderLocationValidation
             }
 
         } catch (Exception $e) {
-            Log::error('Error validating address components: ' . $e->getMessage());
+            Log::error('Error validating address components: '.$e->getMessage());
             $errors['general'] = 'An error occurred during address validation.';
         }
 
@@ -252,7 +253,7 @@ trait HasProviderLocationValidation
     {
         $validTypes = [
             'headquarters', 'warehouse', 'store', 'office', 'factory',
-            'distribution_center', 'retail_outlet', 'service_center', 'other'
+            'distribution_center', 'retail_outlet', 'service_center', 'other',
         ];
 
         return in_array(strtolower($locationType), $validTypes);
@@ -271,7 +272,7 @@ trait HasProviderLocationValidation
             'CL', 'PE', 'CO', 'VE', 'EC', 'BO', 'PY', 'UY', 'GY', 'SR',
             'GF', 'FK', 'ZA', 'EG', 'NG', 'KE', 'UG', 'TZ', 'ET', 'GH',
             'CI', 'SN', 'ML', 'BF', 'NE', 'TD', 'SD', 'LY', 'TN', 'DZ',
-            'MA', 'MR', 'AO', 'CD', 'CG', 'GA', 'CM', 'CF', 'TD', 'SS'
+            'MA', 'MR', 'AO', 'CD', 'CG', 'GA', 'CM', 'CF', 'TD', 'SS',
         ];
 
         return in_array(strtoupper($country), $validCountries);
@@ -294,12 +295,12 @@ trait HasProviderLocationValidation
             $errors = array_merge($errors, $addressErrors);
 
             // Location type validation
-            if (isset($data['location_type']) && !$this->validateLocationType($data['location_type'])) {
+            if (isset($data['location_type']) && ! $this->validateLocationType($data['location_type'])) {
                 $errors['location_type'] = 'Invalid location type provided.';
             }
 
             // Country validation
-            if (isset($data['country']) && !$this->validateCountry($data['country'])) {
+            if (isset($data['country']) && ! $this->validateCountry($data['country'])) {
                 $errors['country'] = 'Invalid country code provided.';
             }
 
@@ -309,7 +310,7 @@ trait HasProviderLocationValidation
             }
 
         } catch (Exception $e) {
-            Log::error('Error during comprehensive location validation: ' . $e->getMessage());
+            Log::error('Error during comprehensive location validation: '.$e->getMessage());
             $errors['general'] = 'An error occurred during validation.';
         }
 
@@ -361,7 +362,7 @@ trait HasProviderLocationValidation
             }
 
         } catch (Exception $e) {
-            Log::error('Error sanitizing location data: ' . $e->getMessage());
+            Log::error('Error sanitizing location data: '.$e->getMessage());
         }
 
         return $data;

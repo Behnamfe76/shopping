@@ -2,10 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Http\Resources;
 
+use Fereydooni\Shopping\app\Models\ProductAttribute;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Route;
-use Fereydooni\Shopping\app\Models\ProductAttribute;
 
 class ProductAttributeResource extends JsonResource
 {
@@ -67,7 +66,7 @@ class ProductAttributeResource extends JsonResource
             }),
 
             // Computed attributes
-            'display_name' => $this->name . ($this->unit ? ' (' . $this->unit . ')' : ''),
+            'display_name' => $this->name.($this->unit ? ' ('.$this->unit.')' : ''),
             'has_values' => $this->whenLoaded('has_values', fn () => $this->values()->exists()),
             'active_values_count' => $this->whenLoaded('active_values_count', fn () => $this->values()->where('is_active', true)->count()),
         ];

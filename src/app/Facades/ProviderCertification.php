@@ -2,13 +2,13 @@
 
 namespace App\Facades;
 
-use Illuminate\Support\Facades\Facade;
 use App\Models\ProviderCertification;
 use App\Repositories\ProviderCertificationRepository;
-use Illuminate\Support\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static Collection all()
@@ -284,7 +284,7 @@ class ProviderCertification extends Facade
      */
     public static function suspendCertification(
         ProviderCertification $certification,
-        string $reason = null
+        ?string $reason = null
     ): bool {
         try {
             $success = static::repository()->suspend($certification, $reason);
@@ -310,7 +310,7 @@ class ProviderCertification extends Facade
      */
     public static function revokeCertification(
         ProviderCertification $certification,
-        string $reason = null
+        ?string $reason = null
     ): bool {
         try {
             $success = static::repository()->revoke($certification, $reason);
@@ -336,9 +336,9 @@ class ProviderCertification extends Facade
      */
     public static function getProviderCertifications(int $providerId, array $filters = []): Collection
     {
-        $cacheKey = "provider_certifications_{$providerId}_" . md5(serialize($filters));
+        $cacheKey = "provider_certifications_{$providerId}_".md5(serialize($filters));
 
-        return \Cache::remember($cacheKey, 3600, function () use ($providerId, $filters) {
+        return \Cache::remember($cacheKey, 3600, function () use ($providerId) {
             return static::repository()->findByProviderId($providerId);
         });
     }
@@ -418,7 +418,7 @@ class ProviderCertification extends Facade
     /**
      * Get certification trends.
      */
-    public static function getTrends(string $startDate = null, string $endDate = null): array
+    public static function getTrends(?string $startDate = null, ?string $endDate = null): array
     {
         return static::repository()->getCertificationTrends($startDate, $endDate);
     }

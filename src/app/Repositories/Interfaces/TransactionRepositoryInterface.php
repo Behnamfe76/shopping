@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Repositories\Interfaces;
 
-use Fereydooni\Shopping\app\Models\Transaction;
 use Fereydooni\Shopping\app\DTOs\TransactionDTO;
+use Fereydooni\Shopping\app\Models\Transaction;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 
 interface TransactionRepositoryInterface
@@ -29,7 +29,7 @@ interface TransactionRepositoryInterface
     /**
      * Get cursor paginated transactions
      */
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator;
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator;
 
     /**
      * Find transaction by ID

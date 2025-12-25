@@ -2,14 +2,12 @@
 
 namespace Fereydooni\Shopping\app\Http\Resources;
 
+use Fereydooni\Shopping\app\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Fereydooni\Shopping\app\Models\Product;
 
 class ProductResource extends JsonResource
 {
-
-
     /**
      * Transform the resource into an array.
      */
@@ -25,11 +23,11 @@ class ProductResource extends JsonResource
             'description' => $this->description,
             'status' => [
                 'id' => $this->status->toString(),
-                'label' => __("products.statuses." . $this->status->toString())
+                'label' => __('products.statuses.'.$this->status->toString()),
             ],
             'product_type' => [
                 'id' => $this->product_type->toString(),
-                'label' => __("products.types." . $this->product_type->toString())
+                'label' => __('products.types.'.$this->product_type->toString()),
             ],
             'specifications' => json_encode($this->specifications),
             'main_image' => $this->main_image,
@@ -39,11 +37,11 @@ class ProductResource extends JsonResource
             'sale_price' => $this->sale_price,
             'cost_price' => $this->cost_price,
             'stock_quantity' => $this->stock_quantity,
-            'has_variant' => !$this->has_variant ? 'none' : ($this->multi_variant ? 'more_than_one' : 'one'),
-            'product_attribute' => $this->has_variant && !$this->multi_variant
+            'has_variant' => ! $this->has_variant ? 'none' : ($this->multi_variant ? 'more_than_one' : 'one'),
+            'product_attribute' => $this->has_variant && ! $this->multi_variant
                 ? [
                     'id' => $this->productAttribute()->value('slug'),
-                    'label' => $this->productAttribute()->value('name')
+                    'label' => $this->productAttribute()->value('name'),
                 ]
                 : null,
             'product_multi_attributes' => $this->has_variant && $this->multi_variant
@@ -51,7 +49,7 @@ class ProductResource extends JsonResource
                 $this->productAttributes()->select('slug', 'name')->get()->map(function ($attr) {
                     return [
                         'id' => $attr->slug,
-                        'label' => $attr->name
+                        'label' => $attr->name,
                     ];
                 })
                 : null,
@@ -103,8 +101,6 @@ class ProductResource extends JsonResource
                 ];
             }),
 
-
-
             // 'media' => $this->whenLoaded('media', function () {
             //     return $this->media->map(function ($media) {
             //         return [
@@ -120,7 +116,7 @@ class ProductResource extends JsonResource
             //     });
             // }),
 
-            'product_single_variants' => $this->when($this->has_variant && !$this->multi_variant, function () {
+            'product_single_variants' => $this->when($this->has_variant && ! $this->multi_variant, function () {
                 return $this->variants->map(function ($variant) {
                     return [
                         'id' => $variant->id,
@@ -147,7 +143,7 @@ class ProductResource extends JsonResource
                 return $this->variants->map(function ($variant) {
                     $variantNames = $variant->attributeValues->map(function ($item) {
                         return [$item->attribute->slug => [
-                            'variant_name' => $item->value
+                            'variant_name' => $item->value,
                         ]];
                     })->collapse()->toArray();
 

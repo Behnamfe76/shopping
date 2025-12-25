@@ -2,12 +2,9 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\MapName;
-use Spatie\LaravelData\Attributes\WithTransformer;
-use Spatie\LaravelData\Transformers\DateTimeTransformer;
-use Illuminate\Support\Carbon;
 use Fereydooni\Shopping\app\Enums\ShipmentStatus;
+use Illuminate\Support\Carbon;
+use Spatie\LaravelData\Data;
 
 class ShipmentDTO extends Data
 {
@@ -35,8 +32,7 @@ class ShipmentDTO extends Data
         public ?Carbon $updated_at = null,
         public ?array $order = null,
         public ?array $items = null,
-    ) {
-    }
+    ) {}
 
     public static function fromModel($shipment): static
     {
@@ -73,7 +69,7 @@ class ShipmentDTO extends Data
             'order_id' => 'required|integer|exists:orders,id',
             'carrier' => 'required|string|max:100|in:fedex,ups,usps,dhl,amazon,other',
             'tracking_number' => 'nullable|string|max:100|unique:shipments,tracking_number',
-            'status' => 'required|in:' . implode(',', array_column(ShipmentStatus::cases(), 'value')),
+            'status' => 'required|in:'.implode(',', array_column(ShipmentStatus::cases(), 'value')),
             'shipped_at' => 'nullable|date|before_or_equal:now',
             'delivered_at' => 'nullable|date|after:shipped_at',
             'estimated_delivery' => 'nullable|date|after:shipped_at',
@@ -149,7 +145,7 @@ class ShipmentDTO extends Data
 
     public function isOverdue(): bool
     {
-        if (!$this->estimated_delivery || $this->isDelivered()) {
+        if (! $this->estimated_delivery || $this->isDelivered()) {
             return false;
         }
 
@@ -158,16 +154,16 @@ class ShipmentDTO extends Data
 
     public function isDelayed(): bool
     {
-        if (!$this->estimated_delivery || $this->isDelivered()) {
+        if (! $this->estimated_delivery || $this->isDelivered()) {
             return false;
         }
 
-        return $this->estimated_delivery->isPast() && !$this->isDelivered();
+        return $this->estimated_delivery->isPast() && ! $this->isDelivered();
     }
 
     public function isOnTime(): bool
     {
-        if (!$this->estimated_delivery || $this->isDelivered()) {
+        if (! $this->estimated_delivery || $this->isDelivered()) {
             return false;
         }
 
@@ -191,7 +187,7 @@ class ShipmentDTO extends Data
 
     public function getDeliveryTime(): ?int
     {
-        if (!$this->shipped_at || !$this->actual_delivery) {
+        if (! $this->shipped_at || ! $this->actual_delivery) {
             return null;
         }
 
@@ -200,7 +196,7 @@ class ShipmentDTO extends Data
 
     public function getEstimatedDeliveryTime(): ?int
     {
-        if (!$this->shipped_at || !$this->estimated_delivery) {
+        if (! $this->shipped_at || ! $this->estimated_delivery) {
             return null;
         }
 

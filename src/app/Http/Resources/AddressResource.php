@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Http\Resources;
 
+use Fereydooni\Shopping\app\DTOs\AddressDTO;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Fereydooni\Shopping\app\DTOs\AddressDTO;
 
 class AddressResource extends JsonResource
 {
@@ -55,7 +55,7 @@ class AddressResource extends JsonResource
 
         // Add default address indicators
         if ($address->is_default) {
-            $data['default_indicator'] = 'This is your default ' . $address->type->value . ' address';
+            $data['default_indicator'] = 'This is your default '.$address->type->value.' address';
         }
 
         // Add links for API navigation
@@ -100,7 +100,7 @@ class AddressResource extends JsonResource
             }
 
             // Set as default action
-            if (!$address->is_default && $user->can('setDefault', $this->resource)) {
+            if (! $address->is_default && $user->can('setDefault', $this->resource)) {
                 $actions['set_default'] = [
                     'method' => 'POST',
                     'url' => route('api.v1.addresses.set-default', $address->id),

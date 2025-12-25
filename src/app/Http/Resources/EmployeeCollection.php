@@ -51,4 +51,3 @@ class EmployeeCollection extends ResourceCollection
         ];
     }
 }
-

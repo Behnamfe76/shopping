@@ -2,15 +2,14 @@
 
 namespace Fereydooni\Shopping\app\Repositories;
 
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Fereydooni\Shopping\app\Repositories\Interfaces\ProductRepositoryInterface;
-use Fereydooni\Shopping\app\Models\Product;
 use Fereydooni\Shopping\app\DTOs\ProductDTO;
 use Fereydooni\Shopping\app\Enums\ProductStatus;
-use Fereydooni\Shopping\app\Enums\ProductType;
+use Fereydooni\Shopping\app\Models\Product;
+use Fereydooni\Shopping\app\Repositories\Interfaces\ProductRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -32,7 +31,7 @@ class ProductRepository implements ProductRepositoryInterface
         return Product::simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return Product::cursorPaginate($perPage, ['*'], 'id', $cursor);
     }
@@ -45,6 +44,7 @@ class ProductRepository implements ProductRepositoryInterface
     public function findDTO(int $id): ?ProductDTO
     {
         $product = $this->find($id);
+
         return $product ? ProductDTO::fromModel($product) : null;
     }
 
@@ -56,6 +56,7 @@ class ProductRepository implements ProductRepositoryInterface
     public function createAndReturnDTO(array $data): ProductDTO
     {
         $product = $this->create($data);
+
         return ProductDTO::fromModel($product);
     }
 
@@ -67,6 +68,7 @@ class ProductRepository implements ProductRepositoryInterface
     public function updateAndReturnDTO(Product $product, array $data): ?ProductDTO
     {
         $updated = $this->update($product, $data);
+
         return $updated ? ProductDTO::fromModel($product->fresh()) : null;
     }
 
@@ -84,6 +86,7 @@ class ProductRepository implements ProductRepositoryInterface
     public function findBySlugDTO(string $slug): ?ProductDTO
     {
         $product = $this->findBySlug($slug);
+
         return $product ? ProductDTO::fromModel($product) : null;
     }
 
@@ -95,6 +98,7 @@ class ProductRepository implements ProductRepositoryInterface
     public function findBySkuDTO(string $sku): ?ProductDTO
     {
         $product = $this->findBySku($sku);
+
         return $product ? ProductDTO::fromModel($product) : null;
     }
 
@@ -107,7 +111,8 @@ class ProductRepository implements ProductRepositoryInterface
     public function findByCategoryIdDTO(int $categoryId): Collection
     {
         $products = $this->findByCategoryId($categoryId);
-        return $products->map(fn($product) => ProductDTO::fromModel($product));
+
+        return $products->map(fn ($product) => ProductDTO::fromModel($product));
     }
 
     public function findByBrandId(int $brandId): Collection
@@ -118,7 +123,8 @@ class ProductRepository implements ProductRepositoryInterface
     public function findByBrandIdDTO(int $brandId): Collection
     {
         $products = $this->findByBrandId($brandId);
-        return $products->map(fn($product) => ProductDTO::fromModel($product));
+
+        return $products->map(fn ($product) => ProductDTO::fromModel($product));
     }
 
     // Status and type filtering
@@ -130,7 +136,8 @@ class ProductRepository implements ProductRepositoryInterface
     public function findByStatusDTO(string $status): Collection
     {
         $products = $this->findByStatus($status);
-        return $products->map(fn($product) => ProductDTO::fromModel($product));
+
+        return $products->map(fn ($product) => ProductDTO::fromModel($product));
     }
 
     public function findByType(string $type): Collection
@@ -141,7 +148,8 @@ class ProductRepository implements ProductRepositoryInterface
     public function findByTypeDTO(string $type): Collection
     {
         $products = $this->findByType($type);
-        return $products->map(fn($product) => ProductDTO::fromModel($product));
+
+        return $products->map(fn ($product) => ProductDTO::fromModel($product));
     }
 
     // Active and featured products
@@ -153,7 +161,8 @@ class ProductRepository implements ProductRepositoryInterface
     public function findActiveDTO(): Collection
     {
         $products = $this->findActive();
-        return $products->map(fn($product) => ProductDTO::fromModel($product));
+
+        return $products->map(fn ($product) => ProductDTO::fromModel($product));
     }
 
     public function findFeatured(): Collection
@@ -164,7 +173,8 @@ class ProductRepository implements ProductRepositoryInterface
     public function findFeaturedDTO(): Collection
     {
         $products = $this->findFeatured();
-        return $products->map(fn($product) => ProductDTO::fromModel($product));
+
+        return $products->map(fn ($product) => ProductDTO::fromModel($product));
     }
 
     // Stock level filtering
@@ -176,7 +186,8 @@ class ProductRepository implements ProductRepositoryInterface
     public function findInStockDTO(): Collection
     {
         $products = $this->findInStock();
-        return $products->map(fn($product) => ProductDTO::fromModel($product));
+
+        return $products->map(fn ($product) => ProductDTO::fromModel($product));
     }
 
     public function findLowStock(int $threshold = 10): Collection
@@ -189,7 +200,8 @@ class ProductRepository implements ProductRepositoryInterface
     public function findLowStockDTO(int $threshold = 10): Collection
     {
         $products = $this->findLowStock($threshold);
-        return $products->map(fn($product) => ProductDTO::fromModel($product));
+
+        return $products->map(fn ($product) => ProductDTO::fromModel($product));
     }
 
     public function findOutOfStock(): Collection
@@ -200,37 +212,43 @@ class ProductRepository implements ProductRepositoryInterface
     public function findOutOfStockDTO(): Collection
     {
         $products = $this->findOutOfStock();
-        return $products->map(fn($product) => ProductDTO::fromModel($product));
+
+        return $products->map(fn ($product) => ProductDTO::fromModel($product));
     }
 
     // Status management
     public function toggleActive(Product $product): bool
     {
-        $product->is_active = !$product->is_active;
+        $product->is_active = ! $product->is_active;
+
         return $product->save();
     }
 
     public function toggleFeatured(Product $product): bool
     {
-        $product->is_featured = !$product->is_featured;
+        $product->is_featured = ! $product->is_featured;
+
         return $product->save();
     }
 
     public function publish(Product $product): bool
     {
         $product->status = ProductStatus::PUBLISHED;
+
         return $product->save();
     }
 
     public function unpublish(Product $product): bool
     {
         $product->status = ProductStatus::DRAFT;
+
         return $product->save();
     }
 
     public function archive(Product $product): bool
     {
         $product->status = ProductStatus::ARCHIVED;
+
         return $product->save();
     }
 
@@ -298,16 +316,17 @@ class ProductRepository implements ProductRepositoryInterface
     {
         return Product::where(function ($q) use ($query) {
             $q->where('title', 'LIKE', "%{$query}%")
-              ->orWhere('description', 'LIKE', "%{$query}%")
-              ->orWhere('sku', 'LIKE', "%{$query}%")
-              ->orWhere('slug', 'LIKE', "%{$query}%");
+                ->orWhere('description', 'LIKE', "%{$query}%")
+                ->orWhere('sku', 'LIKE', "%{$query}%")
+                ->orWhere('slug', 'LIKE', "%{$query}%");
         })->get();
     }
 
     public function searchDTO(string $query): Collection
     {
         $products = $this->search($query);
-        return $products->map(fn($product) => ProductDTO::fromModel($product));
+
+        return $products->map(fn ($product) => ProductDTO::fromModel($product));
     }
 
     public function searchByCategory(int $categoryId, string $query): Collection
@@ -315,15 +334,16 @@ class ProductRepository implements ProductRepositoryInterface
         return Product::where('category_id', $categoryId)
             ->where(function ($q) use ($query) {
                 $q->where('title', 'LIKE', "%{$query}%")
-                  ->orWhere('description', 'LIKE', "%{$query}%")
-                  ->orWhere('sku', 'LIKE', "%{$query}%");
+                    ->orWhere('description', 'LIKE', "%{$query}%")
+                    ->orWhere('sku', 'LIKE', "%{$query}%");
             })->get();
     }
 
     public function searchByCategoryDTO(int $categoryId, string $query): Collection
     {
         $products = $this->searchByCategory($categoryId, $query);
-        return $products->map(fn($product) => ProductDTO::fromModel($product));
+
+        return $products->map(fn ($product) => ProductDTO::fromModel($product));
     }
 
     public function searchByBrand(int $brandId, string $query): Collection
@@ -331,15 +351,16 @@ class ProductRepository implements ProductRepositoryInterface
         return Product::where('brand_id', $brandId)
             ->where(function ($q) use ($query) {
                 $q->where('title', 'LIKE', "%{$query}%")
-                  ->orWhere('description', 'LIKE', "%{$query}%")
-                  ->orWhere('sku', 'LIKE', "%{$query}%");
+                    ->orWhere('description', 'LIKE', "%{$query}%")
+                    ->orWhere('sku', 'LIKE', "%{$query}%");
             })->get();
     }
 
     public function searchByBrandDTO(int $brandId, string $query): Collection
     {
         $products = $this->searchByBrand($brandId, $query);
-        return $products->map(fn($product) => ProductDTO::fromModel($product));
+
+        return $products->map(fn ($product) => ProductDTO::fromModel($product));
     }
 
     // Analytics and reporting
@@ -351,7 +372,8 @@ class ProductRepository implements ProductRepositoryInterface
     public function getTopSellingDTO(int $limit = 10): Collection
     {
         $products = $this->getTopSelling($limit);
-        return $products->map(fn($product) => ProductDTO::fromModel($product));
+
+        return $products->map(fn ($product) => ProductDTO::fromModel($product));
     }
 
     public function getMostViewed(int $limit = 10): Collection
@@ -362,7 +384,8 @@ class ProductRepository implements ProductRepositoryInterface
     public function getMostViewedDTO(int $limit = 10): Collection
     {
         $products = $this->getMostViewed($limit);
-        return $products->map(fn($product) => ProductDTO::fromModel($product));
+
+        return $products->map(fn ($product) => ProductDTO::fromModel($product));
     }
 
     public function getMostWishlisted(int $limit = 10): Collection
@@ -373,7 +396,8 @@ class ProductRepository implements ProductRepositoryInterface
     public function getMostWishlistedDTO(int $limit = 10): Collection
     {
         $products = $this->getMostWishlisted($limit);
-        return $products->map(fn($product) => ProductDTO::fromModel($product));
+
+        return $products->map(fn ($product) => ProductDTO::fromModel($product));
     }
 
     public function getBestRated(int $limit = 10): Collection
@@ -384,7 +408,8 @@ class ProductRepository implements ProductRepositoryInterface
     public function getBestRatedDTO(int $limit = 10): Collection
     {
         $products = $this->getBestRated($limit);
-        return $products->map(fn($product) => ProductDTO::fromModel($product));
+
+        return $products->map(fn ($product) => ProductDTO::fromModel($product));
     }
 
     public function getNewArrivals(int $limit = 10): Collection
@@ -395,7 +420,8 @@ class ProductRepository implements ProductRepositoryInterface
     public function getNewArrivalsDTO(int $limit = 10): Collection
     {
         $products = $this->getNewArrivals($limit);
-        return $products->map(fn($product) => ProductDTO::fromModel($product));
+
+        return $products->map(fn ($product) => ProductDTO::fromModel($product));
     }
 
     public function getOnSale(int $limit = 10): Collection
@@ -410,7 +436,8 @@ class ProductRepository implements ProductRepositoryInterface
     public function getOnSaleDTO(int $limit = 10): Collection
     {
         $products = $this->getOnSale($limit);
-        return $products->map(fn($product) => ProductDTO::fromModel($product));
+
+        return $products->map(fn ($product) => ProductDTO::fromModel($product));
     }
 
     // Price and stock range filtering
@@ -422,7 +449,8 @@ class ProductRepository implements ProductRepositoryInterface
     public function getByPriceRangeDTO(float $minPrice, float $maxPrice): Collection
     {
         $products = $this->getByPriceRange($minPrice, $maxPrice);
-        return $products->map(fn($product) => ProductDTO::fromModel($product));
+
+        return $products->map(fn ($product) => ProductDTO::fromModel($product));
     }
 
     public function getByStockRange(int $minStock, int $maxStock): Collection
@@ -433,7 +461,8 @@ class ProductRepository implements ProductRepositoryInterface
     public function getByStockRangeDTO(int $minStock, int $maxStock): Collection
     {
         $products = $this->getByStockRange($minStock, $maxStock);
-        return $products->map(fn($product) => ProductDTO::fromModel($product));
+
+        return $products->map(fn ($product) => ProductDTO::fromModel($product));
     }
 
     // Related products
@@ -448,7 +477,8 @@ class ProductRepository implements ProductRepositoryInterface
     public function getRelatedProductsDTO(Product $product, int $limit = 5): Collection
     {
         $products = $this->getRelatedProducts($product, $limit);
-        return $products->map(fn($product) => ProductDTO::fromModel($product));
+
+        return $products->map(fn ($product) => ProductDTO::fromModel($product));
     }
 
     public function getCrossSellProducts(Product $product, int $limit = 5): Collection
@@ -463,7 +493,8 @@ class ProductRepository implements ProductRepositoryInterface
     public function getCrossSellProductsDTO(Product $product, int $limit = 5): Collection
     {
         $products = $this->getCrossSellProducts($product, $limit);
-        return $products->map(fn($product) => ProductDTO::fromModel($product));
+
+        return $products->map(fn ($product) => ProductDTO::fromModel($product));
     }
 
     public function getUpSellProducts(Product $product, int $limit = 5): Collection
@@ -478,7 +509,8 @@ class ProductRepository implements ProductRepositoryInterface
     public function getUpSellProductsDTO(Product $product, int $limit = 5): Collection
     {
         $products = $this->getUpSellProducts($product, $limit);
-        return $products->map(fn($product) => ProductDTO::fromModel($product));
+
+        return $products->map(fn ($product) => ProductDTO::fromModel($product));
     }
 
     // Validation and utility methods
@@ -486,7 +518,8 @@ class ProductRepository implements ProductRepositoryInterface
     {
         $rules = ProductDTO::rules();
         $validator = validator($data, $rules);
-        return !$validator->fails();
+
+        return ! $validator->fails();
     }
 
     public function generateSlug(string $title): string
@@ -495,8 +528,8 @@ class ProductRepository implements ProductRepositoryInterface
         $originalSlug = $slug;
         $counter = 1;
 
-        while (!$this->isSlugUnique($slug)) {
-            $slug = $originalSlug . '-' . $counter;
+        while (! $this->isSlugUnique($slug)) {
+            $slug = $originalSlug.'-'.$counter;
             $counter++;
         }
 
@@ -511,7 +544,7 @@ class ProductRepository implements ProductRepositoryInterface
             $query->where('id', '!=', $excludeId);
         }
 
-        return !$query->exists();
+        return ! $query->exists();
     }
 
     public function isSkuUnique(string $sku, ?int $excludeId = null): bool
@@ -522,7 +555,7 @@ class ProductRepository implements ProductRepositoryInterface
             $query->where('id', '!=', $excludeId);
         }
 
-        return !$query->exists();
+        return ! $query->exists();
     }
 
     // Inventory management
@@ -573,12 +606,14 @@ class ProductRepository implements ProductRepositoryInterface
     public function incrementViewCount(Product $product): bool
     {
         $product->increment('view_count');
+
         return true;
     }
 
     public function incrementWishlistCount(Product $product): bool
     {
         $product->increment('wishlist_count');
+
         return true;
     }
 
@@ -587,6 +622,7 @@ class ProductRepository implements ProductRepositoryInterface
         $averageRating = $product->reviews()->avg('rating') ?? 0;
         $product->average_rating = $averageRating;
         $product->reviews_count = $product->reviews()->count();
+
         return $product->save();
     }
 }

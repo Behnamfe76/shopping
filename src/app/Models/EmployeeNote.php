@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
+use Fereydooni\Shopping\app\Enums\EmployeeNotePriority;
+use Fereydooni\Shopping\app\Enums\EmployeeNoteType;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Fereydooni\Shopping\app\Enums\EmployeeNoteType;
-use Fereydooni\Shopping\app\Enums\EmployeeNotePriority;
 
 class EmployeeNote extends Model
 {
@@ -93,7 +93,7 @@ class EmployeeNote extends Model
     {
         return $query->where(function ($q) use ($search) {
             $q->where('title', 'like', "%{$search}%")
-              ->orWhere('content', 'like', "%{$search}%");
+                ->orWhere('content', 'like', "%{$search}%");
         });
     }
 }

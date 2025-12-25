@@ -3,15 +3,8 @@
 namespace Fereydooni\Shopping\app\Traits;
 
 use Exception;
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Contracts\Pagination\Paginator;
-use Illuminate\Contracts\Pagination\CursorPaginator;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Fereydooni\Shopping\app\Traits\AppliesQueryParameters;
-use PhpParser\Node\Stmt\Echo_;
+use Illuminate\Support\Facades\Schema;
 
 trait HasLens
 {
@@ -22,7 +15,7 @@ trait HasLens
      */
     public function lens(): Paginator
     {
-        if (!property_exists($this, 'model') || !is_string($this->model)) {
+        if (! property_exists($this, 'model') || ! is_string($this->model)) {
             throw new \Exception('Class using HasLens trait must define a public string $model property.');
         }
 
@@ -35,13 +28,13 @@ trait HasLens
 
         // checking if relations exist in model
         array_map(function ($relation) {
-            if (!method_exists($this->model, $relation)) {
+            if (! method_exists($this->model, $relation)) {
                 throw new Exception("Relation does not exist in $this->model model");
             }
         }, $lensRelations);
 
         $withCounts = collect($lensRelations)
-            ->map(fn($r) => "$r as $r")
+            ->map(fn ($r) => "$r as $r")
             ->values()
             ->all();
 

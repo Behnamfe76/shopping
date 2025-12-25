@@ -2,10 +2,10 @@
 
 namespace Fereydooni\Shopping\app\Listeners\Customer;
 
-use Fereydooni\Shopping\app\Events\Customer\CustomerCreated;
-use Fereydooni\Shopping\app\Events\Customer\CustomerUpdated;
 use Fereydooni\Shopping\app\Events\Customer\CustomerActivated;
+use Fereydooni\Shopping\app\Events\Customer\CustomerCreated;
 use Fereydooni\Shopping\app\Events\Customer\CustomerDeactivated;
+use Fereydooni\Shopping\app\Events\Customer\CustomerUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
@@ -30,7 +30,7 @@ class UpdateCustomerAnalytics implements ShouldQueue
 
         // Update analytics for new customer
         // This could involve updating counters, creating analytics records, etc.
-        \Log::info('Customer analytics updated for new customer: ' . $customer->id);
+        \Log::info('Customer analytics updated for new customer: '.$customer->id);
     }
 
     /**
@@ -43,7 +43,7 @@ class UpdateCustomerAnalytics implements ShouldQueue
 
         // Update analytics based on changes
         // This could involve updating specific metrics based on what changed
-        \Log::info('Customer analytics updated for customer: ' . $customer->id);
+        \Log::info('Customer analytics updated for customer: '.$customer->id);
     }
 
     /**
@@ -54,7 +54,7 @@ class UpdateCustomerAnalytics implements ShouldQueue
         $customer = $event->customer;
 
         // Update analytics for activated customer
-        \Log::info('Customer analytics updated for activated customer: ' . $customer->id);
+        \Log::info('Customer analytics updated for activated customer: '.$customer->id);
     }
 
     /**
@@ -65,6 +65,6 @@ class UpdateCustomerAnalytics implements ShouldQueue
         $customer = $event->customer;
 
         // Update analytics for deactivated customer
-        \Log::info('Customer analytics updated for deactivated customer: ' . $customer->id);
+        \Log::info('Customer analytics updated for deactivated customer: '.$customer->id);
     }
 }

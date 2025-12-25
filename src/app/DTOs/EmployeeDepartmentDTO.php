@@ -2,20 +2,19 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
+use Fereydooni\Shopping\app\Enums\DepartmentStatus;
+use Fereydooni\Shopping\app\Models\EmployeeDepartment;
+use Illuminate\Support\Carbon;
+use Spatie\LaravelData\Attributes\Validation\BooleanType;
+use Spatie\LaravelData\Attributes\Validation\IntegerType;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\Min;
 use Spatie\LaravelData\Attributes\Validation\Nullable;
+use Spatie\LaravelData\Attributes\Validation\Numeric;
 use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
-use Spatie\LaravelData\Attributes\Validation\BooleanType;
-use Spatie\LaravelData\Attributes\Validation\Numeric;
 use Spatie\LaravelData\Attributes\Validation\Unique;
-use Illuminate\Support\Carbon;
-use Fereydooni\Shopping\app\Enums\DepartmentStatus;
-use Fereydooni\Shopping\app\Models\EmployeeDepartment;
-use Fereydooni\Shopping\app\Models\Employee;
+use Spatie\LaravelData\Data;
 
 class EmployeeDepartmentDTO extends Data
 {
@@ -99,8 +98,7 @@ class EmployeeDepartmentDTO extends Data
 
         #[Nullable]
         public ?array $descendants,
-    ) {
-    }
+    ) {}
 
     public static function fromModel(EmployeeDepartment $department): self
     {
@@ -127,10 +125,10 @@ class EmployeeDepartmentDTO extends Data
             level: $department->level,
             parent: $department->parent ? self::fromModel($department->parent) : null,
             manager: $department->manager ? EmployeeDTO::fromModel($department->manager) : null,
-            children: $department->children ? $department->children->map(fn($child) => self::fromModel($child))->toArray() : null,
-            employees: $department->employees ? $department->employees->map(fn($employee) => EmployeeDTO::fromModel($employee))->toArray() : null,
-            ancestors: $department->ancestors ? array_map(fn($ancestor) => self::fromModel($ancestor), $department->ancestors) : null,
-            descendants: $department->descendants ? array_map(fn($descendant) => self::fromModel($descendant), $department->descendants) : null,
+            children: $department->children ? $department->children->map(fn ($child) => self::fromModel($child))->toArray() : null,
+            employees: $department->employees ? $department->employees->map(fn ($employee) => EmployeeDTO::fromModel($employee))->toArray() : null,
+            ancestors: $department->ancestors ? array_map(fn ($ancestor) => self::fromModel($ancestor), $department->ancestors) : null,
+            descendants: $department->descendants ? array_map(fn ($descendant) => self::fromModel($descendant), $department->descendants) : null,
         );
     }
 
@@ -146,7 +144,7 @@ class EmployeeDepartmentDTO extends Data
             'budget' => ['nullable', 'numeric', 'min:0'],
             'headcount_limit' => ['nullable', 'integer', 'min:0'],
             'is_active' => ['required', 'boolean'],
-            'status' => ['required', 'in:' . implode(',', array_column(DepartmentStatus::cases(), 'value'))],
+            'status' => ['required', 'in:'.implode(',', array_column(DepartmentStatus::cases(), 'value'))],
             'metadata' => ['nullable', 'array'],
         ];
     }
@@ -195,7 +193,7 @@ class EmployeeDepartmentDTO extends Data
             'level' => $this->level,
             'is_root' => is_null($this->parent_id),
             'is_leaf' => empty($this->children),
-            'has_children' => !empty($this->children),
+            'has_children' => ! empty($this->children),
             'can_operate' => $this->status->canOperate(),
             'is_visible' => $this->status->isVisible(),
         ];
@@ -213,12 +211,12 @@ class EmployeeDepartmentDTO extends Data
 
     public function hasChildren(): bool
     {
-        return !empty($this->children);
+        return ! empty($this->children);
     }
 
     public function hasParent(): bool
     {
-        return !is_null($this->parent_id);
+        return ! is_null($this->parent_id);
     }
 
     public function isActive(): bool

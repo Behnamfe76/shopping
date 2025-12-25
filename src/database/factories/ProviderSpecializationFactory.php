@@ -2,13 +2,13 @@
 
 namespace Fereydooni\Shopping\database\factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Fereydooni\Shopping\App\Models\ProviderSpecialization;
-use Fereydooni\Shopping\App\Models\Provider;
-use Fereydooni\Shopping\App\Models\User;
-use Fereydooni\Shopping\App\Enums\SpecializationCategory;
 use Fereydooni\Shopping\App\Enums\ProficiencyLevel;
+use Fereydooni\Shopping\App\Enums\SpecializationCategory;
 use Fereydooni\Shopping\App\Enums\VerificationStatus;
+use Fereydooni\Shopping\App\Models\Provider;
+use Fereydooni\Shopping\App\Models\ProviderSpecialization;
+use Fereydooni\Shopping\App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Fereydooni\Shopping\App\Models\ProviderSpecialization>
@@ -51,7 +51,7 @@ class ProviderSpecializationFactory extends Factory
                 'Certified Teacher',
                 'Certified Personal Trainer',
                 'Certified Real Estate Agent',
-                'Certified Insurance Agent'
+                'Certified Insurance Agent',
             ], $this->faker->numberBetween(0, 3)),
             'is_primary' => false,
             'is_active' => true,
@@ -68,7 +68,7 @@ class ProviderSpecializationFactory extends Factory
                 'Technical expertise in modern tools',
                 'Proven track record of success',
                 'Continuous learning mindset',
-                'Quality-driven professional'
+                'Quality-driven professional',
             ], $this->faker->numberBetween(0, 2)),
         ];
     }
@@ -137,7 +137,7 @@ class ProviderSpecializationFactory extends Factory
             'verified_at' => null,
             'verified_by' => null,
             'notes' => array_merge($attributes['notes'] ?? [], [
-                'Rejection reason: ' . $this->faker->sentence()
+                'Rejection reason: '.$this->faker->sentence(),
             ]),
         ]);
     }
@@ -219,7 +219,7 @@ class ProviderSpecializationFactory extends Factory
             'specialization_name' => $this->faker->randomElement([
                 'Cardiology', 'Neurology', 'Oncology', 'Pediatrics', 'Surgery',
                 'Emergency Medicine', 'Family Medicine', 'Internal Medicine',
-                'Psychiatry', 'Radiology', 'Anesthesiology', 'Dermatology'
+                'Psychiatry', 'Radiology', 'Anesthesiology', 'Dermatology',
             ]),
         ]);
     }
@@ -234,7 +234,7 @@ class ProviderSpecializationFactory extends Factory
             'specialization_name' => $this->faker->randomElement([
                 'Corporate Law', 'Criminal Law', 'Family Law', 'Real Estate Law',
                 'Tax Law', 'Intellectual Property Law', 'Employment Law',
-                'Environmental Law', 'Immigration Law', 'Bankruptcy Law'
+                'Environmental Law', 'Immigration Law', 'Bankruptcy Law',
             ]),
         ]);
     }
@@ -249,7 +249,7 @@ class ProviderSpecializationFactory extends Factory
             'specialization_name' => $this->faker->randomElement([
                 'Software Development', 'Data Science', 'DevOps', 'Cybersecurity',
                 'Cloud Computing', 'Machine Learning', 'Web Development',
-                'Mobile Development', 'Database Administration', 'Network Engineering'
+                'Mobile Development', 'Database Administration', 'Network Engineering',
             ]),
         ]);
     }
@@ -264,7 +264,7 @@ class ProviderSpecializationFactory extends Factory
             'specialization_name' => $this->faker->randomElement([
                 'Investment Banking', 'Financial Planning', 'Accounting',
                 'Risk Management', 'Corporate Finance', 'Tax Consulting',
-                'Auditing', 'Insurance', 'Real Estate Investment', 'Wealth Management'
+                'Auditing', 'Insurance', 'Real Estate Investment', 'Wealth Management',
             ]),
         ]);
     }
@@ -279,7 +279,7 @@ class ProviderSpecializationFactory extends Factory
             'specialization_name' => $this->faker->randomElement([
                 'Mathematics', 'Science', 'Language Arts', 'History',
                 'Physical Education', 'Music', 'Art', 'Special Education',
-                'Curriculum Development', 'Educational Technology'
+                'Curriculum Development', 'Educational Technology',
             ]),
         ]);
     }
@@ -294,7 +294,7 @@ class ProviderSpecializationFactory extends Factory
             'specialization_name' => $this->faker->randomElement([
                 'Business Strategy', 'Change Management', 'Process Improvement',
                 'Digital Transformation', 'Organizational Development',
-                'Project Management', 'Human Resources', 'Marketing Strategy'
+                'Project Management', 'Human Resources', 'Marketing Strategy',
             ]),
         ]);
     }
@@ -309,7 +309,7 @@ class ProviderSpecializationFactory extends Factory
             'proficiency_level' => $this->faker->randomElement([
                 ProficiencyLevel::ADVANCED,
                 ProficiencyLevel::EXPERT,
-                ProficiencyLevel::MASTER
+                ProficiencyLevel::MASTER,
             ]),
         ]);
     }
@@ -323,7 +323,7 @@ class ProviderSpecializationFactory extends Factory
             'years_experience' => $this->faker->numberBetween(0, 3),
             'proficiency_level' => $this->faker->randomElement([
                 ProficiencyLevel::BEGINNER,
-                ProficiencyLevel::INTERMEDIATE
+                ProficiencyLevel::INTERMEDIATE,
             ]),
         ]);
     }
@@ -349,7 +349,7 @@ class ProviderSpecializationFactory extends Factory
                 'Certified Teacher',
                 'Certified Personal Trainer',
                 'Certified Real Estate Agent',
-                'Certified Insurance Agent'
+                'Certified Insurance Agent',
             ], $this->faker->numberBetween(1, 3)),
         ]);
     }

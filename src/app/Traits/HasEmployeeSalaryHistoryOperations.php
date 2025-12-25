@@ -2,13 +2,13 @@
 
 namespace App\Traits;
 
-use App\Models\EmployeeSalaryHistory;
 use App\DTOs\EmployeeSalaryHistoryDTO;
+use App\Models\EmployeeSalaryHistory;
 use App\Repositories\Interfaces\EmployeeSalaryHistoryRepositoryInterface;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
-use Carbon\Carbon;
 
 trait HasEmployeeSalaryHistoryOperations
 {
@@ -134,12 +134,12 @@ trait HasEmployeeSalaryHistoryOperations
             $this->validateSalaryHistoryData($data);
 
             // Auto-calculate change amount if not provided
-            if (!isset($data['change_amount'])) {
+            if (! isset($data['change_amount'])) {
                 $data['change_amount'] = $data['new_salary'] - $data['old_salary'];
             }
 
             // Auto-calculate change percentage if not provided
-            if (!isset($data['change_percentage']) && $data['old_salary'] > 0) {
+            if (! isset($data['change_percentage']) && $data['old_salary'] > 0) {
                 $data['change_percentage'] = (($data['new_salary'] - $data['old_salary']) / $data['old_salary']) * 100;
             }
 
@@ -152,7 +152,7 @@ trait HasEmployeeSalaryHistoryOperations
             Log::info('Salary history created via trait', [
                 'id' => $salaryHistory->id,
                 'employee_id' => $data['employee_id'],
-                'change_type' => $data['change_type']
+                'change_type' => $data['change_type'],
             ]);
 
             return $salaryHistory;
@@ -160,7 +160,7 @@ trait HasEmployeeSalaryHistoryOperations
         } catch (\Exception $e) {
             Log::error('Failed to create salary history via trait', [
                 'error' => $e->getMessage(),
-                'data' => $data
+                'data' => $data,
             ]);
             throw $e;
         }
@@ -172,6 +172,7 @@ trait HasEmployeeSalaryHistoryOperations
     public function createSalaryHistoryDTO(array $data): EmployeeSalaryHistoryDTO
     {
         $model = $this->createSalaryHistory($data);
+
         return EmployeeSalaryHistoryDTO::fromModel($model);
     }
 
@@ -185,12 +186,12 @@ trait HasEmployeeSalaryHistoryOperations
             $this->validateSalaryHistoryUpdateData($data);
 
             // Auto-calculate change amount if not provided
-            if (!isset($data['change_amount'])) {
+            if (! isset($data['change_amount'])) {
                 $data['change_amount'] = $data['new_salary'] - $data['old_salary'];
             }
 
             // Auto-calculate change percentage if not provided
-            if (!isset($data['change_percentage']) && $data['old_salary'] > 0) {
+            if (! isset($data['change_percentage']) && $data['old_salary'] > 0) {
                 $data['change_percentage'] = (($data['new_salary'] - $data['old_salary']) / $data['old_salary']) * 100;
             }
 
@@ -199,7 +200,7 @@ trait HasEmployeeSalaryHistoryOperations
             if ($updated) {
                 Log::info('Salary history updated via trait', [
                     'id' => $salaryHistory->id,
-                    'employee_id' => $salaryHistory->employee_id
+                    'employee_id' => $salaryHistory->employee_id,
                 ]);
             }
 
@@ -208,7 +209,7 @@ trait HasEmployeeSalaryHistoryOperations
         } catch (\Exception $e) {
             Log::error('Failed to update salary history via trait', [
                 'error' => $e->getMessage(),
-                'id' => $salaryHistory->id
+                'id' => $salaryHistory->id,
             ]);
             throw $e;
         }
@@ -220,6 +221,7 @@ trait HasEmployeeSalaryHistoryOperations
     public function updateSalaryHistoryDTO(EmployeeSalaryHistory $salaryHistory, array $data): ?EmployeeSalaryHistoryDTO
     {
         $updated = $this->updateSalaryHistory($salaryHistory, $data);
+
         return $updated ? EmployeeSalaryHistoryDTO::fromModel($salaryHistory->fresh()) : null;
     }
 
@@ -234,7 +236,7 @@ trait HasEmployeeSalaryHistoryOperations
             if ($deleted) {
                 Log::info('Salary history deleted via trait', [
                     'id' => $salaryHistory->id,
-                    'employee_id' => $salaryHistory->employee_id
+                    'employee_id' => $salaryHistory->employee_id,
                 ]);
             }
 
@@ -243,7 +245,7 @@ trait HasEmployeeSalaryHistoryOperations
         } catch (\Exception $e) {
             Log::error('Failed to delete salary history via trait', [
                 'error' => $e->getMessage(),
-                'id' => $salaryHistory->id
+                'id' => $salaryHistory->id,
             ]);
             throw $e;
         }
@@ -305,7 +307,7 @@ trait HasEmployeeSalaryHistoryOperations
         $requiredFields = ['employee_id', 'old_salary', 'new_salary', 'change_type', 'effective_date'];
 
         foreach ($requiredFields as $field) {
-            if (!isset($data[$field])) {
+            if (! isset($data[$field])) {
                 throw new \InvalidArgumentException("Required field '{$field}' is missing");
             }
         }
@@ -314,12 +316,12 @@ trait HasEmployeeSalaryHistoryOperations
             throw new \InvalidArgumentException('Salary amounts cannot be negative');
         }
 
-        if (!in_array($data['change_type'], ['promotion', 'merit', 'cost_of_living', 'market_adjustment', 'demotion', 'other'])) {
+        if (! in_array($data['change_type'], ['promotion', 'merit', 'cost_of_living', 'market_adjustment', 'demotion', 'other'])) {
             throw new \InvalidArgumentException('Invalid change type');
         }
 
         if ($data['is_retroactive'] ?? false) {
-            if (!isset($data['retroactive_start_date']) || !isset($data['retroactive_end_date'])) {
+            if (! isset($data['retroactive_start_date']) || ! isset($data['retroactive_end_date'])) {
                 throw new \InvalidArgumentException('Retroactive start and end dates are required when retroactive is enabled');
             }
 
@@ -342,12 +344,12 @@ trait HasEmployeeSalaryHistoryOperations
             throw new \InvalidArgumentException('New salary cannot be negative');
         }
 
-        if (isset($data['change_type']) && !in_array($data['change_type'], ['promotion', 'merit', 'cost_of_living', 'market_adjustment', 'demotion', 'other'])) {
+        if (isset($data['change_type']) && ! in_array($data['change_type'], ['promotion', 'merit', 'cost_of_living', 'market_adjustment', 'demotion', 'other'])) {
             throw new \InvalidArgumentException('Invalid change type');
         }
 
         if (isset($data['is_retroactive']) && $data['is_retroactive']) {
-            if (!isset($data['retroactive_start_date']) || !isset($data['retroactive_end_date'])) {
+            if (! isset($data['retroactive_start_date']) || ! isset($data['retroactive_end_date'])) {
                 throw new \InvalidArgumentException('Retroactive start and end dates are required when retroactive is enabled');
             }
 

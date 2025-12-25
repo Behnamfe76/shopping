@@ -2,16 +2,16 @@
 
 namespace Fereydooni\Shopping\App\Listeners\ProviderInvoice;
 
-use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoiceCreated;
-use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoiceUpdated;
-use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoiceSent;
-use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoicePaid;
-use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoiceOverdue;
 use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoiceCancelled;
+use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoiceCreated;
+use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoiceOverdue;
+use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoicePaid;
+use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoiceSent;
+use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoiceUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class UpdateProviderInvoiceMetrics implements ShouldQueue
 {
@@ -54,7 +54,7 @@ class UpdateProviderInvoiceMetrics implements ShouldQueue
             Log::error('Failed to update provider invoice metrics', [
                 'event' => get_class($event),
                 'invoice_id' => $event->invoice->id ?? 'unknown',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -151,7 +151,7 @@ class UpdateProviderInvoiceMetrics implements ShouldQueue
         $cacheKeys = [
             "provider_{$providerId}_metrics",
             "provider_{$providerId}_invoice_stats",
-            "provider_{$providerId}_payment_stats"
+            "provider_{$providerId}_payment_stats",
         ];
 
         foreach ($cacheKeys as $key) {
@@ -159,4 +159,3 @@ class UpdateProviderInvoiceMetrics implements ShouldQueue
         }
     }
 }
-

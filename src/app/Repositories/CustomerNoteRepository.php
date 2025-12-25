@@ -2,16 +2,16 @@
 
 namespace Fereydooni\Shopping\app\Repositories;
 
+use Fereydooni\Shopping\app\DTOs\CustomerNoteDTO;
+use Fereydooni\Shopping\app\Enums\CustomerNotePriority;
+use Fereydooni\Shopping\app\Enums\CustomerNoteType;
+use Fereydooni\Shopping\app\Models\CustomerNote;
+use Fereydooni\Shopping\app\Repositories\Interfaces\CustomerNoteRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Support\Facades\Validator;
-use Fereydooni\Shopping\app\Repositories\Interfaces\CustomerNoteRepositoryInterface;
-use Fereydooni\Shopping\app\Models\CustomerNote;
-use Fereydooni\Shopping\app\DTOs\CustomerNoteDTO;
-use Fereydooni\Shopping\app\Enums\CustomerNoteType;
-use Fereydooni\Shopping\app\Enums\CustomerNotePriority;
 
 class CustomerNoteRepository implements CustomerNoteRepositoryInterface
 {
@@ -35,7 +35,7 @@ class CustomerNoteRepository implements CustomerNoteRepositoryInterface
         return $this->model->with(['customer', 'user'])->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->model->with(['customer', 'user'])->cursorPaginate($perPage, ['*'], 'cursor', $cursor);
     }
@@ -48,6 +48,7 @@ class CustomerNoteRepository implements CustomerNoteRepositoryInterface
     public function findDTO(int $id): ?CustomerNoteDTO
     {
         $note = $this->find($id);
+
         return $note ? CustomerNoteDTO::fromModel($note) : null;
     }
 
@@ -59,6 +60,7 @@ class CustomerNoteRepository implements CustomerNoteRepositoryInterface
     public function createAndReturnDTO(array $data): CustomerNoteDTO
     {
         $note = $this->create($data);
+
         return CustomerNoteDTO::fromModel($note->load(['customer', 'user']));
     }
 
@@ -70,6 +72,7 @@ class CustomerNoteRepository implements CustomerNoteRepositoryInterface
     public function updateAndReturnDTO(CustomerNote $note, array $data): ?CustomerNoteDTO
     {
         $updated = $this->update($note, $data);
+
         return $updated ? CustomerNoteDTO::fromModel($note->fresh()->load(['customer', 'user'])) : null;
     }
 
@@ -86,7 +89,7 @@ class CustomerNoteRepository implements CustomerNoteRepositoryInterface
 
     public function findByCustomerIdDTO(int $customerId): Collection
     {
-        return $this->findByCustomerId($customerId)->map(fn($note) => CustomerNoteDTO::fromModel($note));
+        return $this->findByCustomerId($customerId)->map(fn ($note) => CustomerNoteDTO::fromModel($note));
     }
 
     public function getNoteCountByCustomer(int $customerId): int
@@ -106,7 +109,7 @@ class CustomerNoteRepository implements CustomerNoteRepositoryInterface
     public function getRecentNotesByCustomerDTO(int $customerId, int $limit = 10): Collection
     {
         return $this->getRecentNotesByCustomer($customerId, $limit)
-            ->map(fn($note) => CustomerNoteDTO::fromModel($note));
+            ->map(fn ($note) => CustomerNoteDTO::fromModel($note));
     }
 
     public function getPinnedNotesByCustomer(int $customerId): Collection
@@ -120,7 +123,7 @@ class CustomerNoteRepository implements CustomerNoteRepositoryInterface
     public function getPinnedNotesByCustomerDTO(int $customerId): Collection
     {
         return $this->getPinnedNotesByCustomer($customerId)
-            ->map(fn($note) => CustomerNoteDTO::fromModel($note));
+            ->map(fn ($note) => CustomerNoteDTO::fromModel($note));
     }
 
     public function getNotesByCustomerAndDateRange(int $customerId, string $startDate, string $endDate): Collection
@@ -134,7 +137,7 @@ class CustomerNoteRepository implements CustomerNoteRepositoryInterface
     public function getNotesByCustomerAndDateRangeDTO(int $customerId, string $startDate, string $endDate): Collection
     {
         return $this->getNotesByCustomerAndDateRange($customerId, $startDate, $endDate)
-            ->map(fn($note) => CustomerNoteDTO::fromModel($note));
+            ->map(fn ($note) => CustomerNoteDTO::fromModel($note));
     }
 
     // User-specific queries
@@ -145,35 +148,38 @@ class CustomerNoteRepository implements CustomerNoteRepositoryInterface
 
     public function findByUserIdDTO(int $userId): Collection
     {
-        return $this->findByUserId($userId)->map(fn($note) => CustomerNoteDTO::fromModel($note));
+        return $this->findByUserId($userId)->map(fn ($note) => CustomerNoteDTO::fromModel($note));
     }
 
     // Type and priority queries
     public function findByType(string $type): Collection
     {
         $noteType = CustomerNoteType::from($type);
+
         return $this->model->byType($noteType)->with(['customer', 'user'])->get();
     }
 
     public function findByTypeDTO(string $type): Collection
     {
-        return $this->findByType($type)->map(fn($note) => CustomerNoteDTO::fromModel($note));
+        return $this->findByType($type)->map(fn ($note) => CustomerNoteDTO::fromModel($note));
     }
 
     public function findByPriority(string $priority): Collection
     {
         $notePriority = CustomerNotePriority::from($priority);
+
         return $this->model->byPriority($notePriority)->with(['customer', 'user'])->get();
     }
 
     public function findByPriorityDTO(string $priority): Collection
     {
-        return $this->findByPriority($priority)->map(fn($note) => CustomerNoteDTO::fromModel($note));
+        return $this->findByPriority($priority)->map(fn ($note) => CustomerNoteDTO::fromModel($note));
     }
 
     public function findByCustomerAndType(int $customerId, string $type): Collection
     {
         $noteType = CustomerNoteType::from($type);
+
         return $this->model->byCustomer($customerId)
             ->byType($noteType)
             ->with(['customer', 'user'])
@@ -183,12 +189,13 @@ class CustomerNoteRepository implements CustomerNoteRepositoryInterface
     public function findByCustomerAndTypeDTO(int $customerId, string $type): Collection
     {
         return $this->findByCustomerAndType($customerId, $type)
-            ->map(fn($note) => CustomerNoteDTO::fromModel($note));
+            ->map(fn ($note) => CustomerNoteDTO::fromModel($note));
     }
 
     public function findByCustomerAndPriority(int $customerId, string $priority): Collection
     {
         $notePriority = CustomerNotePriority::from($priority);
+
         return $this->model->byCustomer($customerId)
             ->byPriority($notePriority)
             ->with(['customer', 'user'])
@@ -198,18 +205,20 @@ class CustomerNoteRepository implements CustomerNoteRepositoryInterface
     public function findByCustomerAndPriorityDTO(int $customerId, string $priority): Collection
     {
         return $this->findByCustomerAndPriority($customerId, $priority)
-            ->map(fn($note) => CustomerNoteDTO::fromModel($note));
+            ->map(fn ($note) => CustomerNoteDTO::fromModel($note));
     }
 
     public function getNoteCountByType(string $type): int
     {
         $noteType = CustomerNoteType::from($type);
+
         return $this->model->byType($noteType)->count();
     }
 
     public function getNoteCountByPriority(string $priority): int
     {
         $notePriority = CustomerNotePriority::from($priority);
+
         return $this->model->byPriority($notePriority)->count();
     }
 
@@ -221,7 +230,7 @@ class CustomerNoteRepository implements CustomerNoteRepositoryInterface
 
     public function findPublicDTO(): Collection
     {
-        return $this->findPublic()->map(fn($note) => CustomerNoteDTO::fromModel($note));
+        return $this->findPublic()->map(fn ($note) => CustomerNoteDTO::fromModel($note));
     }
 
     public function findPrivate(): Collection
@@ -231,7 +240,7 @@ class CustomerNoteRepository implements CustomerNoteRepositoryInterface
 
     public function findPrivateDTO(): Collection
     {
-        return $this->findPrivate()->map(fn($note) => CustomerNoteDTO::fromModel($note));
+        return $this->findPrivate()->map(fn ($note) => CustomerNoteDTO::fromModel($note));
     }
 
     public function findPinned(): Collection
@@ -241,7 +250,7 @@ class CustomerNoteRepository implements CustomerNoteRepositoryInterface
 
     public function findPinnedDTO(): Collection
     {
-        return $this->findPinned()->map(fn($note) => CustomerNoteDTO::fromModel($note));
+        return $this->findPinned()->map(fn ($note) => CustomerNoteDTO::fromModel($note));
     }
 
     public function getPinnedNoteCount(): int
@@ -263,7 +272,7 @@ class CustomerNoteRepository implements CustomerNoteRepositoryInterface
     public function findByDateRangeDTO(string $startDate, string $endDate): Collection
     {
         return $this->findByDateRange($startDate, $endDate)
-            ->map(fn($note) => CustomerNoteDTO::fromModel($note));
+            ->map(fn ($note) => CustomerNoteDTO::fromModel($note));
     }
 
     // Tag queries
@@ -274,12 +283,13 @@ class CustomerNoteRepository implements CustomerNoteRepositoryInterface
 
     public function findByTagDTO(string $tag): Collection
     {
-        return $this->findByTag($tag)->map(fn($note) => CustomerNoteDTO::fromModel($note));
+        return $this->findByTag($tag)->map(fn ($note) => CustomerNoteDTO::fromModel($note));
     }
 
     public function getPopularTags(): array
     {
         $tags = $this->model->whereNotNull('tags')->pluck('tags')->flatten();
+
         return $tags->countBy()->sortDesc()->take(10)->toArray();
     }
 
@@ -289,6 +299,7 @@ class CustomerNoteRepository implements CustomerNoteRepositoryInterface
             ->whereNotNull('tags')
             ->pluck('tags')
             ->flatten();
+
         return $tags->countBy()->sortDesc()->take(10)->toArray();
     }
 
@@ -328,6 +339,7 @@ class CustomerNoteRepository implements CustomerNoteRepositoryInterface
     {
         try {
             $note->addMedia($file)->toMediaCollection('attachments');
+
             return true;
         } catch (\Exception $e) {
             return false;
@@ -340,8 +352,10 @@ class CustomerNoteRepository implements CustomerNoteRepositoryInterface
             $media = $note->getMedia('attachments')->find($mediaId);
             if ($media) {
                 $media->delete();
+
                 return true;
             }
+
             return false;
         } catch (\Exception $e) {
             return false;
@@ -361,7 +375,7 @@ class CustomerNoteRepository implements CustomerNoteRepositoryInterface
 
     public function searchDTO(string $query): Collection
     {
-        return $this->search($query)->map(fn($note) => CustomerNoteDTO::fromModel($note));
+        return $this->search($query)->map(fn ($note) => CustomerNoteDTO::fromModel($note));
     }
 
     public function searchByCustomer(int $customerId, string $query): Collection
@@ -375,7 +389,7 @@ class CustomerNoteRepository implements CustomerNoteRepositoryInterface
     public function searchByCustomerDTO(int $customerId, string $query): Collection
     {
         return $this->searchByCustomer($customerId, $query)
-            ->map(fn($note) => CustomerNoteDTO::fromModel($note));
+            ->map(fn ($note) => CustomerNoteDTO::fromModel($note));
     }
 
     // Recent notes
@@ -389,7 +403,7 @@ class CustomerNoteRepository implements CustomerNoteRepositoryInterface
 
     public function getRecentNotesDTO(int $limit = 10): Collection
     {
-        return $this->getRecentNotes($limit)->map(fn($note) => CustomerNoteDTO::fromModel($note));
+        return $this->getRecentNotes($limit)->map(fn ($note) => CustomerNoteDTO::fromModel($note));
     }
 
     // Statistics and analytics
@@ -443,7 +457,7 @@ class CustomerNoteRepository implements CustomerNoteRepositoryInterface
     public function getNoteStatsByDateRange(string $startDate, string $endDate): array
     {
         $notes = $this->findByDateRange($startDate, $endDate);
-        
+
         return [
             'total' => $notes->count(),
             'by_type' => $notes->groupBy('note_type')->map->count()->toArray(),
@@ -458,6 +472,7 @@ class CustomerNoteRepository implements CustomerNoteRepositoryInterface
     {
         $rules = CustomerNoteDTO::rules();
         $validator = Validator::make($data, $rules);
-        return !$validator->fails();
+
+        return ! $validator->fails();
     }
 }

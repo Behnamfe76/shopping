@@ -112,7 +112,7 @@ class StoreTransactionRequest extends FormRequest
             'response_data.card_exp_year' => [
                 'nullable',
                 'integer',
-                'min:' . date('Y'),
+                'min:'.date('Y'),
             ],
             'response_data.billing_address' => [
                 'nullable',
@@ -262,14 +262,14 @@ class StoreTransactionRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         // Set default payment date if not provided
-        if (!$this->has('payment_date')) {
+        if (! $this->has('payment_date')) {
             $this->merge([
                 'payment_date' => now(),
             ]);
         }
 
         // Set default status if not provided
-        if (!$this->has('status')) {
+        if (! $this->has('status')) {
             $this->merge([
                 'status' => 'initiated',
             ]);

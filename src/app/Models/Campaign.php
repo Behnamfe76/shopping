@@ -4,16 +4,15 @@ namespace Fereydooni\Shopping\app\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Carbon;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Illuminate\Support\Carbon;
 
 class Campaign extends Model implements HasMedia
 {
-    use HasFactory, SoftDeletes, InteractsWithMedia;
+    use HasFactory, InteractsWithMedia, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -106,11 +105,11 @@ class Campaign extends Model implements HasMedia
     {
         return $query->where(function ($q) use ($startDate, $endDate) {
             $q->whereBetween('start_date', [$startDate, $endDate])
-              ->orWhereBetween('end_date', [$startDate, $endDate])
-              ->orWhere(function ($subQ) use ($startDate, $endDate) {
-                  $subQ->where('start_date', '<=', $startDate)
-                       ->where('end_date', '>=', $endDate);
-              });
+                ->orWhereBetween('end_date', [$startDate, $endDate])
+                ->orWhere(function ($subQ) use ($startDate, $endDate) {
+                    $subQ->where('start_date', '<=', $startDate)
+                        ->where('end_date', '>=', $endDate);
+                });
         });
     }
 
@@ -120,12 +119,13 @@ class Campaign extends Model implements HasMedia
     public function scopeCurrentlyRunning($query)
     {
         $now = Carbon::now();
+
         return $query->where('status', 'active')
-                    ->where('start_date', '<=', $now)
-                    ->where(function ($q) use ($now) {
-                        $q->whereNull('end_date')
-                          ->orWhere('end_date', '>=', $now);
-                    });
+            ->where('start_date', '<=', $now)
+            ->where(function ($q) use ($now) {
+                $q->whereNull('end_date')
+                    ->orWhere('end_date', '>=', $now);
+            });
     }
 
     /**

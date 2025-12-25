@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\app\Repositories\Interfaces;
 
+use Fereydooni\Shopping\app\DTOs\UserSubscriptionDTO;
+use Fereydooni\Shopping\app\Models\UserSubscription;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Fereydooni\Shopping\app\Models\UserSubscription;
-use Fereydooni\Shopping\app\DTOs\UserSubscriptionDTO;
 
 interface UserSubscriptionRepositoryInterface
 {
@@ -29,7 +29,7 @@ interface UserSubscriptionRepositoryInterface
     /**
      * Get cursor paginated user subscriptions
      */
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator;
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator;
 
     /**
      * Find user subscription by ID
@@ -179,12 +179,12 @@ interface UserSubscriptionRepositoryInterface
     /**
      * Cancel user subscription
      */
-    public function cancel(UserSubscription $userSubscription, string $reason = null): bool;
+    public function cancel(UserSubscription $userSubscription, ?string $reason = null): bool;
 
     /**
      * Cancel user subscription and return DTO
      */
-    public function cancelAndReturnDTO(UserSubscription $userSubscription, string $reason = null): ?UserSubscriptionDTO;
+    public function cancelAndReturnDTO(UserSubscription $userSubscription, ?string $reason = null): ?UserSubscriptionDTO;
 
     /**
      * Expire user subscription
@@ -209,12 +209,12 @@ interface UserSubscriptionRepositoryInterface
     /**
      * Pause user subscription
      */
-    public function pause(UserSubscription $userSubscription, string $reason = null): bool;
+    public function pause(UserSubscription $userSubscription, ?string $reason = null): bool;
 
     /**
      * Pause user subscription and return DTO
      */
-    public function pauseAndReturnDTO(UserSubscription $userSubscription, string $reason = null): ?UserSubscriptionDTO;
+    public function pauseAndReturnDTO(UserSubscription $userSubscription, ?string $reason = null): ?UserSubscriptionDTO;
 
     /**
      * Resume user subscription

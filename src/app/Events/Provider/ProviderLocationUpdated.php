@@ -2,25 +2,27 @@
 
 namespace Fereydooni\Shopping\app\Events\Provider;
 
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Queue\SerializesModels;
 use Fereydooni\Shopping\app\Models\ProviderLocation;
 use Fereydooni\Shopping\app\Models\User;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class ProviderLocationUpdated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public ProviderLocation $providerLocation;
+
     public ?User $user;
+
     public array $changes;
+
     public array $originalData;
+
     public array $newData;
+
     public array $geospatialChanges;
 
     /**
@@ -52,14 +54,14 @@ class ProviderLocationUpdated
         if (isset($this->changes['latitude'])) {
             $changes['latitude'] = [
                 'from' => $this->originalData['latitude'] ?? null,
-                'to' => $this->changes['latitude']
+                'to' => $this->changes['latitude'],
             ];
         }
 
         if (isset($this->changes['longitude'])) {
             $changes['longitude'] = [
                 'from' => $this->originalData['longitude'] ?? null,
-                'to' => $this->changes['longitude']
+                'to' => $this->changes['longitude'],
             ];
         }
 
@@ -69,24 +71,24 @@ class ProviderLocationUpdated
             $changes['address_components'] = [
                 'address' => [
                     'from' => $this->originalData['address'] ?? null,
-                    'to' => $this->changes['address'] ?? $this->originalData['address'] ?? null
+                    'to' => $this->changes['address'] ?? $this->originalData['address'] ?? null,
                 ],
                 'city' => [
                     'from' => $this->originalData['city'] ?? null,
-                    'to' => $this->changes['city'] ?? $this->originalData['city'] ?? null
+                    'to' => $this->changes['city'] ?? $this->originalData['city'] ?? null,
                 ],
                 'state' => [
                     'from' => $this->originalData['state'] ?? null,
-                    'to' => $this->changes['state'] ?? $this->originalData['state'] ?? null
+                    'to' => $this->changes['state'] ?? $this->originalData['state'] ?? null,
                 ],
                 'postal_code' => [
                     'from' => $this->originalData['postal_code'] ?? null,
-                    'to' => $this->changes['postal_code'] ?? $this->originalData['postal_code'] ?? null
+                    'to' => $this->changes['postal_code'] ?? $this->originalData['postal_code'] ?? null,
                 ],
                 'country' => [
                     'from' => $this->originalData['country'] ?? null,
-                    'to' => $this->changes['country'] ?? $this->originalData['country'] ?? null
-                ]
+                    'to' => $this->changes['country'] ?? $this->originalData['country'] ?? null,
+                ],
             ];
         }
 
@@ -101,7 +103,7 @@ class ProviderLocationUpdated
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('provider.' . $this->providerLocation->provider_id),
+            new PrivateChannel('provider.'.$this->providerLocation->provider_id),
             new PrivateChannel('admin.provider-locations'),
         ];
     }
@@ -124,7 +126,7 @@ class ProviderLocationUpdated
                                    isset($this->changes['country']),
             'user_id' => $this->user?->id,
             'user_name' => $this->user?->name,
-            'timestamp' => now()->toISOString()
+            'timestamp' => now()->toISOString(),
         ];
     }
 
@@ -143,7 +145,7 @@ class ProviderLocationUpdated
     {
         $significantFields = [
             'location_name', 'address', 'city', 'state', 'country',
-            'latitude', 'longitude', 'is_primary', 'is_active'
+            'latitude', 'longitude', 'is_primary', 'is_active',
         ];
 
         foreach ($significantFields as $field) {

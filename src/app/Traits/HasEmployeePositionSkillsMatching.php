@@ -2,12 +2,11 @@
 
 namespace App\Traits;
 
-use App\Models\EmployeePosition;
 use App\Models\Employee;
+use App\Models\EmployeePosition;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 trait HasEmployeePositionSkillsMatching
 {
@@ -19,7 +18,7 @@ trait HasEmployeePositionSkillsMatching
         try {
             $currentSkills = $position->skills_required ?? [];
 
-            if (!in_array($skill, $currentSkills)) {
+            if (! in_array($skill, $currentSkills)) {
                 $currentSkills[] = $skill;
                 $position->update(['skills_required' => $currentSkills]);
 
@@ -30,7 +29,7 @@ trait HasEmployeePositionSkillsMatching
                 Log::info("Skill requirement added to position {$position->title}", [
                     'position_id' => $position->id,
                     'skill' => $skill,
-                    'user_id' => auth()->id()
+                    'user_id' => auth()->id(),
                 ]);
             }
 
@@ -39,8 +38,9 @@ trait HasEmployeePositionSkillsMatching
             Log::error("Failed to add skill requirement to position {$position->id}", [
                 'error' => $e->getMessage(),
                 'position_id' => $position->id,
-                'skill' => $skill
+                'skill' => $skill,
             ]);
+
             return false;
         }
     }
@@ -64,7 +64,7 @@ trait HasEmployeePositionSkillsMatching
                 Log::info("Skill requirement removed from position {$position->title}", [
                     'position_id' => $position->id,
                     'skill' => $skill,
-                    'user_id' => auth()->id()
+                    'user_id' => auth()->id(),
                 ]);
             }
 
@@ -73,8 +73,9 @@ trait HasEmployeePositionSkillsMatching
             Log::error("Failed to remove skill requirement from position {$position->id}", [
                 'error' => $e->getMessage(),
                 'position_id' => $position->id,
-                'skill' => $skill
+                'skill' => $skill,
             ]);
+
             return false;
         }
     }
@@ -84,7 +85,7 @@ trait HasEmployeePositionSkillsMatching
      */
     public function getPositionsBySkills(array $skills): Collection
     {
-        $cacheKey = 'positions.skills.' . md5(serialize($skills));
+        $cacheKey = 'positions.skills.'.md5(serialize($skills));
 
         return Cache::remember($cacheKey, 3600, function () use ($skills) {
             return EmployeePosition::where('is_active', true)
@@ -110,7 +111,7 @@ trait HasEmployeePositionSkillsMatching
                 ->where('position_id', '!=', $position->id); // Exclude current position holders
 
             // Match by skills if available
-            if (!empty($requiredSkills)) {
+            if (! empty($requiredSkills)) {
                 $query->whereJsonContains('skills', $requiredSkills);
             }
 
@@ -120,7 +121,7 @@ trait HasEmployeePositionSkillsMatching
             }
 
             // Match by education level
-            if (!empty($requiredEducation)) {
+            if (! empty($requiredEducation)) {
                 $query->where('education_level', '>=', $requiredEducation);
             }
 
@@ -170,7 +171,7 @@ trait HasEmployeePositionSkillsMatching
                     'available_skills' => [],
                     'missing_skills' => $requiredSkills,
                     'coverage_percentage' => 0,
-                    'recommendations' => ['No employees currently in this position']
+                    'recommendations' => ['No employees currently in this position'],
                 ];
             }
 
@@ -187,7 +188,7 @@ trait HasEmployeePositionSkillsMatching
 
             $recommendations = [];
             if ($coveragePercentage < 80) {
-                $recommendations[] = 'Consider hiring employees with missing skills: ' . implode(', ', $missingSkills);
+                $recommendations[] = 'Consider hiring employees with missing skills: '.implode(', ', $missingSkills);
             }
             if ($coveragePercentage < 60) {
                 $recommendations[] = 'Critical skills gap detected - immediate action required';
@@ -201,7 +202,7 @@ trait HasEmployeePositionSkillsMatching
                 'available_skills' => $availableSkills,
                 'missing_skills' => array_values($missingSkills),
                 'coverage_percentage' => round($coveragePercentage, 2),
-                'recommendations' => $recommendations
+                'recommendations' => $recommendations,
             ];
         });
     }
@@ -262,7 +263,7 @@ trait HasEmployeePositionSkillsMatching
                 'total_positions' => $positions->count(),
                 'unique_skills' => count($skillsCount),
                 'most_required_skills' => array_slice($skillsCount, 0, 10, true),
-                'skills_by_frequency' => $skillsCount
+                'skills_by_frequency' => $skillsCount,
             ];
         });
     }
@@ -293,7 +294,7 @@ trait HasEmployeePositionSkillsMatching
             $query->where('experience_required', '<=', $employeeExperience + 2);
 
             // Filter by education level
-            if (!empty($employeeEducation)) {
+            if (! empty($employeeEducation)) {
                 $query->where('education_required', '<=', $employeeEducation);
             }
 
@@ -301,6 +302,7 @@ trait HasEmployeePositionSkillsMatching
                 ->get()
                 ->map(function ($position) use ($employee) {
                     $position->match_percentage = $this->calculateSkillsMatchPercentage($position, $employee);
+
                     return $position;
                 })
                 ->sortByDesc('match_percentage')
@@ -317,7 +319,7 @@ trait HasEmployeePositionSkillsMatching
         $skillsGap = $this->getSkillsGapAnalysis($position);
 
         if ($skillsGap['coverage_percentage'] < 80) {
-            $recommendations[] = 'Add missing skills to position requirements: ' . implode(', ', $skillsGap['missing_skills']);
+            $recommendations[] = 'Add missing skills to position requirements: '.implode(', ', $skillsGap['missing_skills']);
         }
 
         if (count($position->skills_required ?? []) < 3) {

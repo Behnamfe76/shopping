@@ -3,7 +3,6 @@
 namespace Fereydooni\Shopping\app\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Fereydooni\Shopping\app\Models\ProductAttribute;
 
 class ToggleProductAttributeStatusRequest extends FormRequest
 {
@@ -13,6 +12,7 @@ class ToggleProductAttributeStatusRequest extends FormRequest
     public function authorize(): bool
     {
         $attribute = $this->route('attribute');
+
         return $this->user()->can('toggleActive', $attribute);
     }
 
@@ -46,4 +46,3 @@ class ToggleProductAttributeStatusRequest extends FormRequest
         ];
     }
 }
-

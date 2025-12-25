@@ -2,20 +2,20 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Min;
-use Spatie\LaravelData\Attributes\Validation\Max;
-use Spatie\LaravelData\Attributes\Validation\In;
-use Spatie\LaravelData\Attributes\Validation\Required;
-use Spatie\LaravelData\Attributes\Validation\Nullable;
-use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
-use Spatie\LaravelData\Attributes\Validation\BooleanType;
-use Spatie\LaravelData\Attributes\Validation\FloatType;
-use Spatie\LaravelData\Attributes\Validation\Date;
-use Fereydooni\Shopping\app\Models\ProductReview;
 use Fereydooni\Shopping\app\Enums\ReviewStatus;
+use Fereydooni\Shopping\app\Models\ProductReview;
 use Illuminate\Support\Carbon;
+use Spatie\LaravelData\Attributes\Validation\BooleanType;
+use Spatie\LaravelData\Attributes\Validation\Date;
+use Spatie\LaravelData\Attributes\Validation\FloatType;
+use Spatie\LaravelData\Attributes\Validation\In;
+use Spatie\LaravelData\Attributes\Validation\IntegerType;
+use Spatie\LaravelData\Attributes\Validation\Max;
+use Spatie\LaravelData\Attributes\Validation\Min;
+use Spatie\LaravelData\Attributes\Validation\Nullable;
+use Spatie\LaravelData\Attributes\Validation\Required;
+use Spatie\LaravelData\Attributes\Validation\StringType;
+use Spatie\LaravelData\Data;
 
 class ProductReviewDTO extends Data
 {
@@ -62,8 +62,7 @@ class ProductReviewDTO extends Data
         public ?Carbon $updated_at = null,
         #[Nullable, IntegerType]
         public ?int $id = null,
-    ) {
-    }
+    ) {}
 
     public static function fromModel(ProductReview $review): self
     {
@@ -100,7 +99,7 @@ class ProductReviewDTO extends Data
             'user_id' => ['required', 'integer', 'exists:users,id'],
             'rating' => ['required', 'integer', 'min:1', 'max:5'],
             'review' => ['required', 'string', 'min:10', 'max:2000'],
-            'status' => ['sometimes', 'string', 'in:' . implode(',', ReviewStatus::values())],
+            'status' => ['sometimes', 'string', 'in:'.implode(',', ReviewStatus::values())],
             'title' => ['nullable', 'string', 'max:255'],
             'pros' => ['nullable', 'string', 'max:1000'],
             'cons' => ['nullable', 'string', 'max:1000'],

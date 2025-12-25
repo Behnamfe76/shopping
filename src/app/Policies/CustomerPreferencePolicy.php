@@ -2,10 +2,10 @@
 
 namespace Fereydooni\Shopping\app\Policies;
 
+use Fereydooni\Shopping\app\Models\Customer;
+use Fereydooni\Shopping\app\Models\CustomerPreference;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User;
-use Fereydooni\Shopping\app\Models\CustomerPreference;
-use Fereydooni\Shopping\app\Models\Customer;
 
 class CustomerPreferencePolicy
 {
@@ -345,4 +345,3 @@ class CustomerPreferencePolicy
                $user->id === $preference->customer->user_id;
     }
 }
-

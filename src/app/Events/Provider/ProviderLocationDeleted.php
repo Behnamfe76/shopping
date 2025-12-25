@@ -2,24 +2,25 @@
 
 namespace Fereydooni\Shopping\app\Events\Provider;
 
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Queue\SerializesModels;
 use Fereydooni\Shopping\app\Models\ProviderLocation;
 use Fereydooni\Shopping\app\Models\User;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class ProviderLocationDeleted
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public ProviderLocation $providerLocation;
+
     public ?User $user;
+
     public ?string $reason;
+
     public array $locationData;
+
     public array $geospatialData;
 
     /**
@@ -43,17 +44,17 @@ class ProviderLocationDeleted
             'location_type' => $providerLocation->location_type,
             'is_primary' => $providerLocation->is_primary,
             'is_active' => $providerLocation->is_active,
-            'deleted_at' => now()->toISOString()
+            'deleted_at' => now()->toISOString(),
         ];
 
         // Extract geospatial data
         $this->geospatialData = [
             'latitude' => $providerLocation->latitude,
             'longitude' => $providerLocation->longitude,
-            'has_coordinates' => !is_null($providerLocation->latitude) && !is_null($providerLocation->longitude),
+            'has_coordinates' => ! is_null($providerLocation->latitude) && ! is_null($providerLocation->longitude),
             'coordinates_formatted' => $providerLocation->latitude && $providerLocation->longitude
                 ? "{$providerLocation->latitude}, {$providerLocation->longitude}"
-                : null
+                : null,
         ];
     }
 
@@ -65,7 +66,7 @@ class ProviderLocationDeleted
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('provider.' . $this->providerLocation->provider_id),
+            new PrivateChannel('provider.'.$this->providerLocation->provider_id),
             new PrivateChannel('admin.provider-locations'),
         ];
     }
@@ -91,7 +92,7 @@ class ProviderLocationDeleted
             'reason' => $this->reason,
             'user_id' => $this->user?->id,
             'user_name' => $this->user?->name,
-            'timestamp' => now()->toISOString()
+            'timestamp' => now()->toISOString(),
         ];
     }
 
@@ -124,7 +125,7 @@ class ProviderLocationDeleted
      */
     public function hadCoordinates(): bool
     {
-        return !is_null($this->providerLocation->latitude) && !is_null($this->providerLocation->longitude);
+        return ! is_null($this->providerLocation->latitude) && ! is_null($this->providerLocation->longitude);
     }
 
     /**

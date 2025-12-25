@@ -16,7 +16,7 @@ trait HasTransactionOperations
         return $transaction->update([
             'status' => TransactionStatus::SUCCESS,
             'payment_date' => now(),
-            'response_data' => array_merge($transaction->response_data ?? [], $responseData)
+            'response_data' => array_merge($transaction->response_data ?? [], $responseData),
         ]);
     }
 
@@ -27,7 +27,7 @@ trait HasTransactionOperations
     {
         return $transaction->update([
             'status' => TransactionStatus::FAILED,
-            'response_data' => array_merge($transaction->response_data ?? [], $responseData)
+            'response_data' => array_merge($transaction->response_data ?? [], $responseData),
         ]);
     }
 
@@ -38,7 +38,7 @@ trait HasTransactionOperations
     {
         return $transaction->update([
             'status' => TransactionStatus::REFUNDED,
-            'response_data' => array_merge($transaction->response_data ?? [], $responseData)
+            'response_data' => array_merge($transaction->response_data ?? [], $responseData),
         ]);
     }
 
@@ -49,7 +49,7 @@ trait HasTransactionOperations
     {
         return $transaction->update([
             'status' => TransactionStatus::INITIATED,
-            'payment_date' => null
+            'payment_date' => null,
         ]);
     }
 
@@ -60,6 +60,7 @@ trait HasTransactionOperations
     {
         $timestamp = now()->format('YmdHis');
         $random = Str::random(8);
+
         return strtoupper("{$prefix}_{$gateway}_{$timestamp}_{$random}");
     }
 
@@ -81,6 +82,7 @@ trait HasTransactionOperations
 
         if (isset($currencyValidations[$currency])) {
             $validation = $currencyValidations[$currency];
+
             return $amount >= $validation['min'] && $amount <= $validation['max'];
         }
 
@@ -93,7 +95,8 @@ trait HasTransactionOperations
     public function formatTransactionAmount(float $amount, string $currency): string
     {
         $formattedAmount = number_format($amount, 2);
-        return "{$formattedAmount} " . strtoupper($currency);
+
+        return "{$formattedAmount} ".strtoupper($currency);
     }
 
     /**
@@ -132,7 +135,7 @@ trait HasTransactionOperations
         $requiredFields = ['status', 'transaction_id'];
 
         foreach ($requiredFields as $field) {
-            if (!isset($responseData[$field])) {
+            if (! isset($responseData[$field])) {
                 return false;
             }
         }
@@ -145,7 +148,7 @@ trait HasTransactionOperations
      */
     public function processGatewayResponse(Model $transaction, array $responseData): bool
     {
-        if (!$this->validateGatewayResponse($responseData)) {
+        if (! $this->validateGatewayResponse($responseData)) {
             return false;
         }
 
@@ -248,6 +251,7 @@ trait HasTransactionOperations
     public function validateCurrency(string $currency): bool
     {
         $supportedCurrencies = array_keys($this->getSupportedCurrencies());
+
         return in_array(strtoupper($currency), $supportedCurrencies);
     }
 
@@ -274,6 +278,7 @@ trait HasTransactionOperations
     public function updatePaymentDate(Model $transaction, ?string $paymentDate = null): bool
     {
         $date = $paymentDate ? now()->parse($paymentDate) : now();
+
         return $transaction->update(['payment_date' => $date]);
     }
 
@@ -291,7 +296,7 @@ trait HasTransactionOperations
     /**
      * Get transaction response data
      */
-    public function getResponseData(Model $transaction, string $key = null): mixed
+    public function getResponseData(Model $transaction, ?string $key = null): mixed
     {
         $responseData = $transaction->response_data ?? [];
 
@@ -312,6 +317,7 @@ trait HasTransactionOperations
         }
 
         $expiryTime = $transaction->created_at->addHours($expiryHours);
+
         return now()->isAfter($expiryTime);
     }
 

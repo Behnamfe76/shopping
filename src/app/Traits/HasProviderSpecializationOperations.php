@@ -2,14 +2,13 @@
 
 namespace Fereydooni\Shopping\App\Traits;
 
+use Exception;
+use Fereydooni\Shopping\App\DTOs\ProviderSpecializationDTO;
+use Fereydooni\Shopping\App\Models\ProviderSpecialization;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Exception;
-use Fereydooni\Shopping\App\Models\ProviderSpecialization;
-use Fereydooni\Shopping\App\DTOs\ProviderSpecializationDTO;
-use Fereydooni\Shopping\App\Enums\VerificationStatus;
 
 trait HasProviderSpecializationOperations
 {
@@ -126,7 +125,7 @@ trait HasProviderSpecializationOperations
             return $specialization;
         } catch (Exception $e) {
             DB::rollBack();
-            Log::error("Failed to add specialization to provider {$this->id}: " . $e->getMessage());
+            Log::error("Failed to add specialization to provider {$this->id}: ".$e->getMessage());
             throw $e;
         }
     }
@@ -159,7 +158,7 @@ trait HasProviderSpecializationOperations
             return $result;
         } catch (Exception $e) {
             DB::rollBack();
-            Log::error("Failed to update specialization {$specializationId} for provider {$this->id}: " . $e->getMessage());
+            Log::error("Failed to update specialization {$specializationId} for provider {$this->id}: ".$e->getMessage());
             throw $e;
         }
     }
@@ -184,7 +183,7 @@ trait HasProviderSpecializationOperations
             return $result;
         } catch (Exception $e) {
             DB::rollBack();
-            Log::error("Failed to remove specialization {$specializationId} from provider {$this->id}: " . $e->getMessage());
+            Log::error("Failed to remove specialization {$specializationId} from provider {$this->id}: ".$e->getMessage());
             throw $e;
         }
     }
@@ -243,7 +242,7 @@ trait HasProviderSpecializationOperations
             return $result;
         } catch (Exception $e) {
             DB::rollBack();
-            Log::error("Failed to set primary specialization {$specializationId} for provider {$this->id}: " . $e->getMessage());
+            Log::error("Failed to set primary specialization {$specializationId} for provider {$this->id}: ".$e->getMessage());
             throw $e;
         }
     }

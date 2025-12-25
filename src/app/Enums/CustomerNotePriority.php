@@ -11,7 +11,7 @@ enum CustomerNotePriority: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::LOW => 'Low',
             self::MEDIUM => 'Medium',
             self::HIGH => 'High',
@@ -21,7 +21,7 @@ enum CustomerNotePriority: string
 
     public function color(): string
     {
-        return match($this) {
+        return match ($this) {
             self::LOW => 'gray',
             self::MEDIUM => 'yellow',
             self::HIGH => 'orange',
@@ -31,7 +31,7 @@ enum CustomerNotePriority: string
 
     public function icon(): string
     {
-        return match($this) {
+        return match ($this) {
             self::LOW => 'arrow-down',
             self::MEDIUM => 'minus',
             self::HIGH => 'arrow-up',
@@ -41,7 +41,7 @@ enum CustomerNotePriority: string
 
     public function numericValue(): int
     {
-        return match($this) {
+        return match ($this) {
             self::LOW => 1,
             self::MEDIUM => 2,
             self::HIGH => 3,

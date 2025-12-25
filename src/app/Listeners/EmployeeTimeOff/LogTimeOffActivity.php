@@ -2,14 +2,14 @@
 
 namespace Fereydooni\Shopping\app\Listeners\EmployeeTimeOff;
 
+use Fereydooni\Shopping\app\Events\EmployeeTimeOff\EmployeeTimeOffApproved;
+use Fereydooni\Shopping\app\Events\EmployeeTimeOff\EmployeeTimeOffCancelled;
+use Fereydooni\Shopping\app\Events\EmployeeTimeOff\EmployeeTimeOffCreated;
+use Fereydooni\Shopping\app\Events\EmployeeTimeOff\EmployeeTimeOffRejected;
+use Fereydooni\Shopping\app\Events\EmployeeTimeOff\EmployeeTimeOffUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
-use Fereydooni\Shopping\app\Events\EmployeeTimeOff\EmployeeTimeOffCreated;
-use Fereydooni\Shopping\app\Events\EmployeeTimeOff\EmployeeTimeOffUpdated;
-use Fereydooni\Shopping\app\Events\EmployeeTimeOff\EmployeeTimeOffApproved;
-use Fereydooni\Shopping\app\Events\EmployeeTimeOff\EmployeeTimeOffRejected;
-use Fereydooni\Shopping\app\Events\EmployeeTimeOff\EmployeeTimeOffCancelled;
 
 class LogTimeOffActivity implements ShouldQueue
 {
@@ -41,7 +41,7 @@ class LogTimeOffActivity implements ShouldQueue
         } catch (\Exception $e) {
             Log::error('Failed to log time-off activity', [
                 'event' => get_class($event),
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -65,7 +65,7 @@ class LogTimeOffActivity implements ShouldQueue
             'is_urgent' => $timeOff->is_urgent,
             'created_at' => $timeOff->created_at,
             'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent()
+            'user_agent' => request()->userAgent(),
         ]);
 
         // TODO: Store in activity log table for audit trail
@@ -84,7 +84,7 @@ class LogTimeOffActivity implements ShouldQueue
             'changes' => $changes,
             'updated_at' => $timeOff->updated_at,
             'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent()
+            'user_agent' => request()->userAgent(),
         ]);
 
         // TODO: Store in activity log table for audit trail
@@ -104,7 +104,7 @@ class LogTimeOffActivity implements ShouldQueue
             'total_days' => $timeOff->total_days,
             'total_hours' => $timeOff->total_hours,
             'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent()
+            'user_agent' => request()->userAgent(),
         ]);
 
         // TODO: Store in activity log table for audit trail
@@ -125,7 +125,7 @@ class LogTimeOffActivity implements ShouldQueue
             'total_days' => $timeOff->total_days,
             'total_hours' => $timeOff->total_hours,
             'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent()
+            'user_agent' => request()->userAgent(),
         ]);
 
         // TODO: Store in activity log table for audit trail
@@ -145,7 +145,7 @@ class LogTimeOffActivity implements ShouldQueue
             'total_days' => $timeOff->total_days,
             'total_hours' => $timeOff->total_hours,
             'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent()
+            'user_agent' => request()->userAgent(),
         ]);
 
         // TODO: Store in activity log table for audit trail

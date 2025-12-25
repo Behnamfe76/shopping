@@ -12,7 +12,7 @@ enum LoyaltyTransactionStatus: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::PENDING => 'Pending',
             self::COMPLETED => 'Completed',
             self::FAILED => 'Failed',
@@ -23,7 +23,7 @@ enum LoyaltyTransactionStatus: string
 
     public function description(): string
     {
-        return match($this) {
+        return match ($this) {
             self::PENDING => 'Transaction is pending processing',
             self::COMPLETED => 'Transaction has been completed successfully',
             self::FAILED => 'Transaction has failed',

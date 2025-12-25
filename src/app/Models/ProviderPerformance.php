@@ -4,12 +4,11 @@ namespace App\Models;
 
 use App\Enums\PerformanceGrade;
 use App\Enums\PeriodType;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Builder;
-use Carbon\Carbon;
 
 class ProviderPerformance extends Model
 {
@@ -186,6 +185,7 @@ class ProviderPerformance extends Model
         }
 
         $this->performance_score = round($score, 2);
+
         return $this->performance_score;
     }
 
@@ -233,9 +233,16 @@ class ProviderPerformance extends Model
         // For now, return a basic trend based on score
         $score = $this->performance_score;
 
-        if ($score >= 80) return 'excellent';
-        if ($score >= 60) return 'good';
-        if ($score >= 40) return 'fair';
+        if ($score >= 80) {
+            return 'excellent';
+        }
+        if ($score >= 60) {
+            return 'good';
+        }
+        if ($score >= 40) {
+            return 'fair';
+        }
+
         return 'poor';
     }
 
@@ -246,17 +253,17 @@ class ProviderPerformance extends Model
             'on_time_delivery' => [
                 'current' => $this->on_time_delivery_rate,
                 'benchmark' => 95.0,
-                'status' => $this->on_time_delivery_rate >= 95.0 ? 'above' : 'below'
+                'status' => $this->on_time_delivery_rate >= 95.0 ? 'above' : 'below',
             ],
             'customer_satisfaction' => [
                 'current' => $this->customer_satisfaction_score,
-                'status' => $this->customer_satisfaction_score >= 8.5 ? 'above' : 'below'
+                'status' => $this->customer_satisfaction_score >= 8.5 ? 'above' : 'below',
             ],
             'quality_rating' => [
                 'current' => $this->quality_rating,
                 'benchmark' => 8.0,
-                'status' => $this->quality_rating >= 8.0 ? 'above' : 'below'
-            ]
+                'status' => $this->quality_rating >= 8.0 ? 'above' : 'below',
+            ],
         ];
     }
 
@@ -318,7 +325,7 @@ class ProviderPerformance extends Model
 
     public function needsAttention(): bool
     {
-        return $this->isLowPerformer() || !empty($this->getPerformanceAlerts());
+        return $this->isLowPerformer() || ! empty($this->getPerformanceAlerts());
     }
 
     public function getPeriodDuration(): int

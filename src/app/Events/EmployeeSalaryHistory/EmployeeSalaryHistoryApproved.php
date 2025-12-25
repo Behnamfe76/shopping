@@ -2,16 +2,18 @@
 
 namespace App\Events\EmployeeSalaryHistory;
 
+use App\Models\EmployeeSalaryHistory;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use App\Models\EmployeeSalaryHistory;
 
 class EmployeeSalaryHistoryApproved
 {
     use Dispatchable, SerializesModels;
 
     public $salaryHistory;
+
     public $approvedBy;
+
     public $approvedAt;
 
     public function __construct(EmployeeSalaryHistory $salaryHistory, int $approvedBy, string $approvedAt)

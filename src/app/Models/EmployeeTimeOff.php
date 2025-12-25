@@ -2,14 +2,13 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
+use Fereydooni\Shopping\app\Enums\TimeOffStatus;
+use Fereydooni\Shopping\app\Enums\TimeOffType;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
-use Fereydooni\Shopping\app\Enums\TimeOffType;
-use Fereydooni\Shopping\app\Enums\TimeOffStatus;
 
 class EmployeeTimeOff extends Model
 {
@@ -107,11 +106,11 @@ class EmployeeTimeOff extends Model
     {
         return $query->where(function ($q) use ($startDate, $endDate) {
             $q->whereBetween('start_date', [$startDate, $endDate])
-              ->orWhereBetween('end_date', [$startDate, $endDate])
-              ->orWhere(function ($subQ) use ($startDate, $endDate) {
-                  $subQ->where('start_date', '<=', $startDate)
+                ->orWhereBetween('end_date', [$startDate, $endDate])
+                ->orWhere(function ($subQ) use ($startDate, $endDate) {
+                    $subQ->where('start_date', '<=', $startDate)
                         ->where('end_date', '>=', $endDate);
-              });
+                });
         });
     }
 
@@ -140,15 +139,17 @@ class EmployeeTimeOff extends Model
         return $query->where('is_urgent', true);
     }
 
-    public function scopeUpcoming($query, string $date = null)
+    public function scopeUpcoming($query, ?string $date = null)
     {
         $date = $date ?: now()->format('Y-m-d');
+
         return $query->where('start_date', '>=', $date);
     }
 
-    public function scopePast($query, string $date = null)
+    public function scopePast($query, ?string $date = null)
     {
         $date = $date ?: now()->format('Y-m-d');
+
         return $query->where('end_date', '<', $date);
     }
 
@@ -160,14 +161,14 @@ class EmployeeTimeOff extends Model
     public function scopeOverlapping($query, int $employeeId, string $startDate, string $endDate)
     {
         return $query->where('employee_id', $employeeId)
-                    ->where(function ($q) use ($startDate, $endDate) {
-                        $q->whereBetween('start_date', [$startDate, $endDate])
-                          ->orWhereBetween('end_date', [$startDate, $endDate])
-                          ->orWhere(function ($subQ) use ($startDate, $endDate) {
-                              $subQ->where('start_date', '<=', $startDate)
-                                    ->where('end_date', '>=', $endDate);
-                          });
+            ->where(function ($q) use ($startDate, $endDate) {
+                $q->whereBetween('start_date', [$startDate, $endDate])
+                    ->orWhereBetween('end_date', [$startDate, $endDate])
+                    ->orWhere(function ($subQ) use ($startDate, $endDate) {
+                        $subQ->where('start_date', '<=', $startDate)
+                            ->where('end_date', '>=', $endDate);
                     });
+            });
     }
 
     // Accessors
@@ -324,7 +325,7 @@ class EmployeeTimeOff extends Model
         return true;
     }
 
-    public function reject(int $rejectedBy, string $reason = null): bool
+    public function reject(int $rejectedBy, ?string $reason = null): bool
     {
         $this->update([
             'status' => TimeOffStatus::REJECTED,
@@ -336,7 +337,7 @@ class EmployeeTimeOff extends Model
         return true;
     }
 
-    public function cancel(string $reason = null): bool
+    public function cancel(?string $reason = null): bool
     {
         $this->update([
             'status' => TimeOffStatus::CANCELLED,
@@ -349,12 +350,14 @@ class EmployeeTimeOff extends Model
     public function markAsUrgent(): bool
     {
         $this->update(['is_urgent' => true]);
+
         return true;
     }
 
     public function removeUrgentFlag(): bool
     {
         $this->update(['is_urgent' => false]);
+
         return true;
     }
 
@@ -389,4 +392,3 @@ class EmployeeTimeOff extends Model
         return $array;
     }
 }
-

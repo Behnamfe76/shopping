@@ -5,8 +5,8 @@ namespace Database\Factories;
 use App\Models\Employee;
 use App\Models\EmployeeTimeOff;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\EmployeeTimeOff>
@@ -58,7 +58,7 @@ class EmployeeTimeOffFactory extends Factory
             'is_urgent' => $this->faker->boolean(10),
             'attachments' => $this->faker->boolean(30) ? json_encode([
                 $this->faker->filePath(),
-                $this->faker->filePath()
+                $this->faker->filePath(),
             ]) : null,
             'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
             'updated_at' => function (array $attributes) {

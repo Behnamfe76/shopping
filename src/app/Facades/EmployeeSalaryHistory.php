@@ -2,19 +2,15 @@
 
 namespace App\Facades;
 
-use Illuminate\Support\Facades\Facade;
 use App\Models\EmployeeSalaryHistory;
 use App\Repositories\EmployeeSalaryHistoryRepository;
-use App\DTOs\EmployeeSalaryHistoryDTO;
-use Illuminate\Support\Collection;
+use Exception;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Notification;
-use Exception;
+use Illuminate\Support\Facades\Facade;
+use Illuminate\Support\Facades\Log;
 
 class EmployeeSalaryHistoryFacade extends Facade
 {
@@ -30,6 +26,7 @@ class EmployeeSalaryHistoryFacade extends Facade
             return static::getFacadeRoot()->all();
         } catch (Exception $e) {
             Log::error('Error fetching all salary history records', ['error' => $e->getMessage()]);
+
             return collect();
         }
     }
@@ -40,6 +37,7 @@ class EmployeeSalaryHistoryFacade extends Facade
             return static::getFacadeRoot()->paginate($perPage);
         } catch (Exception $e) {
             Log::error('Error paginating salary history records', ['error' => $e->getMessage()]);
+
             return new LengthAwarePaginator([], 0, $perPage);
         }
     }
@@ -50,6 +48,7 @@ class EmployeeSalaryHistoryFacade extends Facade
             return static::getFacadeRoot()->find($id);
         } catch (Exception $e) {
             Log::error('Error finding salary history record', ['id' => $id, 'error' => $e->getMessage()]);
+
             return null;
         }
     }
@@ -60,6 +59,7 @@ class EmployeeSalaryHistoryFacade extends Facade
             return static::getFacadeRoot()->findByEmployeeId($employeeId);
         } catch (Exception $e) {
             Log::error('Error finding salary history by employee', ['employee_id' => $employeeId, 'error' => $e->getMessage()]);
+
             return collect();
         }
     }
@@ -73,11 +73,12 @@ class EmployeeSalaryHistoryFacade extends Facade
             Event::dispatch('employee.salary-history.created', $record);
 
             // Clear cache
-            Cache::tags(['salary-history', 'employee-' . $data['employee_id']])->flush();
+            Cache::tags(['salary-history', 'employee-'.$data['employee_id']])->flush();
 
             return $record;
         } catch (Exception $e) {
             Log::error('Error creating salary history record', ['data' => $data, 'error' => $e->getMessage()]);
+
             return null;
         }
     }
@@ -86,7 +87,7 @@ class EmployeeSalaryHistoryFacade extends Facade
     {
         try {
             $record = static::find($id);
-            if (!$record) {
+            if (! $record) {
                 return false;
             }
 
@@ -97,12 +98,13 @@ class EmployeeSalaryHistoryFacade extends Facade
                 Event::dispatch('employee.salary-history.updated', $record);
 
                 // Clear cache
-                Cache::tags(['salary-history', 'employee-' . $record->employee_id])->flush();
+                Cache::tags(['salary-history', 'employee-'.$record->employee_id])->flush();
             }
 
             return $result;
         } catch (Exception $e) {
             Log::error('Error updating salary history record', ['id' => $id, 'data' => $data, 'error' => $e->getMessage()]);
+
             return false;
         }
     }
@@ -111,7 +113,7 @@ class EmployeeSalaryHistoryFacade extends Facade
     {
         try {
             $record = static::find($id);
-            if (!$record) {
+            if (! $record) {
                 return false;
             }
 
@@ -122,12 +124,13 @@ class EmployeeSalaryHistoryFacade extends Facade
                 Event::dispatch('employee.salary-history.deleted', $record);
 
                 // Clear cache
-                Cache::tags(['salary-history', 'employee-' . $record->employee_id])->flush();
+                Cache::tags(['salary-history', 'employee-'.$record->employee_id])->flush();
             }
 
             return $result;
         } catch (Exception $e) {
             Log::error('Error deleting salary history record', ['id' => $id, 'error' => $e->getMessage()]);
+
             return false;
         }
     }
@@ -136,7 +139,7 @@ class EmployeeSalaryHistoryFacade extends Facade
     {
         try {
             $record = static::find($id);
-            if (!$record) {
+            if (! $record) {
                 return false;
             }
 
@@ -147,21 +150,22 @@ class EmployeeSalaryHistoryFacade extends Facade
                 Event::dispatch('employee.salary-history.approved', $record);
 
                 // Clear cache
-                Cache::tags(['salary-history', 'employee-' . $record->employee_id])->flush();
+                Cache::tags(['salary-history', 'employee-'.$record->employee_id])->flush();
             }
 
             return $result;
         } catch (Exception $e) {
             Log::error('Error approving salary history record', ['id' => $id, 'approved_by' => $approvedBy, 'error' => $e->getMessage()]);
+
             return false;
         }
     }
 
-    public static function reject(int $id, int $rejectedBy, string $reason = null): bool
+    public static function reject(int $id, int $rejectedBy, ?string $reason = null): bool
     {
         try {
             $record = static::find($id);
-            if (!$record) {
+            if (! $record) {
                 return false;
             }
 
@@ -172,22 +176,24 @@ class EmployeeSalaryHistoryFacade extends Facade
                 Event::dispatch('employee.salary-history.rejected', $record);
 
                 // Clear cache
-                Cache::tags(['salary-history', 'employee-' . $record->employee_id])->flush();
+                Cache::tags(['salary-history', 'employee-'.$record->employee_id])->flush();
             }
 
             return $result;
         } catch (Exception $e) {
             Log::error('Error rejecting salary history record', ['id' => $id, 'rejected_by' => $rejectedBy, 'error' => $e->getMessage()]);
+
             return false;
         }
     }
 
-    public static function getStatistics(string $startDate = null, string $endDate = null): array
+    public static function getStatistics(?string $startDate = null, ?string $endDate = null): array
     {
         try {
             return static::getFacadeRoot()->getSalaryChangeStatistics($startDate, $endDate);
         } catch (Exception $e) {
             Log::error('Error getting salary statistics', ['start_date' => $startDate, 'end_date' => $endDate, 'error' => $e->getMessage()]);
+
             return [];
         }
     }
@@ -198,6 +204,7 @@ class EmployeeSalaryHistoryFacade extends Facade
             return static::getFacadeRoot()->getEmployeeSalaryGrowth($employeeId);
         } catch (Exception $e) {
             Log::error('Error getting employee salary growth', ['employee_id' => $employeeId, 'error' => $e->getMessage()]);
+
             return 0.0;
         }
     }
@@ -208,6 +215,7 @@ class EmployeeSalaryHistoryFacade extends Facade
             return static::getFacadeRoot()->searchSalaryHistory($query);
         } catch (Exception $e) {
             Log::error('Error searching salary history', ['query' => $query, 'error' => $e->getMessage()]);
+
             return collect();
         }
     }
@@ -215,8 +223,10 @@ class EmployeeSalaryHistoryFacade extends Facade
     // Method chaining support
     public static function forEmployee(int $employeeId): self
     {
-        return new class($employeeId) {
+        return new class($employeeId)
+        {
             private $employeeId;
+
             private $repository;
 
             public function __construct($employeeId)
@@ -250,12 +260,12 @@ class EmployeeSalaryHistoryFacade extends Facade
                 return $this->repository->getEmployeeStartingSalary($this->employeeId);
             }
 
-            public function getTotalIncrease(string $startDate = null, string $endDate = null): float
+            public function getTotalIncrease(?string $startDate = null, ?string $endDate = null): float
             {
                 return $this->repository->getEmployeeTotalSalaryIncrease($this->employeeId, $startDate, $endDate);
             }
 
-            public function getTotalDecrease(string $startDate = null, string $endDate = null): float
+            public function getTotalDecrease(?string $startDate = null, ?string $endDate = null): float
             {
                 return $this->repository->getEmployeeTotalSalaryDecrease($this->employeeId, $startDate, $endDate);
             }
@@ -269,8 +279,10 @@ class EmployeeSalaryHistoryFacade extends Facade
 
     public static function byType(string $changeType): self
     {
-        return new class($changeType) {
+        return new class($changeType)
+        {
             private $changeType;
+
             private $repository;
 
             public function __construct($changeType)
@@ -298,9 +310,12 @@ class EmployeeSalaryHistoryFacade extends Facade
 
     public static function byDateRange(string $startDate, string $endDate): self
     {
-        return new class($startDate, $endDate) {
+        return new class($startDate, $endDate)
+        {
             private $startDate;
+
             private $endDate;
+
             private $repository;
 
             public function __construct($startDate, $endDate)

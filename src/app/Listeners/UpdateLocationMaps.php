@@ -2,16 +2,16 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
-use Fereydooni\Shopping\app\Events\Provider\ProviderLocationCreated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderLocationUpdated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderLocationDeleted;
+use Exception;
 use Fereydooni\Shopping\app\Events\Provider\LocationCoordinatesUpdated;
 use Fereydooni\Shopping\app\Events\Provider\LocationGeocoded;
+use Fereydooni\Shopping\app\Events\Provider\ProviderLocationCreated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderLocationDeleted;
+use Fereydooni\Shopping\app\Events\Provider\ProviderLocationUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
-use Exception;
+use Illuminate\Support\Facades\Log;
 
 class UpdateLocationMaps implements ShouldQueue
 {
@@ -49,13 +49,13 @@ class UpdateLocationMaps implements ShouldQueue
 
             Log::info('Location maps updated for location creation', [
                 'location_id' => $location->id,
-                'provider_id' => $location->provider_id
+                'provider_id' => $location->provider_id,
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to update location maps for location creation', [
                 'location_id' => $event->providerLocation->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -78,13 +78,13 @@ class UpdateLocationMaps implements ShouldQueue
 
             Log::info('Location maps updated for location update', [
                 'location_id' => $location->id,
-                'provider_id' => $location->provider_id
+                'provider_id' => $location->provider_id,
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to update location maps for location update', [
                 'location_id' => $event->providerLocation->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -103,13 +103,13 @@ class UpdateLocationMaps implements ShouldQueue
 
             Log::info('Location maps updated for location deletion', [
                 'location_id' => $location->id,
-                'provider_id' => $location->provider_id
+                'provider_id' => $location->provider_id,
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to update location maps for location deletion', [
                 'location_id' => $event->providerLocation->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -128,13 +128,13 @@ class UpdateLocationMaps implements ShouldQueue
 
             Log::info('Location maps updated for coordinates change', [
                 'location_id' => $location->id,
-                'provider_id' => $location->provider_id
+                'provider_id' => $location->provider_id,
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to update location maps for coordinates change', [
                 'location_id' => $event->providerLocation->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -153,13 +153,13 @@ class UpdateLocationMaps implements ShouldQueue
 
             Log::info('Location maps updated for geocoding', [
                 'location_id' => $location->id,
-                'provider_id' => $location->provider_id
+                'provider_id' => $location->provider_id,
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to update location maps for geocoding', [
                 'location_id' => $event->providerLocation->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -171,7 +171,7 @@ class UpdateLocationMaps implements ShouldQueue
     {
         $relevantFields = [
             'location_name', 'address', 'city', 'state', 'country', 'postal_code',
-            'latitude', 'longitude', 'is_active', 'location_type'
+            'latitude', 'longitude', 'is_active', 'location_type',
         ];
 
         foreach ($relevantFields as $field) {
@@ -197,19 +197,19 @@ class UpdateLocationMaps implements ShouldQueue
                     'location_id' => $location->id,
                     'coordinates' => [
                         'latitude' => $location->latitude,
-                        'longitude' => $location->longitude
-                    ]
+                        'longitude' => $location->longitude,
+                    ],
                 ]);
             } else {
                 Log::info('Map marker removed (no coordinates)', [
-                    'location_id' => $location->id
+                    'location_id' => $location->id,
                 ]);
             }
 
         } catch (Exception $e) {
             Log::error('Failed to update map markers', [
                 'location_id' => $location->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -222,13 +222,13 @@ class UpdateLocationMaps implements ShouldQueue
         try {
             // This would integrate with your map service to remove markers
             Log::info('Map marker removed', [
-                'location_id' => $location->id
+                'location_id' => $location->id,
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to remove map markers', [
                 'location_id' => $location->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -243,13 +243,13 @@ class UpdateLocationMaps implements ShouldQueue
             // For now, we'll just log the action
 
             Log::info('Map clusters updated', [
-                'provider_id' => $providerId
+                'provider_id' => $providerId,
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to update map clusters', [
                 'provider_id' => $providerId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -268,7 +268,7 @@ class UpdateLocationMaps implements ShouldQueue
         } catch (Exception $e) {
             Log::error('Failed to clear map cache', [
                 'provider_id' => $providerId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -285,7 +285,7 @@ class UpdateLocationMaps implements ShouldQueue
             'location_id' => $locationId,
             'provider_id' => $providerId,
             'error' => $exception->getMessage(),
-            'trace' => $exception->getTraceAsString()
+            'trace' => $exception->getTraceAsString(),
         ]);
     }
 }

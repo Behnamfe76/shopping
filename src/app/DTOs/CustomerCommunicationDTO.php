@@ -2,30 +2,24 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Email;
+use Fereydooni\Shopping\app\Enums\CommunicationChannel;
+use Fereydooni\Shopping\app\Enums\CommunicationPriority;
+use Fereydooni\Shopping\app\Enums\CommunicationStatus;
+use Fereydooni\Shopping\app\Enums\CommunicationType;
+use Fereydooni\Shopping\app\Models\Customer;
+use Fereydooni\Shopping\app\Models\CustomerCommunication;
+use Fereydooni\Shopping\app\Models\CustomerSegment;
+use Fereydooni\Shopping\app\Models\User;
+use Illuminate\Support\Carbon;
+use Spatie\LaravelData\Attributes\Validation\ArrayType;
+use Spatie\LaravelData\Attributes\Validation\Date;
+use Spatie\LaravelData\Attributes\Validation\In;
+use Spatie\LaravelData\Attributes\Validation\IntegerType;
 use Spatie\LaravelData\Attributes\Validation\Max;
-use Spatie\LaravelData\Attributes\Validation\Min;
 use Spatie\LaravelData\Attributes\Validation\Nullable;
 use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
-use Spatie\LaravelData\Attributes\Validation\BooleanType;
-use Spatie\LaravelData\Attributes\Validation\Date;
-use Spatie\LaravelData\Attributes\Validation\Numeric;
-use Spatie\LaravelData\Attributes\Validation\In;
-use Spatie\LaravelData\Attributes\Validation\Unique;
-use Spatie\LaravelData\Attributes\Validation\ArrayType;
-use Spatie\LaravelData\Attributes\Validation\Json;
-use Illuminate\Support\Carbon;
-use Fereydooni\Shopping\app\Enums\CommunicationType;
-use Fereydooni\Shopping\app\Enums\CommunicationStatus;
-use Fereydooni\Shopping\app\Enums\CommunicationPriority;
-use Fereydooni\Shopping\app\Enums\CommunicationChannel;
-use Fereydooni\Shopping\app\Models\CustomerCommunication;
-use Fereydooni\Shopping\app\Models\Customer;
-use Fereydooni\Shopping\app\Models\User;
-use Fereydooni\Shopping\app\Models\CustomerSegment;
+use Spatie\LaravelData\Data;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class CustomerCommunicationDTO extends Data
@@ -115,8 +109,7 @@ class CustomerCommunicationDTO extends Data
 
         #[Nullable]
         public ?array $media
-    ) {
-    }
+    ) {}
 
     public static function fromModel(CustomerCommunication $communication): self
     {
@@ -148,14 +141,14 @@ class CustomerCommunicationDTO extends Data
             customer: $communication->customer,
             user: $communication->user,
             segment: $communication->segment,
-            media: $communication->getMedia('attachments')->map(fn(Media $media) => [
+            media: $communication->getMedia('attachments')->map(fn (Media $media) => [
                 'id' => $media->id,
                 'name' => $media->name,
                 'file_name' => $media->file_name,
                 'mime_type' => $media->mime_type,
                 'size' => $media->size,
                 'url' => $media->getUrl(),
-                'created_at' => $media->created_at
+                'created_at' => $media->created_at,
             ])->toArray()
         );
     }
@@ -183,7 +176,7 @@ class CustomerCommunicationDTO extends Data
             'template_id' => ['nullable', 'integer', 'exists:communication_templates,id'],
             'metadata' => ['nullable', 'array'],
             'attachments' => ['nullable', 'array'],
-            'tracking_data' => ['nullable', 'array']
+            'tracking_data' => ['nullable', 'array'],
         ];
     }
 
@@ -209,7 +202,7 @@ class CustomerCommunicationDTO extends Data
             'scheduled_at.after' => 'Scheduled date must be in the future.',
             'campaign_id.exists' => 'The selected campaign does not exist.',
             'segment_id.exists' => 'The selected segment does not exist.',
-            'template_id.exists' => 'The selected template does not exist.'
+            'template_id.exists' => 'The selected template does not exist.',
         ];
     }
 }

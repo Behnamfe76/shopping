@@ -2,17 +2,20 @@
 
 namespace App\Events\EmployeeSalaryHistory;
 
+use App\Models\EmployeeSalaryHistory;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use App\Models\EmployeeSalaryHistory;
 
 class EmployeeSalaryHistoryRetroactive
 {
     use Dispatchable, SerializesModels;
 
     public $salaryHistory;
+
     public $retroactiveAmount;
+
     public $retroactiveDays;
+
     public $processedAt;
 
     public function __construct(EmployeeSalaryHistory $salaryHistory, float $retroactiveAmount, int $retroactiveDays, string $processedAt)

@@ -17,7 +17,7 @@ enum PeriodType: string
 
     public function getDescription(): string
     {
-        return match($this) {
+        return match ($this) {
             self::DAILY => 'Daily Performance',
             self::WEEKLY => 'Weekly Performance',
             self::MONTHLY => 'Monthly Performance',
@@ -28,7 +28,7 @@ enum PeriodType: string
 
     public function getDays(): int
     {
-        return match($this) {
+        return match ($this) {
             self::DAILY => 1,
             self::WEEKLY => 7,
             self::MONTHLY => 30,
@@ -39,7 +39,7 @@ enum PeriodType: string
 
     public function getLabel(): string
     {
-        return match($this) {
+        return match ($this) {
             self::DAILY => 'Day',
             self::WEEKLY => 'Week',
             self::MONTHLY => 'Month',

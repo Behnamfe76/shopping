@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('attribute_value_id')->constrained('product_attribute_values')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
-            
+
             $table->index(['variant_id', 'attribute_value_id']);
         });
     }

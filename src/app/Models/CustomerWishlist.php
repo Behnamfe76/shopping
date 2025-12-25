@@ -2,10 +2,10 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
+use Fereydooni\Shopping\app\Enums\WishlistPriority;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Fereydooni\Shopping\app\Enums\WishlistPriority;
 
 class CustomerWishlist extends Model
 {
@@ -93,8 +93,8 @@ class CustomerWishlist extends Model
     public function scopeWithPriceDrops($query)
     {
         return $query->whereNotNull('price_when_added')
-                    ->whereNotNull('current_price')
-                    ->whereRaw('current_price < price_when_added');
+            ->whereNotNull('current_price')
+            ->whereRaw('current_price < price_when_added');
     }
 
     public function scopeByDateRange($query, string $startDate, string $endDate)
@@ -110,7 +110,7 @@ class CustomerWishlist extends Model
     // Accessors
     public function getHasPriceDropAttribute(): bool
     {
-        if (!$this->price_when_added || !$this->current_price) {
+        if (! $this->price_when_added || ! $this->current_price) {
             return false;
         }
 
@@ -119,7 +119,7 @@ class CustomerWishlist extends Model
 
     public function getPriceDropPercentageAttribute(): ?float
     {
-        if (!$this->has_price_drop) {
+        if (! $this->has_price_drop) {
             return null;
         }
 
@@ -128,7 +128,7 @@ class CustomerWishlist extends Model
 
     public function getPriceDropAmountAttribute(): ?float
     {
-        if (!$this->has_price_drop) {
+        if (! $this->has_price_drop) {
             return null;
         }
 
@@ -137,9 +137,9 @@ class CustomerWishlist extends Model
 
     public function getShouldSendNotificationAttribute(): bool
     {
-        return $this->price_drop_notification && 
-               $this->has_price_drop && 
-               !$this->is_notified;
+        return $this->price_drop_notification &&
+               $this->has_price_drop &&
+               ! $this->is_notified;
     }
 
     public function getPriorityLevelAttribute(): int
@@ -202,7 +202,7 @@ class CustomerWishlist extends Model
 
     public function checkPriceDrop(): bool
     {
-        if (!$this->price_when_added || !$this->current_price) {
+        if (! $this->price_when_added || ! $this->current_price) {
             return false;
         }
 
@@ -216,7 +216,7 @@ class CustomerWishlist extends Model
 
     public function isPrivate(): bool
     {
-        return !$this->is_public;
+        return ! $this->is_public;
     }
 
     public function hasPriceDrop(): bool

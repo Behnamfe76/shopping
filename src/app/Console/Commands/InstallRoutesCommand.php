@@ -74,11 +74,12 @@ class InstallRoutesCommand extends Command
         $this->info("Installing {$routeType} routes...");
 
         $routesPath = base_path("routes/{$routeType}.php");
-        $packageRoutesPath = __DIR__ . "/../../../routes/{$routeType}.php";
+        $packageRoutesPath = __DIR__."/../../../routes/{$routeType}.php";
 
         // Check if package routes file exists
-        if (!File::exists($packageRoutesPath)) {
+        if (! File::exists($packageRoutesPath)) {
             $this->error("Package {$routeType} routes file not found!");
+
             return;
         }
 
@@ -95,9 +96,10 @@ class InstallRoutesCommand extends Command
             $existingContent = File::get($routesPath);
 
             if (str_contains($existingContent, 'shopping')) {
-                if (!$force) {
+                if (! $force) {
                     $this->warn("Shopping routes already exist in {$routeType}.php");
-                    $this->warn("Use --force to overwrite existing routes.");
+                    $this->warn('Use --force to overwrite existing routes.');
+
                     return;
                 } else {
                     $this->warn("Overwriting existing shopping routes in {$routeType}.php");
@@ -153,6 +155,7 @@ class InstallRoutesCommand extends Command
             if (str_contains($line, 'shopping') && str_contains($line, 'Route::')) {
                 $skipNextLines = true;
                 $braceCount = 0;
+
                 continue;
             }
 
@@ -163,6 +166,7 @@ class InstallRoutesCommand extends Command
                 if ($braceCount <= 0) {
                     $skipNextLines = false;
                 }
+
                 continue;
             }
 
@@ -177,7 +181,7 @@ class InstallRoutesCommand extends Command
      */
     protected function addRoutesToFile(string $routesPath, string $packageRoutesContent, string $routeType): void
     {
-        if (!File::exists($routesPath)) {
+        if (! File::exists($routesPath)) {
             // Create the routes file if it doesn't exist
             $this->createRoutesFile($routesPath, $routeType);
         }
@@ -198,7 +202,7 @@ class InstallRoutesCommand extends Command
     {
         $routesDir = dirname($routesPath);
 
-        if (!File::exists($routesDir)) {
+        if (! File::exists($routesDir)) {
             File::makeDirectory($routesDir, 0755, true);
         }
 

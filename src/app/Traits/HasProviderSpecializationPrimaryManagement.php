@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\App\Traits;
 
+use Exception;
+use Fereydooni\Shopping\App\Models\ProviderSpecialization;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Exception;
-use Fereydooni\Shopping\App\Models\ProviderSpecialization;
 
 trait HasProviderSpecializationPrimaryManagement
 {
@@ -34,7 +34,7 @@ trait HasProviderSpecializationPrimaryManagement
             return $result;
         } catch (Exception $e) {
             DB::rollBack();
-            Log::error("Failed to set primary specialization {$specializationId} for provider {$this->id}: " . $e->getMessage());
+            Log::error("Failed to set primary specialization {$specializationId} for provider {$this->id}: ".$e->getMessage());
             throw $e;
         }
     }
@@ -47,7 +47,7 @@ trait HasProviderSpecializationPrimaryManagement
         try {
             $specialization = $this->specializations()->findOrFail($specializationId);
 
-            if (!$specialization->is_primary) {
+            if (! $specialization->is_primary) {
                 throw new Exception('Specialization is not primary.');
             }
 
@@ -59,7 +59,7 @@ trait HasProviderSpecializationPrimaryManagement
 
             return $result;
         } catch (Exception $e) {
-            Log::error("Failed to remove primary specialization {$specializationId} from provider {$this->id}: " . $e->getMessage());
+            Log::error("Failed to remove primary specialization {$specializationId} from provider {$this->id}: ".$e->getMessage());
             throw $e;
         }
     }
@@ -86,6 +86,7 @@ trait HasProviderSpecializationPrimaryManagement
     public function getPrimarySpecializationId(): ?int
     {
         $primary = $this->getPrimarySpecialization();
+
         return $primary ? $primary->id : null;
     }
 
@@ -95,6 +96,7 @@ trait HasProviderSpecializationPrimaryManagement
     public function getPrimarySpecializationName(): ?string
     {
         $primary = $this->getPrimarySpecialization();
+
         return $primary ? $primary->specialization_name : null;
     }
 
@@ -104,6 +106,7 @@ trait HasProviderSpecializationPrimaryManagement
     public function getPrimarySpecializationCategory(): ?string
     {
         $primary = $this->getPrimarySpecialization();
+
         return $primary ? $primary->category->value : null;
     }
 
@@ -113,6 +116,7 @@ trait HasProviderSpecializationPrimaryManagement
     public function getPrimarySpecializationProficiencyLevel(): ?string
     {
         $primary = $this->getPrimarySpecialization();
+
         return $primary ? $primary->proficiency_level->value : null;
     }
 
@@ -122,6 +126,7 @@ trait HasProviderSpecializationPrimaryManagement
     public function getPrimarySpecializationExperience(): ?int
     {
         $primary = $this->getPrimarySpecialization();
+
         return $primary ? $primary->years_experience : null;
     }
 
@@ -131,6 +136,7 @@ trait HasProviderSpecializationPrimaryManagement
     public function isPrimarySpecialization(int $specializationId): bool
     {
         $specialization = $this->specializations()->find($specializationId);
+
         return $specialization ? $specialization->is_primary : false;
     }
 
@@ -171,7 +177,7 @@ trait HasProviderSpecializationPrimaryManagement
      */
     public function shouldHavePrimarySpecialization(): bool
     {
-        return $this->getSpecializationCount() > 0 && !$this->hasPrimarySpecialization();
+        return $this->getSpecializationCount() > 0 && ! $this->hasPrimarySpecialization();
     }
 
     /**
@@ -183,7 +189,7 @@ trait HasProviderSpecializationPrimaryManagement
             return true; // Already has primary
         }
 
-        if (!$this->canHavePrimarySpecialization()) {
+        if (! $this->canHavePrimarySpecialization()) {
             return false; // No specializations to choose from
         }
 
@@ -241,7 +247,7 @@ trait HasProviderSpecializationPrimaryManagement
     {
         $primary = $this->getPrimarySpecialization();
 
-        if (!$primary) {
+        if (! $primary) {
             return [
                 'has_primary' => false,
                 'primary_id' => null,
@@ -275,7 +281,7 @@ trait HasProviderSpecializationPrimaryManagement
         // For now, return basic information about the current primary
         $primary = $this->getPrimarySpecialization();
 
-        if (!$primary) {
+        if (! $primary) {
             return [];
         }
 
@@ -285,7 +291,7 @@ trait HasProviderSpecializationPrimaryManagement
                 'specialization_name' => $primary->specialization_name,
                 'set_as_primary_at' => $primary->created_at,
                 'is_current' => true,
-            ]
+            ],
         ];
     }
 
@@ -296,12 +302,12 @@ trait HasProviderSpecializationPrimaryManagement
     {
         $primary = $this->getPrimarySpecialization();
 
-        if (!$primary) {
+        if (! $primary) {
             return true; // No primary specialization
         }
 
         // Check if primary specialization is inactive
-        if (!$primary->is_active) {
+        if (! $primary->is_active) {
             return true;
         }
 
@@ -333,12 +339,13 @@ trait HasProviderSpecializationPrimaryManagement
         $recommendations = [];
         $primary = $this->getPrimarySpecialization();
 
-        if (!$primary) {
+        if (! $primary) {
             $recommendations[] = 'Assign a primary specialization to highlight your main expertise.';
+
             return $recommendations;
         }
 
-        if (!$primary->is_active) {
+        if (! $primary->is_active) {
             $recommendations[] = 'Your primary specialization is inactive. Consider activating it or choosing a new primary.';
         }
 
@@ -372,7 +379,7 @@ trait HasProviderSpecializationPrimaryManagement
     {
         $specialization = $this->specializations()->find($specializationId);
 
-        if (!$specialization) {
+        if (! $specialization) {
             return ['can_set' => false, 'reason' => 'Specialization not found.'];
         }
 
@@ -380,7 +387,7 @@ trait HasProviderSpecializationPrimaryManagement
             return ['can_set' => false, 'reason' => 'Specialization is already primary.'];
         }
 
-        if (!$specialization->is_active) {
+        if (! $specialization->is_active) {
             return ['can_set' => false, 'reason' => 'Inactive specializations cannot be primary.'];
         }
 
@@ -399,7 +406,7 @@ trait HasProviderSpecializationPrimaryManagement
         $currentPrimary = $this->getPrimarySpecialization();
         $newPrimary = $this->specializations()->find($newPrimaryId);
 
-        if (!$newPrimary) {
+        if (! $newPrimary) {
             return ['can_change' => false, 'impact' => 'New primary specialization not found.'];
         }
 
@@ -412,15 +419,15 @@ trait HasProviderSpecializationPrimaryManagement
         $impact[] = "'{$newPrimary->specialization_name}' will become the new primary specialization.";
 
         if ($newPrimary->verification_status === 'unverified') {
-            $impact[] = "New primary is unverified - consider submitting for verification.";
+            $impact[] = 'New primary is unverified - consider submitting for verification.';
         }
 
         if ($newPrimary->verification_status === 'pending') {
-            $impact[] = "New primary is pending verification.";
+            $impact[] = 'New primary is pending verification.';
         }
 
         if ($newPrimary->verification_status === 'rejected') {
-            $impact[] = "Warning: New primary was previously rejected.";
+            $impact[] = 'Warning: New primary was previously rejected.';
         }
 
         return [

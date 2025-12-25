@@ -87,6 +87,7 @@ trait HasProviderAnalytics
     public function getProviderOrderHistory(int $providerId): array
     {
         $orders = $this->providerRepository->getProviderOrderHistory($providerId);
+
         return $orders->toArray();
     }
 
@@ -96,6 +97,7 @@ trait HasProviderAnalytics
     public function getProviderProducts(int $providerId): array
     {
         $products = $this->providerRepository->getProviderProducts($providerId);
+
         return $products->toArray();
     }
 
@@ -105,6 +107,7 @@ trait HasProviderAnalytics
     public function getProviderInvoices(int $providerId): array
     {
         $invoices = $this->providerRepository->getProviderInvoices($providerId);
+
         return $invoices->toArray();
     }
 
@@ -114,6 +117,7 @@ trait HasProviderAnalytics
     public function getProviderPayments(int $providerId): array
     {
         $payments = $this->providerRepository->getProviderPayments($providerId);
+
         return $payments->toArray();
     }
 
@@ -153,11 +157,11 @@ trait HasProviderAnalytics
             $score = $this->calculateProviderScore($provider->id);
             $scoredProviders[] = [
                 'provider' => $provider,
-                'score' => $score
+                'score' => $score,
             ];
         }
 
-        usort($scoredProviders, function($a, $b) {
+        usort($scoredProviders, function ($a, $b) {
             return $b['score'] <=> $a['score'];
         });
 
@@ -184,7 +188,7 @@ trait HasProviderAnalytics
                     'quality_rating' => $provider->quality_rating ?? 0,
                     'delivery_rating' => $provider->delivery_rating ?? 0,
                     'communication_rating' => $provider->communication_rating ?? 0,
-                    'score' => $this->calculateProviderScore($providerId)
+                    'score' => $this->calculateProviderScore($providerId),
                 ];
             }
         }
@@ -205,7 +209,7 @@ trait HasProviderAnalytics
             'order_trend' => [],
             'spending_trend' => [],
             'rating_trend' => [],
-            'performance_trend' => []
+            'performance_trend' => [],
         ];
     }
 
@@ -224,11 +228,11 @@ trait HasProviderAnalytics
                 'provider_id' => $provider->id,
                 'company_name' => $provider->company_name,
                 'total_spent' => $provider->total_spent ?? 0,
-                'market_share_percentage' => round($share, 2)
+                'market_share_percentage' => round($share, 2),
             ];
         }
 
-        usort($marketShare, function($a, $b) {
+        usort($marketShare, function ($a, $b) {
             return $b['market_share_percentage'] <=> $a['market_share_percentage'];
         });
 
@@ -242,7 +246,7 @@ trait HasProviderAnalytics
     {
         $provider = $this->providerRepository->find($providerId);
 
-        if (!$provider) {
+        if (! $provider) {
             return [];
         }
 
@@ -257,7 +261,7 @@ trait HasProviderAnalytics
             'average_order_value' => $averageOrderValue,
             'orders_per_month' => $totalOrders > 0 ? round($totalOrders / 12, 2) : 0,
             'spending_per_order' => $totalOrders > 0 ? round($totalSpent / $totalOrders, 2) : 0,
-            'efficiency_score' => $this->calculateEfficiencyScore($provider)
+            'efficiency_score' => $this->calculateEfficiencyScore($provider),
         ];
     }
 

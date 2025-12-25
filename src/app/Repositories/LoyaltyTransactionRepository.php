@@ -2,33 +2,30 @@
 
 namespace Fereydooni\Shopping\app\Repositories;
 
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Fereydooni\Shopping\app\Repositories\Interfaces\LoyaltyTransactionRepositoryInterface;
-use Fereydooni\Shopping\app\Models\LoyaltyTransaction;
 use Fereydooni\Shopping\app\DTOs\LoyaltyTransactionDTO;
-use Fereydooni\Shopping\app\Enums\LoyaltyTransactionType;
-use Fereydooni\Shopping\app\Enums\LoyaltyTransactionStatus;
 use Fereydooni\Shopping\app\Enums\LoyaltyReferenceType;
+use Fereydooni\Shopping\app\Enums\LoyaltyTransactionStatus;
+use Fereydooni\Shopping\app\Enums\LoyaltyTransactionType;
+use Fereydooni\Shopping\app\Models\LoyaltyTransaction;
+use Fereydooni\Shopping\app\Repositories\Interfaces\LoyaltyTransactionRepositoryInterface;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
-use Fereydooni\Shopping\app\Traits\HasSearchOperations;
+use Fereydooni\Shopping\app\Traits\HasLoyaltyPointsManagement;
 use Fereydooni\Shopping\app\Traits\HasLoyaltyTransactionOperations;
 use Fereydooni\Shopping\app\Traits\HasLoyaltyTransactionStatusManagement;
-use Fereydooni\Shopping\app\Traits\HasLoyaltyPointsManagement;
+use Fereydooni\Shopping\app\Traits\HasSearchOperations;
+use Illuminate\Database\Eloquent\Collection;
 
 class LoyaltyTransactionRepository implements LoyaltyTransactionRepositoryInterface
 {
     use HasCrudOperations,
-        HasSearchOperations,
+        HasLoyaltyPointsManagement,
         HasLoyaltyTransactionOperations,
         HasLoyaltyTransactionStatusManagement,
-        HasLoyaltyPointsManagement;
+        HasSearchOperations;
 
     public function __construct()
     {
-        $this->model = new LoyaltyTransaction();
+        $this->model = new LoyaltyTransaction;
         $this->dtoClass = LoyaltyTransactionDTO::class;
     }
 
@@ -36,18 +33,21 @@ class LoyaltyTransactionRepository implements LoyaltyTransactionRepositoryInterf
     public function findDTO(int $id): ?LoyaltyTransactionDTO
     {
         $model = $this->find($id);
+
         return $model ? LoyaltyTransactionDTO::fromModel($model) : null;
     }
 
     public function createAndReturnDTO(array $data): LoyaltyTransactionDTO
     {
         $model = $this->create($data);
+
         return LoyaltyTransactionDTO::fromModel($model);
     }
 
     public function updateAndReturnDTO(LoyaltyTransaction $transaction, array $data): ?LoyaltyTransactionDTO
     {
         $updated = $this->update($transaction, $data);
+
         return $updated ? LoyaltyTransactionDTO::fromModel($transaction->fresh()) : null;
     }
 

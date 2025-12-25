@@ -19,7 +19,7 @@ class ProcessRetroactivePayroll implements ShouldQueue
 
     private function processRetroactiveAdjustment($salaryHistory): void
     {
-        if (!$salaryHistory->is_retroactive) {
+        if (! $salaryHistory->is_retroactive) {
             return;
         }
 
@@ -38,7 +38,7 @@ class ProcessRetroactivePayroll implements ShouldQueue
 
     private function calculateRetroactiveAmount($salaryHistory): float
     {
-        if (!$salaryHistory->retroactive_start_date || !$salaryHistory->retroactive_end_date) {
+        if (! $salaryHistory->retroactive_start_date || ! $salaryHistory->retroactive_end_date) {
             return 0;
         }
 

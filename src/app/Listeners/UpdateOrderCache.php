@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
+use Fereydooni\Shopping\app\Events\OrderStatusChanged;
+use Fereydooni\Shopping\app\Events\OrderStatusHistoryCreated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Cache;
-use Fereydooni\Shopping\app\Events\OrderStatusHistoryCreated;
-use Fereydooni\Shopping\app\Events\OrderStatusChanged;
 
 class UpdateOrderCache implements ShouldQueue
 {

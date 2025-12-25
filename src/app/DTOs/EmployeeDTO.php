@@ -2,26 +2,25 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Email;
-use Spatie\LaravelData\Attributes\Validation\Max;
-use Spatie\LaravelData\Attributes\Validation\Min;
-use Spatie\LaravelData\Attributes\Validation\Nullable;
-use Spatie\LaravelData\Attributes\Validation\Required;
-use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
-use Spatie\LaravelData\Attributes\Validation\BooleanType;
-use Spatie\LaravelData\Attributes\Validation\Date;
-use Spatie\LaravelData\Attributes\Validation\Numeric;
-use Spatie\LaravelData\Attributes\Validation\In;
-use Spatie\LaravelData\Attributes\Validation\Unique;
-use Spatie\LaravelData\Attributes\Validation\Regex;
-use Illuminate\Support\Carbon;
 use Fereydooni\Shopping\app\Enums\EmployeeStatus;
 use Fereydooni\Shopping\app\Enums\EmploymentType;
 use Fereydooni\Shopping\app\Enums\Gender;
 use Fereydooni\Shopping\app\Models\Employee;
 use Fereydooni\Shopping\app\Models\User;
+use Illuminate\Support\Carbon;
+use Spatie\LaravelData\Attributes\Validation\BooleanType;
+use Spatie\LaravelData\Attributes\Validation\Date;
+use Spatie\LaravelData\Attributes\Validation\Email;
+use Spatie\LaravelData\Attributes\Validation\IntegerType;
+use Spatie\LaravelData\Attributes\Validation\Max;
+use Spatie\LaravelData\Attributes\Validation\Min;
+use Spatie\LaravelData\Attributes\Validation\Nullable;
+use Spatie\LaravelData\Attributes\Validation\Numeric;
+use Spatie\LaravelData\Attributes\Validation\Regex;
+use Spatie\LaravelData\Attributes\Validation\Required;
+use Spatie\LaravelData\Attributes\Validation\StringType;
+use Spatie\LaravelData\Attributes\Validation\Unique;
+use Spatie\LaravelData\Data;
 
 class EmployeeDTO extends Data
 {
@@ -167,8 +166,7 @@ class EmployeeDTO extends Data
 
         #[Nullable]
         public ?array $subordinates,
-    ) {
-    }
+    ) {}
 
     public static function fromModel(Employee $employee): self
     {
@@ -219,7 +217,7 @@ class EmployeeDTO extends Data
             updated_at: $employee->updated_at,
             user: $employee->user,
             manager: $employee->manager,
-            subordinates: $employee->subordinates?->map(fn($sub) => self::fromModel($sub))->toArray(),
+            subordinates: $employee->subordinates?->map(fn ($sub) => self::fromModel($sub))->toArray(),
         );
     }
 
@@ -260,12 +258,11 @@ class EmployeeDTO extends Data
 
     public function hasManager(): bool
     {
-        return !is_null($this->manager_id);
+        return ! is_null($this->manager_id);
     }
 
     public function isManager(): bool
     {
-        return !empty($this->subordinates);
+        return ! empty($this->subordinates);
     }
 }
-

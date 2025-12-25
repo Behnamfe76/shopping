@@ -2,11 +2,10 @@
 
 namespace Fereydooni\Shopping\app\Facades;
 
-use Illuminate\Support\Facades\Facade;
-use Fereydooni\Shopping\app\Models\ProductTagModel;
 use Fereydooni\Shopping\app\DTOs\ProductTagDTO;
+use Fereydooni\Shopping\app\Models\ProductTagModel;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static Collection all()

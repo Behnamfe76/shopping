@@ -2,20 +2,19 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
-use Fereydooni\Shopping\app\Models\Category;
-use Fereydooni\Shopping\app\DTOs\CategoryDTO;
 use Fereydooni\Shopping\app\Enums\CategoryStatus;
 use Fereydooni\Shopping\app\Facades\Category as CategoryFacade;
+use Fereydooni\Shopping\app\Http\Requests\MoveCategoryRequest;
+use Fereydooni\Shopping\app\Http\Requests\ReorderCategoryRequest;
+use Fereydooni\Shopping\app\Http\Requests\SearchCategoryRequest;
+use Fereydooni\Shopping\app\Http\Requests\SetDefaultCategoryRequest;
 use Fereydooni\Shopping\app\Http\Requests\StoreCategoryRequest;
 use Fereydooni\Shopping\app\Http\Requests\UpdateCategoryRequest;
-use Fereydooni\Shopping\app\Http\Requests\SetDefaultCategoryRequest;
-use Fereydooni\Shopping\app\Http\Requests\SearchCategoryRequest;
-use Fereydooni\Shopping\app\Http\Requests\ReorderCategoryRequest;
-use Fereydooni\Shopping\app\Http\Requests\MoveCategoryRequest;
+use Fereydooni\Shopping\app\Models\Category;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class CategoryController extends Controller
 {
@@ -31,7 +30,7 @@ class CategoryController extends Controller
         $status = $request->get('status');
         $parentId = $request->get('parent_id');
 
-        $categories = match($paginationType) {
+        $categories = match ($paginationType) {
             'simplePaginate' => CategoryFacade::simplePaginate($perPage),
             'cursorPaginate' => CategoryFacade::cursorPaginate($perPage),
             default => CategoryFacade::paginate($perPage),
@@ -72,7 +71,7 @@ class CategoryController extends Controller
         } catch (\Exception $e) {
             return back()
                 ->withInput()
-                ->with('error', 'Failed to create category: ' . $e->getMessage());
+                ->with('error', 'Failed to create category: '.$e->getMessage());
         }
     }
 
@@ -115,7 +114,7 @@ class CategoryController extends Controller
         try {
             $categoryDTO = CategoryFacade::updateDTO($category, $request->validated());
 
-            if (!$categoryDTO) {
+            if (! $categoryDTO) {
                 throw new \Exception('Failed to update category.');
             }
 
@@ -125,7 +124,7 @@ class CategoryController extends Controller
         } catch (\Exception $e) {
             return back()
                 ->withInput()
-                ->with('error', 'Failed to update category: ' . $e->getMessage());
+                ->with('error', 'Failed to update category: '.$e->getMessage());
         }
     }
 
@@ -139,7 +138,7 @@ class CategoryController extends Controller
         try {
             $deleted = CategoryFacade::delete($category);
 
-            if (!$deleted) {
+            if (! $deleted) {
                 throw new \Exception('Failed to delete category.');
             }
 
@@ -148,7 +147,7 @@ class CategoryController extends Controller
                 ->with('success', 'Category deleted successfully.');
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'Failed to delete category: ' . $e->getMessage());
+                ->with('error', 'Failed to delete category: '.$e->getMessage());
         }
     }
 
@@ -162,13 +161,13 @@ class CategoryController extends Controller
         try {
             $categoryDTO = CategoryFacade::setDefaultDTO($category);
 
-            if (!$categoryDTO) {
+            if (! $categoryDTO) {
                 throw new \Exception('Failed to set category as default.');
             }
 
             return back()->with('success', 'Category set as default successfully.');
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to set category as default: ' . $e->getMessage());
+            return back()->with('error', 'Failed to set category as default: '.$e->getMessage());
         }
     }
 
@@ -187,6 +186,7 @@ class CategoryController extends Controller
         try {
             if ($request->expectsJson()) {
                 $categories = CategoryFacade::searchWithPagination($query, $perPage, null, $status ? CategoryStatus::from($status) : null);
+
                 return response()->json($categories);
             }
 
@@ -199,7 +199,7 @@ class CategoryController extends Controller
                 return response()->json(['error' => $e->getMessage()], 500);
             }
 
-            return back()->with('error', 'Search failed: ' . $e->getMessage());
+            return back()->with('error', 'Search failed: '.$e->getMessage());
         }
     }
 
@@ -223,7 +223,7 @@ class CategoryController extends Controller
                 return response()->json(['error' => $e->getMessage()], 500);
             }
 
-            return back()->with('error', 'Failed to load category tree: ' . $e->getMessage());
+            return back()->with('error', 'Failed to load category tree: '.$e->getMessage());
         }
     }
 
@@ -237,7 +237,7 @@ class CategoryController extends Controller
         try {
             $reordered = CategoryFacade::reorderCategories($request->validated());
 
-            if (!$reordered) {
+            if (! $reordered) {
                 throw new \Exception('Failed to reorder categories.');
             }
 
@@ -251,7 +251,7 @@ class CategoryController extends Controller
                 return response()->json(['error' => $e->getMessage()], 500);
             }
 
-            return back()->with('error', 'Failed to reorder categories: ' . $e->getMessage());
+            return back()->with('error', 'Failed to reorder categories: '.$e->getMessage());
         }
     }
 
@@ -265,7 +265,7 @@ class CategoryController extends Controller
         try {
             $moved = CategoryFacade::moveCategory($category, $request->get('parent_id'));
 
-            if (!$moved) {
+            if (! $moved) {
                 throw new \Exception('Failed to move category.');
             }
 
@@ -279,7 +279,7 @@ class CategoryController extends Controller
                 return response()->json(['error' => $e->getMessage()], 500);
             }
 
-            return back()->with('error', 'Failed to move category: ' . $e->getMessage());
+            return back()->with('error', 'Failed to move category: '.$e->getMessage());
         }
     }
 
@@ -303,7 +303,7 @@ class CategoryController extends Controller
                 return response()->json(['error' => $e->getMessage()], 500);
             }
 
-            return back()->with('error', 'Failed to load category children: ' . $e->getMessage());
+            return back()->with('error', 'Failed to load category children: '.$e->getMessage());
         }
     }
 
@@ -327,7 +327,7 @@ class CategoryController extends Controller
                 return response()->json(['error' => $e->getMessage()], 500);
             }
 
-            return back()->with('error', 'Failed to load category ancestors: ' . $e->getMessage());
+            return back()->with('error', 'Failed to load category ancestors: '.$e->getMessage());
         }
     }
 
@@ -351,7 +351,7 @@ class CategoryController extends Controller
                 return response()->json(['error' => $e->getMessage()], 500);
             }
 
-            return back()->with('error', 'Failed to load category descendants: ' . $e->getMessage());
+            return back()->with('error', 'Failed to load category descendants: '.$e->getMessage());
         }
     }
 
@@ -369,7 +369,7 @@ class CategoryController extends Controller
             if ($request->expectsJson()) {
                 return response()->json([
                     'stats' => $stats,
-                    'statsByStatus' => $statsByStatus
+                    'statsByStatus' => $statsByStatus,
                 ]);
             }
 
@@ -379,7 +379,7 @@ class CategoryController extends Controller
                 return response()->json(['error' => $e->getMessage()], 500);
             }
 
-            return back()->with('error', 'Failed to load category statistics: ' . $e->getMessage());
+            return back()->with('error', 'Failed to load category statistics: '.$e->getMessage());
         }
     }
 }

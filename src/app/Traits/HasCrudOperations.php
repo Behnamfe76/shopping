@@ -4,17 +4,19 @@ namespace Fereydooni\Shopping\app\Traits;
 
 use Fereydooni\Shopping\app\Managers\QueryManager;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 trait HasCrudOperations
 {
     protected string $model;
+
     protected string $dtoClass;
+
     protected ?QueryManager $queryManager = null;
 
     // Basic CRUD operations
@@ -28,7 +30,7 @@ trait HasCrudOperations
         $queryManager = $this->getQueryManager();
         $filters = $this->getFiltersFromRequest();
         $searchOptions = $this->getSearchOptionsFromRequest();
-        
+
         return $queryManager->paginate($this->model, $filters, $searchOptions, $perPage, $driver);
     }
 
@@ -58,30 +60,35 @@ trait HasCrudOperations
     public function findDTO(int $id): mixed
     {
         $model = $this->find($id);
+
         return $model ? $this->dtoClass::fromModel($model) : null;
     }
 
     public function create(array $data): Model
     {
         $validated = $this->validateData($data);
+
         return $this->model::create($validated);
     }
 
     public function createAndReturnDTO(array $data): mixed
     {
         $model = $this->create($data);
+
         return $this->dtoClass::fromModel($model);
     }
 
     public function update(Model $model, array $data): bool
     {
         $validated = $this->validateData($data, $model->id);
+
         return $model->update($validated);
     }
 
     public function updateAndReturnDTO(Model $model, array $data): mixed
     {
         $updated = $this->update($model, $data);
+
         return $updated ? $this->dtoClass::fromModel($model->fresh()) : null;
     }
 
@@ -105,7 +112,7 @@ trait HasCrudOperations
     {
         return DB::transaction(function () use ($updates) {
             foreach ($updates as $update) {
-                if (!isset($update['id'])) {
+                if (! isset($update['id'])) {
                     continue;
                 }
                 $model = $this->find($update['id']);
@@ -113,6 +120,7 @@ trait HasCrudOperations
                     $this->update($model, $update);
                 }
             }
+
             return true;
         });
     }
@@ -146,7 +154,8 @@ trait HasCrudOperations
     public function searchDTO(string $query, array $fields = []): Collection
     {
         $models = $this->search($query, $fields);
-        return $models->map(fn($model) => $this->dtoClass::fromModel($model));
+
+        return $models->map(fn ($model) => $this->dtoClass::fromModel($model));
     }
 
     // Validation
@@ -162,13 +171,14 @@ trait HasCrudOperations
         if ($validator->fails()) {
             throw new \Illuminate\Validation\ValidationException($validator);
         }
+
         return $validator->validated();
     }
 
     protected function updateUniqueRules(array $rules, int $excludeId): array
     {
         foreach ($rules as $field => $fieldRules) {
-            if (!is_array($fieldRules)) {
+            if (! is_array($fieldRules)) {
                 $fieldRules = explode('|', $fieldRules);
             }
             $rules[$field] = array_map(function ($rule) use ($excludeId, $field) {
@@ -185,6 +195,7 @@ trait HasCrudOperations
                         return "unique:{$table},{$column},{$excludeId},{$idColumn}";
                     }
                 }
+
                 return $rule;
             }, $fieldRules);
 
@@ -197,6 +208,7 @@ trait HasCrudOperations
     public function withTrashed(): self
     {
         $this->model = $this->model::withTrashed();
+
         return $this;
     }
 

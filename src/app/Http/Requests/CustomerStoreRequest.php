@@ -2,10 +2,10 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Fereydooni\Shopping\app\Enums\Gender;
-use Fereydooni\Shopping\app\Enums\CustomerType;
 use Fereydooni\Shopping\app\Enums\CustomerStatus;
+use Fereydooni\Shopping\app\Enums\CustomerType;
+use Fereydooni\Shopping\app\Enums\Gender;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class CustomerStoreRequest extends FormRequest
@@ -68,14 +68,14 @@ class CustomerStoreRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         // Set default customer type if not provided
-        if (!$this->has('customer_type')) {
+        if (! $this->has('customer_type')) {
             $this->merge([
                 'customer_type' => CustomerType::INDIVIDUAL->value,
             ]);
         }
 
         // Set default status if not provided
-        if (!$this->has('status')) {
+        if (! $this->has('status')) {
             $this->merge([
                 'status' => CustomerStatus::PENDING->value,
             ]);

@@ -2,13 +2,13 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
+use Fereydooni\Shopping\app\DTOs\CustomerNoteDTO;
+use Fereydooni\Shopping\app\Enums\CustomerNotePriority;
+use Fereydooni\Shopping\app\Enums\CustomerNoteType;
+use Fereydooni\Shopping\app\Models\CustomerNote;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
-use Fereydooni\Shopping\app\Models\CustomerNote;
-use Fereydooni\Shopping\app\DTOs\CustomerNoteDTO;
-use Fereydooni\Shopping\app\Enums\CustomerNoteType;
-use Fereydooni\Shopping\app\Enums\CustomerNotePriority;
 
 trait HasCustomerNoteOperations
 {
@@ -18,9 +18,9 @@ trait HasCustomerNoteOperations
     public function createCustomerNote(array $data): CustomerNote
     {
         $this->validateCustomerNoteData($data);
-        
+
         $data['user_id'] = $data['user_id'] ?? auth()->id();
-        
+
         return $this->repository->create($data);
     }
 
@@ -30,6 +30,7 @@ trait HasCustomerNoteOperations
     public function createCustomerNoteDTO(array $data): CustomerNoteDTO
     {
         $note = $this->createCustomerNote($data);
+
         return CustomerNoteDTO::fromModel($note->load(['customer', 'user']));
     }
 
@@ -39,7 +40,7 @@ trait HasCustomerNoteOperations
     public function updateCustomerNote(CustomerNote $note, array $data): bool
     {
         $this->validateCustomerNoteData($data, $note->id);
-        
+
         return $this->repository->update($note, $data);
     }
 
@@ -49,6 +50,7 @@ trait HasCustomerNoteOperations
     public function updateCustomerNoteDTO(CustomerNote $note, array $data): ?CustomerNoteDTO
     {
         $updated = $this->updateCustomerNote($note, $data);
+
         return $updated ? CustomerNoteDTO::fromModel($note->fresh()->load(['customer', 'user'])) : null;
     }
 
@@ -194,10 +196,10 @@ trait HasCustomerNoteOperations
     protected function validateCustomerNoteData(array $data, ?int $noteId = null): void
     {
         $rules = CustomerNoteDTO::rules();
-        
+
         // Add unique validation for title if updating
         if ($noteId) {
-            $rules['title'] = array_merge($rules['title'], ['unique:customer_notes,title,' . $noteId]);
+            $rules['title'] = array_merge($rules['title'], ['unique:customer_notes,title,'.$noteId]);
         } else {
             $rules['title'] = array_merge($rules['title'], ['unique:customer_notes,title']);
         }
@@ -259,8 +261,8 @@ trait HasCustomerNoteOperations
     public function exportCustomerNotes(int $customerId, string $format = 'json'): string
     {
         $notes = $this->getCustomerNotesDTO($customerId);
-        
-        return match($format) {
+
+        return match ($format) {
             'json' => $notes->toJson(),
             'csv' => $this->convertNotesToCsv($notes),
             default => $notes->toJson(),
@@ -273,8 +275,8 @@ trait HasCustomerNoteOperations
     protected function convertNotesToCsv(Collection $notes): string
     {
         $headers = ['ID', 'Title', 'Content', 'Type', 'Priority', 'Private', 'Pinned', 'Tags', 'Created At'];
-        $csv = implode(',', $headers) . "\n";
-        
+        $csv = implode(',', $headers)."\n";
+
         foreach ($notes as $note) {
             $row = [
                 $note->id,
@@ -287,9 +289,9 @@ trait HasCustomerNoteOperations
                 is_array($note->tags) ? implode(';', $note->tags) : '',
                 $note->created_at?->format('Y-m-d H:i:s'),
             ];
-            $csv .= implode(',', array_map('addslashes', $row)) . "\n";
+            $csv .= implode(',', array_map('addslashes', $row))."\n";
         }
-        
+
         return $csv;
     }
 
@@ -299,20 +301,20 @@ trait HasCustomerNoteOperations
     public function importCustomerNotes(int $customerId, array $notesData): array
     {
         $results = ['success' => 0, 'failed' => 0, 'errors' => []];
-        
+
         foreach ($notesData as $index => $noteData) {
             try {
                 $noteData['customer_id'] = $customerId;
                 $noteData['user_id'] = auth()->id();
-                
+
                 $this->createCustomerNote($noteData);
                 $results['success']++;
             } catch (\Exception $e) {
                 $results['failed']++;
-                $results['errors'][] = "Row " . ($index + 1) . ": " . $e->getMessage();
+                $results['errors'][] = 'Row '.($index + 1).': '.$e->getMessage();
             }
         }
-        
+
         return $results;
     }
 
@@ -355,17 +357,17 @@ trait HasCustomerNoteOperations
     public function createCustomerNoteFromTemplate(int $customerId, string $templateKey, array $customData = []): CustomerNote
     {
         $templates = $this->getCustomerNoteTemplates();
-        
-        if (!isset($templates[$templateKey])) {
+
+        if (! isset($templates[$templateKey])) {
             throw new \InvalidArgumentException("Template '{$templateKey}' not found.");
         }
-        
+
         $template = $templates[$templateKey];
         $data = array_merge($template, $customData, [
             'customer_id' => $customerId,
             'user_id' => auth()->id(),
         ]);
-        
+
         return $this->createCustomerNote($data);
     }
 }

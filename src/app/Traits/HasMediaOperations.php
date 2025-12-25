@@ -2,13 +2,13 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
-use Illuminate\Support\Str;
-use Illuminate\Http\UploadedFile;
-use Spatie\MediaLibrary\HasMedia;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 trait HasMediaOperations
@@ -21,7 +21,7 @@ trait HasMediaOperations
         $this->validateMediaFile($file);
 
         return $model->addMedia($file)
-            ->usingFileName(Str::uuid() . '.' . $file->getClientOriginalExtension())
+            ->usingFileName(Str::uuid().'.'.$file->getClientOriginalExtension())
             ->withCustomProperties($customProperties)
             ->toMediaCollection($collection);
     }
@@ -129,6 +129,7 @@ trait HasMediaOperations
     public function getLogoUrl(object $model): ?string
     {
         $media = $this->getFirstMedia($model, 'logo');
+
         return $media ? $media->getUrl() : null;
     }
 
@@ -138,6 +139,7 @@ trait HasMediaOperations
     public function getBannerUrl(object $model): ?string
     {
         $media = $this->getFirstMedia($model, 'banner');
+
         return $media ? $media->getUrl() : null;
     }
 
@@ -159,23 +161,25 @@ trait HasMediaOperations
 
     public function addMedia(Model $model, $file, string $collection = 'default'): bool
     {
-        if (!$model instanceof HasMedia) {
+        if (! $model instanceof HasMedia) {
             return false;
         }
 
         $model->addMedia($file)->toMediaCollection($collection);
+
         return true;
     }
 
     public function removeMedia(Model $model, int $mediaId): bool
     {
-        if (!$model instanceof HasMedia) {
+        if (! $model instanceof HasMedia) {
             return false;
         }
 
         $media = $model->media()->find($mediaId);
         if ($media) {
             $media->delete();
+
             return true;
         }
 
@@ -184,7 +188,7 @@ trait HasMediaOperations
 
     public function getMedia(Model $model, string $collection = 'default'): Collection
     {
-        if (!$model instanceof HasMedia) {
+        if (! $model instanceof HasMedia) {
             return collect();
         }
 

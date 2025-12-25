@@ -5,8 +5,8 @@ namespace App\Listeners\EmployeePosition;
 use App\Events\EmployeePosition\EmployeePositionSetHiring;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class CreateJobPosting implements ShouldQueue
 {
@@ -31,14 +31,14 @@ class CreateJobPosting implements ShouldQueue
             Log::info('Job posting created for hiring position', [
                 'position_id' => $position->id,
                 'title' => $position->title,
-                'hiring_details' => $hiringDetails
+                'hiring_details' => $hiringDetails,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to create job posting', [
                 'event' => get_class($event),
                 'position_id' => $event->position->id ?? null,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -86,14 +86,14 @@ class CreateJobPosting implements ShouldQueue
 
                 Log::info('Job posting details added to position (no job_postings table)', [
                     'position_id' => $position->id,
-                    'title' => $position->title
+                    'title' => $position->title,
                 ]);
             }
 
         } catch (\Exception $e) {
             Log::error('Failed to create job posting', [
                 'position_id' => $position->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             // Fallback to position update
@@ -118,7 +118,7 @@ class CreateJobPosting implements ShouldQueue
             Log::error('Failed to update position with job posting reference', [
                 'position_id' => $position->id,
                 'job_posting_id' => $this->jobPostingId ?? null,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -145,7 +145,7 @@ class CreateJobPosting implements ShouldQueue
         } catch (\Exception $e) {
             Log::error('Failed to update position with job posting details', [
                 'position_id' => $position->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -196,7 +196,7 @@ class CreateJobPosting implements ShouldQueue
         $template = "# {$position->title}\n\n";
         $template .= "**Department:** {$position->department->name}\n";
         $template .= "**Level:** {$position->level->label()}\n";
-        $template .= "**Location:** " . ($position->is_remote ? 'Remote' : 'On-site') . "\n";
+        $template .= '**Location:** '.($position->is_remote ? 'Remote' : 'On-site')."\n";
 
         if ($position->is_travel_required) {
             $template .= "**Travel:** Required ({$position->travel_percentage}%)\n";
@@ -209,17 +209,17 @@ class CreateJobPosting implements ShouldQueue
         if ($position->responsibilities) {
             $template .= $position->responsibilities;
         } else {
-            $template .= "Responsibilities will be discussed during the interview process.";
+            $template .= 'Responsibilities will be discussed during the interview process.';
         }
 
         $template .= "\n\n## Requirements\n\n";
         if ($position->requirements) {
             $template .= $position->requirements;
         } else {
-            $template .= "Requirements will be discussed during the interview process.";
+            $template .= 'Requirements will be discussed during the interview process.';
         }
 
-        if (!empty($position->skills_required)) {
+        if (! empty($position->skills_required)) {
             $template .= "\n\n**Required Skills:**\n";
             foreach ($position->skills_required as $skill) {
                 $template .= "- {$skill}\n";
@@ -236,16 +236,16 @@ class CreateJobPosting implements ShouldQueue
 
         $template .= "\n## Compensation\n\n";
         if ($position->salary_min && $position->salary_max) {
-            $template .= "**Annual Salary:** $" . number_format($position->salary_min) . " - $" . number_format($position->salary_max) . "\n";
+            $template .= '**Annual Salary:** $'.number_format($position->salary_min).' - $'.number_format($position->salary_max)."\n";
         }
 
         if ($position->hourly_rate_min && $position->hourly_rate_max) {
-            $template .= "**Hourly Rate:** $" . number_format($position->hourly_rate_min, 2) . " - $" . number_format($position->hourly_rate_max, 2) . "\n";
+            $template .= '**Hourly Rate:** $'.number_format($position->hourly_rate_min, 2).' - $'.number_format($position->hourly_rate_max, 2)."\n";
         }
 
         $template .= "\n## Application Process\n\n";
         $template .= "Please submit your resume and cover letter through our application system.\n";
-        $template .= "**Application Deadline:** " . $this->calculateApplicationDeadline($hiringDetails) . "\n";
+        $template .= '**Application Deadline:** '.$this->calculateApplicationDeadline($hiringDetails)."\n";
 
         if (isset($hiringDetails['hiring_manager'])) {
             $template .= "\n**Hiring Manager:** {$hiringDetails['hiring_manager']}\n";
@@ -275,7 +275,7 @@ class CreateJobPosting implements ShouldQueue
                     Log::info("Job posting published to {$platform}", [
                         'position_id' => $position->id,
                         'title' => $position->title,
-                        'platform' => $platform
+                        'platform' => $platform,
                     ]);
                 }
             }
@@ -283,7 +283,7 @@ class CreateJobPosting implements ShouldQueue
         } catch (\Exception $e) {
             Log::error('Failed to publish job posting to external platforms', [
                 'position_id' => $position->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -295,6 +295,7 @@ class CreateJobPosting implements ShouldQueue
     {
         // Publish to LinkedIn for mid-level and above positions
         $seniorLevels = ['senior', 'lead', 'manager', 'director', 'executive'];
+
         return in_array($position->level->value, $seniorLevels);
     }
 
@@ -313,6 +314,6 @@ class CreateJobPosting implements ShouldQueue
     protected function shouldPublishToGlassdoor($position, array $hiringDetails): bool
     {
         // Publish to Glassdoor for positions with salary information
-        return !empty($position->salary_min) && !empty($position->salary_max);
+        return ! empty($position->salary_min) && ! empty($position->salary_max);
     }
 }

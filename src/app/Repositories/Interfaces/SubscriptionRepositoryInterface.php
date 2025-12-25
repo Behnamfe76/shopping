@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\app\Repositories\Interfaces;
 
+use Fereydooni\Shopping\app\DTOs\SubscriptionDTO;
+use Fereydooni\Shopping\app\Models\Subscription;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Fereydooni\Shopping\app\Models\Subscription;
-use Fereydooni\Shopping\app\DTOs\SubscriptionDTO;
 
 interface SubscriptionRepositoryInterface
 {
@@ -29,7 +29,7 @@ interface SubscriptionRepositoryInterface
     /**
      * Get cursor paginated subscriptions
      */
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator;
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator;
 
     /**
      * Find subscription by ID
@@ -159,7 +159,7 @@ interface SubscriptionRepositoryInterface
     /**
      * Calculate next billing date
      */
-    public function calculateNextBillingDate(Subscription $subscription, string $startDate = null): string;
+    public function calculateNextBillingDate(Subscription $subscription, ?string $startDate = null): string;
 
     /**
      * Get subscription revenue

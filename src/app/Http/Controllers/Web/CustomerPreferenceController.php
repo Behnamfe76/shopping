@@ -3,14 +3,13 @@
 namespace Fereydooni\Shopping\app\Http\Controllers\Web;
 
 use Fereydooni\Shopping\app\Http\Controllers\Controller;
-use Fereydooni\Shopping\app\Models\CustomerPreference;
 use Fereydooni\Shopping\app\Models\Customer;
+use Fereydooni\Shopping\app\Models\CustomerPreference;
 use Fereydooni\Shopping\app\Services\CustomerPreferenceService;
-use Fereydooni\Shopping\app\DTOs\CustomerPreferenceDTO;
-use Illuminate\Http\Request;
-use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 
 class CustomerPreferenceController extends Controller
 {
@@ -70,7 +69,7 @@ class CustomerPreferenceController extends Controller
         } catch (ValidationException $e) {
             return back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to create customer preference: ' . $e->getMessage())->withInput();
+            return back()->with('error', 'Failed to create customer preference: '.$e->getMessage())->withInput();
         }
     }
 
@@ -118,7 +117,7 @@ class CustomerPreferenceController extends Controller
 
             $updatedPreference = $this->preferenceService->updatePreference($preference, $validated);
 
-            if (!$updatedPreference) {
+            if (! $updatedPreference) {
                 return back()->with('error', 'Failed to update customer preference.')->withInput();
             }
 
@@ -127,7 +126,7 @@ class CustomerPreferenceController extends Controller
         } catch (ValidationException $e) {
             return back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to update customer preference: ' . $e->getMessage())->withInput();
+            return back()->with('error', 'Failed to update customer preference: '.$e->getMessage())->withInput();
         }
     }
 
@@ -141,14 +140,14 @@ class CustomerPreferenceController extends Controller
         try {
             $deleted = $this->preferenceService->deletePreference($preference);
 
-            if (!$deleted) {
+            if (! $deleted) {
                 return back()->with('error', 'Failed to delete customer preference.');
             }
 
             return redirect()->route('customer-preferences.index')
                 ->with('success', 'Customer preference deleted successfully.');
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to delete customer preference: ' . $e->getMessage());
+            return back()->with('error', 'Failed to delete customer preference: '.$e->getMessage());
         }
     }
 
@@ -231,7 +230,7 @@ class CustomerPreferenceController extends Controller
 
             $imported = $this->preferenceService->importCustomerPreferences($customer->id, $preferences);
 
-            if (!$imported) {
+            if (! $imported) {
                 return back()->with('error', 'Failed to import preferences.');
             }
 
@@ -239,7 +238,7 @@ class CustomerPreferenceController extends Controller
         } catch (ValidationException $e) {
             return back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to import preferences: ' . $e->getMessage())->withInput();
+            return back()->with('error', 'Failed to import preferences: '.$e->getMessage())->withInput();
         }
     }
 
@@ -260,7 +259,7 @@ class CustomerPreferenceController extends Controller
                 return $this->exportToJson($preferences, $customer);
             }
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to export preferences: ' . $e->getMessage());
+            return back()->with('error', 'Failed to export preferences: '.$e->getMessage());
         }
     }
 
@@ -290,7 +289,7 @@ class CustomerPreferenceController extends Controller
 
             $applied = $this->preferenceService->applyPreferenceTemplate($customer->id, $validated['template_name']);
 
-            if (!$applied) {
+            if (! $applied) {
                 return back()->with('error', 'Failed to apply template.');
             }
 
@@ -298,7 +297,7 @@ class CustomerPreferenceController extends Controller
         } catch (ValidationException $e) {
             return back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to apply template: ' . $e->getMessage())->withInput();
+            return back()->with('error', 'Failed to apply template: '.$e->getMessage())->withInput();
         }
     }
 
@@ -366,7 +365,7 @@ class CustomerPreferenceController extends Controller
 
             $restored = $this->preferenceService->restoreCustomerPreferences($customer->id, $backup);
 
-            if (!$restored) {
+            if (! $restored) {
                 return back()->with('error', 'Failed to restore preferences.');
             }
 
@@ -374,7 +373,7 @@ class CustomerPreferenceController extends Controller
         } catch (ValidationException $e) {
             return back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to restore preferences: ' . $e->getMessage())->withInput();
+            return back()->with('error', 'Failed to restore preferences: '.$e->getMessage())->withInput();
         }
     }
 
@@ -389,13 +388,13 @@ class CustomerPreferenceController extends Controller
             $reason = $request->get('reason');
             $activated = $this->preferenceService->activateCustomerPreference($preference, $reason);
 
-            if (!$activated) {
+            if (! $activated) {
                 return back()->with('error', 'Failed to activate preference.');
             }
 
             return back()->with('success', 'Preference activated successfully.');
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to activate preference: ' . $e->getMessage());
+            return back()->with('error', 'Failed to activate preference: '.$e->getMessage());
         }
     }
 
@@ -410,13 +409,13 @@ class CustomerPreferenceController extends Controller
             $reason = $request->get('reason');
             $deactivated = $this->preferenceService->deactivateCustomerPreference($preference, $reason);
 
-            if (!$deactivated) {
+            if (! $deactivated) {
                 return back()->with('error', 'Failed to deactivate preference.');
             }
 
             return back()->with('success', 'Preference deactivated successfully.');
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to deactivate preference: ' . $e->getMessage());
+            return back()->with('error', 'Failed to deactivate preference: '.$e->getMessage());
         }
     }
 
@@ -430,13 +429,13 @@ class CustomerPreferenceController extends Controller
         try {
             $initialized = $this->preferenceService->initializeCustomerPreferences($customer->id);
 
-            if (!$initialized) {
+            if (! $initialized) {
                 return back()->with('error', 'Failed to initialize preferences.');
             }
 
             return back()->with('success', 'Customer preferences initialized successfully.');
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to initialize preferences: ' . $e->getMessage());
+            return back()->with('error', 'Failed to initialize preferences: '.$e->getMessage());
         }
     }
 
@@ -447,10 +446,10 @@ class CustomerPreferenceController extends Controller
     {
         $preferences = [];
         $handle = fopen($file->getPathname(), 'r');
-        
+
         // Skip header row
         fgetcsv($handle);
-        
+
         while (($data = fgetcsv($handle)) !== false) {
             if (count($data) >= 3) {
                 $preferences[] = [
@@ -461,9 +460,9 @@ class CustomerPreferenceController extends Controller
                 ];
             }
         }
-        
+
         fclose($handle);
-        
+
         return $preferences;
     }
 
@@ -473,12 +472,12 @@ class CustomerPreferenceController extends Controller
     private function exportToCsv(array $preferences, Customer $customer): \Symfony\Component\HttpFoundation\Response
     {
         $filename = "customer_{$customer->id}_preferences.csv";
-        
+
         $handle = fopen('php://temp', 'r+');
-        
+
         // Write header
         fputcsv($handle, ['Key', 'Value', 'Type', 'Description', 'Active', 'Created At']);
-        
+
         // Write data
         foreach ($preferences as $key => $preference) {
             fputcsv($handle, [
@@ -490,11 +489,11 @@ class CustomerPreferenceController extends Controller
                 $preference['created_at'] ?? '',
             ]);
         }
-        
+
         rewind($handle);
         $csv = stream_get_contents($handle);
         fclose($handle);
-        
+
         return response($csv)
             ->header('Content-Type', 'text/csv')
             ->header('Content-Disposition', "attachment; filename=\"{$filename}\"");
@@ -506,9 +505,8 @@ class CustomerPreferenceController extends Controller
     private function exportToJson(array $preferences, Customer $customer): \Symfony\Component\HttpFoundation\Response
     {
         $filename = "customer_{$customer->id}_preferences.json";
-        
+
         return response()->json($preferences)
             ->header('Content-Disposition', "attachment; filename=\"{$filename}\"");
     }
 }
-

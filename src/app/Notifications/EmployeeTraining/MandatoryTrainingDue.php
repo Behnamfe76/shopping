@@ -2,17 +2,18 @@
 
 namespace Fereydooni\Shopping\Notifications\EmployeeTraining;
 
+use Fereydooni\Shopping\Models\EmployeeTraining;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Fereydooni\Shopping\Models\EmployeeTraining;
 
 class MandatoryTrainingDue extends Notification implements ShouldQueue
 {
     use Queueable;
 
     public EmployeeTraining $training;
+
     public int $daysOverdue;
 
     /**
@@ -40,26 +41,26 @@ class MandatoryTrainingDue extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         $urgency = $this->daysOverdue > 0 ? 'OVERDUE' : 'DUE';
-        $subject = $urgency . ': Mandatory Training - ' . $this->training->training_name;
+        $subject = $urgency.': Mandatory Training - '.$this->training->training_name;
 
         $message = (new MailMessage)
             ->subject($subject)
-            ->greeting('Hello ' . $notifiable->name . ',')
+            ->greeting('Hello '.$notifiable->name.',')
             ->line('You have mandatory training that requires your immediate attention.')
-            ->line('Training: ' . $this->training->training_name)
-            ->line('Type: ' . $this->training->training_type)
-            ->line('Due Date: ' . $this->training->end_date->format('M d, Y'))
-            ->line('Total Hours: ' . $this->training->total_hours . ' hours');
+            ->line('Training: '.$this->training->training_name)
+            ->line('Type: '.$this->training->training_type)
+            ->line('Due Date: '.$this->training->end_date->format('M d, Y'))
+            ->line('Total Hours: '.$this->training->total_hours.' hours');
 
         if ($this->daysOverdue > 0) {
-            $message->line('This training is ' . $this->daysOverdue . ' days overdue.');
+            $message->line('This training is '.$this->daysOverdue.' days overdue.');
             $message->line('Immediate action is required to avoid disciplinary consequences.');
         } else {
             $message->line('This training is due soon. Please complete it before the deadline.');
         }
 
         return $message
-            ->action('Start Training Now', url('/training/' . $this->training->id . '/start'))
+            ->action('Start Training Now', url('/training/'.$this->training->id.'/start'))
             ->line('Mandatory training is required for continued employment.')
             ->line('Please complete this training as soon as possible.');
     }
@@ -81,9 +82,9 @@ class MandatoryTrainingDue extends Notification implements ShouldQueue
             'days_overdue' => $this->daysOverdue,
             'total_hours' => $this->training->total_hours,
             'urgency' => $urgency,
-            'message' => 'Mandatory training ' . $urgency . ': ' . $this->training->training_name,
-            'action_url' => '/training/' . $this->training->id . '/start',
-            'type' => 'mandatory_training_due'
+            'message' => 'Mandatory training '.$urgency.': '.$this->training->training_name,
+            'action_url' => '/training/'.$this->training->id.'/start',
+            'type' => 'mandatory_training_due',
         ];
     }
 }

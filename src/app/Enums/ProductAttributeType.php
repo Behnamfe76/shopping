@@ -104,4 +104,3 @@ enum ProductAttributeType: string
         return $this === self::CUSTOM;
     }
 }
-

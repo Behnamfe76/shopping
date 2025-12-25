@@ -2,14 +2,14 @@
 
 namespace Fereydooni\Shopping\app\Repositories;
 
-use Fereydooni\Shopping\app\Repositories\Interfaces\OrderRepositoryInterface;
-use Fereydooni\Shopping\app\Models\Order;
 use Fereydooni\Shopping\app\DTOs\OrderDTO;
 use Fereydooni\Shopping\app\Enums\OrderStatus;
 use Fereydooni\Shopping\app\Enums\PaymentStatus;
+use Fereydooni\Shopping\app\Models\Order;
+use Fereydooni\Shopping\app\Repositories\Interfaces\OrderRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -50,7 +50,7 @@ class OrderRepository implements OrderRepositoryInterface
     /**
      * Get cursor paginated orders
      */
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->model->recent()->cursorPaginate($perPage, ['*'], 'cursor', $cursor);
     }
@@ -69,6 +69,7 @@ class OrderRepository implements OrderRepositoryInterface
     public function findDTO(int $id): ?OrderDTO
     {
         $order = $this->find($id);
+
         return $order ? OrderDTO::fromModel($order) : null;
     }
 
@@ -85,7 +86,7 @@ class OrderRepository implements OrderRepositoryInterface
      */
     public function findByUserIdDTO(int $userId): Collection
     {
-        return $this->findByUserId($userId)->map(fn($order) => OrderDTO::fromModel($order));
+        return $this->findByUserId($userId)->map(fn ($order) => OrderDTO::fromModel($order));
     }
 
     /**
@@ -101,7 +102,7 @@ class OrderRepository implements OrderRepositoryInterface
      */
     public function findByStatusDTO(string $status): Collection
     {
-        return $this->findByStatus($status)->map(fn($order) => OrderDTO::fromModel($order));
+        return $this->findByStatus($status)->map(fn ($order) => OrderDTO::fromModel($order));
     }
 
     /**
@@ -117,7 +118,7 @@ class OrderRepository implements OrderRepositoryInterface
      */
     public function findByPaymentStatusDTO(string $paymentStatus): Collection
     {
-        return $this->findByPaymentStatus($paymentStatus)->map(fn($order) => OrderDTO::fromModel($order));
+        return $this->findByPaymentStatus($paymentStatus)->map(fn ($order) => OrderDTO::fromModel($order));
     }
 
     /**
@@ -133,7 +134,7 @@ class OrderRepository implements OrderRepositoryInterface
      */
     public function findByDateRangeDTO(string $startDate, string $endDate): Collection
     {
-        return $this->findByDateRange($startDate, $endDate)->map(fn($order) => OrderDTO::fromModel($order));
+        return $this->findByDateRange($startDate, $endDate)->map(fn ($order) => OrderDTO::fromModel($order));
     }
 
     /**
@@ -142,12 +143,12 @@ class OrderRepository implements OrderRepositoryInterface
     public function create(array $data): Order
     {
         // Set placed_at if not provided
-        if (!isset($data['placed_at'])) {
+        if (! isset($data['placed_at'])) {
             $data['placed_at'] = now();
         }
 
         // Calculate totals if not provided
-        if (!isset($data['subtotal']) || !isset($data['grand_total'])) {
+        if (! isset($data['subtotal']) || ! isset($data['grand_total'])) {
             $totals = $this->calculateOrderTotals($data['items'] ?? []);
             $data = array_merge($data, $totals);
         }
@@ -161,6 +162,7 @@ class OrderRepository implements OrderRepositoryInterface
     public function createAndReturnDTO(array $data): OrderDTO
     {
         $order = $this->create($data);
+
         return OrderDTO::fromModel($order);
     }
 
@@ -178,6 +180,7 @@ class OrderRepository implements OrderRepositoryInterface
     public function updateAndReturnDTO(Order $order, array $data): ?OrderDTO
     {
         $updated = $this->update($order, $data);
+
         return $updated ? OrderDTO::fromModel($order->fresh()) : null;
     }
 
@@ -192,7 +195,7 @@ class OrderRepository implements OrderRepositoryInterface
     /**
      * Cancel order
      */
-    public function cancel(Order $order, string $reason = null): bool
+    public function cancel(Order $order, ?string $reason = null): bool
     {
         $data = ['status' => OrderStatus::CANCELLED];
 
@@ -206,9 +209,10 @@ class OrderRepository implements OrderRepositoryInterface
     /**
      * Cancel order and return DTO
      */
-    public function cancelAndReturnDTO(Order $order, string $reason = null): ?OrderDTO
+    public function cancelAndReturnDTO(Order $order, ?string $reason = null): ?OrderDTO
     {
         $cancelled = $this->cancel($order, $reason);
+
         return $cancelled ? OrderDTO::fromModel($order->fresh()) : null;
     }
 
@@ -226,7 +230,7 @@ class OrderRepository implements OrderRepositoryInterface
     /**
      * Mark order as shipped
      */
-    public function markAsShipped(Order $order, string $trackingNumber = null): bool
+    public function markAsShipped(Order $order, ?string $trackingNumber = null): bool
     {
         $data = ['status' => OrderStatus::SHIPPED];
 
@@ -301,7 +305,7 @@ class OrderRepository implements OrderRepositoryInterface
      */
     public function searchDTO(string $query): Collection
     {
-        return $this->search($query)->map(fn($order) => OrderDTO::fromModel($order));
+        return $this->search($query)->map(fn ($order) => OrderDTO::fromModel($order));
     }
 
     /**
@@ -317,7 +321,7 @@ class OrderRepository implements OrderRepositoryInterface
      */
     public function getRecentOrdersDTO(int $limit = 10): Collection
     {
-        return $this->getRecentOrders($limit)->map(fn($order) => OrderDTO::fromModel($order));
+        return $this->getRecentOrders($limit)->map(fn ($order) => OrderDTO::fromModel($order));
     }
 
     /**
@@ -333,7 +337,7 @@ class OrderRepository implements OrderRepositoryInterface
      */
     public function getOrdersByPaymentMethodDTO(string $paymentMethod): Collection
     {
-        return $this->getOrdersByPaymentMethod($paymentMethod)->map(fn($order) => OrderDTO::fromModel($order));
+        return $this->getOrdersByPaymentMethod($paymentMethod)->map(fn ($order) => OrderDTO::fromModel($order));
     }
 
     /**
@@ -349,7 +353,7 @@ class OrderRepository implements OrderRepositoryInterface
      */
     public function getPendingOrdersDTO(): Collection
     {
-        return $this->getPendingOrders()->map(fn($order) => OrderDTO::fromModel($order));
+        return $this->getPendingOrders()->map(fn ($order) => OrderDTO::fromModel($order));
     }
 
     /**
@@ -365,7 +369,7 @@ class OrderRepository implements OrderRepositoryInterface
      */
     public function getShippedOrdersDTO(): Collection
     {
-        return $this->getShippedOrders()->map(fn($order) => OrderDTO::fromModel($order));
+        return $this->getShippedOrders()->map(fn ($order) => OrderDTO::fromModel($order));
     }
 
     /**
@@ -381,7 +385,7 @@ class OrderRepository implements OrderRepositoryInterface
      */
     public function getCompletedOrdersDTO(): Collection
     {
-        return $this->getCompletedOrders()->map(fn($order) => OrderDTO::fromModel($order));
+        return $this->getCompletedOrders()->map(fn ($order) => OrderDTO::fromModel($order));
     }
 
     /**
@@ -397,7 +401,7 @@ class OrderRepository implements OrderRepositoryInterface
      */
     public function getCancelledOrdersDTO(): Collection
     {
-        return $this->getCancelledOrders()->map(fn($order) => OrderDTO::fromModel($order));
+        return $this->getCancelledOrders()->map(fn ($order) => OrderDTO::fromModel($order));
     }
 
     /**
@@ -495,7 +499,7 @@ class OrderRepository implements OrderRepositoryInterface
     /**
      * Add status change note
      */
-    protected function addStatusChangeNote(Order $order, string $newStatus, string $reason = null): string
+    protected function addStatusChangeNote(Order $order, string $newStatus, ?string $reason = null): string
     {
         $currentNotes = $order->notes ? json_decode($order->notes, true) : [];
 

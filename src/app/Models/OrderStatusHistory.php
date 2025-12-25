@@ -64,7 +64,7 @@ class OrderStatusHistory extends Model
      */
     public function isUserChange(): bool
     {
-        return !$this->is_system_change;
+        return ! $this->is_system_change;
     }
 
     /**
@@ -72,7 +72,7 @@ class OrderStatusHistory extends Model
      */
     public function getChangeTypeLabel(): ?string
     {
-        return match($this->change_type) {
+        return match ($this->change_type) {
             'manual' => 'Manual Change',
             'automatic' => 'Automatic Change',
             'system' => 'System Change',
@@ -87,7 +87,7 @@ class OrderStatusHistory extends Model
      */
     public function getChangeCategoryLabel(): ?string
     {
-        return match($this->change_category) {
+        return match ($this->change_category) {
             'payment' => 'Payment Related',
             'shipping' => 'Shipping Related',
             'cancellation' => 'Cancellation',

@@ -2,38 +2,37 @@
 
 namespace Fereydooni\Shopping\app\Services;
 
-use Fereydooni\Shopping\app\Repositories\Interfaces\CustomerCommunicationRepositoryInterface;
-use Fereydooni\Shopping\app\Models\CustomerCommunication;
 use Fereydooni\Shopping\app\DTOs\CustomerCommunicationDTO;
+use Fereydooni\Shopping\app\Models\CustomerCommunication;
+use Fereydooni\Shopping\app\Repositories\Interfaces\CustomerCommunicationRepositoryInterface;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
-use Fereydooni\Shopping\app\Traits\HasSearchOperations;
+use Fereydooni\Shopping\app\Traits\HasCustomerCommunicationAnalytics;
 use Fereydooni\Shopping\app\Traits\HasCustomerCommunicationOperations;
 use Fereydooni\Shopping\app\Traits\HasCustomerCommunicationStatusManagement;
-use Fereydooni\Shopping\app\Traits\HasCustomerCommunicationAnalytics;
 use Fereydooni\Shopping\app\Traits\HasMediaOperations;
+use Fereydooni\Shopping\app\Traits\HasSearchOperations;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Support\Facades\Event;
 
 class CustomerCommunicationService
 {
     use HasCrudOperations,
-        HasSearchOperations,
+        HasCustomerCommunicationAnalytics,
         HasCustomerCommunicationOperations,
         HasCustomerCommunicationStatusManagement,
-        HasCustomerCommunicationAnalytics,
-        HasMediaOperations;
+        HasMediaOperations,
+        HasSearchOperations;
 
     protected CustomerCommunicationRepositoryInterface $repository;
+
     protected CustomerCommunication $model;
+
     protected string $dtoClass = CustomerCommunicationDTO::class;
 
     public function __construct(CustomerCommunicationRepositoryInterface $repository)
     {
         $this->repository = $repository;
-        $this->model = new CustomerCommunication();
+        $this->model = new CustomerCommunication;
     }
 
     /**
@@ -42,12 +41,12 @@ class CustomerCommunicationService
     public function createCommunication(array $data): CustomerCommunicationDTO
     {
         // Validate communication data
-        if (!$this->repository->validateCommunication($data)) {
+        if (! $this->repository->validateCommunication($data)) {
             throw new \InvalidArgumentException('Invalid communication data provided.');
         }
 
         // Set default status if not provided
-        if (!isset($data['status'])) {
+        if (! isset($data['status'])) {
             $data['status'] = 'draft';
         }
 
@@ -66,13 +65,13 @@ class CustomerCommunicationService
     public function updateCommunication(int $id, array $data): ?CustomerCommunicationDTO
     {
         $communication = $this->repository->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return null;
         }
 
         // Validate communication data
-        if (!$this->repository->validateCommunication($data)) {
+        if (! $this->repository->validateCommunication($data)) {
             throw new \InvalidArgumentException('Invalid communication data provided.');
         }
 
@@ -82,7 +81,7 @@ class CustomerCommunicationService
         if ($updated) {
             // Dispatch event
             Event::dispatch('customer-communication.updated', $communication->fresh());
-            
+
             return CustomerCommunicationDTO::fromModel($communication->fresh());
         }
 
@@ -95,8 +94,8 @@ class CustomerCommunicationService
     public function deleteCommunication(int $id): bool
     {
         $communication = $this->repository->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return false;
         }
 
@@ -116,13 +115,13 @@ class CustomerCommunicationService
     public function scheduleCommunication(int $id, string $scheduledAt): bool
     {
         $communication = $this->repository->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return false;
         }
 
         // Validate if communication can be scheduled
-        if (!$this->canBeScheduled($communication)) {
+        if (! $this->canBeScheduled($communication)) {
             throw new \InvalidArgumentException('Communication cannot be scheduled in its current state.');
         }
 
@@ -135,13 +134,13 @@ class CustomerCommunicationService
     public function sendCommunication(int $id): bool
     {
         $communication = $this->repository->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return false;
         }
 
         // Validate if communication can be sent
-        if (!$this->canBeSent($communication)) {
+        if (! $this->canBeSent($communication)) {
             throw new \InvalidArgumentException('Communication cannot be sent in its current state.');
         }
 
@@ -154,13 +153,13 @@ class CustomerCommunicationService
     public function cancelCommunication(int $id): bool
     {
         $communication = $this->repository->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return false;
         }
 
         // Validate if communication can be cancelled
-        if (!$this->canBeCancelled($communication)) {
+        if (! $this->canBeCancelled($communication)) {
             throw new \InvalidArgumentException('Communication cannot be cancelled in its current state.');
         }
 
@@ -173,13 +172,13 @@ class CustomerCommunicationService
     public function rescheduleCommunication(int $id, string $newScheduledAt): bool
     {
         $communication = $this->repository->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return false;
         }
 
         // Validate if communication can be rescheduled
-        if (!$this->canBeRescheduled($communication)) {
+        if (! $this->canBeRescheduled($communication)) {
             throw new \InvalidArgumentException('Communication cannot be rescheduled in its current state.');
         }
 
@@ -192,8 +191,8 @@ class CustomerCommunicationService
     public function markAsDelivered(int $id): bool
     {
         $communication = $this->repository->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return false;
         }
 
@@ -206,8 +205,8 @@ class CustomerCommunicationService
     public function markAsOpened(int $id): bool
     {
         $communication = $this->repository->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return false;
         }
 
@@ -220,8 +219,8 @@ class CustomerCommunicationService
     public function markAsClicked(int $id): bool
     {
         $communication = $this->repository->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return false;
         }
 
@@ -234,8 +233,8 @@ class CustomerCommunicationService
     public function markAsBounced(int $id): bool
     {
         $communication = $this->repository->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return false;
         }
 
@@ -248,8 +247,8 @@ class CustomerCommunicationService
     public function markAsUnsubscribed(int $id): bool
     {
         $communication = $this->repository->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return false;
         }
 
@@ -277,7 +276,7 @@ class CustomerCommunicationService
     public function getCommunicationPerformanceStatsByCustomer(int $customerId): array
     {
         $communications = $this->repository->findByCustomerId($customerId);
-        
+
         if ($communications->isEmpty()) {
             return [
                 'total_communications' => 0,
@@ -328,8 +327,8 @@ class CustomerCommunicationService
     public function addAttachment(int $id, $file): bool
     {
         $communication = $this->repository->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return false;
         }
 
@@ -342,8 +341,8 @@ class CustomerCommunicationService
     public function removeAttachment(int $id, int $mediaId): bool
     {
         $communication = $this->repository->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return false;
         }
 
@@ -356,8 +355,8 @@ class CustomerCommunicationService
     public function getAttachments(int $id): Collection
     {
         $communication = $this->repository->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return collect();
         }
 
@@ -370,8 +369,8 @@ class CustomerCommunicationService
     public function updateTrackingData(int $id, array $trackingData): bool
     {
         $communication = $this->repository->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return false;
         }
 
@@ -384,8 +383,8 @@ class CustomerCommunicationService
     public function getTrackingData(int $id): array
     {
         $communication = $this->repository->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return [];
         }
 
@@ -398,8 +397,8 @@ class CustomerCommunicationService
     public function getStatusSummary(int $id): array
     {
         $communication = $this->repository->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return [];
         }
 
@@ -412,8 +411,8 @@ class CustomerCommunicationService
     public function getStatusHistory(int $id): array
     {
         $communication = $this->repository->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return [];
         }
 
@@ -426,8 +425,8 @@ class CustomerCommunicationService
     public function getValidStatusTransitions(int $id): array
     {
         $communication = $this->repository->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return [];
         }
 

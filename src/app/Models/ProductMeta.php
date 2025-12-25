@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Fereydooni\Shopping\app\Enums\MetaType;
 use Fereydooni\Shopping\app\Events\ProductMetaCreated;
-use Fereydooni\Shopping\app\Events\ProductMetaUpdated;
 use Fereydooni\Shopping\app\Events\ProductMetaDeleted;
+use Fereydooni\Shopping\app\Events\ProductMetaUpdated;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ProductMeta extends Model
 {

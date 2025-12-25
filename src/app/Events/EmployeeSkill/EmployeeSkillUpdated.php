@@ -11,6 +11,7 @@ class EmployeeSkillUpdated
     use Dispatchable, SerializesModels;
 
     public EmployeeSkill $employeeSkill;
+
     public array $changes;
 
     /**

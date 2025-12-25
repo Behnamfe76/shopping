@@ -2,24 +2,23 @@
 
 namespace App\Repositories;
 
-use App\Repositories\Interfaces\ProviderPerformanceRepositoryInterface;
-use App\Models\ProviderPerformance;
 use App\DTOs\ProviderPerformanceDTO;
-use App\Enums\PerformanceGrade;
-use App\Enums\PeriodType;
+use App\Models\ProviderPerformance;
+use App\Repositories\Interfaces\ProviderPerformanceRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Carbon\Carbon;
 
 class ProviderPerformanceRepository implements ProviderPerformanceRepositoryInterface
 {
     protected $model;
+
     protected $cachePrefix = 'provider_performance_';
+
     protected $cacheTtl = 3600; // 1 hour
 
     public function __construct(ProviderPerformance $model)
@@ -30,7 +29,7 @@ class ProviderPerformanceRepository implements ProviderPerformanceRepositoryInte
     // Basic CRUD operations
     public function all(): Collection
     {
-        return Cache::remember($this->cachePrefix . 'all', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'all', $this->cacheTtl, function () {
             return $this->model->with(['provider', 'verifier'])->get();
         });
     }
@@ -49,7 +48,7 @@ class ProviderPerformanceRepository implements ProviderPerformanceRepositoryInte
             ->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->model->with(['provider', 'verifier'])
             ->orderBy('id')
@@ -58,7 +57,7 @@ class ProviderPerformanceRepository implements ProviderPerformanceRepositoryInte
 
     public function find(int $id): ?ProviderPerformance
     {
-        return Cache::remember($this->cachePrefix . 'find_' . $id, $this->cacheTtl, function () use ($id) {
+        return Cache::remember($this->cachePrefix.'find_'.$id, $this->cacheTtl, function () use ($id) {
             return $this->model->with(['provider', 'verifier'])->find($id);
         });
     }
@@ -66,6 +65,7 @@ class ProviderPerformanceRepository implements ProviderPerformanceRepositoryInte
     public function findDTO(int $id): ?ProviderPerformanceDTO
     {
         $model = $this->find($id);
+
         return $model ? ProviderPerformanceDTO::fromModel($model) : null;
     }
 
@@ -87,7 +87,7 @@ class ProviderPerformanceRepository implements ProviderPerformanceRepositoryInte
             return $providerPerformance->load(['provider', 'verifier']);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Failed to create provider performance: ' . $e->getMessage());
+            Log::error('Failed to create provider performance: '.$e->getMessage());
             throw $e;
         }
     }
@@ -95,6 +95,7 @@ class ProviderPerformanceRepository implements ProviderPerformanceRepositoryInte
     public function createAndReturnDTO(array $data): ProviderPerformanceDTO
     {
         $model = $this->create($data);
+
         return ProviderPerformanceDTO::fromModel($model);
     }
 
@@ -118,7 +119,7 @@ class ProviderPerformanceRepository implements ProviderPerformanceRepositoryInte
             return $result;
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Failed to update provider performance: ' . $e->getMessage());
+            Log::error('Failed to update provider performance: '.$e->getMessage());
             throw $e;
         }
     }
@@ -126,6 +127,7 @@ class ProviderPerformanceRepository implements ProviderPerformanceRepositoryInte
     public function updateAndReturnDTO(ProviderPerformance $providerPerformance, array $data): ?ProviderPerformanceDTO
     {
         $result = $this->update($providerPerformance, $data);
+
         return $result ? ProviderPerformanceDTO::fromModel($providerPerformance->fresh()) : null;
     }
 
@@ -140,7 +142,7 @@ class ProviderPerformanceRepository implements ProviderPerformanceRepositoryInte
 
             return $result;
         } catch (\Exception $e) {
-            Log::error('Failed to delete provider performance: ' . $e->getMessage());
+            Log::error('Failed to delete provider performance: '.$e->getMessage());
             throw $e;
         }
     }
@@ -148,7 +150,7 @@ class ProviderPerformanceRepository implements ProviderPerformanceRepositoryInte
     // Find by specific criteria
     public function findByProviderId(int $providerId): Collection
     {
-        $cacheKey = $this->cachePrefix . 'provider_' . $providerId;
+        $cacheKey = $this->cachePrefix.'provider_'.$providerId;
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($providerId) {
             return $this->model->with(['provider', 'verifier'])
@@ -161,12 +163,13 @@ class ProviderPerformanceRepository implements ProviderPerformanceRepositoryInte
     public function findByProviderIdDTO(int $providerId): Collection
     {
         $models = $this->findByProviderId($providerId);
-        return $models->map(fn($model) => ProviderPerformanceDTO::fromModel($model));
+
+        return $models->map(fn ($model) => ProviderPerformanceDTO::fromModel($model));
     }
 
     public function findByPeriod(string $periodStart, string $periodEnd): Collection
     {
-        $cacheKey = $this->cachePrefix . 'period_' . $periodStart . '_' . $periodEnd;
+        $cacheKey = $this->cachePrefix.'period_'.$periodStart.'_'.$periodEnd;
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($periodStart, $periodEnd) {
             return $this->model->with(['provider', 'verifier'])
@@ -179,12 +182,13 @@ class ProviderPerformanceRepository implements ProviderPerformanceRepositoryInte
     public function findByPeriodDTO(string $periodStart, string $periodEnd): Collection
     {
         $models = $this->findByPeriod($periodStart, $periodEnd);
-        return $models->map(fn($model) => ProviderPerformanceDTO::fromModel($model));
+
+        return $models->map(fn ($model) => ProviderPerformanceDTO::fromModel($model));
     }
 
     public function findByPerformanceGrade(string $grade): Collection
     {
-        $cacheKey = $this->cachePrefix . 'grade_' . $grade;
+        $cacheKey = $this->cachePrefix.'grade_'.$grade;
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($grade) {
             return $this->model->with(['provider', 'verifier'])
@@ -197,12 +201,13 @@ class ProviderPerformanceRepository implements ProviderPerformanceRepositoryInte
     public function findByPerformanceGradeDTO(string $grade): Collection
     {
         $models = $this->findByPerformanceGrade($grade);
-        return $models->map(fn($model) => ProviderPerformanceDTO::fromModel($model));
+
+        return $models->map(fn ($model) => ProviderPerformanceDTO::fromModel($model));
     }
 
     public function findByPeriodType(string $periodType): Collection
     {
-        $cacheKey = $this->cachePrefix . 'period_type_' . $periodType;
+        $cacheKey = $this->cachePrefix.'period_type_'.$periodType;
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($periodType) {
             return $this->model->with(['provider', 'verifier'])
@@ -215,12 +220,13 @@ class ProviderPerformanceRepository implements ProviderPerformanceRepositoryInte
     public function findByPeriodTypeDTO(string $periodType): Collection
     {
         $models = $this->findByPeriodType($periodType);
-        return $models->map(fn($model) => ProviderPerformanceDTO::fromModel($model));
+
+        return $models->map(fn ($model) => ProviderPerformanceDTO::fromModel($model));
     }
 
     public function findByProviderAndPeriod(int $providerId, string $periodStart, string $periodEnd): ?ProviderPerformance
     {
-        $cacheKey = $this->cachePrefix . 'provider_period_' . $providerId . '_' . $periodStart . '_' . $periodEnd;
+        $cacheKey = $this->cachePrefix.'provider_period_'.$providerId.'_'.$periodStart.'_'.$periodEnd;
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($providerId, $periodStart, $periodEnd) {
             return $this->model->with(['provider', 'verifier'])
@@ -233,12 +239,13 @@ class ProviderPerformanceRepository implements ProviderPerformanceRepositoryInte
     public function findByProviderAndPeriodDTO(int $providerId, string $periodStart, string $periodEnd): ?ProviderPerformanceDTO
     {
         $model = $this->findByProviderAndPeriod($providerId, $periodStart, $periodEnd);
+
         return $model ? ProviderPerformanceDTO::fromModel($model) : null;
     }
 
     public function findByProviderAndGrade(int $providerId, string $grade): Collection
     {
-        $cacheKey = $this->cachePrefix . 'provider_grade_' . $providerId . '_' . $grade;
+        $cacheKey = $this->cachePrefix.'provider_grade_'.$providerId.'_'.$grade;
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($providerId, $grade) {
             return $this->model->with(['provider', 'verifier'])
@@ -252,13 +259,14 @@ class ProviderPerformanceRepository implements ProviderPerformanceRepositoryInte
     public function findByProviderAndGradeDTO(int $providerId, string $grade): Collection
     {
         $models = $this->findByProviderAndGrade($providerId, $grade);
-        return $models->map(fn($model) => ProviderPerformanceDTO::fromModel($model));
+
+        return $models->map(fn ($model) => ProviderPerformanceDTO::fromModel($model));
     }
 
     // Verification operations
     public function findVerified(): Collection
     {
-        $cacheKey = $this->cachePrefix . 'verified';
+        $cacheKey = $this->cachePrefix.'verified';
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () {
             return $this->model->with(['provider', 'verifier'])
@@ -271,12 +279,13 @@ class ProviderPerformanceRepository implements ProviderPerformanceRepositoryInte
     public function findVerifiedDTO(): Collection
     {
         $models = $this->findVerified();
-        return $models->map(fn($model) => ProviderPerformanceDTO::fromModel($model));
+
+        return $models->map(fn ($model) => ProviderPerformanceDTO::fromModel($model));
     }
 
     public function findUnverified(): Collection
     {
-        $cacheKey = $this->cachePrefix . 'unverified';
+        $cacheKey = $this->cachePrefix.'unverified';
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () {
             return $this->model->with(['provider', 'verifier'])
@@ -289,10 +298,11 @@ class ProviderPerformanceRepository implements ProviderPerformanceRepositoryInte
     public function findUnverifiedDTO(): Collection
     {
         $models = $this->findUnverified();
-        return $models->map(fn($model) => ProviderPerformanceDTO::fromModel($model));
+
+        return $models->map(fn ($model) => ProviderPerformanceDTO::fromModel($model));
     }
 
-    public function verify(ProviderPerformance $providerPerformance, int $verifiedBy, string $notes = null): bool
+    public function verify(ProviderPerformance $providerPerformance, int $verifiedBy, ?string $notes = null): bool
     {
         try {
             $result = $providerPerformance->verify($verifiedBy, $notes);
@@ -303,7 +313,7 @@ class ProviderPerformanceRepository implements ProviderPerformanceRepositoryInte
 
             return $result;
         } catch (\Exception $e) {
-            Log::error('Failed to verify provider performance: ' . $e->getMessage());
+            Log::error('Failed to verify provider performance: '.$e->getMessage());
             throw $e;
         }
     }
@@ -319,7 +329,7 @@ class ProviderPerformanceRepository implements ProviderPerformanceRepositoryInte
 
             return $result;
         } catch (\Exception $e) {
-            Log::error('Failed to unverify provider performance: ' . $e->getMessage());
+            Log::error('Failed to unverify provider performance: '.$e->getMessage());
             throw $e;
         }
     }
@@ -327,7 +337,7 @@ class ProviderPerformanceRepository implements ProviderPerformanceRepositoryInte
     // Performance analysis
     public function findTopPerformers(int $limit = 10): Collection
     {
-        $cacheKey = $this->cachePrefix . 'top_performers_' . $limit;
+        $cacheKey = $this->cachePrefix.'top_performers_'.$limit;
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($limit) {
             return $this->model->with(['provider', 'verifier'])
@@ -340,12 +350,13 @@ class ProviderPerformanceRepository implements ProviderPerformanceRepositoryInte
     public function findTopPerformersDTO(int $limit = 10): Collection
     {
         $models = $this->findTopPerformers($limit);
-        return $models->map(fn($model) => ProviderPerformanceDTO::fromModel($model));
+
+        return $models->map(fn ($model) => ProviderPerformanceDTO::fromModel($model));
     }
 
     public function findBottomPerformers(int $limit = 10): Collection
     {
-        $cacheKey = $this->cachePrefix . 'bottom_performers_' . $limit;
+        $cacheKey = $this->cachePrefix.'bottom_performers_'.$limit;
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($limit) {
             return $this->model->with(['provider', 'verifier'])
@@ -358,7 +369,8 @@ class ProviderPerformanceRepository implements ProviderPerformanceRepositoryInte
     public function findBottomPerformersDTO(int $limit = 10): Collection
     {
         $models = $this->findBottomPerformers($limit);
-        return $models->map(fn($model) => ProviderPerformanceDTO::fromModel($model));
+
+        return $models->map(fn ($model) => ProviderPerformanceDTO::fromModel($model));
     }
 
     // Performance calculations and updates
@@ -370,7 +382,7 @@ class ProviderPerformanceRepository implements ProviderPerformanceRepositoryInte
 
             return $providerPerformance->save();
         } catch (\Exception $e) {
-            Log::error('Failed to calculate performance: ' . $e->getMessage());
+            Log::error('Failed to calculate performance: '.$e->getMessage());
             throw $e;
         }
     }
@@ -383,7 +395,7 @@ class ProviderPerformanceRepository implements ProviderPerformanceRepositoryInte
 
             return $providerPerformance->save();
         } catch (\Exception $e) {
-            Log::error('Failed to update metrics: ' . $e->getMessage());
+            Log::error('Failed to update metrics: '.$e->getMessage());
             throw $e;
         }
     }
@@ -397,9 +409,10 @@ class ProviderPerformanceRepository implements ProviderPerformanceRepositoryInte
     {
         try {
             $providerPerformance->updatePerformanceGrade();
+
             return $providerPerformance->save();
         } catch (\Exception $e) {
-            Log::error('Failed to update grade: ' . $e->getMessage());
+            Log::error('Failed to update grade: '.$e->getMessage());
             throw $e;
         }
     }

@@ -2,10 +2,10 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
-use Fereydooni\Shopping\app\Events\ProductTagCreated;
-use Fereydooni\Shopping\app\Events\ProductTagUpdated;
-use Fereydooni\Shopping\app\Events\ProductTagDeleted;
 use Fereydooni\Shopping\app\Events\ProductTagBulkOperation;
+use Fereydooni\Shopping\app\Events\ProductTagCreated;
+use Fereydooni\Shopping\app\Events\ProductTagDeleted;
+use Fereydooni\Shopping\app\Events\ProductTagUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
@@ -60,7 +60,7 @@ class GenerateProductTagReport implements ShouldQueue
     {
         $tag = $event->tag ?? null;
 
-        if (!$tag) {
+        if (! $tag) {
             return;
         }
 

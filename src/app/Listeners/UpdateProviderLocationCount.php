@@ -2,15 +2,15 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
+use Exception;
 use Fereydooni\Shopping\app\Events\Provider\ProviderLocationCreated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderLocationUpdated;
 use Fereydooni\Shopping\app\Events\Provider\ProviderLocationDeleted;
+use Fereydooni\Shopping\app\Events\Provider\ProviderLocationUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Exception;
+use Illuminate\Support\Facades\Log;
 
 class UpdateProviderLocationCount implements ShouldQueue
 {
@@ -48,13 +48,13 @@ class UpdateProviderLocationCount implements ShouldQueue
 
             Log::info('Provider location count updated for location creation', [
                 'location_id' => $location->id,
-                'provider_id' => $location->provider_id
+                'provider_id' => $location->provider_id,
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to update provider location count for location creation', [
                 'location_id' => $event->providerLocation->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -76,13 +76,13 @@ class UpdateProviderLocationCount implements ShouldQueue
 
             Log::info('Provider location count updated for location update', [
                 'location_id' => $location->id,
-                'provider_id' => $location->provider_id
+                'provider_id' => $location->provider_id,
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to update provider location count for location update', [
                 'location_id' => $event->providerLocation->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -101,13 +101,13 @@ class UpdateProviderLocationCount implements ShouldQueue
 
             Log::info('Provider location count updated for location deletion', [
                 'location_id' => $location->id,
-                'provider_id' => $location->provider_id
+                'provider_id' => $location->provider_id,
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to update provider location count for location deletion', [
                 'location_id' => $event->providerLocation->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -138,7 +138,7 @@ class UpdateProviderLocationCount implements ShouldQueue
                     'inactive_locations' => $counts->inactive_locations,
                     'primary_locations' => $counts->primary_locations,
                     'locations_with_coordinates' => $counts->locations_with_coordinates,
-                    'updated_at' => now()
+                    'updated_at' => now(),
                 ]);
 
             // Store in cache for quick access
@@ -147,7 +147,7 @@ class UpdateProviderLocationCount implements ShouldQueue
         } catch (Exception $e) {
             Log::error('Failed to update provider location counts', [
                 'provider_id' => $providerId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -173,7 +173,7 @@ class UpdateProviderLocationCount implements ShouldQueue
 
         } catch (Exception $e) {
             Log::error('Failed to update global location counts', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -190,7 +190,7 @@ class UpdateProviderLocationCount implements ShouldQueue
         } catch (Exception $e) {
             Log::error('Failed to clear count cache', [
                 'provider_id' => $providerId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -207,7 +207,7 @@ class UpdateProviderLocationCount implements ShouldQueue
             'location_id' => $locationId,
             'provider_id' => $providerId,
             'error' => $exception->getMessage(),
-            'trace' => $exception->getTraceAsString()
+            'trace' => $exception->getTraceAsString(),
         ]);
     }
 }

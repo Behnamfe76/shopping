@@ -40,15 +40,15 @@ class InvoicePaid extends Notification implements ShouldQueue
         $provider = $this->invoice->provider;
 
         return (new MailMessage)
-            ->subject('Provider Invoice Paid - ' . $this->invoice->invoice_number)
-            ->greeting('Hello ' . ($notifiable->name ?? 'Team Member'))
+            ->subject('Provider Invoice Paid - '.$this->invoice->invoice_number)
+            ->greeting('Hello '.($notifiable->name ?? 'Team Member'))
             ->line('A provider invoice has been marked as paid.')
-            ->line('Invoice Number: ' . $this->invoice->invoice_number)
-            ->line('Provider: ' . ($provider->name ?? 'Unknown Provider'))
-            ->line('Amount: $' . number_format($this->invoice->total_amount, 2))
-            ->line('Payment Date: ' . $this->invoice->paid_at->format('M d, Y'))
-            ->line('Payment Method: ' . ($this->invoice->payment_method ?? 'Not specified'))
-            ->action('View Invoice', url('/provider-invoices/' . $this->invoice->id))
+            ->line('Invoice Number: '.$this->invoice->invoice_number)
+            ->line('Provider: '.($provider->name ?? 'Unknown Provider'))
+            ->line('Amount: $'.number_format($this->invoice->total_amount, 2))
+            ->line('Payment Date: '.$this->invoice->paid_at->format('M d, Y'))
+            ->line('Payment Method: '.($this->invoice->payment_method ?? 'Not specified'))
+            ->action('View Invoice', url('/provider-invoices/'.$this->invoice->id))
             ->line('The invoice has been successfully paid and closed.');
     }
 
@@ -69,7 +69,7 @@ class InvoicePaid extends Notification implements ShouldQueue
             'payment_method' => $this->invoice->payment_method,
             'status' => $this->invoice->status,
             'type' => 'invoice_paid',
-            'message' => 'Provider invoice paid: ' . $this->invoice->invoice_number
+            'message' => 'Provider invoice paid: '.$this->invoice->invoice_number,
         ];
     }
 
@@ -81,4 +81,3 @@ class InvoicePaid extends Notification implements ShouldQueue
         return $this->toArray($notifiable);
     }
 }
-

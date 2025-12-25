@@ -2,20 +2,20 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
-use Laravel\Scout\Searchable;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 use Fereydooni\Shopping\app\Enums\ProductStatus;
 use Fereydooni\Shopping\app\Events\ProductTagCreated;
 use Fereydooni\Shopping\app\Events\ProductTagDeleted;
 use Fereydooni\Shopping\app\Events\ProductTagUpdated;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Laravel\Scout\Searchable;
 
 class ProductTag extends Model
 {
-
     use Searchable;
-    protected $table = "product_tags";
+
+    protected $table = 'product_tags';
 
     protected $fillable = [
         'name',
@@ -46,9 +46,9 @@ class ProductTag extends Model
             self::class => [
                 'collection-schema' => self::getTypesenseCollectionSchema(),
                 'search-parameters' => [
-                    'query_by' => implode(',', self::searchableFields())
-                ]
-            ]
+                    'query_by' => implode(',', self::searchableFields()),
+                ],
+            ],
         ];
     }
 
@@ -146,15 +146,15 @@ class ProductTag extends Model
                     'facet' => false,
                 ],
                 [
-                    "name" => "embedding",
-                    "type" => "float[]",
-                    "embed" => [
-                        "from" => self::searchableFields(),
-                        "model_config" => [
-                            "model_name" => "ts/all-MiniLM-L12-v2"
-                        ]
-                    ]
-                ]
+                    'name' => 'embedding',
+                    'type' => 'float[]',
+                    'embed' => [
+                        'from' => self::searchableFields(),
+                        'model_config' => [
+                            'model_name' => 'ts/all-MiniLM-L12-v2',
+                        ],
+                    ],
+                ],
             ],
             'default_sorting_field' => 'created_at',
         ];

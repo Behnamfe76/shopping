@@ -35,7 +35,7 @@ enum SalaryChangeType: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::PROMOTION => 'Promotion',
             self::MERIT => 'Merit Increase',
             self::COST_OF_LIVING => 'Cost of Living Adjustment',
@@ -69,7 +69,7 @@ enum SalaryChangeType: string
 
     public function description(): string
     {
-        return match($this) {
+        return match ($this) {
             self::PROMOTION => 'Salary increase due to promotion to a higher position',
             self::MERIT => 'Salary increase based on performance and merit',
             self::COST_OF_LIVING => 'Salary adjustment to account for inflation and cost of living changes',
@@ -103,7 +103,7 @@ enum SalaryChangeType: string
 
     public function isPositive(): bool
     {
-        return match($this) {
+        return match ($this) {
             self::PROMOTION, self::MERIT, self::COST_OF_LIVING, self::MARKET_ADJUSTMENT,
             self::PERFORMANCE_BONUS, self::RETENTION_BONUS, self::HIRING_BONUS,
             self::EQUITY_ADJUSTMENT, self::COMPRESSION_ADJUSTMENT, self::GEOGRAPHIC_ADJUSTMENT,
@@ -118,7 +118,7 @@ enum SalaryChangeType: string
 
     public function isNegative(): bool
     {
-        return match($this) {
+        return match ($this) {
             self::DEMOTION, self::SEVERANCE, self::SALARY_REDUCTION => true,
             self::PROMOTION, self::MERIT, self::COST_OF_LIVING, self::MARKET_ADJUSTMENT,
             self::PERFORMANCE_BONUS, self::RETENTION_BONUS, self::HIRING_BONUS,
@@ -133,7 +133,7 @@ enum SalaryChangeType: string
 
     public function isNeutral(): bool
     {
-        return match($this) {
+        return match ($this) {
             self::SALARY_FREEZE, self::OTHER => true,
             default => false,
         };
@@ -141,7 +141,7 @@ enum SalaryChangeType: string
 
     public function requiresApproval(): bool
     {
-        return match($this) {
+        return match ($this) {
             self::PROMOTION, self::DEMOTION, self::SALARY_REDUCTION, self::SEVERANCE => true,
             self::MERIT, self::COST_OF_LIVING, self::MARKET_ADJUSTMENT => true,
             self::PERFORMANCE_BONUS, self::RETENTION_BONUS, self::HIRING_BONUS => true,
@@ -157,7 +157,7 @@ enum SalaryChangeType: string
 
     public function isRetroactiveEligible(): bool
     {
-        return match($this) {
+        return match ($this) {
             self::PROMOTION, self::MERIT, self::COST_OF_LIVING, self::MARKET_ADJUSTMENT,
             self::EQUITY_ADJUSTMENT, self::COMPRESSION_ADJUSTMENT, self::GEOGRAPHIC_ADJUSTMENT,
             self::SKILL_ADJUSTMENT, self::EXPERIENCE_ADJUSTMENT, self::EDUCATION_ADJUSTMENT => true,
@@ -171,7 +171,7 @@ enum SalaryChangeType: string
 
     public function getCategory(): string
     {
-        return match($this) {
+        return match ($this) {
             self::PROMOTION, self::DEMOTION => 'Position Change',
             self::MERIT, self::PERFORMANCE_BONUS => 'Performance',
             self::COST_OF_LIVING, self::MARKET_ADJUSTMENT => 'Market',
@@ -190,31 +190,31 @@ enum SalaryChangeType: string
 
     public static function getPositiveTypes(): array
     {
-        return array_filter(self::cases(), fn($type) => $type->isPositive());
+        return array_filter(self::cases(), fn ($type) => $type->isPositive());
     }
 
     public static function getNegativeTypes(): array
     {
-        return array_filter(self::cases(), fn($type) => $type->isNegative());
+        return array_filter(self::cases(), fn ($type) => $type->isNegative());
     }
 
     public static function getNeutralTypes(): array
     {
-        return array_filter(self::cases(), fn($type) => $type->isNeutral());
+        return array_filter(self::cases(), fn ($type) => $type->isNeutral());
     }
 
     public static function getApprovalRequiredTypes(): array
     {
-        return array_filter(self::cases(), fn($type) => $type->requiresApproval());
+        return array_filter(self::cases(), fn ($type) => $type->requiresApproval());
     }
 
     public static function getRetroactiveEligibleTypes(): array
     {
-        return array_filter(self::cases(), fn($type) => $type->isRetroactiveEligible());
+        return array_filter(self::cases(), fn ($type) => $type->isRetroactiveEligible());
     }
 
     public static function getByCategory(string $category): array
     {
-        return array_filter(self::cases(), fn($type) => $type->getCategory() === $category);
+        return array_filter(self::cases(), fn ($type) => $type->getCategory() === $category);
     }
 }

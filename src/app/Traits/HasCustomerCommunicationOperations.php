@@ -2,20 +2,14 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
-use Fereydooni\Shopping\app\Models\CustomerCommunication;
 use Fereydooni\Shopping\app\DTOs\CustomerCommunicationDTO;
-use Fereydooni\Shopping\app\Enums\CommunicationType;
-use Fereydooni\Shopping\app\Enums\CommunicationStatus;
-use Fereydooni\Shopping\app\Enums\CommunicationPriority;
-use Fereydooni\Shopping\app\Enums\CommunicationChannel;
+use Fereydooni\Shopping\app\Models\CustomerCommunication;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
 
 trait HasCustomerCommunicationOperations
 {
     protected CustomerCommunication $model;
+
     protected string $dtoClass = CustomerCommunicationDTO::class;
 
     // Customer communication-specific find methods

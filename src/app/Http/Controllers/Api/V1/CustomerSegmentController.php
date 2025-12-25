@@ -8,9 +8,6 @@ use App\Models\CustomerSegment;
 use App\Services\CustomerSegmentService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 
@@ -40,7 +37,7 @@ class CustomerSegmentController extends Controller
                 'last_page' => $segments->lastPage(),
                 'per_page' => $segments->perPage(),
                 'total' => $segments->total(),
-            ]
+            ],
         ]);
     }
 
@@ -73,7 +70,7 @@ class CustomerSegmentController extends Controller
 
         return response()->json([
             'message' => 'Customer segment created successfully',
-            'data' => $segment
+            'data' => $segment,
         ], 201);
     }
 
@@ -87,7 +84,7 @@ class CustomerSegmentController extends Controller
         $segment = $this->service->findDTO($customerSegment->id);
 
         return response()->json([
-            'data' => $segment
+            'data' => $segment,
         ]);
     }
 
@@ -99,7 +96,7 @@ class CustomerSegmentController extends Controller
         $this->authorize('update', $customerSegment);
 
         $validator = Validator::make($request->all(), [
-            'name' => 'sometimes|required|string|max:255|unique:customer_segments,name,' . $customerSegment->id,
+            'name' => 'sometimes|required|string|max:255|unique:customer_segments,name,'.$customerSegment->id,
             'description' => 'nullable|string',
             'type' => 'sometimes|required|string|in:demographic,behavioral,geographic,psychographic,transactional,engagement,loyalty,custom',
             'status' => 'nullable|string|in:active,inactive,draft,archived',
@@ -120,7 +117,7 @@ class CustomerSegmentController extends Controller
 
         return response()->json([
             'message' => 'Customer segment updated successfully',
-            'data' => $segment
+            'data' => $segment,
         ]);
     }
 
@@ -134,7 +131,7 @@ class CustomerSegmentController extends Controller
         $deleted = $this->service->deleteSegment($customerSegment);
 
         return response()->json([
-            'message' => 'Customer segment deleted successfully'
+            'message' => 'Customer segment deleted successfully',
         ]);
     }
 
@@ -149,7 +146,7 @@ class CustomerSegmentController extends Controller
 
         return response()->json([
             'message' => 'Customer segment activated successfully',
-            'activated' => $activated
+            'activated' => $activated,
         ]);
     }
 
@@ -164,7 +161,7 @@ class CustomerSegmentController extends Controller
 
         return response()->json([
             'message' => 'Customer segment deactivated successfully',
-            'deactivated' => $deactivated
+            'deactivated' => $deactivated,
         ]);
     }
 
@@ -179,7 +176,7 @@ class CustomerSegmentController extends Controller
 
         return response()->json([
             'message' => 'Customer segment made automatic successfully',
-            'updated' => $updated
+            'updated' => $updated,
         ]);
     }
 
@@ -194,7 +191,7 @@ class CustomerSegmentController extends Controller
 
         return response()->json([
             'message' => 'Customer segment made manual successfully',
-            'updated' => $updated
+            'updated' => $updated,
         ]);
     }
 
@@ -209,7 +206,7 @@ class CustomerSegmentController extends Controller
 
         return response()->json([
             'message' => 'Customer segment made dynamic successfully',
-            'updated' => $updated
+            'updated' => $updated,
         ]);
     }
 
@@ -224,7 +221,7 @@ class CustomerSegmentController extends Controller
 
         return response()->json([
             'message' => 'Customer segment made static successfully',
-            'updated' => $updated
+            'updated' => $updated,
         ]);
     }
 
@@ -247,7 +244,7 @@ class CustomerSegmentController extends Controller
 
         return response()->json([
             'message' => 'Customer segment priority updated successfully',
-            'updated' => $updated
+            'updated' => $updated,
         ]);
     }
 
@@ -262,7 +259,7 @@ class CustomerSegmentController extends Controller
 
         return response()->json([
             'message' => 'Customer segment calculated successfully',
-            'customer_count' => $count
+            'customer_count' => $count,
         ]);
     }
 
@@ -285,7 +282,7 @@ class CustomerSegmentController extends Controller
 
         return response()->json([
             'message' => 'Customer added to segment successfully',
-            'added' => $added
+            'added' => $added,
         ]);
     }
 
@@ -308,7 +305,7 @@ class CustomerSegmentController extends Controller
 
         return response()->json([
             'message' => 'Customer removed from segment successfully',
-            'removed' => $removed
+            'removed' => $removed,
         ]);
     }
 
@@ -331,7 +328,7 @@ class CustomerSegmentController extends Controller
 
         return response()->json([
             'message' => 'Customer segment criteria updated successfully',
-            'updated' => $updated
+            'updated' => $updated,
         ]);
     }
 
@@ -354,7 +351,7 @@ class CustomerSegmentController extends Controller
 
         return response()->json([
             'message' => 'Customer segment conditions updated successfully',
-            'updated' => $updated
+            'updated' => $updated,
         ]);
     }
 
@@ -374,7 +371,7 @@ class CustomerSegmentController extends Controller
                 'last_page' => $customers->lastPage(),
                 'per_page' => $customers->perPage(),
                 'total' => $customers->total(),
-            ]
+            ],
         ]);
     }
 
@@ -388,7 +385,7 @@ class CustomerSegmentController extends Controller
         $analytics = $this->service->getSegmentAnalytics($customerSegment->id);
 
         return response()->json([
-            'data' => $analytics
+            'data' => $analytics,
         ]);
     }
 
@@ -411,7 +408,7 @@ class CustomerSegmentController extends Controller
 
         return response()->json([
             'message' => 'Customer segment duplicated successfully',
-            'data' => CustomerSegmentDTO::fromModel($newSegment)
+            'data' => CustomerSegmentDTO::fromModel($newSegment),
         ], 201);
     }
 
@@ -436,7 +433,7 @@ class CustomerSegmentController extends Controller
 
         return response()->json([
             'message' => 'Customer segments merged successfully',
-            'data' => CustomerSegmentDTO::fromModel($mergedSegment)
+            'data' => CustomerSegmentDTO::fromModel($mergedSegment),
         ], 201);
     }
 
@@ -461,7 +458,7 @@ class CustomerSegmentController extends Controller
 
         return response()->json([
             'message' => 'Customer segment split successfully',
-            'data' => $newSegments->map(fn($segment) => CustomerSegmentDTO::fromModel($segment))
+            'data' => $newSegments->map(fn ($segment) => CustomerSegmentDTO::fromModel($segment)),
         ], 201);
     }
 
@@ -475,7 +472,7 @@ class CustomerSegmentController extends Controller
         $statistics = $this->service->getSegmentStatistics();
 
         return response()->json([
-            'data' => $statistics
+            'data' => $statistics,
         ]);
     }
 
@@ -489,7 +486,7 @@ class CustomerSegmentController extends Controller
         $recommendations = $this->service->getSegmentRecommendations();
 
         return response()->json([
-            'data' => $recommendations
+            'data' => $recommendations,
         ]);
     }
 
@@ -503,7 +500,7 @@ class CustomerSegmentController extends Controller
         $insights = $this->service->getSegmentInsights();
 
         return response()->json([
-            'data' => $insights
+            'data' => $insights,
         ]);
     }
 
@@ -518,7 +515,7 @@ class CustomerSegmentController extends Controller
         $forecast = $this->service->getSegmentTrendsForecast($period);
 
         return response()->json([
-            'data' => $forecast
+            'data' => $forecast,
         ]);
     }
 
@@ -541,7 +538,7 @@ class CustomerSegmentController extends Controller
         $comparison = $this->service->compareSegments($request->segment_id_1, $request->segment_id_2);
 
         return response()->json([
-            'data' => $comparison
+            'data' => $comparison,
         ]);
     }
 
@@ -555,7 +552,7 @@ class CustomerSegmentController extends Controller
         $forecast = $this->service->getSegmentForecast($customerSegment->id);
 
         return response()->json([
-            'data' => $forecast
+            'data' => $forecast,
         ]);
     }
 
@@ -569,7 +566,7 @@ class CustomerSegmentController extends Controller
         $exportData = $this->service->exportSegment($customerSegment);
 
         return response()->json([
-            'data' => $exportData
+            'data' => $exportData,
         ]);
     }
 
@@ -596,7 +593,7 @@ class CustomerSegmentController extends Controller
 
         return response()->json([
             'message' => 'Customer segment imported successfully',
-            'data' => CustomerSegmentDTO::fromModel($segment)
+            'data' => CustomerSegmentDTO::fromModel($segment),
         ], 201);
     }
 
@@ -611,7 +608,7 @@ class CustomerSegmentController extends Controller
 
         return response()->json([
             'message' => 'All automatic segments recalculated successfully',
-            'success' => $success
+            'success' => $success,
         ]);
     }
 
@@ -625,7 +622,7 @@ class CustomerSegmentController extends Controller
         $segments = $this->service->getSegmentsNeedingRecalculation();
 
         return response()->json([
-            'data' => $segments->map(fn($segment) => CustomerSegmentDTO::fromModel($segment))
+            'data' => $segments->map(fn ($segment) => CustomerSegmentDTO::fromModel($segment)),
         ]);
     }
 
@@ -639,7 +636,7 @@ class CustomerSegmentController extends Controller
         $overlapping = $this->service->getOverlappingSegments($customerSegment);
 
         return response()->json([
-            'data' => $overlapping->map(fn($segment) => CustomerSegmentDTO::fromModel($segment))
+            'data' => $overlapping->map(fn ($segment) => CustomerSegmentDTO::fromModel($segment)),
         ]);
     }
 }

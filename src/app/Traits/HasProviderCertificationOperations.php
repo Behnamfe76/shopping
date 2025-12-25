@@ -2,14 +2,14 @@
 
 namespace Fereydooni\Shopping\App\Traits;
 
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Fereydooni\Shopping\App\Models\ProviderCertification;
+use Carbon\Carbon;
 use Fereydooni\Shopping\App\DTOs\ProviderCertificationDTO;
 use Fereydooni\Shopping\App\Enums\CertificationStatus;
 use Fereydooni\Shopping\App\Enums\VerificationStatus;
-use Carbon\Carbon;
+use Fereydooni\Shopping\App\Models\ProviderCertification;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 trait HasProviderCertificationOperations
 {
@@ -148,6 +148,7 @@ trait HasProviderCertificationOperations
     public function addCertificationDTO(array $data): ProviderCertificationDTO
     {
         $certification = $this->addCertification($data);
+
         return ProviderCertificationDTO::fromModel($certification);
     }
 
@@ -159,8 +160,8 @@ trait HasProviderCertificationOperations
         try {
             $certification = $this->certifications()->firstWhere('id', $certificationId);
 
-            if (!$certification) {
-                throw new \Exception("Certification not found for this provider");
+            if (! $certification) {
+                throw new \Exception('Certification not found for this provider');
             }
 
             $updated = $certification->update($data);
@@ -195,6 +196,7 @@ trait HasProviderCertificationOperations
 
         if ($updated) {
             $certification = $this->certifications()->firstWhere('id', $certificationId);
+
             return ProviderCertificationDTO::fromModel($certification);
         }
 
@@ -209,8 +211,8 @@ trait HasProviderCertificationOperations
         try {
             $certification = $this->certifications()->firstWhere('id', $certificationId);
 
-            if (!$certification) {
-                throw new \Exception("Certification not found for this provider");
+            if (! $certification) {
+                throw new \Exception('Certification not found for this provider');
             }
 
             $deleted = $certification->delete();
@@ -219,7 +221,7 @@ trait HasProviderCertificationOperations
                 // Update provider's certifications array if it exists
                 if (isset($this->certifications)) {
                     $currentCertifications = $this->certifications ?? [];
-                    $currentCertifications = array_filter($currentCertifications, fn($id) => $id != $certificationId);
+                    $currentCertifications = array_filter($currentCertifications, fn ($id) => $id != $certificationId);
                     $this->update(['certifications' => array_values($currentCertifications)]);
                 }
 
@@ -335,9 +337,9 @@ trait HasProviderCertificationOperations
         return $this->hasMany(ProviderCertification::class, 'provider_id')
             ->where(function ($q) use ($query) {
                 $q->where('certification_name', 'like', "%{$query}%")
-                  ->orWhere('certification_number', 'like', "%{$query}%")
-                  ->orWhere('issuing_organization', 'like', "%{$query}%")
-                  ->orWhere('description', 'like', "%{$query}%");
+                    ->orWhere('certification_number', 'like', "%{$query}%")
+                    ->orWhere('issuing_organization', 'like', "%{$query}%")
+                    ->orWhere('description', 'like', "%{$query}%");
             })
             ->get();
     }

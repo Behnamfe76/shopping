@@ -2,11 +2,10 @@
 
 namespace Fereydooni\Shopping\App\Facades;
 
-use Illuminate\Support\Facades\Facade;
+use Fereydooni\Shopping\App\DTOs\ProviderPaymentDTO;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Fereydooni\Shopping\App\DTOs\ProviderPaymentDTO;
-use Fereydooni\Shopping\App\Models\ProviderPayment;
+use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static \Illuminate\Database\Eloquent\Collection all()
@@ -114,6 +113,7 @@ class ProviderPaymentFacade extends Facade
     public static function createPayment(array $data): ProviderPaymentDTO
     {
         $action = app(\Fereydooni\Shopping\App\Actions\ProviderPayment\CreateProviderPaymentAction::class);
+
         return $action->execute($data);
     }
 
@@ -132,6 +132,7 @@ class ProviderPaymentFacade extends Facade
     public static function getProviderPaymentsDTO(int $providerId, int $perPage = 15): LengthAwarePaginator
     {
         $payments = static::getFacadeRoot()->findByProviderIdDTO($providerId);
+
         return new LengthAwarePaginator($payments, $payments->count(), $perPage);
     }
 
@@ -216,6 +217,7 @@ class ProviderPaymentFacade extends Facade
     public static function search(string $query, int $perPage = 15): LengthAwarePaginator
     {
         $payments = static::getFacadeRoot()->searchPayments($query);
+
         return new LengthAwarePaginator($payments, $payments->count(), $perPage);
     }
 
@@ -225,6 +227,7 @@ class ProviderPaymentFacade extends Facade
     public static function searchByProvider(int $providerId, string $query, int $perPage = 15): LengthAwarePaginator
     {
         $payments = static::getFacadeRoot()->searchPaymentsByProvider($providerId, $query);
+
         return new LengthAwarePaginator($payments, $payments->count(), $perPage);
     }
 
@@ -234,6 +237,7 @@ class ProviderPaymentFacade extends Facade
     public static function getPaymentsByDateRange(string $startDate, string $endDate, int $perPage = 15): LengthAwarePaginator
     {
         $payments = static::getFacadeRoot()->findByDateRange($startDate, $endDate);
+
         return new LengthAwarePaginator($payments, $payments->count(), $perPage);
     }
 
@@ -243,6 +247,7 @@ class ProviderPaymentFacade extends Facade
     public static function getPaymentsByAmountRange(float $minAmount, float $maxAmount, int $perPage = 15): LengthAwarePaginator
     {
         $payments = static::getFacadeRoot()->findByAmountRange($minAmount, $maxAmount);
+
         return new LengthAwarePaginator($payments, $payments->count(), $perPage);
     }
 
@@ -252,6 +257,7 @@ class ProviderPaymentFacade extends Facade
     public static function getPaymentsByStatus(string $status, int $perPage = 15): LengthAwarePaginator
     {
         $payments = static::getFacadeRoot()->findByStatus($status);
+
         return new LengthAwarePaginator($payments, $payments->count(), $perPage);
     }
 
@@ -261,6 +267,7 @@ class ProviderPaymentFacade extends Facade
     public static function getPaymentsByMethod(string $method, int $perPage = 15): LengthAwarePaginator
     {
         $payments = static::getFacadeRoot()->findByPaymentMethod($method);
+
         return new LengthAwarePaginator($payments, $payments->count(), $perPage);
     }
 
@@ -270,6 +277,7 @@ class ProviderPaymentFacade extends Facade
     public static function getPaymentsByCurrency(string $currency, int $perPage = 15): LengthAwarePaginator
     {
         $payments = static::getFacadeRoot()->findByCurrency($currency);
+
         return new LengthAwarePaginator($payments, $payments->count(), $perPage);
     }
 
@@ -279,6 +287,7 @@ class ProviderPaymentFacade extends Facade
     public static function getUnreconciledPayments(int $perPage = 15): LengthAwarePaginator
     {
         $payments = static::getFacadeRoot()->findUnreconciled();
+
         return new LengthAwarePaginator($payments, $payments->count(), $perPage);
     }
 
@@ -288,6 +297,7 @@ class ProviderPaymentFacade extends Facade
     public static function getReconciledPayments(int $perPage = 15): LengthAwarePaginator
     {
         $payments = static::getFacadeRoot()->findReconciled();
+
         return new LengthAwarePaginator($payments, $payments->count(), $perPage);
     }
 }

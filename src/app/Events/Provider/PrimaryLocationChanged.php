@@ -2,23 +2,23 @@
 
 namespace Fereydooni\Shopping\app\Events\Provider;
 
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Queue\SerializesModels;
 use Fereydooni\Shopping\app\Models\ProviderLocation;
 use Fereydooni\Shopping\app\Models\User;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class PrimaryLocationChanged
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public ProviderLocation $newPrimaryLocation;
+
     public ?ProviderLocation $previousPrimaryLocation;
+
     public ?User $user;
+
     public array $changeData;
 
     /**
@@ -46,7 +46,7 @@ class PrimaryLocationChanged
                 'location_type' => $newPrimaryLocation->location_type,
                 'is_primary' => $newPrimaryLocation->is_primary,
                 'is_active' => $newPrimaryLocation->is_active,
-                'changed_at' => now()->toISOString()
+                'changed_at' => now()->toISOString(),
             ],
             'previous_primary_location' => $previousPrimaryLocation ? [
                 'id' => $previousPrimaryLocation->id,
@@ -57,10 +57,10 @@ class PrimaryLocationChanged
                 'country' => $previousPrimaryLocation->country,
                 'location_type' => $previousPrimaryLocation->location_type,
                 'is_primary' => $previousPrimaryLocation->is_primary,
-                'is_active' => $previousPrimaryLocation->is_active
+                'is_active' => $previousPrimaryLocation->is_active,
             ] : null,
             'change_type' => $this->determineChangeType(),
-            'timestamp' => now()->toISOString()
+            'timestamp' => now()->toISOString(),
         ];
     }
 
@@ -69,7 +69,7 @@ class PrimaryLocationChanged
      */
     protected function determineChangeType(): string
     {
-        if (!$this->previousPrimaryLocation) {
+        if (! $this->previousPrimaryLocation) {
             return 'first_primary_set';
         }
 
@@ -88,7 +88,7 @@ class PrimaryLocationChanged
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('provider.' . $this->newPrimaryLocation->provider_id),
+            new PrivateChannel('provider.'.$this->newPrimaryLocation->provider_id),
             new PrivateChannel('admin.provider-locations'),
         ];
     }
@@ -104,7 +104,7 @@ class PrimaryLocationChanged
             'change_data' => $this->changeData,
             'user_id' => $this->user?->id,
             'user_name' => $this->user?->name,
-            'timestamp' => now()->toISOString()
+            'timestamp' => now()->toISOString(),
         ];
     }
 

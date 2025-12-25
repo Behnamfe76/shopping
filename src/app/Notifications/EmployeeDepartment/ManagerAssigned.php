@@ -5,15 +5,16 @@ namespace App\Notifications\EmployeeDepartment;
 use App\Models\EmployeeDepartment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\BroadcastMessage;
 
 class ManagerAssigned extends Notification implements ShouldQueue
 {
     use Queueable;
 
     public $department;
+
     public $assignmentType;
 
     /**
@@ -51,16 +52,16 @@ class ManagerAssigned extends Notification implements ShouldQueue
     protected function getAssignmentMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('You have been assigned as Manager of ' . $this->department->name)
-            ->greeting('Hello ' . $notifiable->name . ',')
+            ->subject('You have been assigned as Manager of '.$this->department->name)
+            ->greeting('Hello '.$notifiable->name.',')
             ->line('You have been assigned as the manager of the following department:')
-            ->line('Department: ' . $this->department->name)
-            ->line('Code: ' . $this->department->code)
-            ->line('Location: ' . ($this->department->location ?? 'Not specified'))
-            ->line('Budget: $' . number_format($this->department->budget ?? 0, 2))
-            ->line('Headcount Limit: ' . ($this->department->headcount_limit ?? 'Not specified'))
+            ->line('Department: '.$this->department->name)
+            ->line('Code: '.$this->department->code)
+            ->line('Location: '.($this->department->location ?? 'Not specified'))
+            ->line('Budget: $'.number_format($this->department->budget ?? 0, 2))
+            ->line('Headcount Limit: '.($this->department->headcount_limit ?? 'Not specified'))
             ->when($this->department->parent_id, function ($message) {
-                return $message->line('Parent Department: ' . $this->getParentDepartmentName());
+                return $message->line('Parent Department: '.$this->getParentDepartmentName());
             })
             ->action('View Department', $this->getDepartmentUrl())
             ->line('As a department manager, you will have access to:')
@@ -77,11 +78,11 @@ class ManagerAssigned extends Notification implements ShouldQueue
     protected function getRemovalMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Manager Assignment Removed: ' . $this->department->name)
-            ->greeting('Hello ' . $notifiable->name . ',')
+            ->subject('Manager Assignment Removed: '.$this->department->name)
+            ->greeting('Hello '.$notifiable->name.',')
             ->line('Your assignment as manager of the following department has been removed:')
-            ->line('Department: ' . $this->department->name)
-            ->line('Code: ' . $this->department->code)
+            ->line('Department: '.$this->department->name)
+            ->line('Code: '.$this->department->code)
             ->line('Effective immediately, you will no longer have manager access to this department.')
             ->line('If you have any questions about this change, please contact HR.')
             ->salutation('Best regards, HR Team');
@@ -99,10 +100,10 @@ class ManagerAssigned extends Notification implements ShouldQueue
             'department_name' => $this->department->name,
             'department_code' => $this->department->code,
             'message' => $this->assignmentType === 'assigned'
-                ? 'You have been assigned as manager of "' . $this->department->name . '".'
-                : 'Your manager assignment for "' . $this->department->name . '" has been removed.',
+                ? 'You have been assigned as manager of "'.$this->department->name.'".'
+                : 'Your manager assignment for "'.$this->department->name.'" has been removed.',
             'action_url' => $this->getDepartmentUrl(),
-            'priority' => 'high'
+            'priority' => 'high',
         ];
     }
 
@@ -117,10 +118,10 @@ class ManagerAssigned extends Notification implements ShouldQueue
             'department_id' => $this->department->id,
             'department_name' => $this->department->name,
             'message' => $this->assignmentType === 'assigned'
-                ? 'You have been assigned as manager of "' . $this->department->name . '".'
-                : 'Your manager assignment for "' . $this->department->name . '" has been removed.',
+                ? 'You have been assigned as manager of "'.$this->department->name.'".'
+                : 'Your manager assignment for "'.$this->department->name.'" has been removed.',
             'timestamp' => now()->toISOString(),
-            'action_url' => $this->getDepartmentUrl()
+            'action_url' => $this->getDepartmentUrl(),
         ]);
     }
 
@@ -132,8 +133,10 @@ class ManagerAssigned extends Notification implements ShouldQueue
         try {
             if ($this->department->parent_id) {
                 $parent = EmployeeDepartment::find($this->department->parent_id);
+
                 return $parent ? $parent->name : 'Unknown';
             }
+
             return 'None (Root Department)';
         } catch (\Exception $e) {
             return 'Unknown';
@@ -145,6 +148,6 @@ class ManagerAssigned extends Notification implements ShouldQueue
      */
     protected function getDepartmentUrl(): string
     {
-        return '/departments/' . $this->department->id;
+        return '/departments/'.$this->department->id;
     }
 }

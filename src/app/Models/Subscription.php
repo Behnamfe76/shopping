@@ -2,10 +2,10 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
+use Fereydooni\Shopping\app\Enums\BillingCycle;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Fereydooni\Shopping\app\Enums\BillingCycle;
 
 class Subscription extends Model
 {

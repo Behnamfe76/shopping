@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\App\Repositories\Interfaces;
 
+use Fereydooni\Shopping\App\DTOs\ProviderPaymentDTO;
+use Fereydooni\Shopping\App\Models\ProviderPayment;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Fereydooni\Shopping\App\Models\ProviderPayment;
-use Fereydooni\Shopping\App\DTOs\ProviderPaymentDTO;
 
 interface ProviderPaymentRepositoryInterface
 {
@@ -29,7 +29,7 @@ interface ProviderPaymentRepositoryInterface
     /**
      * Get cursor paginated provider payments.
      */
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator;
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator;
 
     /**
      * Find provider payment by ID.
@@ -249,22 +249,22 @@ interface ProviderPaymentRepositoryInterface
     /**
      * Fail provider payment.
      */
-    public function fail(ProviderPayment $payment, string $reason = null): bool;
+    public function fail(ProviderPayment $payment, ?string $reason = null): bool;
 
     /**
      * Cancel provider payment.
      */
-    public function cancel(ProviderPayment $payment, string $reason = null): bool;
+    public function cancel(ProviderPayment $payment, ?string $reason = null): bool;
 
     /**
      * Refund provider payment.
      */
-    public function refund(ProviderPayment $payment, float $refundAmount, string $reason = null): bool;
+    public function refund(ProviderPayment $payment, float $refundAmount, ?string $reason = null): bool;
 
     /**
      * Reconcile provider payment.
      */
-    public function reconcile(ProviderPayment $payment, string $reconciliationNotes = null): bool;
+    public function reconcile(ProviderPayment $payment, ?string $reconciliationNotes = null): bool;
 
     /**
      * Update provider payment amount.
@@ -289,7 +289,7 @@ interface ProviderPaymentRepositoryInterface
     /**
      * Get provider total paid amount.
      */
-    public function getProviderTotalPaid(int $providerId, string $startDate = null, string $endDate = null): float;
+    public function getProviderTotalPaid(int $providerId, ?string $startDate = null, ?string $endDate = null): float;
 
     /**
      * Get provider total pending amount.
@@ -344,7 +344,7 @@ interface ProviderPaymentRepositoryInterface
     /**
      * Get total paid amount.
      */
-    public function getTotalPaidAmount(string $startDate = null, string $endDate = null): float;
+    public function getTotalPaidAmount(?string $startDate = null, ?string $endDate = null): float;
 
     /**
      * Get total pending amount.
@@ -424,7 +424,7 @@ interface ProviderPaymentRepositoryInterface
     /**
      * Get payment trends.
      */
-    public function getPaymentTrends(string $startDate = null, string $endDate = null): array;
+    public function getPaymentTrends(?string $startDate = null, ?string $endDate = null): array;
 
     /**
      * Generate payment number.

@@ -2,13 +2,10 @@
 
 namespace Fereydooni\Shopping\app\Listeners\ProviderContract;
 
-use Fereydooni\Shopping\app\Events\Provider\ProviderContractCreated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderContractUpdated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderContractSigned;
-use Fereydooni\Shopping\app\Events\Provider\ProviderContractRenewed;
-use Fereydooni\Shopping\app\Events\Provider\ProviderContractTerminated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderContractExpiring;
 use Fereydooni\Shopping\app\Events\Provider\ProviderContractExtended;
+use Fereydooni\Shopping\app\Events\Provider\ProviderContractRenewed;
+use Fereydooni\Shopping\app\Events\Provider\ProviderContractSigned;
+use Fereydooni\Shopping\app\Events\Provider\ProviderContractTerminated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
@@ -28,7 +25,7 @@ class UpdateProviderContractRecord implements ShouldQueue
             Log::error('Failed to update provider contract record', [
                 'event' => get_class($event),
                 'error' => $e->getMessage(),
-                'contract_id' => $event->contract->id ?? null
+                'contract_id' => $event->contract->id ?? null,
             ]);
         }
     }
@@ -65,11 +62,11 @@ class UpdateProviderContractRecord implements ShouldQueue
         $contract->update([
             'status' => 'active',
             'signed_at' => now(),
-            'signed_by' => auth()->id()
+            'signed_by' => auth()->id(),
         ]);
 
         Log::info('Provider contract record updated for signing', [
-            'contract_id' => $contract->id
+            'contract_id' => $contract->id,
         ]);
     }
 
@@ -81,11 +78,11 @@ class UpdateProviderContractRecord implements ShouldQueue
         // Update renewal information
         $contract->update([
             'renewal_date' => now(),
-            'status' => 'active'
+            'status' => 'active',
         ]);
 
         Log::info('Provider contract record updated for renewal', [
-            'contract_id' => $contract->id
+            'contract_id' => $contract->id,
         ]);
     }
 
@@ -97,11 +94,11 @@ class UpdateProviderContractRecord implements ShouldQueue
         // Update termination information
         $contract->update([
             'status' => 'terminated',
-            'termination_date' => now()
+            'termination_date' => now(),
         ]);
 
         Log::info('Provider contract record updated for termination', [
-            'contract_id' => $contract->id
+            'contract_id' => $contract->id,
         ]);
     }
 
@@ -113,11 +110,11 @@ class UpdateProviderContractRecord implements ShouldQueue
         // Update extension information
         $contract->update([
             'status' => 'active',
-            'end_date' => $contract->end_date->addDays(30) // Example: extend by 30 days
+            'end_date' => $contract->end_date->addDays(30), // Example: extend by 30 days
         ]);
 
         Log::info('Provider contract record updated for extension', [
-            'contract_id' => $contract->id
+            'contract_id' => $contract->id,
         ]);
     }
 }

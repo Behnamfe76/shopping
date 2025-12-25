@@ -13,7 +13,7 @@ enum LoyaltyTransactionType: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::EARNED => 'Earned',
             self::REDEEMED => 'Redeemed',
             self::EXPIRED => 'Expired',
@@ -25,7 +25,7 @@ enum LoyaltyTransactionType: string
 
     public function description(): string
     {
-        return match($this) {
+        return match ($this) {
             self::EARNED => 'Points earned from purchases or activities',
             self::REDEEMED => 'Points redeemed for rewards or discounts',
             self::EXPIRED => 'Points that have expired',

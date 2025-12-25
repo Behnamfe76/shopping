@@ -2,10 +2,10 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Fereydooni\Shopping\app\Enums\Gender;
-use Fereydooni\Shopping\app\Enums\CustomerType;
 use Fereydooni\Shopping\app\Enums\CustomerStatus;
+use Fereydooni\Shopping\app\Enums\CustomerType;
+use Fereydooni\Shopping\app\Enums\Gender;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 class CustomerUpdateRequest extends FormRequest

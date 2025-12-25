@@ -3,8 +3,8 @@
 namespace Fereydooni\Shopping\app\Listeners;
 
 use Fereydooni\Shopping\app\Events\ProviderCommunicationCreated;
-use Fereydooni\Shopping\app\Events\ProviderCommunicationUpdated;
 use Fereydooni\Shopping\app\Events\ProviderCommunicationDeleted;
+use Fereydooni\Shopping\app\Events\ProviderCommunicationUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Cache;
@@ -36,13 +36,13 @@ class UpdateCommunicationAnalytics implements ShouldQueue
             Log::info('Communication analytics updated successfully', [
                 'communication_id' => $communication->id,
                 'provider_id' => $communication->provider_id,
-                'event_type' => get_class($event)
+                'event_type' => get_class($event),
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to update communication analytics', [
                 'communication_id' => $communication->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -124,7 +124,7 @@ class UpdateCommunicationAnalytics implements ShouldQueue
         // Clear various cache keys
         Cache::forget("provider_analytics_{$providerId}");
         Cache::forget("provider_communications_{$providerId}");
-        Cache::forget("global_communication_analytics");
+        Cache::forget('global_communication_analytics');
         Cache::forget("communication_timeline_{$providerId}");
         Cache::forget("communication_distribution_{$providerId}");
     }

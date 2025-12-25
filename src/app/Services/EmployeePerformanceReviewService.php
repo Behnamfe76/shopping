@@ -2,20 +2,21 @@
 
 namespace App\Services;
 
-use App\Models\EmployeePerformanceReview;
-use App\DTOs\EmployeePerformanceReviewDTO;
 use App\Actions\EmployeePerformanceReviewActions;
+use App\DTOs\EmployeePerformanceReviewDTO;
 use App\Repositories\Interfaces\EmployeePerformanceReviewRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use Carbon\Carbon;
 
 class EmployeePerformanceReviewService
 {
     protected $actions;
+
     protected $repository;
+
     protected $cachePrefix = 'employee_performance_review_service_';
+
     protected $cacheTtl = 1800; // 30 minutes
 
     public function __construct(
@@ -38,14 +39,14 @@ class EmployeePerformanceReviewService
 
             Log::info('Performance review created via service', [
                 'review_id' => $review->id,
-                'employee_id' => $review->employee_id
+                'employee_id' => $review->employee_id,
             ]);
 
             return $review;
         } catch (\Exception $e) {
             Log::error('Service failed to create performance review', [
                 'error' => $e->getMessage(),
-                'data' => $data
+                'data' => $data,
             ]);
             throw $e;
         }
@@ -59,7 +60,7 @@ class EmployeePerformanceReviewService
         try {
             $review = $this->repository->find($id);
 
-            if (!$review) {
+            if (! $review) {
                 throw new \Exception('Performance review not found');
             }
 
@@ -69,7 +70,7 @@ class EmployeePerformanceReviewService
 
             Log::info('Performance review updated via service', [
                 'review_id' => $id,
-                'employee_id' => $updatedReview->employee_id
+                'employee_id' => $updatedReview->employee_id,
             ]);
 
             return $updatedReview;
@@ -77,7 +78,7 @@ class EmployeePerformanceReviewService
             Log::error('Service failed to update performance review', [
                 'error' => $e->getMessage(),
                 'review_id' => $id,
-                'data' => $data
+                'data' => $data,
             ]);
             throw $e;
         }
@@ -91,7 +92,7 @@ class EmployeePerformanceReviewService
         try {
             $review = $this->repository->find($id);
 
-            if (!$review) {
+            if (! $review) {
                 throw new \Exception('Performance review not found');
             }
 
@@ -102,7 +103,7 @@ class EmployeePerformanceReviewService
 
                 Log::info('Performance review deleted via service', [
                     'review_id' => $id,
-                    'employee_id' => $review->employee_id
+                    'employee_id' => $review->employee_id,
                 ]);
             }
 
@@ -110,7 +111,7 @@ class EmployeePerformanceReviewService
         } catch (\Exception $e) {
             Log::error('Service failed to delete performance review', [
                 'error' => $e->getMessage(),
-                'review_id' => $id
+                'review_id' => $id,
             ]);
             throw $e;
         }
@@ -124,7 +125,7 @@ class EmployeePerformanceReviewService
         try {
             $review = $this->repository->find($id);
 
-            if (!$review) {
+            if (! $review) {
                 throw new \Exception('Performance review not found');
             }
 
@@ -135,7 +136,7 @@ class EmployeePerformanceReviewService
 
                 Log::info('Performance review submitted via service', [
                     'review_id' => $id,
-                    'employee_id' => $review->employee_id
+                    'employee_id' => $review->employee_id,
                 ]);
             }
 
@@ -143,7 +144,7 @@ class EmployeePerformanceReviewService
         } catch (\Exception $e) {
             Log::error('Service failed to submit performance review', [
                 'error' => $e->getMessage(),
-                'review_id' => $id
+                'review_id' => $id,
             ]);
             throw $e;
         }
@@ -157,7 +158,7 @@ class EmployeePerformanceReviewService
         try {
             $review = $this->repository->find($id);
 
-            if (!$review) {
+            if (! $review) {
                 throw new \Exception('Performance review not found');
             }
 
@@ -169,7 +170,7 @@ class EmployeePerformanceReviewService
                 Log::info('Performance review approved via service', [
                     'review_id' => $id,
                     'employee_id' => $review->employee_id,
-                    'approved_by' => $approvedBy
+                    'approved_by' => $approvedBy,
                 ]);
             }
 
@@ -178,7 +179,7 @@ class EmployeePerformanceReviewService
             Log::error('Service failed to approve performance review', [
                 'error' => $e->getMessage(),
                 'review_id' => $id,
-                'approved_by' => $approvedBy
+                'approved_by' => $approvedBy,
             ]);
             throw $e;
         }
@@ -187,12 +188,12 @@ class EmployeePerformanceReviewService
     /**
      * Reject a performance review
      */
-    public function rejectReview(int $id, int $rejectedBy, string $reason = null): bool
+    public function rejectReview(int $id, int $rejectedBy, ?string $reason = null): bool
     {
         try {
             $review = $this->repository->find($id);
 
-            if (!$review) {
+            if (! $review) {
                 throw new \Exception('Performance review not found');
             }
 
@@ -205,7 +206,7 @@ class EmployeePerformanceReviewService
                     'review_id' => $id,
                     'employee_id' => $review->employee_id,
                     'rejected_by' => $rejectedBy,
-                    'reason' => $reason
+                    'reason' => $reason,
                 ]);
             }
 
@@ -214,7 +215,7 @@ class EmployeePerformanceReviewService
             Log::error('Service failed to reject performance review', [
                 'error' => $e->getMessage(),
                 'review_id' => $id,
-                'rejected_by' => $rejectedBy
+                'rejected_by' => $rejectedBy,
             ]);
             throw $e;
         }
@@ -225,7 +226,7 @@ class EmployeePerformanceReviewService
      */
     public function getEmployeeReviews(int $employeeId, array $filters = []): Collection
     {
-        $cacheKey = $this->cachePrefix . 'employee_reviews_' . $employeeId . '_' . md5(serialize($filters));
+        $cacheKey = $this->cachePrefix.'employee_reviews_'.$employeeId.'_'.md5(serialize($filters));
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($employeeId, $filters) {
             $query = $this->repository->findByEmployeeId($employeeId);
@@ -254,7 +255,7 @@ class EmployeePerformanceReviewService
     public function getEmployeeLatestReview(int $employeeId): ?EmployeePerformanceReviewDTO
     {
         return Cache::remember(
-            $this->cachePrefix . 'latest_review_' . $employeeId,
+            $this->cachePrefix.'latest_review_'.$employeeId,
             $this->cacheTtl,
             function () use ($employeeId) {
                 return $this->repository->findLatestByEmployeeDTO($employeeId);
@@ -268,7 +269,7 @@ class EmployeePerformanceReviewService
     public function getEmployeeRatingHistory(int $employeeId): Collection
     {
         return Cache::remember(
-            $this->cachePrefix . 'rating_history_' . $employeeId,
+            $this->cachePrefix.'rating_history_'.$employeeId,
             $this->cacheTtl,
             function () use ($employeeId) {
                 return $this->repository->getEmployeeRatingHistoryDTO($employeeId);
@@ -282,7 +283,7 @@ class EmployeePerformanceReviewService
     public function getEmployeeAverageRating(int $employeeId): float
     {
         return Cache::remember(
-            $this->cachePrefix . 'avg_rating_' . $employeeId,
+            $this->cachePrefix.'avg_rating_'.$employeeId,
             $this->cacheTtl,
             function () use ($employeeId) {
                 return $this->actions->calculateEmployeeRating($employeeId);
@@ -295,9 +296,9 @@ class EmployeePerformanceReviewService
      */
     public function getDepartmentReviews(int $departmentId, array $filters = []): Collection
     {
-        $cacheKey = $this->cachePrefix . 'dept_reviews_' . $departmentId . '_' . md5(serialize($filters));
+        $cacheKey = $this->cachePrefix.'dept_reviews_'.$departmentId.'_'.md5(serialize($filters));
 
-        return Cache::remember($cacheKey, $this->cacheTtl, function () use ($departmentId, $filters) {
+        return Cache::remember($cacheKey, $this->cacheTtl, function () {
             // This would need to be implemented in the repository
             // For now, return empty collection
             return collect();
@@ -310,7 +311,7 @@ class EmployeePerformanceReviewService
     public function getDepartmentAverageRating(int $departmentId): float
     {
         return Cache::remember(
-            $this->cachePrefix . 'dept_avg_rating_' . $departmentId,
+            $this->cachePrefix.'dept_avg_rating_'.$departmentId,
             $this->cacheTtl,
             function () use ($departmentId) {
                 return $this->repository->getDepartmentAverageRating($departmentId);
@@ -323,7 +324,7 @@ class EmployeePerformanceReviewService
      */
     public function getCompanyReviews(array $filters = []): Collection
     {
-        $cacheKey = $this->cachePrefix . 'company_reviews_' . md5(serialize($filters));
+        $cacheKey = $this->cachePrefix.'company_reviews_'.md5(serialize($filters));
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($filters) {
             $query = $this->repository->all();
@@ -352,7 +353,7 @@ class EmployeePerformanceReviewService
     public function getCompanyAverageRating(): float
     {
         return Cache::remember(
-            $this->cachePrefix . 'company_avg_rating',
+            $this->cachePrefix.'company_avg_rating',
             $this->cacheTtl,
             function () {
                 return $this->repository->getCompanyAverageRating();
@@ -366,7 +367,7 @@ class EmployeePerformanceReviewService
     public function getPendingApprovals(): Collection
     {
         return Cache::remember(
-            $this->cachePrefix . 'pending_approvals',
+            $this->cachePrefix.'pending_approvals',
             $this->cacheTtl,
             function () {
                 return $this->repository->findPendingApprovalDTO();
@@ -380,7 +381,7 @@ class EmployeePerformanceReviewService
     public function getOverdueReviews(): Collection
     {
         return Cache::remember(
-            $this->cachePrefix . 'overdue_reviews',
+            $this->cachePrefix.'overdue_reviews',
             $this->cacheTtl,
             function () {
                 return $this->repository->findOverdueDTO();
@@ -391,9 +392,9 @@ class EmployeePerformanceReviewService
     /**
      * Get upcoming reviews
      */
-    public function getUpcomingReviews(string $date = null): Collection
+    public function getUpcomingReviews(?string $date = null): Collection
     {
-        $cacheKey = $this->cachePrefix . 'upcoming_reviews_' . ($date ?? 'now');
+        $cacheKey = $this->cachePrefix.'upcoming_reviews_'.($date ?? 'now');
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($date) {
             return $this->repository->findUpcomingReviewsDTO($date);
@@ -405,7 +406,7 @@ class EmployeePerformanceReviewService
      */
     public function searchReviews(string $query, array $filters = []): Collection
     {
-        $cacheKey = $this->cachePrefix . 'search_' . md5($query . serialize($filters));
+        $cacheKey = $this->cachePrefix.'search_'.md5($query.serialize($filters));
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($query, $filters) {
             $results = $this->repository->searchReviewsDTO($query);
@@ -426,9 +427,9 @@ class EmployeePerformanceReviewService
      */
     public function getReviewStatistics(array $filters = []): array
     {
-        $cacheKey = $this->cachePrefix . 'statistics_' . md5(serialize($filters));
+        $cacheKey = $this->cachePrefix.'statistics_'.md5(serialize($filters));
 
-        return Cache::remember($cacheKey, $this->cacheTtl, function () use ($filters) {
+        return Cache::remember($cacheKey, $this->cacheTtl, function () {
             return $this->repository->getReviewStatistics();
         });
     }
@@ -439,7 +440,7 @@ class EmployeePerformanceReviewService
     public function getEmployeeReviewStatistics(int $employeeId): array
     {
         return Cache::remember(
-            $this->cachePrefix . 'employee_stats_' . $employeeId,
+            $this->cachePrefix.'employee_stats_'.$employeeId,
             $this->cacheTtl,
             function () use ($employeeId) {
                 return $this->repository->getEmployeeReviewStatistics($employeeId);
@@ -453,7 +454,7 @@ class EmployeePerformanceReviewService
     public function getDepartmentReviewStatistics(int $departmentId): array
     {
         return Cache::remember(
-            $this->cachePrefix . 'dept_stats_' . $departmentId,
+            $this->cachePrefix.'dept_stats_'.$departmentId,
             $this->cacheTtl,
             function () use ($departmentId) {
                 return $this->repository->getDepartmentReviewStatistics($departmentId);
@@ -466,7 +467,7 @@ class EmployeePerformanceReviewService
      */
     public function generatePerformanceReport(int $employeeId, string $period = 'year'): array
     {
-        $cacheKey = $this->cachePrefix . 'report_' . $employeeId . '_' . $period;
+        $cacheKey = $this->cachePrefix.'report_'.$employeeId.'_'.$period;
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($employeeId, $period) {
             return $this->actions->generatePerformanceReport($employeeId, $period);
@@ -478,7 +479,7 @@ class EmployeePerformanceReviewService
      */
     public function generateDepartmentReport(int $departmentId, string $period = 'year'): array
     {
-        $cacheKey = $this->cachePrefix . 'dept_report_' . $departmentId . '_' . $period;
+        $cacheKey = $this->cachePrefix.'dept_report_'.$departmentId.'_'.$period;
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($departmentId, $period) {
             // This would need to be implemented
@@ -487,7 +488,7 @@ class EmployeePerformanceReviewService
                 'period' => $period,
                 'total_employees' => 0,
                 'average_rating' => 0.0,
-                'completion_rate' => 0.0
+                'completion_rate' => 0.0,
             ];
         });
     }
@@ -497,7 +498,7 @@ class EmployeePerformanceReviewService
      */
     public function generateCompanyReport(string $period = 'year'): array
     {
-        $cacheKey = $this->cachePrefix . 'company_report_' . $period;
+        $cacheKey = $this->cachePrefix.'company_report_'.$period;
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($period) {
             $statistics = $this->repository->getReviewStatistics();
@@ -509,7 +510,7 @@ class EmployeePerformanceReviewService
                 'approval_rate' => $statistics['approval_rate'],
                 'average_rating' => $this->getCompanyAverageRating(),
                 'overdue_count' => $this->repository->getOverdueReviewsCount(),
-                'pending_approval_count' => $this->repository->getPendingApprovalCount()
+                'pending_approval_count' => $this->repository->getPendingApprovalCount(),
             ];
         });
     }
@@ -561,7 +562,7 @@ class EmployeePerformanceReviewService
 
                 Log::info('Review scheduled via service', [
                     'employee_id' => $employeeId,
-                    'review_date' => $reviewDate
+                    'review_date' => $reviewDate,
                 ]);
             }
 
@@ -570,7 +571,7 @@ class EmployeePerformanceReviewService
             Log::error('Service failed to schedule review', [
                 'error' => $e->getMessage(),
                 'employee_id' => $employeeId,
-                'review_date' => $reviewDate
+                'review_date' => $reviewDate,
             ]);
             throw $e;
         }
@@ -584,7 +585,7 @@ class EmployeePerformanceReviewService
         try {
             $review = $this->repository->find($reviewId);
 
-            if (!$review) {
+            if (! $review) {
                 throw new \Exception('Performance review not found');
             }
 
@@ -595,7 +596,7 @@ class EmployeePerformanceReviewService
 
                 Log::info('Reviewer assigned via service', [
                     'review_id' => $reviewId,
-                    'reviewer_id' => $reviewerId
+                    'reviewer_id' => $reviewerId,
                 ]);
             }
 
@@ -604,7 +605,7 @@ class EmployeePerformanceReviewService
             Log::error('Service failed to assign reviewer', [
                 'error' => $e->getMessage(),
                 'review_id' => $reviewId,
-                'reviewer_id' => $reviewerId
+                'reviewer_id' => $reviewerId,
             ]);
             throw $e;
         }
@@ -620,7 +621,7 @@ class EmployeePerformanceReviewService
 
             Log::info('Reviews exported via service', [
                 'format' => $format,
-                'filters' => $filters
+                'filters' => $filters,
             ]);
 
             return $data;
@@ -628,7 +629,7 @@ class EmployeePerformanceReviewService
             Log::error('Service failed to export reviews', [
                 'error' => $e->getMessage(),
                 'filters' => $filters,
-                'format' => $format
+                'format' => $format,
             ]);
             throw $e;
         }
@@ -646,7 +647,7 @@ class EmployeePerformanceReviewService
                 $this->clearCache();
 
                 Log::info('Reviews imported via service', [
-                    'format' => $format
+                    'format' => $format,
                 ]);
             }
 
@@ -654,7 +655,7 @@ class EmployeePerformanceReviewService
         } catch (\Exception $e) {
             Log::error('Service failed to import reviews', [
                 'error' => $e->getMessage(),
-                'format' => $format
+                'format' => $format,
             ]);
             throw $e;
         }
@@ -675,21 +676,21 @@ class EmployeePerformanceReviewService
                         $approvedCount++;
                     }
                 } catch (\Exception $e) {
-                    $errors[] = "Review {$reviewId}: " . $e->getMessage();
+                    $errors[] = "Review {$reviewId}: ".$e->getMessage();
                 }
             }
 
             Log::info('Bulk approve completed', [
                 'total_requested' => count($reviewIds),
                 'approved_count' => $approvedCount,
-                'errors' => $errors
+                'errors' => $errors,
             ]);
 
             return $approvedCount > 0;
         } catch (\Exception $e) {
             Log::error('Service failed to bulk approve reviews', [
                 'error' => $e->getMessage(),
-                'review_ids' => $reviewIds
+                'review_ids' => $reviewIds,
             ]);
             throw $e;
         }
@@ -698,7 +699,7 @@ class EmployeePerformanceReviewService
     /**
      * Bulk reject reviews
      */
-    public function bulkRejectReviews(array $reviewIds, string $reason = null): bool
+    public function bulkRejectReviews(array $reviewIds, ?string $reason = null): bool
     {
         try {
             $rejectedCount = 0;
@@ -710,14 +711,14 @@ class EmployeePerformanceReviewService
                         $rejectedCount++;
                     }
                 } catch (\Exception $e) {
-                    $errors[] = "Review {$reviewId}: " . $e->getMessage();
+                    $errors[] = "Review {$reviewId}: ".$e->getMessage();
                 }
             }
 
             Log::info('Bulk reject completed', [
                 'total_requested' => count($reviewIds),
                 'rejected_count' => $rejectedCount,
-                'errors' => $errors
+                'errors' => $errors,
             ]);
 
             return $rejectedCount > 0;
@@ -725,7 +726,7 @@ class EmployeePerformanceReviewService
             Log::error('Service failed to bulk reject reviews', [
                 'error' => $e->getMessage(),
                 'review_ids' => $reviewIds,
-                'reason' => $reason
+                'reason' => $reason,
             ]);
             throw $e;
         }
@@ -751,7 +752,7 @@ class EmployeePerformanceReviewService
             return true;
         } catch (\Exception $e) {
             Log::error('Service failed to sync review data', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -780,11 +781,11 @@ class EmployeePerformanceReviewService
             'dept_stats_*',
             'report_*',
             'dept_report_*',
-            'company_report_*'
+            'company_report_*',
         ];
 
         foreach ($keys as $key) {
-            Cache::forget($this->cachePrefix . $key);
+            Cache::forget($this->cachePrefix.$key);
         }
     }
 }

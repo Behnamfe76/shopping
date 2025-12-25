@@ -69,6 +69,7 @@ trait HasProviderFinancialManagement
     public function getProvidersWithHighCreditLimits(float $threshold = 10000): array
     {
         $providers = $this->providerRepository->all();
+
         return $providers->where('credit_limit', '>=', $threshold)->toArray();
     }
 
@@ -78,6 +79,7 @@ trait HasProviderFinancialManagement
     public function getProvidersWithLowCreditLimits(float $threshold = 1000): array
     {
         $providers = $this->providerRepository->all();
+
         return $providers->where('credit_limit', '<=', $threshold)->toArray();
     }
 
@@ -87,6 +89,7 @@ trait HasProviderFinancialManagement
     public function getProvidersWithHighBalances(float $threshold = 5000): array
     {
         $providers = $this->providerRepository->all();
+
         return $providers->where('current_balance', '>=', $threshold)->toArray();
     }
 
@@ -96,6 +99,7 @@ trait HasProviderFinancialManagement
     public function getProvidersWithNegativeBalances(): array
     {
         $providers = $this->providerRepository->all();
+
         return $providers->where('current_balance', '<', 0)->toArray();
     }
 
@@ -145,9 +149,10 @@ trait HasProviderFinancialManagement
     public function getProvidersBySpendingRange(float $minSpent, float $maxSpent): array
     {
         $providers = $this->providerRepository->all();
+
         return $providers->where('total_spent', '>=', $minSpent)
-                        ->where('total_spent', '<=', $maxSpent)
-                        ->toArray();
+            ->where('total_spent', '<=', $maxSpent)
+            ->toArray();
     }
 
     /**
@@ -156,6 +161,7 @@ trait HasProviderFinancialManagement
     public function getProvidersWithHighCommissionRates(float $threshold = 0.15): array
     {
         $providers = $this->providerRepository->all();
+
         return $providers->where('commission_rate', '>=', $threshold)->toArray();
     }
 
@@ -165,6 +171,7 @@ trait HasProviderFinancialManagement
     public function getProvidersWithHighDiscountRates(float $threshold = 0.20): array
     {
         $providers = $this->providerRepository->all();
+
         return $providers->where('discount_rate', '>=', $threshold)->toArray();
     }
 
@@ -205,7 +212,7 @@ trait HasProviderFinancialManagement
     {
         $provider = $this->providerRepository->find($providerId);
 
-        if (!$provider) {
+        if (! $provider) {
             return [];
         }
 

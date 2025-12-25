@@ -2,23 +2,23 @@
 
 namespace App\DTOs;
 
-use App\Models\EmployeeSalaryHistory;
 use App\Models\Employee;
+use App\Models\EmployeeSalaryHistory;
 use App\Models\User;
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Required;
-use Spatie\LaravelData\Attributes\Validation\Numeric;
+use Carbon\Carbon;
+use Spatie\LaravelData\Attributes\Validation\Boolean;
 use Spatie\LaravelData\Attributes\Validation\Date;
 use Spatie\LaravelData\Attributes\Validation\In;
-use Spatie\LaravelData\Attributes\Validation\Min;
-use Spatie\LaravelData\Attributes\Validation\Max;
-use Spatie\LaravelData\Attributes\Validation\Nullable;
-use Spatie\LaravelData\Attributes\Validation\StringType;
 use Spatie\LaravelData\Attributes\Validation\Integer;
-use Spatie\LaravelData\Attributes\Validation\Boolean;
+use Spatie\LaravelData\Attributes\Validation\Max;
+use Spatie\LaravelData\Attributes\Validation\Min;
+use Spatie\LaravelData\Attributes\Validation\Nullable;
+use Spatie\LaravelData\Attributes\Validation\Numeric;
+use Spatie\LaravelData\Attributes\Validation\Required;
+use Spatie\LaravelData\Attributes\Validation\StringType;
 use Spatie\LaravelData\Attributes\WithTransformer;
+use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Transformers\DateTimeTransformer;
-use Carbon\Carbon;
 
 class EmployeeSalaryHistoryDTO extends Data
 {
@@ -57,7 +57,7 @@ class EmployeeSalaryHistoryDTO extends Data
         public ?string $approved_at,
 
         #[Boolean]
-        public bool $is_retroactive = false,
+        public bool $is_retroactive,
 
         #[Nullable, Date]
         public ?string $retroactive_start_date,
@@ -204,7 +204,8 @@ class EmployeeSalaryHistoryDTO extends Data
     public function getFormattedChangeAmount(): string
     {
         $prefix = $this->isIncrease() ? '+' : '';
-        return $prefix . number_format($this->change_amount, 2);
+
+        return $prefix.number_format($this->change_amount, 2);
     }
 
     /**
@@ -217,7 +218,8 @@ class EmployeeSalaryHistoryDTO extends Data
         }
 
         $prefix = $this->isIncrease() ? '+' : '';
-        return $prefix . number_format($this->change_percentage, 2) . '%';
+
+        return $prefix.number_format($this->change_percentage, 2).'%';
     }
 
     /**
@@ -249,7 +251,7 @@ class EmployeeSalaryHistoryDTO extends Data
      */
     public function getRetroactivePeriodDays(): ?int
     {
-        if (!$this->is_retroactive || !$this->retroactive_start_date || !$this->retroactive_end_date) {
+        if (! $this->is_retroactive || ! $this->retroactive_start_date || ! $this->retroactive_end_date) {
             return null;
         }
 
@@ -262,7 +264,7 @@ class EmployeeSalaryHistoryDTO extends Data
      */
     public function getRetroactiveAdjustmentAmount(): ?float
     {
-        if (!$this->is_retroactive) {
+        if (! $this->is_retroactive) {
             return null;
         }
 

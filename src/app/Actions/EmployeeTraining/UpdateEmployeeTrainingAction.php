@@ -2,15 +2,15 @@
 
 namespace Fereydooni\Shopping\Actions\EmployeeTraining;
 
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Fereydooni\Shopping\Models\EmployeeTraining;
 use Fereydooni\Shopping\DTOs\EmployeeTrainingDTO;
-use Fereydooni\Shopping\Repositories\Interfaces\EmployeeTrainingRepositoryInterface;
+use Fereydooni\Shopping\Enums\TrainingMethod;
 use Fereydooni\Shopping\Enums\TrainingStatus;
 use Fereydooni\Shopping\Enums\TrainingType;
-use Fereydooni\Shopping\Enums\TrainingMethod;
+use Fereydooni\Shopping\Models\EmployeeTraining;
+use Fereydooni\Shopping\Repositories\Interfaces\EmployeeTrainingRepositoryInterface;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class UpdateEmployeeTrainingAction
 {
@@ -32,7 +32,7 @@ class UpdateEmployeeTrainingAction
             // Update the training record
             $updated = $this->repository->update($training, $data);
 
-            if (!$updated) {
+            if (! $updated) {
                 throw new \Exception('Failed to update employee training');
             }
 
@@ -61,7 +61,7 @@ class UpdateEmployeeTrainingAction
             Log::error('Failed to update employee training', [
                 'training_id' => $training->id,
                 'error' => $e->getMessage(),
-                'data' => $data
+                'data' => $data,
             ]);
             throw $e;
         }
@@ -70,14 +70,14 @@ class UpdateEmployeeTrainingAction
     private function validateData(array $data, EmployeeTraining $training): void
     {
         $rules = [
-            'training_type' => 'sometimes|string|in:' . implode(',', TrainingType::values()),
+            'training_type' => 'sometimes|string|in:'.implode(',', TrainingType::values()),
             'training_name' => 'sometimes|string|max:255',
             'provider' => 'sometimes|string|max:255',
             'description' => 'sometimes|string|max:1000',
             'start_date' => 'sometimes|date|before_or_equal:end_date',
             'end_date' => 'sometimes|date|after_or_equal:start_date',
             'completion_date' => 'sometimes|date|after_or_equal:start_date|before_or_equal:end_date',
-            'status' => 'sometimes|string|in:' . implode(',', TrainingStatus::values()),
+            'status' => 'sometimes|string|in:'.implode(',', TrainingStatus::values()),
             'score' => 'sometimes|numeric|min:0|max:100',
             'grade' => 'sometimes|string|max:10',
             'certificate_number' => 'sometimes|string|max:255',
@@ -92,11 +92,11 @@ class UpdateEmployeeTrainingAction
             'expiry_date' => 'sometimes|date|after:today',
             'instructor' => 'sometimes|string|max:255',
             'location' => 'sometimes|string|max:255',
-            'training_method' => 'sometimes|string|in:' . implode(',', TrainingMethod::values()),
+            'training_method' => 'sometimes|string|in:'.implode(',', TrainingMethod::values()),
             'materials' => 'sometimes|string|max:1000',
             'notes' => 'sometimes|string|max:1000',
             'attachments' => 'sometimes|array',
-            'attachments.*' => 'sometimes|string|max:500'
+            'attachments.*' => 'sometimes|string|max:500',
         ];
 
         $messages = [
@@ -115,7 +115,7 @@ class UpdateEmployeeTrainingAction
             'renewal_date.after' => 'Renewal date must be in the future.',
             'expiry_date.after' => 'Expiry date must be in the future.',
             'certificate_url.url' => 'Certificate URL must be a valid URL.',
-            'attachments.array' => 'Attachments must be an array.'
+            'attachments.array' => 'Attachments must be an array.',
         ];
 
         $validator = Validator::make($data, $rules, $messages);
@@ -128,11 +128,11 @@ class UpdateEmployeeTrainingAction
     private function checkModificationPermissions(EmployeeTraining $training): void
     {
         // Check if training is in a state that can be modified
-        if ($training->status === TrainingStatus::COMPLETED && !$this->canModifyCompletedTraining()) {
+        if ($training->status === TrainingStatus::COMPLETED && ! $this->canModifyCompletedTraining()) {
             throw new \Exception('Cannot modify completed training without proper permissions');
         }
 
-        if ($training->status === TrainingStatus::FAILED && !$this->canModifyFailedTraining()) {
+        if ($training->status === TrainingStatus::FAILED && ! $this->canModifyFailedTraining()) {
             throw new \Exception('Cannot modify failed training without proper permissions');
         }
     }
@@ -153,7 +153,7 @@ class UpdateEmployeeTrainingAction
                 break;
 
             case TrainingStatus::COMPLETED:
-                if (!$training->completion_date) {
+                if (! $training->completion_date) {
                     $training->completion_date = now();
                 }
                 break;
@@ -175,10 +175,10 @@ class UpdateEmployeeTrainingAction
             TrainingStatus::IN_PROGRESS => [TrainingStatus::COMPLETED, TrainingStatus::FAILED, TrainingStatus::CANCELLED],
             TrainingStatus::COMPLETED => [TrainingStatus::IN_PROGRESS], // Allow retaking
             TrainingStatus::FAILED => [TrainingStatus::IN_PROGRESS, TrainingStatus::CANCELLED], // Allow retaking
-            TrainingStatus::CANCELLED => [TrainingStatus::NOT_STARTED] // Allow reactivation
+            TrainingStatus::CANCELLED => [TrainingStatus::NOT_STARTED], // Allow reactivation
         ];
 
-        if (!isset($validTransitions[$oldStatus]) || !in_array($newStatus, $validTransitions[$oldStatus])) {
+        if (! isset($validTransitions[$oldStatus]) || ! in_array($newStatus, $validTransitions[$oldStatus])) {
             throw new \Exception("Invalid status transition from {$oldStatus} to {$newStatus}");
         }
     }
@@ -187,10 +187,10 @@ class UpdateEmployeeTrainingAction
     {
         if ($training->total_hours > 0) {
             $progressPercentage = ($hoursCompleted / $training->total_hours) * 100;
-            
+
             // Update progress-related fields
             $training->hours_completed = $hoursCompleted;
-            
+
             // Auto-complete if all hours are done
             if ($hoursCompleted >= $training->total_hours && $training->status === TrainingStatus::IN_PROGRESS) {
                 $training->status = TrainingStatus::COMPLETED;

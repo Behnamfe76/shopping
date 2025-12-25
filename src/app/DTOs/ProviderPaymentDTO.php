@@ -2,39 +2,35 @@
 
 namespace Fereydooni\Shopping\App\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Email;
-use Spatie\LaravelData\Attributes\Validation\Url;
-use Spatie\LaravelData\Attributes\Validation\Numeric;
-use Spatie\LaravelData\Attributes\Validation\Min;
-use Spatie\LaravelData\Attributes\Validation\Max;
-use Spatie\LaravelData\Attributes\Validation\Date;
-use Spatie\LaravelData\Attributes\Validation\Nullable;
-use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
-use Spatie\LaravelData\Attributes\Validation\FloatType;
-use Spatie\LaravelData\Attributes\Validation\ArrayType;
-use Spatie\LaravelData\Attributes\Validation\In;
-use Spatie\LaravelData\Attributes\Validation\Exists;
-use Fereydooni\Shopping\App\Enums\ProviderPaymentStatus;
 use Fereydooni\Shopping\App\Enums\ProviderPaymentMethod;
-use Fereydooni\Shopping\App\Models\ProviderPayment;
+use Fereydooni\Shopping\App\Enums\ProviderPaymentStatus;
 use Fereydooni\Shopping\App\Models\Provider;
 use Fereydooni\Shopping\App\Models\ProviderInvoice;
+use Fereydooni\Shopping\App\Models\ProviderPayment;
 use Fereydooni\Shopping\App\Models\User;
-use Carbon\Carbon;
+use Spatie\LaravelData\Attributes\Validation\ArrayType;
+use Spatie\LaravelData\Attributes\Validation\Date;
+use Spatie\LaravelData\Attributes\Validation\Exists;
+use Spatie\LaravelData\Attributes\Validation\FloatType;
+use Spatie\LaravelData\Attributes\Validation\In;
+use Spatie\LaravelData\Attributes\Validation\IntegerType;
+use Spatie\LaravelData\Attributes\Validation\Max;
+use Spatie\LaravelData\Attributes\Validation\Min;
+use Spatie\LaravelData\Attributes\Validation\Nullable;
+use Spatie\LaravelData\Attributes\Validation\StringType;
+use Spatie\LaravelData\Data;
 
 class ProviderPaymentDTO extends Data
 {
     public function __construct(
         #[IntegerType, Nullable]
-        public ?int $id = null,
+        public ?int $id,
 
         #[IntegerType, Exists(Provider::class, 'id')]
         public int $provider_id,
 
         #[IntegerType, Exists(ProviderInvoice::class, 'id'), Nullable]
-        public ?int $invoice_id = null,
+        public ?int $invoice_id,
 
         #[StringType, Min(5), Max(50)]
         public string $payment_number,
@@ -46,7 +42,7 @@ class ProviderPaymentDTO extends Data
         public float $amount,
 
         #[StringType, Min(3), Max(3)]
-        public string $currency = 'USD',
+        public string $currency,
 
         #[In(ProviderPaymentMethod::class)]
         public string $payment_method,
@@ -83,8 +79,7 @@ class ProviderPaymentDTO extends Data
 
         #[Date, Nullable]
         public ?string $updated_at = null,
-    ) {
-    }
+    ) {}
 
     /**
      * Create DTO from ProviderPayment model.
@@ -126,10 +121,10 @@ class ProviderPaymentDTO extends Data
             'payment_date' => 'required|date',
             'amount' => 'required|numeric|min:0.01',
             'currency' => 'required|string|min:3|max:3',
-            'payment_method' => 'required|string|in:' . implode(',', array_column(ProviderPaymentMethod::cases(), 'value')),
+            'payment_method' => 'required|string|in:'.implode(',', array_column(ProviderPaymentMethod::cases(), 'value')),
             'reference_number' => 'nullable|string|max:255',
             'transaction_id' => 'nullable|string|max:255',
-            'status' => 'required|string|in:' . implode(',', array_column(ProviderPaymentStatus::cases(), 'value')),
+            'status' => 'required|string|in:'.implode(',', array_column(ProviderPaymentStatus::cases(), 'value')),
             'notes' => 'nullable|string|max:1000',
             'attachments' => 'nullable|array',
             'processed_by' => 'nullable|integer|exists:users,id',
@@ -145,7 +140,7 @@ class ProviderPaymentDTO extends Data
     public static function updateRules(int $paymentId): array
     {
         $rules = self::rules();
-        $rules['payment_number'] = 'required|string|min:5|max:50|unique:provider_payments,payment_number,' . $paymentId;
+        $rules['payment_number'] = 'required|string|min:5|max:50|unique:provider_payments,payment_number,'.$paymentId;
 
         return $rules;
     }
@@ -208,7 +203,7 @@ class ProviderPaymentDTO extends Data
             'processed_at' => $this->processed_at,
             'reconciled_at' => $this->reconciled_at,
             'reconciliation_notes' => $this->reconciliation_notes,
-        ], fn($value) => !is_null($value));
+        ], fn ($value) => ! is_null($value));
     }
 
     /**
@@ -216,7 +211,7 @@ class ProviderPaymentDTO extends Data
      */
     public function getFormattedAmountAttribute(): string
     {
-        return $this->currency . ' ' . number_format($this->amount, 2);
+        return $this->currency.' '.number_format($this->amount, 2);
     }
 
     /**
@@ -225,6 +220,7 @@ class ProviderPaymentDTO extends Data
     public function canBeEdited(): bool
     {
         $status = ProviderPaymentStatus::from($this->status);
+
         return $status->isEditable();
     }
 
@@ -234,6 +230,7 @@ class ProviderPaymentDTO extends Data
     public function canBeProcessed(): bool
     {
         $status = ProviderPaymentStatus::from($this->status);
+
         return $status->isProcessable();
     }
 
@@ -243,6 +240,7 @@ class ProviderPaymentDTO extends Data
     public function canBeCompleted(): bool
     {
         $status = ProviderPaymentStatus::from($this->status);
+
         return $status->isCompletable();
     }
 
@@ -252,6 +250,7 @@ class ProviderPaymentDTO extends Data
     public function canBeReconciled(): bool
     {
         $status = ProviderPaymentStatus::from($this->status);
+
         return $status->isReconcilable();
     }
 }

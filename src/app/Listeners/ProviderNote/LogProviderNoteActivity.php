@@ -2,10 +2,10 @@
 
 namespace Fereydooni\Shopping\app\Listeners\ProviderNote;
 
-use Fereydooni\Shopping\app\Events\ProviderNote\ProviderNoteCreated;
-use Fereydooni\Shopping\app\Events\ProviderNote\ProviderNoteUpdated;
 use Fereydooni\Shopping\app\Events\ProviderNote\ProviderNoteArchived;
+use Fereydooni\Shopping\app\Events\ProviderNote\ProviderNoteCreated;
 use Fereydooni\Shopping\app\Events\ProviderNote\ProviderNoteDeleted;
+use Fereydooni\Shopping\app\Events\ProviderNote\ProviderNoteUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;

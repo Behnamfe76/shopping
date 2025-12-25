@@ -16,6 +16,6 @@ return [
         'active' => 'Active',
         'inactive' => 'Inactive',
         'archived' => 'Archived',
-    ]
+    ],
 
 ];

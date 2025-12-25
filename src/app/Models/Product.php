@@ -2,18 +2,18 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
-use Spatie\MediaLibrary\HasMedia;
-use Illuminate\Database\Eloquent\Model;
-use Spatie\MediaLibrary\InteractsWithMedia;
-use Fereydooni\Shopping\app\Enums\ProductType;
 use Fereydooni\Shopping\app\Enums\ProductStatus;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Fereydooni\Shopping\app\Enums\ProductType;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class Product extends Model implements HasMedia
 {
@@ -157,6 +157,7 @@ class Product extends Model implements HasMedia
     public function getMainImageAttribute()
     {
         $media = $this->mainMedia();
+
         return $media ? $media->getUrl('large') : null;
     }
 

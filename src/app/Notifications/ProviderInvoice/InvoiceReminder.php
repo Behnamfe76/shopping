@@ -13,6 +13,7 @@ class InvoiceReminder extends Notification implements ShouldQueue
     use Queueable;
 
     protected $invoice;
+
     protected $reminderType;
 
     /**
@@ -48,14 +49,14 @@ class InvoiceReminder extends Notification implements ShouldQueue
 
         return (new MailMessage)
             ->subject($subject)
-            ->greeting('Hello ' . ($notifiable->name ?? 'Team Member'))
+            ->greeting('Hello '.($notifiable->name ?? 'Team Member'))
             ->line($message)
-            ->line('Invoice Number: ' . $this->invoice->invoice_number)
-            ->line('Provider: ' . ($provider->name ?? 'Unknown Provider'))
-            ->line('Amount: $' . number_format($this->invoice->total_amount, 2))
-            ->line('Due Date: ' . $this->invoice->due_date->format('M d, Y'))
-            ->line('Days ' . ($isOverdue ? 'Overdue: ' . abs($daysUntilDue) : 'Until Due: ' . $daysUntilDue))
-            ->action('View Invoice', url('/provider-invoices/' . $this->invoice->id))
+            ->line('Invoice Number: '.$this->invoice->invoice_number)
+            ->line('Provider: '.($provider->name ?? 'Unknown Provider'))
+            ->line('Amount: $'.number_format($this->invoice->total_amount, 2))
+            ->line('Due Date: '.$this->invoice->due_date->format('M d, Y'))
+            ->line('Days '.($isOverdue ? 'Overdue: '.abs($daysUntilDue) : 'Until Due: '.$daysUntilDue))
+            ->action('View Invoice', url('/provider-invoices/'.$this->invoice->id))
             ->line('Please follow up with the provider regarding this invoice.');
     }
 
@@ -81,7 +82,7 @@ class InvoiceReminder extends Notification implements ShouldQueue
             'reminder_type' => $this->reminderType,
             'status' => $this->invoice->status,
             'type' => 'invoice_reminder',
-            'message' => $this->getReminderMessage($daysUntilDue, $isOverdue)
+            'message' => $this->getReminderMessage($daysUntilDue, $isOverdue),
         ];
     }
 
@@ -98,15 +99,15 @@ class InvoiceReminder extends Notification implements ShouldQueue
      */
     protected function getReminderSubject(): string
     {
-        $baseSubject = 'Provider Invoice Reminder - ' . $this->invoice->invoice_number;
+        $baseSubject = 'Provider Invoice Reminder - '.$this->invoice->invoice_number;
 
         switch ($this->reminderType) {
             case 'due_soon':
-                return $baseSubject . ' (Due Soon)';
+                return $baseSubject.' (Due Soon)';
             case 'overdue':
-                return $baseSubject . ' (Overdue)';
+                return $baseSubject.' (Overdue)';
             case 'final':
-                return $baseSubject . ' (Final Notice)';
+                return $baseSubject.' (Final Notice)';
             default:
                 return $baseSubject;
         }
@@ -132,4 +133,3 @@ class InvoiceReminder extends Notification implements ShouldQueue
         return 'This is a friendly reminder about an upcoming provider invoice.';
     }
 }
-

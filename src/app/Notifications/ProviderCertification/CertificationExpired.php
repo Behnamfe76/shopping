@@ -43,43 +43,43 @@ class CertificationExpired extends Notification implements ShouldQueue
 
         $url = URL::route('provider.certifications.show', [
             'provider' => $provider->id,
-            'certification' => $certification->id
+            'certification' => $certification->id,
         ]);
 
         $mailMessage = (new MailMessage)
-            ->subject('URGENT: Certification Expired - ' . $certification->certification_name)
-            ->greeting('Hello ' . $provider->name . ',')
+            ->subject('URGENT: Certification Expired - '.$certification->certification_name)
+            ->greeting('Hello '.$provider->name.',')
             ->line('**URGENT NOTICE:** Your certification has expired.')
             ->line('**Certification Details:**')
-            ->line('• **Name:** ' . $certification->certification_name)
-            ->line('• **Number:** ' . $certification->certification_number)
-            ->line('• **Issuing Organization:** ' . $certification->issuing_organization)
-            ->line('• **Category:** ' . ucfirst(str_replace('_', ' ', $certification->category)))
-            ->line('• **Expiry Date:** ' . $certification->expiry_date->format('M d, Y'))
-            ->line('• **Status:** ' . ucfirst($certification->status))
-            ->line('• **Verification Status:** ' . ucfirst(str_replace('_', ' ', $certification->verification_status)));
+            ->line('• **Name:** '.$certification->certification_name)
+            ->line('• **Number:** '.$certification->certification_number)
+            ->line('• **Issuing Organization:** '.$certification->issuing_organization)
+            ->line('• **Category:** '.ucfirst(str_replace('_', ' ', $certification->category)))
+            ->line('• **Expiry Date:** '.$certification->expiry_date->format('M d, Y'))
+            ->line('• **Status:** '.ucfirst($certification->status))
+            ->line('• **Verification Status:** '.ucfirst(str_replace('_', ' ', $certification->verification_status)));
 
         if ($certification->is_recurring) {
             $mailMessage->line('**Renewal Information:**')
-                       ->line('• **Renewal Period:** ' . $certification->renewal_period . ' months')
-                       ->line('• **Renewal Requirements:** ' . ($certification->renewal_requirements ?: 'Standard renewal process'));
+                ->line('• **Renewal Period:** '.$certification->renewal_period.' months')
+                ->line('• **Renewal Requirements:** '.($certification->renewal_requirements ?: 'Standard renewal process'));
         }
 
         $mailMessage->line('**Immediate Action Required:**')
-                   ->line('1. **STOP** providing services that require this certification')
-                   ->line('2. Contact the issuing organization for renewal requirements')
-                   ->line('3. Complete any required continuing education or training')
-                   ->line('4. Submit renewal application and documentation')
-                   ->line('5. Update your profile once renewed')
-                   ->action('View Certification', $url)
-                   ->line('**Important:** Expired certifications may:')
-                   ->line('• Affect your professional liability insurance')
-                   ->line('• Impact your ability to win contracts')
-                   ->line('• Damage your professional reputation')
-                   ->line('• Result in legal or regulatory issues')
-                   ->line('Please prioritize renewing this certification immediately.')
-                   ->line('If you need assistance with the renewal process, contact our support team.')
-                   ->salutation('Best regards,<br>' . config('app.name') . ' Team');
+            ->line('1. **STOP** providing services that require this certification')
+            ->line('2. Contact the issuing organization for renewal requirements')
+            ->line('3. Complete any required continuing education or training')
+            ->line('4. Submit renewal application and documentation')
+            ->line('5. Update your profile once renewed')
+            ->action('View Certification', $url)
+            ->line('**Important:** Expired certifications may:')
+            ->line('• Affect your professional liability insurance')
+            ->line('• Impact your ability to win contracts')
+            ->line('• Damage your professional reputation')
+            ->line('• Result in legal or regulatory issues')
+            ->line('Please prioritize renewing this certification immediately.')
+            ->line('If you need assistance with the renewal process, contact our support team.')
+            ->salutation('Best regards,<br>'.config('app.name').' Team');
 
         return $mailMessage;
     }
@@ -102,10 +102,10 @@ class CertificationExpired extends Notification implements ShouldQueue
             'verification_status' => $this->certification->verification_status,
             'expiry_date' => $this->certification->expiry_date->toISOString(),
             'days_since_expiry' => now()->diffInDays($this->certification->expiry_date),
-            'message' => 'Your certification "' . $this->certification->certification_name . '" has expired.',
+            'message' => 'Your certification "'.$this->certification->certification_name.'" has expired.',
             'action_url' => URL::route('provider.certifications.show', [
                 'provider' => $notifiable->id,
-                'certification' => $this->certification->id
+                'certification' => $this->certification->id,
             ]),
             'created_at' => now()->toISOString(),
         ];
@@ -137,9 +137,9 @@ class CertificationExpired extends Notification implements ShouldQueue
         return [
             'provider_certification',
             'certification_expired',
-            'provider_' . $this->certification->provider_id,
-            'certification_' . $this->certification->id,
-            'urgency_urgent'
+            'provider_'.$this->certification->provider_id,
+            'certification_'.$this->certification->id,
+            'urgency_urgent',
         ];
     }
 }

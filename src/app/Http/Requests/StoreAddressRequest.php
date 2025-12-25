@@ -2,8 +2,8 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Fereydooni\Shopping\app\Enums\AddressType;
+use Illuminate\Foundation\Http\FormRequest;
 
 class StoreAddressRequest extends FormRequest
 {
@@ -32,7 +32,7 @@ class StoreAddressRequest extends FormRequest
             'country' => 'required|string|max:255',
             'phone' => 'required|string|max:20',
             'email' => 'nullable|email|max:255',
-            'type' => 'required|in:' . implode(',', array_column(AddressType::cases(), 'value')),
+            'type' => 'required|in:'.implode(',', array_column(AddressType::cases(), 'value')),
             'is_default' => 'boolean',
         ];
     }
@@ -90,12 +90,12 @@ class StoreAddressRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         // Set user_id if not provided
-        if (!$this->has('user_id')) {
+        if (! $this->has('user_id')) {
             $this->merge(['user_id' => $this->user()->id]);
         }
 
         // Set is_default to false if not provided
-        if (!$this->has('is_default')) {
+        if (! $this->has('is_default')) {
             $this->merge(['is_default' => false]);
         }
     }

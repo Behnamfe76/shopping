@@ -2,22 +2,17 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
-use Fereydooni\Shopping\app\Models\Order;
-use Fereydooni\Shopping\app\Http\Requests\StoreOrderRequest;
-use Fereydooni\Shopping\app\Http\Requests\UpdateOrderRequest;
+use Fereydooni\Shopping\app\Http\Requests\AddOrderNoteRequest;
 use Fereydooni\Shopping\app\Http\Requests\CancelOrderRequest;
 use Fereydooni\Shopping\app\Http\Requests\MarkOrderStatusRequest;
 use Fereydooni\Shopping\app\Http\Requests\SearchOrderRequest;
-use Fereydooni\Shopping\app\Http\Requests\AddOrderNoteRequest;
-use Fereydooni\Shopping\app\Http\Resources\OrderResource;
-use Fereydooni\Shopping\app\Http\Resources\OrderCollection;
-use Fereydooni\Shopping\app\Http\Resources\OrderSearchResource;
-use Fereydooni\Shopping\app\Http\Resources\OrderNoteResource;
+use Fereydooni\Shopping\app\Http\Requests\StoreOrderRequest;
+use Fereydooni\Shopping\app\Http\Requests\UpdateOrderRequest;
+use Fereydooni\Shopping\app\Models\Order;
 use Fereydooni\Shopping\app\Services\OrderService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class OrderController extends Controller
 {

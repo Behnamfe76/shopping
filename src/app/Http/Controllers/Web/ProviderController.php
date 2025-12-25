@@ -3,13 +3,12 @@
 namespace Fereydooni\Shopping\app\Http\Controllers\Web;
 
 use Fereydooni\Shopping\app\Http\Controllers\Controller;
-use Fereydooni\Shopping\app\DTOs\ProviderDTO;
 use Fereydooni\Shopping\app\Models\Provider;
 use Fereydooni\Shopping\app\Services\ProviderService;
-use Illuminate\Http\Request;
-use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 
 class ProviderController extends Controller
 {
@@ -80,7 +79,7 @@ class ProviderController extends Controller
         } catch (ValidationException $e) {
             return back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to create provider: ' . $e->getMessage())->withInput();
+            return back()->with('error', 'Failed to create provider: '.$e->getMessage())->withInput();
         }
     }
 
@@ -111,7 +110,7 @@ class ProviderController extends Controller
             $validated = $request->validate([
                 'company_name' => 'sometimes|string|max:255',
                 'contact_person' => 'sometimes|string|max:255',
-                'email' => 'sometimes|email|unique:providers,email,' . $provider->id,
+                'email' => 'sometimes|email|unique:providers,email,'.$provider->id,
                 'phone' => 'sometimes|string|max:20',
                 'website' => 'nullable|url|max:255',
                 'tax_id' => 'nullable|string|max:100',
@@ -145,7 +144,7 @@ class ProviderController extends Controller
         } catch (ValidationException $e) {
             return back()->withErrors($e->errors())->withInput();
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to update provider: ' . $e->getMessage())->withInput();
+            return back()->with('error', 'Failed to update provider: '.$e->getMessage())->withInput();
         }
     }
 
@@ -165,7 +164,7 @@ class ProviderController extends Controller
             return back()->with('error', 'Failed to delete provider');
 
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to delete provider: ' . $e->getMessage());
+            return back()->with('error', 'Failed to delete provider: '.$e->getMessage());
         }
     }
 
@@ -224,7 +223,7 @@ class ProviderController extends Controller
     {
         try {
             $request->validate([
-                'file' => 'required|file|mimes:csv,xlsx,xls|max:2048'
+                'file' => 'required|file|mimes:csv,xlsx,xls|max:2048',
             ]);
 
             $imported = $this->providerService->importProviders($request->file('file'));
@@ -234,7 +233,7 @@ class ProviderController extends Controller
         } catch (ValidationException $e) {
             return back()->withErrors($e->errors());
         } catch (\Exception $e) {
-            return back()->with('error', 'Import failed: ' . $e->getMessage());
+            return back()->with('error', 'Import failed: '.$e->getMessage());
         }
     }
 
@@ -252,7 +251,7 @@ class ProviderController extends Controller
             return response()->download($file, "providers_{$format}.{$format}");
 
         } catch (\Exception $e) {
-            return back()->with('error', 'Export failed: ' . $e->getMessage());
+            return back()->with('error', 'Export failed: '.$e->getMessage());
         }
     }
 
@@ -331,7 +330,7 @@ class ProviderController extends Controller
             return back()->with('error', 'Failed to activate provider');
 
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to activate provider: ' . $e->getMessage());
+            return back()->with('error', 'Failed to activate provider: '.$e->getMessage());
         }
     }
 
@@ -350,7 +349,7 @@ class ProviderController extends Controller
             return back()->with('error', 'Failed to deactivate provider');
 
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to deactivate provider: ' . $e->getMessage());
+            return back()->with('error', 'Failed to deactivate provider: '.$e->getMessage());
         }
     }
 
@@ -361,7 +360,7 @@ class ProviderController extends Controller
     {
         try {
             $validated = $request->validate([
-                'reason' => 'nullable|string|max:500'
+                'reason' => 'nullable|string|max:500',
             ]);
 
             $suspended = $this->providerService->suspendProvider($provider, $validated['reason'] ?? null);
@@ -375,7 +374,7 @@ class ProviderController extends Controller
         } catch (ValidationException $e) {
             return back()->withErrors($e->errors());
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to suspend provider: ' . $e->getMessage());
+            return back()->with('error', 'Failed to suspend provider: '.$e->getMessage());
         }
     }
 
@@ -386,7 +385,7 @@ class ProviderController extends Controller
     {
         try {
             $validated = $request->validate([
-                'rating' => 'required|numeric|min:0|max:5'
+                'rating' => 'required|numeric|min:0|max:5',
             ]);
 
             $updated = $this->providerService->updateProviderRating($provider, $validated['rating']);
@@ -400,7 +399,7 @@ class ProviderController extends Controller
         } catch (ValidationException $e) {
             return back()->withErrors($e->errors());
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to update provider rating: ' . $e->getMessage());
+            return back()->with('error', 'Failed to update provider rating: '.$e->getMessage());
         }
     }
 
@@ -411,7 +410,7 @@ class ProviderController extends Controller
     {
         try {
             $validated = $request->validate([
-                'credit_limit' => 'required|numeric|min:0'
+                'credit_limit' => 'required|numeric|min:0',
             ]);
 
             $updated = $this->providerService->updateProviderCreditLimit($provider, $validated['credit_limit']);
@@ -425,7 +424,7 @@ class ProviderController extends Controller
         } catch (ValidationException $e) {
             return back()->withErrors($e->errors());
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to update provider credit limit: ' . $e->getMessage());
+            return back()->with('error', 'Failed to update provider credit limit: '.$e->getMessage());
         }
     }
 
@@ -436,7 +435,7 @@ class ProviderController extends Controller
     {
         try {
             $validated = $request->validate([
-                'contract_end_date' => 'required|date|after:today'
+                'contract_end_date' => 'required|date|after:today',
             ]);
 
             $extended = $this->providerService->extendProviderContract($provider, $validated['contract_end_date']);
@@ -450,7 +449,7 @@ class ProviderController extends Controller
         } catch (ValidationException $e) {
             return back()->withErrors($e->errors());
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to extend provider contract: ' . $e->getMessage());
+            return back()->with('error', 'Failed to extend provider contract: '.$e->getMessage());
         }
     }
 }

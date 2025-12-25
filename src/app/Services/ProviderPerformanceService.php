@@ -2,19 +2,16 @@
 
 namespace App\Services;
 
-use App\Repositories\Interfaces\ProviderPerformanceRepositoryInterface;
-use App\Models\ProviderPerformance;
 use App\DTOs\ProviderPerformanceDTO;
-use App\Enums\PerformanceGrade;
-use App\Enums\PeriodType;
+use App\Models\ProviderPerformance;
+use App\Repositories\Interfaces\ProviderPerformanceRepositoryInterface;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Notification;
-use Carbon\Carbon;
 
 class ProviderPerformanceService
 {
@@ -41,7 +38,7 @@ class ProviderPerformanceService
         return $this->repository->simplePaginate($perPage);
     }
 
-    public function getCursorPaginatedPerformances(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function getCursorPaginatedPerformances(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->repository->cursorPaginate($perPage, $cursor);
     }
@@ -73,7 +70,7 @@ class ProviderPerformanceService
 
             return $performance;
         } catch (\Exception $e) {
-            Log::error('Failed to create provider performance: ' . $e->getMessage());
+            Log::error('Failed to create provider performance: '.$e->getMessage());
             throw $e;
         }
     }
@@ -81,6 +78,7 @@ class ProviderPerformanceService
     public function createPerformanceAndReturnDTO(array $data): ProviderPerformanceDTO
     {
         $performance = $this->createPerformance($data);
+
         return ProviderPerformanceDTO::fromModel($performance);
     }
 
@@ -103,7 +101,7 @@ class ProviderPerformanceService
 
             return $result;
         } catch (\Exception $e) {
-            Log::error('Failed to update provider performance: ' . $e->getMessage());
+            Log::error('Failed to update provider performance: '.$e->getMessage());
             throw $e;
         }
     }
@@ -111,6 +109,7 @@ class ProviderPerformanceService
     public function updatePerformanceAndReturnDTO(ProviderPerformance $performance, array $data): ?ProviderPerformanceDTO
     {
         $result = $this->updatePerformance($performance, $data);
+
         return $result ? ProviderPerformanceDTO::fromModel($performance->fresh()) : null;
     }
 
@@ -125,7 +124,7 @@ class ProviderPerformanceService
 
             return $result;
         } catch (\Exception $e) {
-            Log::error('Failed to delete provider performance: ' . $e->getMessage());
+            Log::error('Failed to delete provider performance: '.$e->getMessage());
             throw $e;
         }
     }
@@ -212,7 +211,7 @@ class ProviderPerformanceService
         return $this->repository->findUnverifiedDTO();
     }
 
-    public function verifyPerformance(ProviderPerformance $performance, int $verifiedBy, string $notes = null): bool
+    public function verifyPerformance(ProviderPerformance $performance, int $verifiedBy, ?string $notes = null): bool
     {
         try {
             $result = $this->repository->verify($performance, $verifiedBy, $notes);
@@ -223,7 +222,7 @@ class ProviderPerformanceService
 
             return $result;
         } catch (\Exception $e) {
-            Log::error('Failed to verify provider performance: ' . $e->getMessage());
+            Log::error('Failed to verify provider performance: '.$e->getMessage());
             throw $e;
         }
     }
@@ -239,7 +238,7 @@ class ProviderPerformanceService
 
             return $result;
         } catch (\Exception $e) {
-            Log::error('Failed to unverify provider performance: ' . $e->getMessage());
+            Log::error('Failed to unverify provider performance: '.$e->getMessage());
             throw $e;
         }
     }
@@ -277,7 +276,7 @@ class ProviderPerformanceService
 
             return $result;
         } catch (\Exception $e) {
-            Log::error('Failed to calculate performance: ' . $e->getMessage());
+            Log::error('Failed to calculate performance: '.$e->getMessage());
             throw $e;
         }
     }
@@ -293,7 +292,7 @@ class ProviderPerformanceService
 
             return $result;
         } catch (\Exception $e) {
-            Log::error('Failed to update metrics: ' . $e->getMessage());
+            Log::error('Failed to update metrics: '.$e->getMessage());
             throw $e;
         }
     }
@@ -313,13 +312,13 @@ class ProviderPerformanceService
                 Event::dispatch('provider.performance.grade_changed', [
                     'performance' => $performance,
                     'old_grade' => $oldGrade,
-                    'new_grade' => $performance->performance_grade
+                    'new_grade' => $performance->performance_grade,
                 ]);
             }
 
             return $result;
         } catch (\Exception $e) {
-            Log::error('Failed to update grade: ' . $e->getMessage());
+            Log::error('Failed to update grade: '.$e->getMessage());
             throw $e;
         }
     }
@@ -380,7 +379,7 @@ class ProviderPerformanceService
                 $data['period_end']
             );
 
-            if ($existing && (!$existingPerformance || $existing->id !== $existingPerformance->id)) {
+            if ($existing && (! $existingPerformance || $existing->id !== $existingPerformance->id)) {
                 throw new \InvalidArgumentException('Performance record already exists for this provider and period');
             }
         }
@@ -391,10 +390,10 @@ class ProviderPerformanceService
     {
         $alerts = $performance->getPerformanceAlerts();
 
-        if (!empty($alerts)) {
+        if (! empty($alerts)) {
             Event::dispatch('provider.performance.alerts_generated', [
                 'performance' => $performance,
-                'alerts' => $alerts
+                'alerts' => $alerts,
             ]);
         }
     }

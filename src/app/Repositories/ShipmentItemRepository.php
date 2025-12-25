@@ -2,17 +2,17 @@
 
 namespace Fereydooni\Shopping\app\Repositories;
 
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-use Fereydooni\Shopping\app\Repositories\Interfaces\ShipmentItemRepositoryInterface;
-use Fereydooni\Shopping\app\Models\ShipmentItem;
 use Fereydooni\Shopping\app\DTOs\ShipmentItemDTO;
+use Fereydooni\Shopping\app\Models\ShipmentItem;
+use Fereydooni\Shopping\app\Repositories\Interfaces\ShipmentItemRepositoryInterface;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
 use Fereydooni\Shopping\app\Traits\HasSearchOperations;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class ShipmentItemRepository implements ShipmentItemRepositoryInterface
 {
@@ -20,11 +20,12 @@ class ShipmentItemRepository implements ShipmentItemRepositoryInterface
     use HasSearchOperations;
 
     protected ShipmentItem $model;
+
     protected string $dtoClass = ShipmentItemDTO::class;
 
     public function __construct()
     {
-        $this->model = new ShipmentItem();
+        $this->model = new ShipmentItem;
     }
 
     // Basic CRUD Operations
@@ -43,7 +44,7 @@ class ShipmentItemRepository implements ShipmentItemRepositoryInterface
         return $this->model::with(['shipment', 'orderItem'])->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->model::with(['shipment', 'orderItem'])->cursorPaginate($perPage, ['*'], 'id', $cursor);
     }
@@ -56,30 +57,35 @@ class ShipmentItemRepository implements ShipmentItemRepositoryInterface
     public function findDTO(int $id): ?ShipmentItemDTO
     {
         $model = $this->find($id);
+
         return $model ? ShipmentItemDTO::fromModel($model) : null;
     }
 
     public function create(array $data): ShipmentItem
     {
         $validated = $this->validateData($data);
+
         return $this->model::create($validated);
     }
 
     public function createAndReturnDTO(array $data): ShipmentItemDTO
     {
         $model = $this->create($data);
+
         return ShipmentItemDTO::fromModel($model);
     }
 
     public function update(ShipmentItem $shipmentItem, array $data): bool
     {
         $validated = $this->validateData($data, $shipmentItem->id);
+
         return $shipmentItem->update($validated);
     }
 
     public function updateAndReturnDTO(ShipmentItem $shipmentItem, array $data): ?ShipmentItemDTO
     {
         $updated = $this->update($shipmentItem, $data);
+
         return $updated ? ShipmentItemDTO::fromModel($shipmentItem->fresh()) : null;
     }
 
@@ -99,7 +105,8 @@ class ShipmentItemRepository implements ShipmentItemRepositoryInterface
     public function findByShipmentIdDTO(int $shipmentId): Collection
     {
         $models = $this->findByShipmentId($shipmentId);
-        return $models->map(fn($model) => ShipmentItemDTO::fromModel($model));
+
+        return $models->map(fn ($model) => ShipmentItemDTO::fromModel($model));
     }
 
     // Order item queries
@@ -113,7 +120,8 @@ class ShipmentItemRepository implements ShipmentItemRepositoryInterface
     public function findByOrderItemIdDTO(int $orderItemId): Collection
     {
         $models = $this->findByOrderItemId($orderItemId);
-        return $models->map(fn($model) => ShipmentItemDTO::fromModel($model));
+
+        return $models->map(fn ($model) => ShipmentItemDTO::fromModel($model));
     }
 
     // Combined queries
@@ -128,6 +136,7 @@ class ShipmentItemRepository implements ShipmentItemRepositoryInterface
     public function findByShipmentAndOrderItemDTO(int $shipmentId, int $orderItemId): ?ShipmentItemDTO
     {
         $model = $this->findByShipmentAndOrderItem($shipmentId, $orderItemId);
+
         return $model ? ShipmentItemDTO::fromModel($model) : null;
     }
 
@@ -154,7 +163,7 @@ class ShipmentItemRepository implements ShipmentItemRepositoryInterface
             ->where('shipment_id', $shipmentId)
             ->whereHas('orderItem', function ($q) use ($query) {
                 $q->where('product_name', 'LIKE', "%{$query}%")
-                  ->orWhere('sku', 'LIKE', "%{$query}%");
+                    ->orWhere('sku', 'LIKE', "%{$query}%");
             })
             ->get();
     }
@@ -162,7 +171,8 @@ class ShipmentItemRepository implements ShipmentItemRepositoryInterface
     public function searchDTO(int $shipmentId, string $query): Collection
     {
         $models = $this->search($shipmentId, $query);
-        return $models->map(fn($model) => ShipmentItemDTO::fromModel($model));
+
+        return $models->map(fn ($model) => ShipmentItemDTO::fromModel($model));
     }
 
     // Quantity-based operations
@@ -177,31 +187,34 @@ class ShipmentItemRepository implements ShipmentItemRepositoryInterface
     public function getByQuantityRangeDTO(int $shipmentId, int $minQuantity, int $maxQuantity): Collection
     {
         $models = $this->getByQuantityRange($shipmentId, $minQuantity, $maxQuantity);
-        return $models->map(fn($model) => ShipmentItemDTO::fromModel($model));
+
+        return $models->map(fn ($model) => ShipmentItemDTO::fromModel($model));
     }
 
     // Validation operations
     public function validateShipmentItem(array $data): bool
     {
         $validator = Validator::make($data, ShipmentItemDTO::rules(), ShipmentItemDTO::messages());
-        return !$validator->fails();
+
+        return ! $validator->fails();
     }
 
     public function checkQuantityAvailability(int $orderItemId, int $quantity): bool
     {
         $orderItem = DB::table('order_items')->find($orderItemId);
-        if (!$orderItem) {
+        if (! $orderItem) {
             return false;
         }
 
         $shippedQuantity = $this->getTotalQuantityByOrderItem($orderItemId);
+
         return ($orderItem->quantity - $shippedQuantity) >= $quantity;
     }
 
     public function validateShipmentItemQuantity(ShipmentItem $shipmentItem, int $newQuantity): bool
     {
         $orderItem = DB::table('order_items')->find($shipmentItem->order_item_id);
-        if (!$orderItem) {
+        if (! $orderItem) {
             return false;
         }
 
@@ -226,7 +239,8 @@ class ShipmentItemRepository implements ShipmentItemRepositoryInterface
     public function getShipmentItemsByProductDTO(int $shipmentId, int $productId): Collection
     {
         $models = $this->getShipmentItemsByProduct($shipmentId, $productId);
-        return $models->map(fn($model) => ShipmentItemDTO::fromModel($model));
+
+        return $models->map(fn ($model) => ShipmentItemDTO::fromModel($model));
     }
 
     public function getShipmentItemsByVariant(int $shipmentId, int $variantId): Collection
@@ -242,7 +256,8 @@ class ShipmentItemRepository implements ShipmentItemRepositoryInterface
     public function getShipmentItemsByVariantDTO(int $shipmentId, int $variantId): Collection
     {
         $models = $this->getShipmentItemsByVariant($shipmentId, $variantId);
-        return $models->map(fn($model) => ShipmentItemDTO::fromModel($model));
+
+        return $models->map(fn ($model) => ShipmentItemDTO::fromModel($model));
     }
 
     // Calculation operations
@@ -273,7 +288,7 @@ class ShipmentItemRepository implements ShipmentItemRepositoryInterface
             'total_quantity' => $totalQuantity,
             'total_weight' => $totalWeight,
             'total_volume' => $totalVolume,
-            'items' => $items->map(fn($item) => ShipmentItemDTO::fromModel($item)->getShipmentItemSummary()),
+            'items' => $items->map(fn ($item) => ShipmentItemDTO::fromModel($item)->getShipmentItemSummary()),
         ];
     }
 
@@ -297,7 +312,7 @@ class ShipmentItemRepository implements ShipmentItemRepositoryInterface
     {
         return DB::transaction(function () use ($updates) {
             foreach ($updates as $update) {
-                if (!isset($update['id'])) {
+                if (! isset($update['id'])) {
                     continue;
                 }
                 $model = $this->find($update['id']);
@@ -305,6 +320,7 @@ class ShipmentItemRepository implements ShipmentItemRepositoryInterface
                     $this->update($model, $update);
                 }
             }
+
             return true;
         });
     }
@@ -328,7 +344,8 @@ class ShipmentItemRepository implements ShipmentItemRepositoryInterface
     public function getTopShippedItemsDTO(int $limit = 10): Collection
     {
         $models = $this->getTopShippedItems($limit);
-        return $models->map(fn($model) => ShipmentItemDTO::fromModel($model));
+
+        return $models->map(fn ($model) => ShipmentItemDTO::fromModel($model));
     }
 
     public function getShipmentItemsByDateRange(string $startDate, string $endDate): Collection
@@ -341,7 +358,8 @@ class ShipmentItemRepository implements ShipmentItemRepositoryInterface
     public function getShipmentItemsByDateRangeDTO(string $startDate, string $endDate): Collection
     {
         $models = $this->getShipmentItemsByDateRange($startDate, $endDate);
-        return $models->map(fn($model) => ShipmentItemDTO::fromModel($model));
+
+        return $models->map(fn ($model) => ShipmentItemDTO::fromModel($model));
     }
 
     // Status-based operations
@@ -358,7 +376,8 @@ class ShipmentItemRepository implements ShipmentItemRepositoryInterface
     public function getFullyShippedItemsDTO(int $shipmentId): Collection
     {
         $models = $this->getFullyShippedItems($shipmentId);
-        return $models->map(fn($model) => ShipmentItemDTO::fromModel($model));
+
+        return $models->map(fn ($model) => ShipmentItemDTO::fromModel($model));
     }
 
     public function getPartiallyShippedItems(int $shipmentId): Collection
@@ -374,7 +393,8 @@ class ShipmentItemRepository implements ShipmentItemRepositoryInterface
     public function getPartiallyShippedItemsDTO(int $shipmentId): Collection
     {
         $models = $this->getPartiallyShippedItems($shipmentId);
-        return $models->map(fn($model) => ShipmentItemDTO::fromModel($model));
+
+        return $models->map(fn ($model) => ShipmentItemDTO::fromModel($model));
     }
 
     // History operations
@@ -383,6 +403,7 @@ class ShipmentItemRepository implements ShipmentItemRepositoryInterface
         // This would typically query a history/audit table
         // For now, returning the current item
         $item = $this->find($shipmentItemId);
+
         return $item ? collect([$item]) : collect();
     }
 
@@ -399,7 +420,8 @@ class ShipmentItemRepository implements ShipmentItemRepositoryInterface
     public function getShipmentItemsByStatusDTO(string $status): Collection
     {
         $models = $this->getShipmentItemsByStatus($status);
-        return $models->map(fn($model) => ShipmentItemDTO::fromModel($model));
+
+        return $models->map(fn ($model) => ShipmentItemDTO::fromModel($model));
     }
 
     // Helper methods
@@ -429,12 +451,15 @@ class ShipmentItemRepository implements ShipmentItemRepositoryInterface
                     if (count($parts) >= 2) {
                         $table = $parts[1];
                         $column = isset($parts[2]) ? $parts[2] : $field;
+
                         return "unique:{$table},{$column},{$excludeId}";
                     }
                 }
+
                 return $rule;
             }, $fieldRules);
         }
+
         return $rules;
     }
 }

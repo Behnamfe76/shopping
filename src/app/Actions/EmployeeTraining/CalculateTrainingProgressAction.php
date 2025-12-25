@@ -2,8 +2,8 @@
 
 namespace Fereydooni\Shopping\Actions\EmployeeTraining;
 
-use Fereydooni\Shopping\Models\EmployeeTraining;
 use Fereydooni\Shopping\Enums\TrainingStatus;
+use Fereydooni\Shopping\Models\EmployeeTraining;
 
 class CalculateTrainingProgressAction
 {
@@ -17,7 +17,7 @@ class CalculateTrainingProgressAction
             'estimated_completion_date' => $this->getEstimatedCompletionDate($training),
             'hours_per_day_needed' => $this->calculateHoursPerDayNeeded($training),
             'is_on_track' => $this->isOnTrack($training),
-            'risk_level' => $this->getRiskLevel($training)
+            'risk_level' => $this->getRiskLevel($training),
         ];
     }
 
@@ -28,6 +28,7 @@ class CalculateTrainingProgressAction
         }
 
         $percentage = ($training->hours_completed / $training->total_hours) * 100;
+
         return round($percentage, 2);
     }
 
@@ -42,7 +43,7 @@ class CalculateTrainingProgressAction
             return null;
         }
 
-        if (!$training->end_date) {
+        if (! $training->end_date) {
             return null;
         }
 
@@ -171,7 +172,7 @@ class CalculateTrainingProgressAction
 
     private function getAverageHoursPerDay(EmployeeTraining $training): float
     {
-        if (!$training->start_date) {
+        if (! $training->start_date) {
             return 0.0;
         }
 
@@ -184,7 +185,7 @@ class CalculateTrainingProgressAction
 
     private function getTotalTrainingDays(EmployeeTraining $training): int
     {
-        if (!$training->start_date || !$training->end_date) {
+        if (! $training->start_date || ! $training->end_date) {
             return 0;
         }
 

@@ -2,25 +2,20 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Gate;
-use Fereydooni\Shopping\app\Models\ProductTag;
-use Fereydooni\Shopping\app\DTOs\ProductTagDTO;
-use Fereydooni\Shopping\app\Http\Resources\ProductTagResource;
+use Fereydooni\Shopping\app\Facades\ProductTag as ProductTagFacade;
 use Fereydooni\Shopping\app\Http\Requests\BulkProductTagRequest;
-use Fereydooni\Shopping\app\Http\Resources\ProductTagCollection;
-use Fereydooni\Shopping\app\Http\Requests\StoreProductTagRequest;
 use Fereydooni\Shopping\app\Http\Requests\ImportProductTagRequest;
 use Fereydooni\Shopping\app\Http\Requests\SearchProductTagRequest;
-use Fereydooni\Shopping\app\Http\Requests\UpdateProductTagRequest;
-use Fereydooni\Shopping\app\Http\Resources\ProductTagBulkResource;
-use Fereydooni\Shopping\app\Facades\ProductTag as ProductTagFacade;
-use Fereydooni\Shopping\app\Http\Resources\ProductTagSearchResource;
-use Fereydooni\Shopping\app\Http\Resources\ProductTagAnalyticsResource;
+use Fereydooni\Shopping\app\Http\Requests\StoreProductTagRequest;
 use Fereydooni\Shopping\app\Http\Requests\ToggleProductTagStatusRequest;
+use Fereydooni\Shopping\app\Http\Requests\UpdateProductTagRequest;
+use Fereydooni\Shopping\app\Http\Resources\ProductTagCollection;
+use Fereydooni\Shopping\app\Http\Resources\ProductTagResource;
+use Fereydooni\Shopping\app\Models\ProductTag;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class ProductTagController extends Controller
 {
@@ -127,7 +122,6 @@ class ProductTagController extends Controller
 
         try {
 
-
             return (new ProductTagResource($tag))->response();
         } catch (\Exception $e) {
             return response()->json([
@@ -149,7 +143,7 @@ class ProductTagController extends Controller
         try {
             $result = ProductTagFacade::update($tag, $request->validated());
 
-            if (!$result) {
+            if (! $result) {
                 return response()->json([
                     'error' => 'Failed to update product tag',
                 ], 500);
@@ -176,7 +170,7 @@ class ProductTagController extends Controller
 
             $result = ProductTagFacade::delete($tag);
 
-            if (!$result) {
+            if (! $result) {
                 return response()->json([
                     'error' => 'Failed to delete product tag',
                 ], 500);
@@ -257,7 +251,7 @@ class ProductTagController extends Controller
             return response()->json([
                 'success' => $result,
                 'is_active' => $tag->is_active,
-                'message' => $result ? 'Status updated successfully.' : 'Failed to update status.'
+                'message' => $result ? 'Status updated successfully.' : 'Failed to update status.',
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -282,7 +276,7 @@ class ProductTagController extends Controller
             return response()->json([
                 'success' => $result,
                 'is_featured' => $tag->is_featured,
-                'message' => $result ? 'Featured status updated successfully.' : 'Failed to update featured status.'
+                'message' => $result ? 'Featured status updated successfully.' : 'Failed to update featured status.',
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -580,7 +574,7 @@ class ProductTagController extends Controller
 
             return response()->json([
                 'success' => $result,
-                'message' => $result ? 'Product tags updated successfully.' : 'Failed to update product tags.'
+                'message' => $result ? 'Product tags updated successfully.' : 'Failed to update product tags.',
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -602,7 +596,7 @@ class ProductTagController extends Controller
 
             return response()->json([
                 'success' => $result,
-                'message' => $result ? 'Product tags imported successfully.' : 'Failed to import product tags.'
+                'message' => $result ? 'Product tags imported successfully.' : 'Failed to import product tags.',
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -646,7 +640,7 @@ class ProductTagController extends Controller
 
             return response()->json([
                 'success' => $result,
-                'message' => $result ? 'Product tags synced successfully.' : 'Failed to sync product tags.'
+                'message' => $result ? 'Product tags synced successfully.' : 'Failed to sync product tags.',
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -668,7 +662,7 @@ class ProductTagController extends Controller
 
             return response()->json([
                 'success' => $result,
-                'message' => $result ? 'Product tags merged successfully.' : 'Failed to merge product tags.'
+                'message' => $result ? 'Product tags merged successfully.' : 'Failed to merge product tags.',
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -690,7 +684,7 @@ class ProductTagController extends Controller
 
             return response()->json([
                 'success' => $result,
-                'message' => $result ? 'Product tag split successfully.' : 'Failed to split product tag.'
+                'message' => $result ? 'Product tag split successfully.' : 'Failed to split product tag.',
             ]);
         } catch (\Exception $e) {
             return response()->json([

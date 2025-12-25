@@ -4,11 +4,8 @@ namespace App\Events\ProviderCertification;
 
 use App\Models\ProviderCertification;
 use App\Models\User;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -17,6 +14,7 @@ class ProviderCertificationVerified
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $certification;
+
     public $verifiedBy;
 
     /**
@@ -36,8 +34,8 @@ class ProviderCertificationVerified
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('provider-certification.' . $this->certification->id),
-            new PrivateChannel('provider.' . $this->certification->provider_id),
+            new PrivateChannel('provider-certification.'.$this->certification->id),
+            new PrivateChannel('provider.'.$this->certification->provider_id),
         ];
     }
 

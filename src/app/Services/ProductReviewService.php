@@ -2,31 +2,30 @@
 
 namespace Fereydooni\Shopping\app\Services;
 
-use Fereydooni\Shopping\app\Repositories\Interfaces\ProductReviewRepositoryInterface;
-use Fereydooni\Shopping\app\Models\ProductReview;
 use Fereydooni\Shopping\app\DTOs\ProductReviewDTO;
-use Fereydooni\Shopping\app\Traits\HasCrudOperations;
-use Fereydooni\Shopping\app\Traits\HasStatusToggle;
-use Fereydooni\Shopping\app\Traits\HasSearchOperations;
-use Fereydooni\Shopping\app\Traits\HasVoteManagement;
-use Fereydooni\Shopping\app\Traits\HasSentimentAnalysis;
+use Fereydooni\Shopping\app\Models\ProductReview;
+use Fereydooni\Shopping\app\Repositories\Interfaces\ProductReviewRepositoryInterface;
 use Fereydooni\Shopping\app\Traits\HasAnalyticsOperations;
+use Fereydooni\Shopping\app\Traits\HasCrudOperations;
+use Fereydooni\Shopping\app\Traits\HasSearchOperations;
+use Fereydooni\Shopping\app\Traits\HasSentimentAnalysis;
+use Fereydooni\Shopping\app\Traits\HasStatusToggle;
+use Fereydooni\Shopping\app\Traits\HasVoteManagement;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProductReviewService
 {
-    use HasCrudOperations;
-    use HasStatusToggle;
-    use HasSearchOperations;
-    use HasVoteManagement;
-    use HasSentimentAnalysis;
     use HasAnalyticsOperations;
+    use HasCrudOperations;
+    use HasSearchOperations;
+    use HasSentimentAnalysis;
+    use HasStatusToggle;
+    use HasVoteManagement;
 
     public function __construct(
         private ProductReviewRepositoryInterface $repository
-    ) {
-    }
+    ) {}
 
     // Basic CRUD operations
     public function all(): Collection
@@ -180,7 +179,7 @@ class ProductReviewService
         return $this->repository->approve($review);
     }
 
-    public function reject(ProductReview $review, string $reason = null): bool
+    public function reject(ProductReview $review, ?string $reason = null): bool
     {
         return $this->repository->reject($review, $reason);
     }
@@ -331,6 +330,7 @@ class ProductReviewService
     {
         // Check if user has already reviewed this product
         $existingReview = $this->findByProductIdAndUserId($productId, $userId);
+
         return $existingReview === null;
     }
 
@@ -341,7 +341,7 @@ class ProductReviewService
 
         return [
             'stats' => $stats,
-            'recent_reviews' => $recentReviews->map(fn($review) => ProductReviewDTO::fromModel($review)),
+            'recent_reviews' => $recentReviews->map(fn ($review) => ProductReviewDTO::fromModel($review)),
             'average_rating' => $stats['average_rating'],
             'total_reviews' => $stats['total_reviews'],
         ];
@@ -364,13 +364,13 @@ class ProductReviewService
         $trends = [];
         for ($i = 0; $i < $days; $i++) {
             $date = now()->subDays($i)->toDateString();
-            $dayReviews = $reviews->filter(fn($review) => $review->created_at->toDateString() === $date);
+            $dayReviews = $reviews->filter(fn ($review) => $review->created_at->toDateString() === $date);
 
             $trends[$date] = [
                 'count' => $dayReviews->count(),
                 'average_rating' => $dayReviews->avg('rating') ?? 0,
-                'positive_count' => $dayReviews->filter(fn($review) => $review->sentiment_score > 0.3)->count(),
-                'negative_count' => $dayReviews->filter(fn($review) => $review->sentiment_score < -0.3)->count(),
+                'positive_count' => $dayReviews->filter(fn ($review) => $review->sentiment_score > 0.3)->count(),
+                'negative_count' => $dayReviews->filter(fn ($review) => $review->sentiment_score < -0.3)->count(),
             ];
         }
 

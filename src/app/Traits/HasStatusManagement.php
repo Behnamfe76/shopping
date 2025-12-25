@@ -11,7 +11,7 @@ trait HasStatusManagement
     /**
      * Change status with validation
      */
-    public function changeStatus(object $item, string $newStatus, string $reason = null): bool
+    public function changeStatus(object $item, string $newStatus, ?string $reason = null): bool
     {
         $this->validateStatusChange($item, $newStatus);
 
@@ -33,7 +33,7 @@ trait HasStatusManagement
     /**
      * Cancel item
      */
-    public function cancel(object $item, string $reason = null): bool
+    public function cancel(object $item, ?string $reason = null): bool
     {
         return $this->changeStatus($item, 'cancelled', $reason);
     }
@@ -49,7 +49,7 @@ trait HasStatusManagement
     /**
      * Mark as shipped
      */
-    public function markAsShipped(object $item, string $trackingNumber = null): bool
+    public function markAsShipped(object $item, ?string $trackingNumber = null): bool
     {
         $data = ['status' => 'shipped'];
 
@@ -190,7 +190,7 @@ trait HasStatusManagement
             'cancelled' => [],
         ];
 
-        if (!isset($allowedTransitions[$currentStatus]) || !in_array($newStatus, $allowedTransitions[$currentStatus])) {
+        if (! isset($allowedTransitions[$currentStatus]) || ! in_array($newStatus, $allowedTransitions[$currentStatus])) {
             throw new ValidationException(
                 Validator::make([], [])->errors()->add('status', "Cannot transition from {$currentStatus} to {$newStatus}")
             );
@@ -200,7 +200,7 @@ trait HasStatusManagement
     /**
      * Add status change note
      */
-    protected function addStatusChangeNote(object $item, string $newStatus, string $reason = null): string
+    protected function addStatusChangeNote(object $item, string $newStatus, ?string $reason = null): string
     {
         $currentNotes = $item->notes ? json_decode($item->notes, true) : [];
 
@@ -221,7 +221,7 @@ trait HasStatusManagement
     /**
      * Fire status changed event
      */
-    protected function fireStatusChangedEvent(object $item, string $newStatus, string $reason = null, string $trackingNumber = null): void
+    protected function fireStatusChangedEvent(object $item, string $newStatus, ?string $reason = null, ?string $trackingNumber = null): void
     {
         // This method can be overridden in specific services to fire custom events
         // For now, we'll leave it empty as a placeholder
@@ -241,6 +241,7 @@ trait HasStatusManagement
     public function canBeCancelled(object $item): bool
     {
         $currentStatus = $item->status->value ?? $item->status;
+
         return in_array($currentStatus, ['pending', 'paid']);
     }
 
@@ -250,6 +251,7 @@ trait HasStatusManagement
     public function canBeShipped(object $item): bool
     {
         $currentStatus = $item->status->value ?? $item->status;
+
         return $currentStatus === 'paid';
     }
 
@@ -259,6 +261,7 @@ trait HasStatusManagement
     public function canBeCompleted(object $item): bool
     {
         $currentStatus = $item->status->value ?? $item->status;
+
         return $currentStatus === 'shipped';
     }
 }

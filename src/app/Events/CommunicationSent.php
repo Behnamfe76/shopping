@@ -3,11 +3,8 @@
 namespace Fereydooni\Shopping\app\Events;
 
 use Fereydooni\Shopping\app\Models\ProviderCommunication;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -25,8 +22,8 @@ class CommunicationSent
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('provider.' . $this->providerCommunication->provider_id),
-            new PrivateChannel('user.' . $this->providerCommunication->user_id),
+            new PrivateChannel('provider.'.$this->providerCommunication->provider_id),
+            new PrivateChannel('user.'.$this->providerCommunication->user_id),
         ];
     }
 

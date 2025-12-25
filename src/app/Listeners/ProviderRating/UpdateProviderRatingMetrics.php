@@ -2,17 +2,17 @@
 
 namespace Fereydooni\Shopping\App\Listeners\ProviderRating;
 
-use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingCreated;
-use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingUpdated;
 use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingApproved;
-use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingRejected;
+use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingCreated;
 use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingFlagged;
+use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingRejected;
+use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingUpdated;
 use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingVerified;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class UpdateProviderRatingMetrics implements ShouldQueue
 {
@@ -27,8 +27,9 @@ class UpdateProviderRatingMetrics implements ShouldQueue
             $rating = $event->rating;
             $provider = $rating->provider;
 
-            if (!$provider) {
+            if (! $provider) {
                 Log::warning('Provider not found for rating metrics update', ['rating_id' => $rating->id]);
+
                 return;
             }
 
@@ -61,7 +62,7 @@ class UpdateProviderRatingMetrics implements ShouldQueue
                 'event' => get_class($event),
                 'rating_id' => $event->rating->id ?? null,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
         }
     }
@@ -77,7 +78,7 @@ class UpdateProviderRatingMetrics implements ShouldQueue
 
         Log::info('Provider rating metrics updated for created rating', [
             'rating_id' => $rating->id,
-            'provider_id' => $provider->id
+            'provider_id' => $provider->id,
         ]);
     }
 
@@ -91,7 +92,7 @@ class UpdateProviderRatingMetrics implements ShouldQueue
 
         Log::info('Provider rating metrics updated for updated rating', [
             'rating_id' => $rating->id,
-            'provider_id' => $provider->id
+            'provider_id' => $provider->id,
         ]);
     }
 
@@ -106,7 +107,7 @@ class UpdateProviderRatingMetrics implements ShouldQueue
 
         Log::info('Provider rating metrics updated for approved rating', [
             'rating_id' => $rating->id,
-            'provider_id' => $provider->id
+            'provider_id' => $provider->id,
         ]);
     }
 
@@ -119,7 +120,7 @@ class UpdateProviderRatingMetrics implements ShouldQueue
 
         Log::info('Provider rating metrics updated for rejected rating', [
             'rating_id' => $rating->id,
-            'provider_id' => $provider->id
+            'provider_id' => $provider->id,
         ]);
     }
 
@@ -132,7 +133,7 @@ class UpdateProviderRatingMetrics implements ShouldQueue
 
         Log::info('Provider rating metrics updated for flagged rating', [
             'rating_id' => $rating->id,
-            'provider_id' => $provider->id
+            'provider_id' => $provider->id,
         ]);
     }
 
@@ -146,7 +147,7 @@ class UpdateProviderRatingMetrics implements ShouldQueue
 
         Log::info('Provider rating metrics updated for verified rating', [
             'rating_id' => $rating->id,
-            'provider_id' => $provider->id
+            'provider_id' => $provider->id,
         ]);
     }
 
@@ -179,14 +180,14 @@ class UpdateProviderRatingMetrics implements ShouldQueue
                         'total_ratings' => $metrics->total_ratings,
                         'average_rating' => round($metrics->average_rating ?? 0, 2),
                         'recommendation_percentage' => $recommendationPercentage,
-                        'rating_metrics_updated_at' => now()
+                        'rating_metrics_updated_at' => now(),
                     ]);
             }
 
         } catch (\Exception $e) {
             Log::error('Failed to update overall provider rating metrics', [
                 'provider_id' => $providerId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -214,7 +215,7 @@ class UpdateProviderRatingMetrics implements ShouldQueue
                     'provider_id' => $providerId,
                     'category' => $category,
                     'ratings_count' => $metrics->category_ratings,
-                    'average_rating' => round($metrics->category_average ?? 0, 2)
+                    'average_rating' => round($metrics->category_average ?? 0, 2),
                 ]);
             }
 
@@ -222,7 +223,7 @@ class UpdateProviderRatingMetrics implements ShouldQueue
             Log::error('Failed to update category rating metrics', [
                 'provider_id' => $providerId,
                 'category' => $category,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -246,14 +247,14 @@ class UpdateProviderRatingMetrics implements ShouldQueue
                 Log::info('User rating metrics calculated', [
                     'user_id' => $userId,
                     'total_ratings_given' => $metrics->total_ratings_given,
-                    'average_rating_given' => round($metrics->average_rating_given ?? 0, 2)
+                    'average_rating_given' => round($metrics->average_rating_given ?? 0, 2),
                 ]);
             }
 
         } catch (\Exception $e) {
             Log::error('Failed to update user rating metrics', [
                 'user_id' => $userId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -274,13 +275,13 @@ class UpdateProviderRatingMetrics implements ShouldQueue
 
             Log::info('Approved rating metrics updated', [
                 'provider_id' => $providerId,
-                'approved_count' => $approvedCount
+                'approved_count' => $approvedCount,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to update approved rating metrics', [
                 'provider_id' => $providerId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -301,13 +302,13 @@ class UpdateProviderRatingMetrics implements ShouldQueue
 
             Log::info('Rejected rating metrics updated', [
                 'provider_id' => $providerId,
-                'rejected_count' => $rejectedCount
+                'rejected_count' => $rejectedCount,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to update rejected rating metrics', [
                 'provider_id' => $providerId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -328,13 +329,13 @@ class UpdateProviderRatingMetrics implements ShouldQueue
 
             Log::info('Flagged rating metrics updated', [
                 'provider_id' => $providerId,
-                'flagged_count' => $flaggedCount
+                'flagged_count' => $flaggedCount,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to update flagged rating metrics', [
                 'provider_id' => $providerId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -356,13 +357,13 @@ class UpdateProviderRatingMetrics implements ShouldQueue
 
             Log::info('Verified rating metrics updated', [
                 'provider_id' => $providerId,
-                'verified_count' => $verifiedCount
+                'verified_count' => $verifiedCount,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to update verified rating metrics', [
                 'provider_id' => $providerId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -381,7 +382,7 @@ class UpdateProviderRatingMetrics implements ShouldQueue
         } catch (\Exception $e) {
             Log::error('Failed to clear provider rating metrics cache', [
                 'provider_id' => $providerId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }

@@ -2,21 +2,20 @@
 
 namespace Fereydooni\Shopping\App\Listeners\ProviderPayment;
 
+use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentCompleted;
+use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentCreated;
+use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentFailed;
+use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentProcessed;
+use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentReconciled;
+use Fereydooni\Shopping\App\Notifications\ProviderPayment\PaymentCompleted;
+use Fereydooni\Shopping\App\Notifications\ProviderPayment\PaymentCreated;
+use Fereydooni\Shopping\App\Notifications\ProviderPayment\PaymentFailed;
+use Fereydooni\Shopping\App\Notifications\ProviderPayment\PaymentProcessed;
+use Fereydooni\Shopping\App\Notifications\ProviderPayment\PaymentReconciled;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
-use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentCreated;
-use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentUpdated;
-use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentProcessed;
-use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentCompleted;
-use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentFailed;
-use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentReconciled;
-use Fereydooni\Shopping\App\Notifications\ProviderPayment\PaymentCreated;
-use Fereydooni\Shopping\App\Notifications\ProviderPayment\PaymentProcessed;
-use Fereydooni\Shopping\App\Notifications\ProviderPayment\PaymentCompleted;
-use Fereydooni\Shopping\App\Notifications\ProviderPayment\PaymentFailed;
-use Fereydooni\Shopping\App\Notifications\ProviderPayment\PaymentReconciled;
 
 class SendProviderPaymentNotification implements ShouldQueue
 {
@@ -51,8 +50,9 @@ class SendProviderPaymentNotification implements ShouldQueue
                 default:
                     Log::info('No notification configured for event type', [
                         'event_type' => get_class($event),
-                        'payment_id' => $payment->id
+                        'payment_id' => $payment->id,
                     ]);
+
                     return;
             }
 
@@ -69,7 +69,7 @@ class SendProviderPaymentNotification implements ShouldQueue
                 Log::info('Provider payment notification sent successfully', [
                     'payment_id' => $payment->id,
                     'provider_id' => $payment->provider_id,
-                    'notification_type' => get_class($notification)
+                    'notification_type' => get_class($notification),
                 ]);
             }
 
@@ -77,7 +77,7 @@ class SendProviderPaymentNotification implements ShouldQueue
             Log::error('Failed to send provider payment notification', [
                 'error' => $e->getMessage(),
                 'event_type' => get_class($event),
-                'payment_id' => $event->payment->id ?? 'unknown'
+                'payment_id' => $event->payment->id ?? 'unknown',
             ]);
         }
     }
@@ -95,7 +95,7 @@ class SendProviderPaymentNotification implements ShouldQueue
 
         Log::info('Notifying staff members about payment', [
             'payment_id' => $payment->id,
-            'notification_type' => get_class($notification)
+            'notification_type' => get_class($notification),
         ]);
     }
 }

@@ -2,25 +2,22 @@
 
 namespace App\Services;
 
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Log;
-use App\Repositories\Interfaces\ProviderCommunicationRepositoryInterface;
-use App\Models\ProviderCommunication;
 use App\DTOs\ProviderCommunicationDTO;
-use App\Enums\Status;
-use App\Enums\Priority;
 use App\Enums\Direction;
-use App\Events\ProviderCommunicationCreated;
-use App\Events\CommunicationSent;
+use App\Enums\Priority;
+use App\Enums\Status;
+use App\Events\CommunicationArchived;
 use App\Events\CommunicationRead;
 use App\Events\CommunicationReplied;
-use App\Events\CommunicationArchived;
+use App\Events\ProviderCommunicationCreated;
+use App\Models\ProviderCommunication;
+use App\Repositories\Interfaces\ProviderCommunicationRepositoryInterface;
 use Exception;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 
 class ProviderCommunicationService
 {
@@ -73,14 +70,14 @@ class ProviderCommunicationService
             Log::info('Provider communication created successfully', [
                 'id' => $communication->id,
                 'provider_id' => $communication->provider_id,
-                'user_id' => $communication->user_id
+                'user_id' => $communication->user_id,
             ]);
 
             return $communication;
         } catch (Exception $e) {
             Log::error('Failed to create provider communication', [
                 'error' => $e->getMessage(),
-                'data' => $data
+                'data' => $data,
             ]);
             throw $e;
         }
@@ -89,6 +86,7 @@ class ProviderCommunicationService
     public function createCommunicationDTO(array $data): ProviderCommunicationDTO
     {
         $communication = $this->createCommunication($data);
+
         return ProviderCommunicationDTO::fromModel($communication);
     }
 
@@ -104,7 +102,7 @@ class ProviderCommunicationService
             if ($result) {
                 Log::info('Provider communication updated successfully', [
                     'id' => $communication->id,
-                    'changes' => $data
+                    'changes' => $data,
                 ]);
             }
 
@@ -113,7 +111,7 @@ class ProviderCommunicationService
             Log::error('Failed to update provider communication', [
                 'id' => $communication->id,
                 'error' => $e->getMessage(),
-                'data' => $data
+                'data' => $data,
             ]);
             throw $e;
         }
@@ -122,6 +120,7 @@ class ProviderCommunicationService
     public function updateCommunicationDTO(ProviderCommunication $communication, array $data): ?ProviderCommunicationDTO
     {
         $result = $this->updateCommunication($communication, $data);
+
         return $result ? ProviderCommunicationDTO::fromModel($communication->fresh()) : null;
     }
 
@@ -132,7 +131,7 @@ class ProviderCommunicationService
 
             if ($result) {
                 Log::info('Provider communication deleted successfully', [
-                    'id' => $communication->id
+                    'id' => $communication->id,
                 ]);
             }
 
@@ -140,7 +139,7 @@ class ProviderCommunicationService
         } catch (Exception $e) {
             Log::error('Failed to delete provider communication', [
                 'id' => $communication->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -182,7 +181,7 @@ class ProviderCommunicationService
         } catch (Exception $e) {
             Log::error('Failed to mark communication as read', [
                 'id' => $communication->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -202,7 +201,7 @@ class ProviderCommunicationService
         } catch (Exception $e) {
             Log::error('Failed to mark communication as replied', [
                 'id' => $communication->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -221,7 +220,7 @@ class ProviderCommunicationService
         } catch (Exception $e) {
             Log::error('Failed to mark communication as closed', [
                 'id' => $communication->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -241,7 +240,7 @@ class ProviderCommunicationService
         } catch (Exception $e) {
             Log::error('Failed to archive communication', [
                 'id' => $communication->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -260,7 +259,7 @@ class ProviderCommunicationService
         } catch (Exception $e) {
             Log::error('Failed to unarchive communication', [
                 'id' => $communication->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -279,7 +278,7 @@ class ProviderCommunicationService
         } catch (Exception $e) {
             Log::error('Failed to mark communication as urgent', [
                 'id' => $communication->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -298,7 +297,7 @@ class ProviderCommunicationService
         } catch (Exception $e) {
             Log::error('Failed to unmark communication as urgent', [
                 'id' => $communication->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -367,17 +366,17 @@ class ProviderCommunicationService
         }
 
         // Validate communication type
-        if (!in_array($data['communication_type'], ['email', 'phone', 'chat', 'sms', 'video_call', 'in_person', 'support_ticket', 'complaint', 'inquiry', 'order_update', 'payment_notification', 'quality_issue', 'delivery_update', 'contract_discussion', 'general'])) {
+        if (! in_array($data['communication_type'], ['email', 'phone', 'chat', 'sms', 'video_call', 'in_person', 'support_ticket', 'complaint', 'inquiry', 'order_update', 'payment_notification', 'quality_issue', 'delivery_update', 'contract_discussion', 'general'])) {
             throw new Exception('Invalid communication type');
         }
 
         // Validate direction
-        if (!in_array($data['direction'], ['inbound', 'outbound'])) {
+        if (! in_array($data['direction'], ['inbound', 'outbound'])) {
             throw new Exception('Invalid direction');
         }
 
         // Validate priority
-        if (!in_array($data['priority'], ['low', 'normal', 'high', 'urgent'])) {
+        if (! in_array($data['priority'], ['low', 'normal', 'high', 'urgent'])) {
             throw new Exception('Invalid priority');
         }
     }
@@ -385,12 +384,12 @@ class ProviderCommunicationService
     protected function validateUpdateData(array $data): void
     {
         // Validate status if provided
-        if (isset($data['status']) && !in_array($data['status'], ['draft', 'sent', 'delivered', 'read', 'replied', 'closed', 'archived', 'failed'])) {
+        if (isset($data['status']) && ! in_array($data['status'], ['draft', 'sent', 'delivered', 'read', 'replied', 'closed', 'archived', 'failed'])) {
             throw new Exception('Invalid status');
         }
 
         // Validate priority if provided
-        if (isset($data['priority']) && !in_array($data['priority'], ['low', 'normal', 'high', 'urgent'])) {
+        if (isset($data['priority']) && ! in_array($data['priority'], ['low', 'normal', 'high', 'urgent'])) {
             throw new Exception('Invalid priority');
         }
     }
@@ -398,17 +397,17 @@ class ProviderCommunicationService
     protected function setDefaultValues(array $data): array
     {
         // Set default status if not provided
-        if (!isset($data['status'])) {
+        if (! isset($data['status'])) {
             $data['status'] = 'draft';
         }
 
         // Set default priority if not provided
-        if (!isset($data['priority'])) {
+        if (! isset($data['priority'])) {
             $data['priority'] = 'normal';
         }
 
         // Set default direction if not provided
-        if (!isset($data['direction'])) {
+        if (! isset($data['direction'])) {
             $data['direction'] = 'outbound';
         }
 
@@ -440,7 +439,7 @@ class ProviderCommunicationService
         } catch (Exception $e) {
             Log::error('Failed to send communication notifications', [
                 'communication_id' => $communication->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }

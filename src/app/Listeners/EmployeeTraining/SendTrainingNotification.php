@@ -2,15 +2,15 @@
 
 namespace Fereydooni\Shopping\Listeners\EmployeeTraining;
 
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
-use Fereydooni\Shopping\Events\EmployeeTraining\EmployeeTrainingCreated;
-use Fereydooni\Shopping\Events\EmployeeTraining\EmployeeTrainingUpdated;
-use Fereydooni\Shopping\Events\EmployeeTraining\EmployeeTrainingStarted;
 use Fereydooni\Shopping\Events\EmployeeTraining\EmployeeTrainingCompleted;
+use Fereydooni\Shopping\Events\EmployeeTraining\EmployeeTrainingCreated;
+use Fereydooni\Shopping\Events\EmployeeTraining\EmployeeTrainingExpiring;
 use Fereydooni\Shopping\Events\EmployeeTraining\EmployeeTrainingFailed;
 use Fereydooni\Shopping\Events\EmployeeTraining\EmployeeTrainingRenewed;
-use Fereydooni\Shopping\Events\EmployeeTraining\EmployeeTrainingExpiring;
+use Fereydooni\Shopping\Events\EmployeeTraining\EmployeeTrainingStarted;
+use Fereydooni\Shopping\Events\EmployeeTraining\EmployeeTrainingUpdated;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
 
 class SendTrainingNotification implements ShouldQueue
 {

@@ -2,18 +2,17 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
-use Fereydooni\Shopping\app\Models\Address;
-use Fereydooni\Shopping\app\DTOs\AddressDTO;
 use Fereydooni\Shopping\app\Enums\AddressType;
 use Fereydooni\Shopping\app\Facades\Address as AddressFacade;
+use Fereydooni\Shopping\app\Http\Requests\SearchAddressRequest;
+use Fereydooni\Shopping\app\Http\Requests\SetDefaultAddressRequest;
 use Fereydooni\Shopping\app\Http\Requests\StoreAddressRequest;
 use Fereydooni\Shopping\app\Http\Requests\UpdateAddressRequest;
-use Fereydooni\Shopping\app\Http\Requests\SetDefaultAddressRequest;
-use Fereydooni\Shopping\app\Http\Requests\SearchAddressRequest;
+use Fereydooni\Shopping\app\Models\Address;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class AddressController extends Controller
 {
@@ -28,7 +27,7 @@ class AddressController extends Controller
         $paginationType = $request->get('pagination', 'regular');
         $type = $request->get('type');
 
-        $addresses = match($paginationType) {
+        $addresses = match ($paginationType) {
             'simplePaginate' => AddressFacade::simplePaginateByUser(auth()->id(), $perPage),
             'cursorPaginate' => AddressFacade::cursorPaginateByUser(auth()->id(), $perPage),
             default => AddressFacade::paginateByUser(auth()->id(), $perPage),
@@ -65,7 +64,7 @@ class AddressController extends Controller
         } catch (\Exception $e) {
             return back()
                 ->withInput()
-                ->with('error', 'Failed to create address: ' . $e->getMessage());
+                ->with('error', 'Failed to create address: '.$e->getMessage());
         }
     }
 
@@ -103,7 +102,7 @@ class AddressController extends Controller
         try {
             $addressDTO = AddressFacade::updateDTO($address, $request->validated());
 
-            if (!$addressDTO) {
+            if (! $addressDTO) {
                 throw new \Exception('Failed to update address.');
             }
 
@@ -113,7 +112,7 @@ class AddressController extends Controller
         } catch (\Exception $e) {
             return back()
                 ->withInput()
-                ->with('error', 'Failed to update address: ' . $e->getMessage());
+                ->with('error', 'Failed to update address: '.$e->getMessage());
         }
     }
 
@@ -127,7 +126,7 @@ class AddressController extends Controller
         try {
             $deleted = AddressFacade::delete($address);
 
-            if (!$deleted) {
+            if (! $deleted) {
                 throw new \Exception('Failed to delete address.');
             }
 
@@ -136,7 +135,7 @@ class AddressController extends Controller
                 ->with('success', 'Address deleted successfully.');
         } catch (\Exception $e) {
             return back()
-                ->with('error', 'Failed to delete address: ' . $e->getMessage());
+                ->with('error', 'Failed to delete address: '.$e->getMessage());
         }
     }
 
@@ -150,13 +149,13 @@ class AddressController extends Controller
         try {
             $addressDTO = AddressFacade::setDefaultDTO($address);
 
-            if (!$addressDTO) {
+            if (! $addressDTO) {
                 throw new \Exception('Failed to set address as default.');
             }
 
             return back()->with('success', 'Address set as default successfully.');
         } catch (\Exception $e) {
-            return back()->with('error', 'Failed to set address as default: ' . $e->getMessage());
+            return back()->with('error', 'Failed to set address as default: '.$e->getMessage());
         }
     }
 
@@ -175,6 +174,7 @@ class AddressController extends Controller
         try {
             if ($request->expectsJson()) {
                 $addresses = AddressFacade::search($query, auth()->id(), $type);
+
                 return response()->json([
                     'addresses' => $addresses,
                     'count' => $addresses->count(),
@@ -195,7 +195,7 @@ class AddressController extends Controller
                 return response()->json(['error' => $e->getMessage()], 500);
             }
 
-            return back()->with('error', 'Search failed: ' . $e->getMessage());
+            return back()->with('error', 'Search failed: '.$e->getMessage());
         }
     }
 
@@ -244,10 +244,11 @@ class AddressController extends Controller
     {
         $addressType = AddressType::tryFrom($type);
 
-        if (!$addressType) {
+        if (! $addressType) {
             if ($request->expectsJson()) {
                 return response()->json(['error' => 'Invalid address type.'], 400);
             }
+
             return back()->with('error', 'Invalid address type.');
         }
 
@@ -271,7 +272,7 @@ class AddressController extends Controller
                 return response()->json(['error' => $e->getMessage()], 500);
             }
 
-            return back()->with('error', 'Failed to load addresses: ' . $e->getMessage());
+            return back()->with('error', 'Failed to load addresses: '.$e->getMessage());
         }
     }
 }

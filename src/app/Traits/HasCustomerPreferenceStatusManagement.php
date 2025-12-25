@@ -2,19 +2,19 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
+use Fereydooni\Shopping\app\DTOs\CustomerPreferenceDTO;
+use Fereydooni\Shopping\app\Models\CustomerPreference;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
-use Fereydooni\Shopping\app\Models\CustomerPreference;
-use Fereydooni\Shopping\app\DTOs\CustomerPreferenceDTO;
 
 trait HasCustomerPreferenceStatusManagement
 {
     /**
      * Activate customer preference
      */
-    public function activateCustomerPreference(CustomerPreference $preference, string $reason = null): bool
+    public function activateCustomerPreference(CustomerPreference $preference, ?string $reason = null): bool
     {
         $this->validateStatusChange($preference, 'activate');
 
@@ -36,7 +36,7 @@ trait HasCustomerPreferenceStatusManagement
     /**
      * Deactivate customer preference
      */
-    public function deactivateCustomerPreference(CustomerPreference $preference, string $reason = null): bool
+    public function deactivateCustomerPreference(CustomerPreference $preference, ?string $reason = null): bool
     {
         $this->validateStatusChange($preference, 'deactivate');
 
@@ -58,7 +58,7 @@ trait HasCustomerPreferenceStatusManagement
     /**
      * Toggle customer preference status
      */
-    public function toggleCustomerPreferenceStatus(CustomerPreference $preference, string $reason = null): bool
+    public function toggleCustomerPreferenceStatus(CustomerPreference $preference, ?string $reason = null): bool
     {
         if ($preference->is_active) {
             return $this->deactivateCustomerPreference($preference, $reason);
@@ -70,11 +70,11 @@ trait HasCustomerPreferenceStatusManagement
     /**
      * Activate customer preference by ID
      */
-    public function activateCustomerPreferenceById(int $preferenceId, string $reason = null): bool
+    public function activateCustomerPreferenceById(int $preferenceId, ?string $reason = null): bool
     {
         $preference = $this->repository->find($preferenceId);
 
-        if (!$preference) {
+        if (! $preference) {
             return false;
         }
 
@@ -84,11 +84,11 @@ trait HasCustomerPreferenceStatusManagement
     /**
      * Deactivate customer preference by ID
      */
-    public function deactivateCustomerPreferenceById(int $preferenceId, string $reason = null): bool
+    public function deactivateCustomerPreferenceById(int $preferenceId, ?string $reason = null): bool
     {
         $preference = $this->repository->find($preferenceId);
 
-        if (!$preference) {
+        if (! $preference) {
             return false;
         }
 
@@ -98,11 +98,11 @@ trait HasCustomerPreferenceStatusManagement
     /**
      * Activate customer preference by key
      */
-    public function activateCustomerPreferenceByKey(int $customerId, string $key, string $reason = null): bool
+    public function activateCustomerPreferenceByKey(int $customerId, string $key, ?string $reason = null): bool
     {
         $preference = $this->repository->findByCustomerAndKey($customerId, $key);
 
-        if (!$preference) {
+        if (! $preference) {
             return false;
         }
 
@@ -112,11 +112,11 @@ trait HasCustomerPreferenceStatusManagement
     /**
      * Deactivate customer preference by key
      */
-    public function deactivateCustomerPreferenceByKey(int $customerId, string $key, string $reason = null): bool
+    public function deactivateCustomerPreferenceByKey(int $customerId, string $key, ?string $reason = null): bool
     {
         $preference = $this->repository->findByCustomerAndKey($customerId, $key);
 
-        if (!$preference) {
+        if (! $preference) {
             return false;
         }
 
@@ -129,7 +129,7 @@ trait HasCustomerPreferenceStatusManagement
     public function getCustomerPreferencesByStatus(int $customerId, bool $isActive): Collection
     {
         return $this->repository->findByCustomerId($customerId)
-            ->filter(fn($preference) => $preference->is_active === $isActive);
+            ->filter(fn ($preference) => $preference->is_active === $isActive);
     }
 
     /**
@@ -138,7 +138,8 @@ trait HasCustomerPreferenceStatusManagement
     public function getCustomerPreferencesByStatusDTO(int $customerId, bool $isActive): Collection
     {
         $preferences = $this->getCustomerPreferencesByStatus($customerId, $isActive);
-        return $preferences->map(fn($preference) => CustomerPreferenceDTO::fromModel($preference));
+
+        return $preferences->map(fn ($preference) => CustomerPreferenceDTO::fromModel($preference));
     }
 
     /**
@@ -176,7 +177,7 @@ trait HasCustomerPreferenceStatusManagement
     /**
      * Activate all customer preferences
      */
-    public function activateAllCustomerPreferences(int $customerId, string $reason = null): bool
+    public function activateAllCustomerPreferences(int $customerId, ?string $reason = null): bool
     {
         DB::beginTransaction();
 
@@ -185,7 +186,7 @@ trait HasCustomerPreferenceStatusManagement
             $activatedCount = 0;
 
             foreach ($preferences as $preference) {
-                if (!$preference->is_active) {
+                if (! $preference->is_active) {
                     if ($this->activateCustomerPreference($preference, $reason)) {
                         $activatedCount++;
                     }
@@ -193,9 +194,11 @@ trait HasCustomerPreferenceStatusManagement
             }
 
             DB::commit();
+
             return $activatedCount > 0;
         } catch (\Exception $e) {
             DB::rollBack();
+
             return false;
         }
     }
@@ -203,7 +206,7 @@ trait HasCustomerPreferenceStatusManagement
     /**
      * Deactivate all customer preferences
      */
-    public function deactivateAllCustomerPreferences(int $customerId, string $reason = null): bool
+    public function deactivateAllCustomerPreferences(int $customerId, ?string $reason = null): bool
     {
         DB::beginTransaction();
 
@@ -220,9 +223,11 @@ trait HasCustomerPreferenceStatusManagement
             }
 
             DB::commit();
+
             return $deactivatedCount > 0;
         } catch (\Exception $e) {
             DB::rollBack();
+
             return false;
         }
     }
@@ -230,7 +235,7 @@ trait HasCustomerPreferenceStatusManagement
     /**
      * Activate customer preferences by type
      */
-    public function activateCustomerPreferencesByType(int $customerId, string $type, string $reason = null): bool
+    public function activateCustomerPreferencesByType(int $customerId, string $type, ?string $reason = null): bool
     {
         DB::beginTransaction();
 
@@ -239,7 +244,7 @@ trait HasCustomerPreferenceStatusManagement
             $activatedCount = 0;
 
             foreach ($preferences as $preference) {
-                if (!$preference->is_active) {
+                if (! $preference->is_active) {
                     if ($this->activateCustomerPreference($preference, $reason)) {
                         $activatedCount++;
                     }
@@ -247,9 +252,11 @@ trait HasCustomerPreferenceStatusManagement
             }
 
             DB::commit();
+
             return $activatedCount > 0;
         } catch (\Exception $e) {
             DB::rollBack();
+
             return false;
         }
     }
@@ -257,7 +264,7 @@ trait HasCustomerPreferenceStatusManagement
     /**
      * Deactivate customer preferences by type
      */
-    public function deactivateCustomerPreferencesByType(int $customerId, string $type, string $reason = null): bool
+    public function deactivateCustomerPreferencesByType(int $customerId, string $type, ?string $reason = null): bool
     {
         DB::beginTransaction();
 
@@ -274,9 +281,11 @@ trait HasCustomerPreferenceStatusManagement
             }
 
             DB::commit();
+
             return $deactivatedCount > 0;
         } catch (\Exception $e) {
             DB::rollBack();
+
             return false;
         }
     }
@@ -284,7 +293,7 @@ trait HasCustomerPreferenceStatusManagement
     /**
      * Activate customer preferences by category
      */
-    public function activateCustomerPreferencesByCategory(int $customerId, string $category, string $reason = null): bool
+    public function activateCustomerPreferencesByCategory(int $customerId, string $category, ?string $reason = null): bool
     {
         DB::beginTransaction();
 
@@ -293,7 +302,7 @@ trait HasCustomerPreferenceStatusManagement
             $activatedCount = 0;
 
             foreach ($preferences as $preference) {
-                if ($this->getPreferenceCategory($preference->preference_key) === $category && !$preference->is_active) {
+                if ($this->getPreferenceCategory($preference->preference_key) === $category && ! $preference->is_active) {
                     if ($this->activateCustomerPreference($preference, $reason)) {
                         $activatedCount++;
                     }
@@ -301,9 +310,11 @@ trait HasCustomerPreferenceStatusManagement
             }
 
             DB::commit();
+
             return $activatedCount > 0;
         } catch (\Exception $e) {
             DB::rollBack();
+
             return false;
         }
     }
@@ -311,7 +322,7 @@ trait HasCustomerPreferenceStatusManagement
     /**
      * Deactivate customer preferences by category
      */
-    public function deactivateCustomerPreferencesByCategory(int $customerId, string $category, string $reason = null): bool
+    public function deactivateCustomerPreferencesByCategory(int $customerId, string $category, ?string $reason = null): bool
     {
         DB::beginTransaction();
 
@@ -328,9 +339,11 @@ trait HasCustomerPreferenceStatusManagement
             }
 
             DB::commit();
+
             return $deactivatedCount > 0;
         } catch (\Exception $e) {
             DB::rollBack();
+
             return false;
         }
     }
@@ -396,11 +409,11 @@ trait HasCustomerPreferenceStatusManagement
     /**
      * Fire preference status changed event
      */
-    protected function firePreferenceStatusChangedEvent(CustomerPreference $preference, string $status, string $reason = null): void
+    protected function firePreferenceStatusChangedEvent(CustomerPreference $preference, string $status, ?string $reason = null): void
     {
         // This would typically fire an event
         // For now, just log the status change
-        \Log::info("Customer preference status changed", [
+        \Log::info('Customer preference status changed', [
             'preference_id' => $preference->id,
             'customer_id' => $preference->customer_id,
             'preference_key' => $preference->preference_key,
@@ -415,7 +428,7 @@ trait HasCustomerPreferenceStatusManagement
     protected function getPreferenceCategory(string $key): string
     {
         $parts = explode('.', $key);
+
         return $parts[0] ?? 'general';
     }
 }
-

@@ -2,16 +2,16 @@
 
 namespace Fereydooni\Shopping\app\Repositories;
 
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Fereydooni\Shopping\app\Repositories\Interfaces\SubscriptionRepositoryInterface;
-use Fereydooni\Shopping\app\Models\Subscription;
 use Fereydooni\Shopping\app\DTOs\SubscriptionDTO;
 use Fereydooni\Shopping\app\Enums\BillingCycle;
-use Illuminate\Support\Facades\DB;
+use Fereydooni\Shopping\app\Models\Subscription;
+use Fereydooni\Shopping\app\Repositories\Interfaces\SubscriptionRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class SubscriptionRepository implements SubscriptionRepositoryInterface
 {
@@ -31,7 +31,7 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
         return Subscription::with(['product', 'userSubscriptions'])->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return Subscription::with(['product', 'userSubscriptions'])->cursorPaginate($perPage, ['*'], 'id', $cursor);
     }
@@ -44,6 +44,7 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
     public function findDTO(int $id): ?SubscriptionDTO
     {
         $subscription = $this->find($id);
+
         return $subscription ? SubscriptionDTO::fromModel($subscription) : null;
     }
 
@@ -57,7 +58,8 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
     public function findByProductIdDTO(int $productId): Collection
     {
         $subscriptions = $this->findByProductId($productId);
-        return $subscriptions->map(fn($subscription) => SubscriptionDTO::fromModel($subscription));
+
+        return $subscriptions->map(fn ($subscription) => SubscriptionDTO::fromModel($subscription));
     }
 
     public function findByBillingCycle(string $billingCycle): Collection
@@ -70,7 +72,8 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
     public function findByBillingCycleDTO(string $billingCycle): Collection
     {
         $subscriptions = $this->findByBillingCycle($billingCycle);
-        return $subscriptions->map(fn($subscription) => SubscriptionDTO::fromModel($subscription));
+
+        return $subscriptions->map(fn ($subscription) => SubscriptionDTO::fromModel($subscription));
     }
 
     public function findByPriceRange(float $minPrice, float $maxPrice): Collection
@@ -83,7 +86,8 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
     public function findByPriceRangeDTO(float $minPrice, float $maxPrice): Collection
     {
         $subscriptions = $this->findByPriceRange($minPrice, $maxPrice);
-        return $subscriptions->map(fn($subscription) => SubscriptionDTO::fromModel($subscription));
+
+        return $subscriptions->map(fn ($subscription) => SubscriptionDTO::fromModel($subscription));
     }
 
     public function findByTrialPeriod(int $trialDays): Collection
@@ -96,7 +100,8 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
     public function findByTrialPeriodDTO(int $trialDays): Collection
     {
         $subscriptions = $this->findByTrialPeriod($trialDays);
-        return $subscriptions->map(fn($subscription) => SubscriptionDTO::fromModel($subscription));
+
+        return $subscriptions->map(fn ($subscription) => SubscriptionDTO::fromModel($subscription));
     }
 
     public function create(array $data): Subscription
@@ -107,6 +112,7 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
     public function createAndReturnDTO(array $data): SubscriptionDTO
     {
         $subscription = $this->create($data);
+
         return SubscriptionDTO::fromModel($subscription);
     }
 
@@ -118,6 +124,7 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
     public function updateAndReturnDTO(Subscription $subscription, array $data): ?SubscriptionDTO
     {
         $updated = $this->update($subscription, $data);
+
         return $updated ? SubscriptionDTO::fromModel($subscription->fresh()) : null;
     }
 
@@ -146,7 +153,7 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
         return Subscription::where('name', 'like', "%{$query}%")
             ->orWhereHas('product', function ($q) use ($query) {
                 $q->where('title', 'like', "%{$query}%")
-                  ->orWhere('sku', 'like', "%{$query}%");
+                    ->orWhere('sku', 'like', "%{$query}%");
             })
             ->with(['product', 'userSubscriptions'])
             ->get();
@@ -155,7 +162,8 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
     public function searchDTO(string $query): Collection
     {
         $subscriptions = $this->search($query);
-        return $subscriptions->map(fn($subscription) => SubscriptionDTO::fromModel($subscription));
+
+        return $subscriptions->map(fn ($subscription) => SubscriptionDTO::fromModel($subscription));
     }
 
     public function getActiveSubscriptions(): Collection
@@ -168,7 +176,8 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
     public function getActiveSubscriptionsDTO(): Collection
     {
         $subscriptions = $this->getActiveSubscriptions();
-        return $subscriptions->map(fn($subscription) => SubscriptionDTO::fromModel($subscription));
+
+        return $subscriptions->map(fn ($subscription) => SubscriptionDTO::fromModel($subscription));
     }
 
     public function getTrialSubscriptions(): Collection
@@ -181,24 +190,26 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
     public function getTrialSubscriptionsDTO(): Collection
     {
         $subscriptions = $this->getTrialSubscriptions();
-        return $subscriptions->map(fn($subscription) => SubscriptionDTO::fromModel($subscription));
+
+        return $subscriptions->map(fn ($subscription) => SubscriptionDTO::fromModel($subscription));
     }
 
     public function validateSubscription(array $data): bool
     {
         $validator = validator($data, SubscriptionDTO::rules(), SubscriptionDTO::messages());
-        return !$validator->fails();
+
+        return ! $validator->fails();
     }
 
-    public function calculateNextBillingDate(Subscription $subscription, string $startDate = null): string
+    public function calculateNextBillingDate(Subscription $subscription, ?string $startDate = null): string
     {
-        if (!$startDate) {
+        if (! $startDate) {
             $startDate = now();
         }
 
         $start = Carbon::parse($startDate);
 
-        $nextBillingDate = match($subscription->billing_cycle) {
+        $nextBillingDate = match ($subscription->billing_cycle) {
             BillingCycle::DAILY => $start->addDays($subscription->billing_interval),
             BillingCycle::WEEKLY => $start->addWeeks($subscription->billing_interval),
             BillingCycle::MONTHLY => $start->addMonths($subscription->billing_interval),
@@ -235,6 +246,7 @@ class SubscriptionRepository implements SubscriptionRepositoryInterface
     public function getPopularSubscriptionsDTO(int $limit = 10): Collection
     {
         $subscriptions = $this->getPopularSubscriptions($limit);
-        return $subscriptions->map(fn($subscription) => SubscriptionDTO::fromModel($subscription));
+
+        return $subscriptions->map(fn ($subscription) => SubscriptionDTO::fromModel($subscription));
     }
 }

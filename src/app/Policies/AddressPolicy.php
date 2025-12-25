@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
-use Fereydooni\Shopping\app\Models\Address;
 use Fereydooni\Shopping\app\Enums\AddressType;
+use Fereydooni\Shopping\app\Models\Address;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class AddressPolicy
 {
@@ -180,7 +180,7 @@ class AddressPolicy
         // Check if user can validate own addresses
         if ($user->can('address.validate.own')) {
             // If no specific address provided, allow validation
-            if (!$address) {
+            if (! $address) {
                 return true;
             }
 

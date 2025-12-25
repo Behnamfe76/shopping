@@ -2,14 +2,14 @@
 
 namespace Fereydooni\Shopping\database\seeders;
 
-use Illuminate\Database\Seeder;
-use Fereydooni\Shopping\app\Models\CustomerCommunication;
-use Fereydooni\Shopping\app\Models\Customer;
-use Fereydooni\Shopping\app\Models\User;
-use Fereydooni\Shopping\app\Enums\CommunicationType;
-use Fereydooni\Shopping\app\Enums\CommunicationStatus;
-use Fereydooni\Shopping\app\Enums\CommunicationPriority;
 use Fereydooni\Shopping\app\Enums\CommunicationChannel;
+use Fereydooni\Shopping\app\Enums\CommunicationPriority;
+use Fereydooni\Shopping\app\Enums\CommunicationStatus;
+use Fereydooni\Shopping\app\Enums\CommunicationType;
+use Fereydooni\Shopping\app\Models\Customer;
+use Fereydooni\Shopping\app\Models\CustomerCommunication;
+use Fereydooni\Shopping\app\Models\User;
+use Illuminate\Database\Seeder;
 
 class CustomerCommunicationSeeder extends Seeder
 {
@@ -23,6 +23,7 @@ class CustomerCommunicationSeeder extends Seeder
 
         if ($customers->isEmpty() || $users->isEmpty()) {
             $this->command->warn('No customers or users found. Skipping CustomerCommunication seeding.');
+
             return;
         }
 
@@ -34,7 +35,7 @@ class CustomerCommunicationSeeder extends Seeder
         foreach ($customers as $customer) {
             // Create 5-15 communications per customer
             $communicationCount = rand(5, 15);
-            
+
             for ($i = 0; $i < $communicationCount; $i++) {
                 $communicationType = $communicationTypes[array_rand($communicationTypes)];
                 $status = $statuses[array_rand($statuses)];
@@ -82,46 +83,47 @@ class CustomerCommunicationSeeder extends Seeder
                 'Exclusive member benefits',
                 'Seasonal sale announcement',
                 'Product review request',
-                'Loyalty program update'
+                'Loyalty program update',
             ],
             CommunicationType::SMS => [
                 'Order shipped',
                 'Delivery update',
                 'Special offer',
                 'Account alert',
-                'Payment reminder'
+                'Payment reminder',
             ],
             CommunicationType::PUSH_NOTIFICATION => [
                 'New order update',
                 'Special offer available',
                 'Product back in stock',
                 'Account notification',
-                'App update available'
+                'App update available',
             ],
             CommunicationType::IN_APP => [
                 'Welcome message',
                 'Feature announcement',
                 'Account update',
                 'New content available',
-                'System notification'
+                'System notification',
             ],
             CommunicationType::LETTER => [
                 'Welcome letter',
                 'Account statement',
                 'Legal notice',
                 'Important update',
-                'Thank you letter'
+                'Thank you letter',
             ],
             CommunicationType::PHONE_CALL => [
                 'Order confirmation call',
                 'Customer service call',
                 'Follow-up call',
                 'Survey call',
-                'Support call'
-            ]
+                'Support call',
+            ],
         ];
 
         $typeSubjects = $subjects[$type] ?? ['General communication'];
+
         return $typeSubjects[array_rand($typeSubjects)];
     }
 
@@ -138,46 +140,47 @@ class CustomerCommunicationSeeder extends Seeder
                 'As a valued member, you have access to exclusive benefits and offers.',
                 'Our seasonal sale is now live! Get up to 50% off on selected items.',
                 'We\'d love to hear your feedback about your recent purchase.',
-                'Your loyalty points have been updated. Check your account for details.'
+                'Your loyalty points have been updated. Check your account for details.',
             ],
             CommunicationType::SMS => [
                 'Your order #12345 has been shipped. Track at example.com/track',
                 'Your delivery will arrive today between 2-4 PM.',
                 'Special offer: 20% off all items. Use code SAVE20. Valid until tomorrow.',
                 'Your account has been updated. Check your email for details.',
-                'Payment reminder: Your invoice is due in 3 days.'
+                'Payment reminder: Your invoice is due in 3 days.',
             ],
             CommunicationType::PUSH_NOTIFICATION => [
                 'Your order has been updated. Tap to view details.',
                 'Special offer available now! Tap to shop.',
                 'Product is back in stock. Tap to purchase.',
                 'Your account has been updated.',
-                'New app version available with improved features.'
+                'New app version available with improved features.',
             ],
             CommunicationType::IN_APP => [
                 'Welcome to our app! We\'re excited to have you here.',
                 'New features are now available. Check them out!',
                 'Your account settings have been updated.',
                 'New content is available for you to explore.',
-                'System maintenance completed successfully.'
+                'System maintenance completed successfully.',
             ],
             CommunicationType::LETTER => [
                 'Welcome to our community. We\'re excited to have you as a customer.',
                 'Please find enclosed your account statement for this month.',
                 'This letter serves as official notice regarding your account.',
                 'We have important updates regarding your account.',
-                'Thank you for your continued business and trust in our company.'
+                'Thank you for your continued business and trust in our company.',
             ],
             CommunicationType::PHONE_CALL => [
                 'This is a confirmation call regarding your recent order.',
                 'We\'re calling to provide customer service assistance.',
                 'This is a follow-up call regarding your recent inquiry.',
                 'We\'re conducting a customer satisfaction survey.',
-                'We\'re calling to provide technical support.'
-            ]
+                'We\'re calling to provide technical support.',
+            ],
         ];
 
         $typeContents = $contents[$type] ?? ['General communication content.'];
+
         return $typeContents[array_rand($typeContents)];
     }
 
@@ -186,6 +189,7 @@ class CustomerCommunicationSeeder extends Seeder
         if (in_array($status->value, ['scheduled', 'sending', 'sent', 'delivered', 'opened', 'clicked'])) {
             return now()->subDays(rand(1, 30))->toDateTimeString();
         }
+
         return null;
     }
 
@@ -194,6 +198,7 @@ class CustomerCommunicationSeeder extends Seeder
         if (in_array($status->value, ['sent', 'delivered', 'opened', 'clicked'])) {
             return now()->subDays(rand(1, 25))->toDateTimeString();
         }
+
         return null;
     }
 
@@ -202,6 +207,7 @@ class CustomerCommunicationSeeder extends Seeder
         if (in_array($status->value, ['delivered', 'opened', 'clicked'])) {
             return now()->subDays(rand(1, 20))->toDateTimeString();
         }
+
         return null;
     }
 
@@ -210,6 +216,7 @@ class CustomerCommunicationSeeder extends Seeder
         if (in_array($status->value, ['opened', 'clicked'])) {
             return now()->subDays(rand(1, 15))->toDateTimeString();
         }
+
         return null;
     }
 
@@ -218,6 +225,7 @@ class CustomerCommunicationSeeder extends Seeder
         if ($status->value === 'clicked') {
             return now()->subDays(rand(1, 10))->toDateTimeString();
         }
+
         return null;
     }
 
@@ -226,6 +234,7 @@ class CustomerCommunicationSeeder extends Seeder
         if ($status->value === 'bounced') {
             return now()->subDays(rand(1, 5))->toDateTimeString();
         }
+
         return null;
     }
 
@@ -234,6 +243,7 @@ class CustomerCommunicationSeeder extends Seeder
         if ($status->value === 'unsubscribed') {
             return now()->subDays(rand(1, 3))->toDateTimeString();
         }
+
         return null;
     }
 
@@ -247,13 +257,13 @@ class CustomerCommunicationSeeder extends Seeder
             'sender_info' => [
                 'name' => 'Customer Service',
                 'email' => 'service@example.com',
-                'phone' => '+1234567890'
+                'phone' => '+1234567890',
             ],
             'delivery_preferences' => [
                 'time_zone' => 'UTC',
                 'preferred_time' => '09:00',
-                'frequency' => 'weekly'
-            ]
+                'frequency' => 'weekly',
+            ],
         ];
     }
 
@@ -270,7 +280,7 @@ class CustomerCommunicationSeeder extends Seeder
             'open_rate' => 0.0,
             'click_rate' => 0.0,
             'bounce_rate' => 0.0,
-            'unsubscribe_rate' => 0.0
+            'unsubscribe_rate' => 0.0,
         ];
 
         if (in_array($status->value, ['sent', 'delivered', 'opened', 'clicked'])) {

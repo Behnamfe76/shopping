@@ -11,7 +11,7 @@ enum TransactionStatus: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::INITIATED => 'Initiated',
             self::SUCCESS => 'Success',
             self::FAILED => 'Failed',

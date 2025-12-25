@@ -2,35 +2,30 @@
 
 namespace App\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Required;
-use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
-use Spatie\LaravelData\Attributes\Validation\FloatType;
-use Spatie\LaravelData\Attributes\Validation\BooleanType;
-use Spatie\LaravelData\Attributes\Validation\Email;
-use Spatie\LaravelData\Attributes\Validation\Max;
-use Spatie\LaravelData\Attributes\Validation\Min;
-use Spatie\LaravelData\Attributes\Validation\In;
-use Spatie\LaravelData\Attributes\Validation\Nullable;
-use Spatie\LaravelData\Attributes\Validation\Date;
-use Spatie\LaravelData\Attributes\Validation\ArrayType;
-use Spatie\LaravelData\Attributes\Validation\Json;
-use Spatie\LaravelData\Attributes\MapName;
-use Spatie\LaravelData\Attributes\WithTransformer;
-use Spatie\LaravelData\Transformers\DateTimeTransformer;
-use App\Models\ProviderCommunication;
 use App\Enums\CommunicationType;
 use App\Enums\Direction;
-use App\Enums\Status;
 use App\Enums\Priority;
-use Carbon\Carbon;
+use App\Enums\Status;
+use App\Models\ProviderCommunication;
+use Spatie\LaravelData\Attributes\Validation\ArrayType;
+use Spatie\LaravelData\Attributes\Validation\BooleanType;
+use Spatie\LaravelData\Attributes\Validation\Date;
+use Spatie\LaravelData\Attributes\Validation\FloatType;
+use Spatie\LaravelData\Attributes\Validation\In;
+use Spatie\LaravelData\Attributes\Validation\IntegerType;
+use Spatie\LaravelData\Attributes\Validation\Json;
+use Spatie\LaravelData\Attributes\Validation\Max;
+use Spatie\LaravelData\Attributes\Validation\Min;
+use Spatie\LaravelData\Attributes\Validation\Nullable;
+use Spatie\LaravelData\Attributes\Validation\Required;
+use Spatie\LaravelData\Attributes\Validation\StringType;
+use Spatie\LaravelData\Data;
 
 class ProviderCommunicationDTO extends Data
 {
     public function __construct(
         #[Nullable]
-        public ?int $id = null,
+        public ?int $id,
 
         #[Required, IntegerType]
         public int $provider_id,
@@ -133,15 +128,15 @@ class ProviderCommunicationDTO extends Data
         return [
             'provider_id' => ['required', 'integer', 'exists:providers,id'],
             'user_id' => ['required', 'integer', 'exists:users,id'],
-            'communication_type' => ['required', 'string', 'in:' . implode(',', CommunicationType::values())],
+            'communication_type' => ['required', 'string', 'in:'.implode(',', CommunicationType::values())],
             'subject' => ['required', 'string', 'max:255'],
             'message' => ['required', 'string', 'max:10000'],
-            'direction' => ['required', 'string', 'in:' . implode(',', Direction::values())],
-            'status' => ['required', 'string', 'in:' . implode(',', Status::values())],
+            'direction' => ['required', 'string', 'in:'.implode(',', Direction::values())],
+            'status' => ['required', 'string', 'in:'.implode(',', Status::values())],
             'sent_at' => ['nullable', 'date'],
             'read_at' => ['nullable', 'date'],
             'replied_at' => ['nullable', 'date'],
-            'priority' => ['required', 'string', 'in:' . implode(',', Priority::values())],
+            'priority' => ['required', 'string', 'in:'.implode(',', Priority::values())],
             'is_urgent' => ['boolean'],
             'is_archived' => ['boolean'],
             'attachments' => ['nullable', 'array'],

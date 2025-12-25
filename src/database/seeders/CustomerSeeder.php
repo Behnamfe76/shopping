@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\database\seeders;
 
-use Illuminate\Database\Seeder;
-use Fereydooni\Shopping\app\Models\Customer;
+use App\Models\User;
 use Fereydooni\Shopping\app\Enums\CustomerStatus;
 use Fereydooni\Shopping\app\Enums\CustomerType;
 use Fereydooni\Shopping\app\Enums\Gender;
-use App\Models\User;
+use Fereydooni\Shopping\app\Models\Customer;
+use Illuminate\Database\Seeder;
 
 class CustomerSeeder extends Seeder
 {
@@ -187,7 +187,7 @@ class CustomerSeeder extends Seeder
                 'date_of_birth' => fake()->date(),
                 'gender' => $gender,
                 'company_name' => $customerType === CustomerType::BUSINESS || $customerType === CustomerType::WHOLESALE ? fake()->company() : null,
-                'tax_id' => $customerType === CustomerType::BUSINESS || $customerType === CustomerType::WHOLESALE ? 'TAX' . fake()->numerify('######') : null,
+                'tax_id' => $customerType === CustomerType::BUSINESS || $customerType === CustomerType::WHOLESALE ? 'TAX'.fake()->numerify('######') : null,
                 'customer_type' => $customerType,
                 'status' => $status,
                 'loyalty_points' => fake()->numberBetween(0, 1000),

@@ -22,7 +22,7 @@ return new class extends Migration
                 'auto_insurance',
                 'property_insurance',
                 'cyber_insurance',
-                'other'
+                'other',
             ]);
             $table->string('policy_number')->unique();
             $table->string('provider_name');
@@ -34,7 +34,7 @@ return new class extends Migration
                 'expired',
                 'cancelled',
                 'pending',
-                'suspended'
+                'suspended',
             ])->default('pending');
             $table->json('documents')->nullable();
             $table->enum('verification_status', [
@@ -42,7 +42,7 @@ return new class extends Migration
                 'pending',
                 'verified',
                 'rejected',
-                'requires_update'
+                'requires_update',
             ])->default('unverified');
             $table->foreignId('verified_by')->nullable()->constrained('users')->onDelete('set null');
             $table->timestamp('verified_at')->nullable();

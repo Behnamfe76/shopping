@@ -3,19 +3,16 @@
 namespace App\Traits;
 
 use App\Models\EmployeeSalaryHistory;
-use App\DTOs\EmployeeSalaryHistoryDTO;
 use App\Repositories\Interfaces\EmployeeSalaryHistoryRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Notification;
-use Carbon\Carbon;
 
 trait HasEmployeeSalaryHistoryApprovalManagement
 {
     /**
      * Approve salary change
      */
-    public function approveSalaryChange(EmployeeSalaryHistory $salaryHistory, int $approvedBy, string $notes = null): bool
+    public function approveSalaryChange(EmployeeSalaryHistory $salaryHistory, int $approvedBy, ?string $notes = null): bool
     {
         try {
             // Check if already approved
@@ -30,8 +27,8 @@ trait HasEmployeeSalaryHistoryApprovalManagement
                 // Add approval notes if provided
                 if ($notes) {
                     $currentNotes = $salaryHistory->notes ?? '';
-                    $approvalNotes = "\nApproval Notes: " . $notes;
-                    $salaryHistory->update(['notes' => $currentNotes . $approvalNotes]);
+                    $approvalNotes = "\nApproval Notes: ".$notes;
+                    $salaryHistory->update(['notes' => $currentNotes.$approvalNotes]);
                 }
 
                 // Log approval
@@ -39,7 +36,7 @@ trait HasEmployeeSalaryHistoryApprovalManagement
                     'id' => $salaryHistory->id,
                     'employee_id' => $salaryHistory->employee_id,
                     'approved_by' => $approvedBy,
-                    'notes' => $notes
+                    'notes' => $notes,
                 ]);
 
                 // Trigger approval events (if using events)
@@ -54,7 +51,7 @@ trait HasEmployeeSalaryHistoryApprovalManagement
             Log::error('Failed to approve salary change via trait', [
                 'error' => $e->getMessage(),
                 'id' => $salaryHistory->id,
-                'approved_by' => $approvedBy
+                'approved_by' => $approvedBy,
             ]);
             throw $e;
         }
@@ -63,7 +60,7 @@ trait HasEmployeeSalaryHistoryApprovalManagement
     /**
      * Reject salary change
      */
-    public function rejectSalaryChange(EmployeeSalaryHistory $salaryHistory, int $rejectedBy, string $reason = null): bool
+    public function rejectSalaryChange(EmployeeSalaryHistory $salaryHistory, int $rejectedBy, ?string $reason = null): bool
     {
         try {
             // Check if already approved
@@ -80,7 +77,7 @@ trait HasEmployeeSalaryHistoryApprovalManagement
                     'id' => $salaryHistory->id,
                     'employee_id' => $salaryHistory->employee_id,
                     'rejected_by' => $rejectedBy,
-                    'reason' => $reason
+                    'reason' => $reason,
                 ]);
 
                 // Trigger rejection events (if using events)
@@ -95,7 +92,7 @@ trait HasEmployeeSalaryHistoryApprovalManagement
             Log::error('Failed to reject salary change via trait', [
                 'error' => $e->getMessage(),
                 'id' => $salaryHistory->id,
-                'rejected_by' => $rejectedBy
+                'rejected_by' => $rejectedBy,
             ]);
             throw $e;
         }
@@ -236,15 +233,15 @@ trait HasEmployeeSalaryHistoryApprovalManagement
 
         return [
             'total_changes' => $allChanges->count(),
-            'pending_approval' => $allChanges->filter(fn($change) => $change->isPendingApproval())->count(),
-            'approved' => $allChanges->filter(fn($change) => $change->isApproved())->count(),
+            'pending_approval' => $allChanges->filter(fn ($change) => $change->isPendingApproval())->count(),
+            'approved' => $allChanges->filter(fn ($change) => $change->isApproved())->count(),
             'approval_rate' => $allChanges->count() > 0 ?
-                ($allChanges->filter(fn($change) => $change->isApproved())->count() / $allChanges->count()) * 100 : 0,
+                ($allChanges->filter(fn ($change) => $change->isApproved())->count() / $allChanges->count()) * 100 : 0,
             'by_type' => $allChanges->groupBy('change_type')->map(function ($changes) {
                 return [
                     'total' => $changes->count(),
-                    'pending' => $changes->filter(fn($change) => $change->isPendingApproval())->count(),
-                    'approved' => $changes->filter(fn($change) => $change->isApproved())->count(),
+                    'pending' => $changes->filter(fn ($change) => $change->isPendingApproval())->count(),
+                    'approved' => $changes->filter(fn ($change) => $change->isApproved())->count(),
                 ];
             })->toArray(),
         ];
@@ -260,10 +257,10 @@ trait HasEmployeeSalaryHistoryApprovalManagement
 
         return [
             'total_changes' => $changes->count(),
-            'pending_approval' => $changes->filter(fn($change) => $change->isPendingApproval())->count(),
-            'approved' => $changes->filter(fn($change) => $change->isApproved())->count(),
+            'pending_approval' => $changes->filter(fn ($change) => $change->isPendingApproval())->count(),
+            'approved' => $changes->filter(fn ($change) => $change->isApproved())->count(),
             'approval_rate' => $changes->count() > 0 ?
-                ($changes->filter(fn($change) => $change->isApproved())->count() / $changes->count()) * 100 : 0,
+                ($changes->filter(fn ($change) => $change->isApproved())->count() / $changes->count()) * 100 : 0,
         ];
     }
 
@@ -277,10 +274,10 @@ trait HasEmployeeSalaryHistoryApprovalManagement
 
         return [
             'total_changes' => $changes->count(),
-            'pending_approval' => $changes->filter(fn($change) => $change->isPendingApproval())->count(),
-            'approved' => $changes->filter(fn($change) => $change->isApproved())->count(),
+            'pending_approval' => $changes->filter(fn ($change) => $change->isPendingApproval())->count(),
+            'approved' => $changes->filter(fn ($change) => $change->isApproved())->count(),
             'approval_rate' => $changes->count() > 0 ?
-                ($changes->filter(fn($change) => $change->isApproved())->count() / $changes->count()) * 100 : 0,
+                ($changes->filter(fn ($change) => $change->isApproved())->count() / $changes->count()) * 100 : 0,
         ];
     }
 
@@ -289,7 +286,7 @@ trait HasEmployeeSalaryHistoryApprovalManagement
      */
     public function canApproveSalaryChange(EmployeeSalaryHistory $salaryHistory): bool
     {
-        return !$salaryHistory->isApproved() &&
+        return ! $salaryHistory->isApproved() &&
                $salaryHistory->isPendingApproval() &&
                $salaryHistory->effective_date <= now()->toDateString();
     }
@@ -299,7 +296,7 @@ trait HasEmployeeSalaryHistoryApprovalManagement
      */
     public function canRejectSalaryChange(EmployeeSalaryHistory $salaryHistory): bool
     {
-        return !$salaryHistory->isApproved() &&
+        return ! $salaryHistory->isApproved() &&
                $salaryHistory->isPendingApproval();
     }
 
@@ -335,7 +332,7 @@ trait HasEmployeeSalaryHistoryApprovalManagement
     /**
      * Trigger salary change rejected event
      */
-    protected function triggerSalaryChangeRejectedEvent(EmployeeSalaryHistory $salaryHistory, int $rejectedBy, string $reason = null): void
+    protected function triggerSalaryChangeRejectedEvent(EmployeeSalaryHistory $salaryHistory, int $rejectedBy, ?string $reason = null): void
     {
         // This method can be overridden to trigger custom events
         // For now, it's a placeholder for future event implementation

@@ -3,7 +3,6 @@
 namespace Fereydooni\Shopping\app\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Fereydooni\Shopping\app\Models\ProductVariant;
 
 class ToggleProductVariantStatusRequest extends FormRequest
 {
@@ -13,6 +12,7 @@ class ToggleProductVariantStatusRequest extends FormRequest
     public function authorize(): bool
     {
         $variant = $this->route('variant');
+
         return $this->user()->can('toggleActive', $variant) || $this->user()->can('toggleFeatured', $variant);
     }
 

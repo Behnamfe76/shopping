@@ -2,8 +2,8 @@
 
 namespace App\Facades;
 
-use Illuminate\Support\Facades\Facade;
 use App\Services\ProviderCommunicationService;
+use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static \Illuminate\Database\Eloquent\Collection getAllCommunications()
@@ -71,10 +71,6 @@ class ProviderCommunication extends Facade
     /**
      * Send a quick message to a provider
      *
-     * @param int $providerId
-     * @param string $subject
-     * @param string $message
-     * @param array $additionalData
      * @return \App\Models\ProviderCommunication
      */
     public static function quickMessage(int $providerId, string $subject, string $message, array $additionalData = [])
@@ -95,10 +91,6 @@ class ProviderCommunication extends Facade
     /**
      * Send a quick message to a user
      *
-     * @param int $userId
-     * @param string $subject
-     * @param string $message
-     * @param array $additionalData
      * @return \App\Models\ProviderCommunication
      */
     public static function quickMessageToUser(int $userId, string $subject, string $message, array $additionalData = [])
@@ -119,10 +111,6 @@ class ProviderCommunication extends Facade
     /**
      * Send an urgent message to a provider
      *
-     * @param int $providerId
-     * @param string $subject
-     * @param string $message
-     * @param array $additionalData
      * @return \App\Models\ProviderCommunication
      */
     public static function urgentMessage(int $providerId, string $subject, string $message, array $additionalData = [])
@@ -144,10 +132,6 @@ class ProviderCommunication extends Facade
     /**
      * Send a support ticket
      *
-     * @param int $providerId
-     * @param string $subject
-     * @param string $message
-     * @param array $additionalData
      * @return \App\Models\ProviderCommunication
      */
     public static function supportTicket(int $providerId, string $subject, string $message, array $additionalData = [])
@@ -168,10 +152,6 @@ class ProviderCommunication extends Facade
     /**
      * Send an order update notification
      *
-     * @param int $providerId
-     * @param string $orderNumber
-     * @param string $updateMessage
-     * @param array $additionalData
      * @return \App\Models\ProviderCommunication
      */
     public static function orderUpdate(int $providerId, string $orderNumber, string $updateMessage, array $additionalData = [])
@@ -192,10 +172,6 @@ class ProviderCommunication extends Facade
     /**
      * Send a payment notification
      *
-     * @param int $providerId
-     * @param string $paymentReference
-     * @param string $paymentMessage
-     * @param array $additionalData
      * @return \App\Models\ProviderCommunication
      */
     public static function paymentNotification(int $providerId, string $paymentReference, string $paymentMessage, array $additionalData = [])
@@ -216,10 +192,6 @@ class ProviderCommunication extends Facade
     /**
      * Send a delivery update
      *
-     * @param int $providerId
-     * @param string $deliveryReference
-     * @param string $deliveryMessage
-     * @param array $additionalData
      * @return \App\Models\ProviderCommunication
      */
     public static function deliveryUpdate(int $providerId, string $deliveryReference, string $deliveryMessage, array $additionalData = [])
@@ -240,10 +212,6 @@ class ProviderCommunication extends Facade
     /**
      * Send a quality issue notification
      *
-     * @param int $providerId
-     * @param string $issueDescription
-     * @param string $issueDetails
-     * @param array $additionalData
      * @return \App\Models\ProviderCommunication
      */
     public static function qualityIssue(int $providerId, string $issueDescription, string $issueDetails, array $additionalData = [])
@@ -264,9 +232,6 @@ class ProviderCommunication extends Facade
 
     /**
      * Get communication statistics for a provider
-     *
-     * @param int $providerId
-     * @return array
      */
     public static function getProviderStats(int $providerId): array
     {
@@ -279,9 +244,6 @@ class ProviderCommunication extends Facade
 
     /**
      * Check if provider has unread communications
-     *
-     * @param int $providerId
-     * @return bool
      */
     public static function hasUnread(int $providerId): bool
     {
@@ -290,9 +252,6 @@ class ProviderCommunication extends Facade
 
     /**
      * Check if provider has urgent communications
-     *
-     * @param int $providerId
-     * @return bool
      */
     public static function hasUrgent(int $providerId): bool
     {
@@ -302,8 +261,6 @@ class ProviderCommunication extends Facade
     /**
      * Get recent communications for a provider
      *
-     * @param int $providerId
-     * @param int $limit
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function getRecentForProvider(int $providerId, int $limit = 5)
@@ -314,8 +271,6 @@ class ProviderCommunication extends Facade
     /**
      * Get recent communications for a user
      *
-     * @param int $userId
-     * @param int $limit
      * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function getRecentForUser(int $userId, int $limit = 5)

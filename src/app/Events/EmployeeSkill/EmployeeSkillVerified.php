@@ -11,6 +11,7 @@ class EmployeeSkillVerified
     use Dispatchable, SerializesModels;
 
     public EmployeeSkill $employeeSkill;
+
     public int $verifiedBy;
 
     /**

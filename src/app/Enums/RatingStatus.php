@@ -14,7 +14,7 @@ enum RatingStatus: string
 
     public function getDescription(): string
     {
-        return match($this) {
+        return match ($this) {
             self::PENDING => 'Pending Review',
             self::APPROVED => 'Approved',
             self::REJECTED => 'Rejected',
@@ -27,7 +27,7 @@ enum RatingStatus: string
 
     public function getColor(): string
     {
-        return match($this) {
+        return match ($this) {
             self::PENDING => 'warning',
             self::APPROVED => 'success',
             self::REJECTED => 'danger',

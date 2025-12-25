@@ -2,28 +2,27 @@
 
 namespace Fereydooni\Shopping\app\Services;
 
-use Illuminate\Http\UploadedFile;
-use Fereydooni\Shopping\app\Models\Brand;
 use Fereydooni\Shopping\app\DTOs\BrandDTO;
-use Illuminate\Pagination\CursorPaginator;
-use Illuminate\Database\Eloquent\Collection;
-use Fereydooni\Shopping\app\Traits\HasStatusToggle;
+use Fereydooni\Shopping\app\Models\Brand;
+use Fereydooni\Shopping\app\Repositories\Interfaces\BrandRepositoryInterface;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
-use Fereydooni\Shopping\app\Traits\HasSlugGeneration;
 use Fereydooni\Shopping\app\Traits\HasMediaOperations;
 use Fereydooni\Shopping\app\Traits\HasSearchOperations;
-use Fereydooni\Shopping\app\Repositories\Interfaces\BrandRepositoryInterface;
+use Fereydooni\Shopping\app\Traits\HasSlugGeneration;
+use Fereydooni\Shopping\app\Traits\HasStatusToggle;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Pagination\CursorPaginator;
 
 class BrandService
 {
     use HasCrudOperations;
-    use HasStatusToggle;
+    use HasMediaOperations;
     use HasSearchOperations;
     use HasSlugGeneration;
-    use HasMediaOperations;
+    use HasStatusToggle;
 
     public array $searchableFields = ['name', 'slug', 'description'];
-
 
     public function __construct(
         private BrandRepositoryInterface $repository
@@ -50,9 +49,8 @@ class BrandService
      */
     public function allDTO(): Collection
     {
-        return $this->all()->map(fn($brand) => BrandDTO::fromModel($brand));
+        return $this->all()->map(fn ($brand) => BrandDTO::fromModel($brand));
     }
-
 
     /**
      * Find brand by ID
@@ -86,7 +84,6 @@ class BrandService
         return $this->repository->findBySlugDTO($slug);
     }
 
-
     /**
      * Create brand and return DTO
      */
@@ -95,7 +92,6 @@ class BrandService
         return $this->repository->createAndReturnDTO($data);
     }
 
-
     /**
      * Update brand and return DTO
      */
@@ -103,7 +99,6 @@ class BrandService
     {
         return $this->repository->updateAndReturnDTO($brand, $data);
     }
-
 
     /**
      * Get active brands

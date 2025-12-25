@@ -2,16 +2,16 @@
 
 namespace Fereydooni\Shopping\app\Listeners\ProviderRating;
 
-use Fereydooni\Shopping\app\Events\ProviderRating\ProviderRatingCreated;
-use Fereydooni\Shopping\app\Events\ProviderRating\ProviderRatingUpdated;
 use Fereydooni\Shopping\app\Events\ProviderRating\ProviderRatingApproved;
-use Fereydooni\Shopping\app\Events\ProviderRating\ProviderRatingRejected;
+use Fereydooni\Shopping\app\Events\ProviderRating\ProviderRatingCreated;
 use Fereydooni\Shopping\app\Events\ProviderRating\ProviderRatingFlagged;
+use Fereydooni\Shopping\app\Events\ProviderRating\ProviderRatingRejected;
+use Fereydooni\Shopping\app\Events\ProviderRating\ProviderRatingUpdated;
 use Fereydooni\Shopping\app\Events\ProviderRating\ProviderRatingVerified;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class UpdateProviderRatingRecord implements ShouldQueue
 {
@@ -26,8 +26,9 @@ class UpdateProviderRatingRecord implements ShouldQueue
             $rating = $event->rating;
             $provider = $rating->provider;
 
-            if (!$provider) {
+            if (! $provider) {
                 Log::warning('Provider not found for rating', ['rating_id' => $rating->id]);
+
                 return;
             }
 
@@ -60,7 +61,7 @@ class UpdateProviderRatingRecord implements ShouldQueue
                 'event' => get_class($event),
                 'rating_id' => $event->rating->id ?? null,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
         }
     }
@@ -80,7 +81,7 @@ class UpdateProviderRatingRecord implements ShouldQueue
 
         Log::info('Provider rating record updated for created rating', [
             'rating_id' => $rating->id,
-            'provider_id' => $provider->id
+            'provider_id' => $provider->id,
         ]);
     }
 
@@ -99,7 +100,7 @@ class UpdateProviderRatingRecord implements ShouldQueue
 
         Log::info('Provider rating record updated for updated rating', [
             'rating_id' => $rating->id,
-            'provider_id' => $provider->id
+            'provider_id' => $provider->id,
         ]);
     }
 
@@ -116,7 +117,7 @@ class UpdateProviderRatingRecord implements ShouldQueue
 
         Log::info('Provider rating record updated for approved rating', [
             'rating_id' => $rating->id,
-            'provider_id' => $provider->id
+            'provider_id' => $provider->id,
         ]);
     }
 
@@ -130,7 +131,7 @@ class UpdateProviderRatingRecord implements ShouldQueue
 
         Log::info('Provider rating record updated for rejected rating', [
             'rating_id' => $rating->id,
-            'provider_id' => $provider->id
+            'provider_id' => $provider->id,
         ]);
     }
 
@@ -144,7 +145,7 @@ class UpdateProviderRatingRecord implements ShouldQueue
 
         Log::info('Provider rating record updated for flagged rating', [
             'rating_id' => $rating->id,
-            'provider_id' => $provider->id
+            'provider_id' => $provider->id,
         ]);
     }
 
@@ -161,7 +162,7 @@ class UpdateProviderRatingRecord implements ShouldQueue
 
         Log::info('Provider rating record updated for verified rating', [
             'rating_id' => $rating->id,
-            'provider_id' => $provider->id
+            'provider_id' => $provider->id,
         ]);
     }
 
@@ -172,7 +173,9 @@ class UpdateProviderRatingRecord implements ShouldQueue
     {
         try {
             $provider = \Fereydooni\Shopping\app\Models\Provider::find($providerId);
-            if (!$provider) return;
+            if (! $provider) {
+                return;
+            }
 
             // Calculate new average rating
             $averageRating = $provider->ratings()
@@ -188,13 +191,13 @@ class UpdateProviderRatingRecord implements ShouldQueue
             $provider->update([
                 'average_rating' => round($averageRating, 2),
                 'total_ratings' => $totalRatings,
-                'rating_updated_at' => now()
+                'rating_updated_at' => now(),
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to update provider rating stats', [
                 'provider_id' => $providerId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -206,7 +209,9 @@ class UpdateProviderRatingRecord implements ShouldQueue
     {
         try {
             $provider = \Fereydooni\Shopping\app\Models\Provider::find($providerId);
-            if (!$provider) return;
+            if (! $provider) {
+                return;
+            }
 
             // Calculate category-specific average rating
             $categoryAverage = $provider->ratings()
@@ -226,14 +231,14 @@ class UpdateProviderRatingRecord implements ShouldQueue
                 'provider_id' => $providerId,
                 'category' => $category,
                 'average' => $categoryAverage,
-                'count' => $categoryCount
+                'count' => $categoryCount,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to update provider category rating stats', [
                 'provider_id' => $providerId,
                 'category' => $category,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -245,7 +250,9 @@ class UpdateProviderRatingRecord implements ShouldQueue
     {
         try {
             $provider = \Fereydooni\Shopping\app\Models\Provider::find($providerId);
-            if (!$provider) return;
+            if (! $provider) {
+                return;
+            }
 
             $verifiedCount = $provider->ratings()
                 ->where('status', 'approved')
@@ -257,13 +264,13 @@ class UpdateProviderRatingRecord implements ShouldQueue
 
             Log::info('Provider verified rating stats updated', [
                 'provider_id' => $providerId,
-                'verified_count' => $verifiedCount
+                'verified_count' => $verifiedCount,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to update provider verified rating stats', [
                 'provider_id' => $providerId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -275,7 +282,9 @@ class UpdateProviderRatingRecord implements ShouldQueue
     {
         try {
             $provider = \Fereydooni\Shopping\app\Models\Provider::find($providerId);
-            if (!$provider) return;
+            if (! $provider) {
+                return;
+            }
 
             $rejectedCount = $provider->ratings()
                 ->where('status', 'rejected')
@@ -286,13 +295,13 @@ class UpdateProviderRatingRecord implements ShouldQueue
 
             Log::info('Provider rejected rating stats updated', [
                 'provider_id' => $providerId,
-                'rejected_count' => $rejectedCount
+                'rejected_count' => $rejectedCount,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to update provider rejected rating stats', [
                 'provider_id' => $providerId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -304,7 +313,9 @@ class UpdateProviderRatingRecord implements ShouldQueue
     {
         try {
             $provider = \Fereydooni\Shopping\app\Models\Provider::find($providerId);
-            if (!$provider) return;
+            if (! $provider) {
+                return;
+            }
 
             $flaggedCount = $provider->ratings()
                 ->where('status', 'flagged')
@@ -315,13 +326,13 @@ class UpdateProviderRatingRecord implements ShouldQueue
 
             Log::info('Provider flagged rating stats updated', [
                 'provider_id' => $providerId,
-                'flagged_count' => $flaggedCount
+                'flagged_count' => $flaggedCount,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to update provider flagged rating stats', [
                 'provider_id' => $providerId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -340,7 +351,7 @@ class UpdateProviderRatingRecord implements ShouldQueue
         } catch (\Exception $e) {
             Log::error('Failed to clear provider rating cache', [
                 'provider_id' => $providerId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }

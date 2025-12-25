@@ -2,15 +2,14 @@
 
 namespace Fereydooni\Shopping\app\Repositories;
 
+use Fereydooni\Shopping\app\DTOs\ShipmentDTO;
+use Fereydooni\Shopping\app\Enums\ShipmentStatus;
+use Fereydooni\Shopping\app\Models\Shipment;
+use Fereydooni\Shopping\app\Repositories\Interfaces\ShipmentRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Carbon;
-use Fereydooni\Shopping\app\Models\Shipment;
-use Fereydooni\Shopping\app\DTOs\ShipmentDTO;
-use Fereydooni\Shopping\app\Repositories\Interfaces\ShipmentRepositoryInterface;
-use Fereydooni\Shopping\app\Enums\ShipmentStatus;
+use Illuminate\Support\Facades\DB;
 
 class ShipmentRepository implements ShipmentRepositoryInterface
 {
@@ -38,6 +37,7 @@ class ShipmentRepository implements ShipmentRepositoryInterface
     public function findDTO(int $id): ?ShipmentDTO
     {
         $shipment = $this->find($id);
+
         return $shipment ? ShipmentDTO::fromModel($shipment) : null;
     }
 
@@ -45,12 +45,14 @@ class ShipmentRepository implements ShipmentRepositoryInterface
     {
         $shipment = Shipment::create($data);
         $this->clearCache();
+
         return $shipment->load(['order', 'items']);
     }
 
     public function createAndReturnDTO(array $data): ShipmentDTO
     {
         $shipment = $this->create($data);
+
         return ShipmentDTO::fromModel($shipment);
     }
 
@@ -60,6 +62,7 @@ class ShipmentRepository implements ShipmentRepositoryInterface
         if ($updated) {
             $this->clearCache();
         }
+
         return $updated;
     }
 
@@ -69,6 +72,7 @@ class ShipmentRepository implements ShipmentRepositoryInterface
         if ($deleted) {
             $this->clearCache();
         }
+
         return $deleted;
     }
 
@@ -276,6 +280,7 @@ class ShipmentRepository implements ShipmentRepositoryInterface
         if ($updated) {
             $this->clearCache();
         }
+
         return $updated;
     }
 
@@ -288,20 +293,22 @@ class ShipmentRepository implements ShipmentRepositoryInterface
         if ($updated) {
             $this->clearCache();
         }
+
         return $updated;
     }
 
-    public function return(Shipment $shipment, string $reason = null): bool
+    public function return(Shipment $shipment, ?string $reason = null): bool
     {
         $data = ['status' => ShipmentStatus::RETURNED->value];
         if ($reason) {
-            $data['notes'] = $shipment->notes ? $shipment->notes . "\nReturn reason: " . $reason : "Return reason: " . $reason;
+            $data['notes'] = $shipment->notes ? $shipment->notes."\nReturn reason: ".$reason : 'Return reason: '.$reason;
         }
 
         $updated = $shipment->update($data);
         if ($updated) {
             $this->clearCache();
         }
+
         return $updated;
     }
 
@@ -311,6 +318,7 @@ class ShipmentRepository implements ShipmentRepositoryInterface
         if ($updated) {
             $this->clearCache();
         }
+
         return $updated;
     }
 
@@ -320,6 +328,7 @@ class ShipmentRepository implements ShipmentRepositoryInterface
         if ($updated) {
             $this->clearCache();
         }
+
         return $updated;
     }
 
@@ -329,6 +338,7 @@ class ShipmentRepository implements ShipmentRepositoryInterface
         if ($updated) {
             $this->clearCache();
         }
+
         return $updated;
     }
 
@@ -342,7 +352,7 @@ class ShipmentRepository implements ShipmentRepositoryInterface
     public function getShipmentAnalytics(int $shipmentId): array
     {
         $shipment = $this->find($shipmentId);
-        if (!$shipment) {
+        if (! $shipment) {
             return [];
         }
 
@@ -381,9 +391,9 @@ class ShipmentRepository implements ShipmentRepositoryInterface
             'total_insurance' => $shipments->sum('insurance_amount'),
             'status_breakdown' => $shipments->groupBy('status')->map->count(),
             'carrier_breakdown' => $shipments->groupBy('carrier')->map->count(),
-            'overdue_count' => $shipments->filter(fn($s) => $s->estimated_delivery && $s->estimated_delivery->isPast() && $s->status !== ShipmentStatus::DELIVERED)->count(),
-            'delayed_count' => $shipments->filter(fn($s) => $s->estimated_delivery && $s->estimated_delivery->isPast() && $s->status === ShipmentStatus::IN_TRANSIT)->count(),
-            'on_time_count' => $shipments->filter(fn($s) => $s->estimated_delivery && ($s->estimated_delivery->isFuture() || ($s->actual_delivery && $s->actual_delivery->lte($s->estimated_delivery))))->count(),
+            'overdue_count' => $shipments->filter(fn ($s) => $s->estimated_delivery && $s->estimated_delivery->isPast() && $s->status !== ShipmentStatus::DELIVERED)->count(),
+            'delayed_count' => $shipments->filter(fn ($s) => $s->estimated_delivery && $s->estimated_delivery->isPast() && $s->status === ShipmentStatus::IN_TRANSIT)->count(),
+            'on_time_count' => $shipments->filter(fn ($s) => $s->estimated_delivery && ($s->estimated_delivery->isFuture() || ($s->actual_delivery && $s->actual_delivery->lte($s->estimated_delivery))))->count(),
         ];
     }
 
@@ -399,16 +409,16 @@ class ShipmentRepository implements ShipmentRepositoryInterface
             'total_packages' => $shipments->sum('package_count'),
             'total_insurance' => $shipments->sum('insurance_amount'),
             'status_breakdown' => $shipments->groupBy('status')->map->count(),
-            'overdue_count' => $shipments->filter(fn($s) => $s->estimated_delivery && $s->estimated_delivery->isPast() && $s->status !== ShipmentStatus::DELIVERED)->count(),
-            'delayed_count' => $shipments->filter(fn($s) => $s->estimated_delivery && $s->estimated_delivery->isPast() && $s->status === ShipmentStatus::IN_TRANSIT)->count(),
-            'on_time_count' => $shipments->filter(fn($s) => $s->estimated_delivery && ($s->estimated_delivery->isFuture() || ($s->actual_delivery && $s->actual_delivery->lte($s->estimated_delivery))))->count(),
-            'average_delivery_time' => $shipments->filter(fn($s) => $s->shipped_at && $s->actual_delivery)->avg(function($s) {
+            'overdue_count' => $shipments->filter(fn ($s) => $s->estimated_delivery && $s->estimated_delivery->isPast() && $s->status !== ShipmentStatus::DELIVERED)->count(),
+            'delayed_count' => $shipments->filter(fn ($s) => $s->estimated_delivery && $s->estimated_delivery->isPast() && $s->status === ShipmentStatus::IN_TRANSIT)->count(),
+            'on_time_count' => $shipments->filter(fn ($s) => $s->estimated_delivery && ($s->estimated_delivery->isFuture() || ($s->actual_delivery && $s->actual_delivery->lte($s->estimated_delivery))))->count(),
+            'average_delivery_time' => $shipments->filter(fn ($s) => $s->shipped_at && $s->actual_delivery)->avg(function ($s) {
                 return $s->shipped_at->diffInDays($s->actual_delivery);
             }),
         ];
     }
 
-    public function getDeliveryPerformance(string $carrier = null): array
+    public function getDeliveryPerformance(?string $carrier = null): array
     {
         $query = Shipment::where('status', ShipmentStatus::DELIVERED->value);
 
@@ -420,17 +430,17 @@ class ShipmentRepository implements ShipmentRepositoryInterface
 
         return [
             'total_delivered' => $delivered->count(),
-            'average_delivery_time' => $delivered->filter(fn($s) => $s->shipped_at && $s->actual_delivery)->avg(function($s) {
+            'average_delivery_time' => $delivered->filter(fn ($s) => $s->shipped_at && $s->actual_delivery)->avg(function ($s) {
                 return $s->shipped_at->diffInDays($s->actual_delivery);
             }),
-            'on_time_deliveries' => $delivered->filter(fn($s) => $s->actual_delivery && $s->estimated_delivery && $s->actual_delivery->lte($s->estimated_delivery))->count(),
-            'late_deliveries' => $delivered->filter(fn($s) => $s->actual_delivery && $s->estimated_delivery && $s->actual_delivery->gt($s->estimated_delivery))->count(),
+            'on_time_deliveries' => $delivered->filter(fn ($s) => $s->actual_delivery && $s->estimated_delivery && $s->actual_delivery->lte($s->estimated_delivery))->count(),
+            'late_deliveries' => $delivered->filter(fn ($s) => $s->actual_delivery && $s->estimated_delivery && $s->actual_delivery->gt($s->estimated_delivery))->count(),
             'on_time_percentage' => $delivered->count() > 0 ?
-                ($delivered->filter(fn($s) => $s->actual_delivery && $s->estimated_delivery && $s->actual_delivery->lte($s->estimated_delivery))->count() / $delivered->count()) * 100 : 0,
+                ($delivered->filter(fn ($s) => $s->actual_delivery && $s->estimated_delivery && $s->actual_delivery->lte($s->estimated_delivery))->count() / $delivered->count()) * 100 : 0,
         ];
     }
 
-    public function getShippingCosts(string $carrier = null): array
+    public function getShippingCosts(?string $carrier = null): array
     {
         $query = Shipment::query();
 
@@ -451,7 +461,7 @@ class ShipmentRepository implements ShipmentRepositoryInterface
         ];
     }
 
-    public function getDeliveryTimes(string $carrier = null): array
+    public function getDeliveryTimes(?string $carrier = null): array
     {
         $query = Shipment::where('status', ShipmentStatus::DELIVERED->value)
             ->whereNotNull('shipped_at')
@@ -463,7 +473,7 @@ class ShipmentRepository implements ShipmentRepositoryInterface
 
         $delivered = $query->get();
 
-        $deliveryTimes = $delivered->map(function($s) {
+        $deliveryTimes = $delivered->map(function ($s) {
             return $s->shipped_at->diffInDays($s->actual_delivery);
         });
 
@@ -473,15 +483,15 @@ class ShipmentRepository implements ShipmentRepositoryInterface
             'max_delivery_time' => $deliveryTimes->max(),
             'median_delivery_time' => $deliveryTimes->sort()->values()->get($deliveryTimes->count() / 2),
             'delivery_time_distribution' => [
-                '1-2 days' => $deliveryTimes->filter(fn($t) => $t <= 2)->count(),
-                '3-5 days' => $deliveryTimes->filter(fn($t) => $t >= 3 && $t <= 5)->count(),
-                '6-10 days' => $deliveryTimes->filter(fn($t) => $t >= 6 && $t <= 10)->count(),
-                '10+ days' => $deliveryTimes->filter(fn($t) => $t > 10)->count(),
+                '1-2 days' => $deliveryTimes->filter(fn ($t) => $t <= 2)->count(),
+                '3-5 days' => $deliveryTimes->filter(fn ($t) => $t >= 3 && $t <= 5)->count(),
+                '6-10 days' => $deliveryTimes->filter(fn ($t) => $t >= 6 && $t <= 10)->count(),
+                '10+ days' => $deliveryTimes->filter(fn ($t) => $t > 10)->count(),
             ],
         ];
     }
 
-    public function getReturnRates(string $carrier = null): array
+    public function getReturnRates(?string $carrier = null): array
     {
         $query = Shipment::query();
 
@@ -519,7 +529,7 @@ class ShipmentRepository implements ShipmentRepositoryInterface
 
     public function getShipmentTrends(string $period = 'month'): array
     {
-        $startDate = match($period) {
+        $startDate = match ($period) {
             'week' => now()->subWeek(),
             'month' => now()->subMonth(),
             'quarter' => now()->subQuarter(),
@@ -549,7 +559,7 @@ class ShipmentRepository implements ShipmentRepositoryInterface
         $historicalData = $this->getShipmentTrends($period);
         $averageDaily = $historicalData['average_daily_shipments'];
 
-        $forecastDays = match($period) {
+        $forecastDays = match ($period) {
             'week' => 7,
             'month' => 30,
             'quarter' => 90,
@@ -577,7 +587,7 @@ class ShipmentRepository implements ShipmentRepositoryInterface
             'amazon' => '/^TBA[0-9]{10}$/',
         ];
 
-        if (!isset($patterns[$carrier])) {
+        if (! isset($patterns[$carrier])) {
             return true; // Unknown carrier, accept any format
         }
 
@@ -623,7 +633,7 @@ class ShipmentRepository implements ShipmentRepositoryInterface
     public function estimateDeliveryDate(string $carrier, string $origin, string $destination): string
     {
         // Basic delivery estimation
-        $baseDays = match($carrier) {
+        $baseDays = match ($carrier) {
             'fedex' => 3,
             'ups' => 3,
             'usps' => 5,
@@ -662,7 +672,7 @@ class ShipmentRepository implements ShipmentRepositoryInterface
     public function createShippingLabel(Shipment $shipment): string
     {
         // Mock label generation
-        return "SHIPPING_LABEL_" . $shipment->id . "_" . time() . ".pdf";
+        return 'SHIPPING_LABEL_'.$shipment->id.'_'.time().'.pdf';
     }
 
     public function voidShippingLabel(Shipment $shipment): bool
@@ -674,13 +684,13 @@ class ShipmentRepository implements ShipmentRepositoryInterface
     public function getShippingLabel(Shipment $shipment): string
     {
         // Mock label retrieval
-        return "SHIPPING_LABEL_" . $shipment->id . "_" . time() . ".pdf";
+        return 'SHIPPING_LABEL_'.$shipment->id.'_'.time().'.pdf';
     }
 
     public function getReturnLabel(Shipment $shipment): string
     {
         // Mock return label generation
-        return "RETURN_LABEL_" . $shipment->id . "_" . time() . ".pdf";
+        return 'RETURN_LABEL_'.$shipment->id.'_'.time().'.pdf';
     }
 
     public function schedulePickup(Shipment $shipment): bool
@@ -699,7 +709,7 @@ class ShipmentRepository implements ShipmentRepositoryInterface
     {
         // Mock pickup confirmation
         return [
-            'pickup_id' => 'PICKUP_' . $shipment->id,
+            'pickup_id' => 'PICKUP_'.$shipment->id,
             'scheduled_date' => now()->addDay()->toDateString(),
             'scheduled_time' => '09:00-17:00',
             'status' => 'scheduled',

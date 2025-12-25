@@ -2,12 +2,11 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Nullable;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
-use Spatie\LaravelData\Attributes\Validation\StringType;
 use Spatie\LaravelData\Attributes\Validation\Email;
+use Spatie\LaravelData\Attributes\Validation\Nullable;
+use Spatie\LaravelData\Attributes\Validation\StringType;
 use Spatie\LaravelData\Attributes\WithTransformer;
+use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Transformers\DateTimeTransformer;
 
 class UserDTO extends Data
@@ -33,8 +32,8 @@ class UserDTO extends Data
 
     public static function fromModel($user): self
     {
-        if (!$user) {
-            return new self();
+        if (! $user) {
+            return new self;
         }
 
         return new self(
@@ -46,4 +45,3 @@ class UserDTO extends Data
         );
     }
 }
-

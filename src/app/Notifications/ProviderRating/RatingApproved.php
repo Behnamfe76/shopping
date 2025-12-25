@@ -42,7 +42,7 @@ class RatingApproved extends Notification implements ShouldQueue
         return (new MailMessage)
             ->subject('Your provider rating has been approved!')
             ->greeting("Hello {$notifiable->name},")
-            ->line('Great news! Your rating for ' . $provider->name . ' has been approved and is now visible to other users.')
+            ->line('Great news! Your rating for '.$provider->name.' has been approved and is now visible to other users.')
             ->line("Rating: {$this->rating->rating_value}/{$this->rating->max_rating} stars")
             ->line("Category: {$this->rating->category}")
             ->when($this->rating->title, function ($mail) {

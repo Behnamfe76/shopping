@@ -2,21 +2,21 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Fereydooni\Shopping\app\Models\Order;
-use Fereydooni\Shopping\app\Http\Requests\StoreOrderRequest;
-use Fereydooni\Shopping\app\Http\Requests\UpdateOrderRequest;
+use App\Http\Controllers\Controller;
+use Fereydooni\Shopping\app\Http\Requests\AddOrderNoteRequest;
 use Fereydooni\Shopping\app\Http\Requests\CancelOrderRequest;
 use Fereydooni\Shopping\app\Http\Requests\MarkOrderStatusRequest;
 use Fereydooni\Shopping\app\Http\Requests\SearchOrderRequest;
-use Fereydooni\Shopping\app\Http\Requests\AddOrderNoteRequest;
-use Fereydooni\Shopping\app\Http\Resources\OrderResource;
+use Fereydooni\Shopping\app\Http\Requests\StoreOrderRequest;
+use Fereydooni\Shopping\app\Http\Requests\UpdateOrderRequest;
 use Fereydooni\Shopping\app\Http\Resources\OrderCollection;
-use Fereydooni\Shopping\app\Http\Resources\OrderSearchResource;
 use Fereydooni\Shopping\app\Http\Resources\OrderNoteResource;
+use Fereydooni\Shopping\app\Http\Resources\OrderResource;
+use Fereydooni\Shopping\app\Http\Resources\OrderSearchResource;
+use Fereydooni\Shopping\app\Models\Order;
 use Fereydooni\Shopping\app\Services\OrderService;
-use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
@@ -247,7 +247,7 @@ class OrderController extends Controller
         $this->authorize('refund', $order);
 
         $request->validate([
-            'amount' => 'required|numeric|min:0|max:' . $order->total_amount,
+            'amount' => 'required|numeric|min:0|max:'.$order->total_amount,
             'reason' => 'required|string|max:500',
         ]);
 

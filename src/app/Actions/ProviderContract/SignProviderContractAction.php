@@ -3,23 +3,19 @@
 namespace App\Actions\ProviderContract;
 
 use App\DTOs\ProviderContractDTO;
+use App\Enums\ContractStatus;
+use App\Events\Provider\ProviderContractSigned;
 use App\Models\ProviderContract;
 use App\Models\User;
-use App\Enums\ContractStatus;
+use App\Notifications\ProviderContract\ContractSigned;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
-use App\Notifications\ProviderContract\ContractSigned;
-use App\Events\Provider\ProviderContractSigned;
 
 class SignProviderContractAction
 {
     /**
      * Execute the action to sign a provider contract
-     *
-     * @param ProviderContract $contract
-     * @param int $signedBy
-     * @return ProviderContractDTO|null
      */
     public function execute(ProviderContract $contract, int $signedBy): ?ProviderContractDTO
     {
@@ -27,13 +23,13 @@ class SignProviderContractAction
             DB::beginTransaction();
 
             // Validate that the contract can be signed
-            if (!$this->canSignContract($contract)) {
+            if (! $this->canSignContract($contract)) {
                 throw new \Exception('Contract cannot be signed in its current state');
             }
 
             // Get the user who is signing
             $signer = User::find($signedBy);
-            if (!$signer) {
+            if (! $signer) {
                 throw new \Exception('Signer not found');
             }
 
@@ -62,7 +58,7 @@ class SignProviderContractAction
             Log::info('Provider contract signed successfully', [
                 'contract_id' => $contract->id,
                 'signed_by' => $signedBy,
-                'signed_at' => now()
+                'signed_at' => now(),
             ]);
 
             return $dto;
@@ -73,7 +69,7 @@ class SignProviderContractAction
             Log::error('Failed to sign provider contract', [
                 'contract_id' => $contract->id,
                 'signed_by' => $signedBy,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             throw $e;
@@ -82,9 +78,6 @@ class SignProviderContractAction
 
     /**
      * Check if the contract can be signed
-     *
-     * @param ProviderContract $contract
-     * @return bool
      */
     protected function canSignContract(ProviderContract $contract): bool
     {
@@ -113,10 +106,6 @@ class SignProviderContractAction
 
     /**
      * Send notifications for contract signing
-     *
-     * @param ProviderContract $contract
-     * @param User $signer
-     * @return void
      */
     protected function sendSigningNotifications(ProviderContract $contract, User $signer): void
     {
@@ -132,17 +121,13 @@ class SignProviderContractAction
         } catch (\Exception $e) {
             Log::warning('Failed to send contract signing notifications', [
                 'contract_id' => $contract->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
 
     /**
      * Notify contract stakeholders
-     *
-     * @param ProviderContract $contract
-     * @param User $signer
-     * @return void
      */
     protected function notifyStakeholders(ProviderContract $contract, User $signer): void
     {
@@ -153,26 +138,22 @@ class SignProviderContractAction
         Log::info('Contract stakeholders should be notified', [
             'contract_id' => $contract->id,
             'contract_type' => $contract->contract_type,
-            'contract_value' => $contract->contract_value
+            'contract_value' => $contract->contract_value,
         ]);
     }
 
     /**
      * Validate signing permissions
-     *
-     * @param ProviderContract $contract
-     * @param User $signer
-     * @return bool
      */
     protected function validateSigningPermissions(ProviderContract $contract, User $signer): bool
     {
         // Check if user has permission to sign contracts
-        if (!$signer->can('provider-contract.sign')) {
+        if (! $signer->can('provider-contract.sign')) {
             return false;
         }
 
         // Check if user can sign this specific contract
-        if (!$signer->can('provider-contract.sign-own') &&
+        if (! $signer->can('provider-contract.sign-own') &&
             $signer->id !== $contract->created_by) {
             return false;
         }

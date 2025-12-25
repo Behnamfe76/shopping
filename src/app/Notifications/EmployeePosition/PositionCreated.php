@@ -5,9 +5,9 @@ namespace App\Notifications\EmployeePosition;
 use App\Models\EmployeePosition;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\BroadcastMessage;
 
 class PositionCreated extends Notification implements ShouldQueue
 {
@@ -36,16 +36,16 @@ class PositionCreated extends Notification implements ShouldQueue
      */
     public function toMail($notifiable): MailMessage
     {
-        $url = url('/positions/' . $this->position->id);
+        $url = url('/positions/'.$this->position->id);
 
         return (new MailMessage)
-            ->subject('New Position Created: ' . $this->position->title)
-            ->greeting('Hello ' . $notifiable->name)
+            ->subject('New Position Created: '.$this->position->title)
+            ->greeting('Hello '.$notifiable->name)
             ->line('A new position has been created in your department.')
-            ->line('Position: ' . $this->position->title)
-            ->line('Department: ' . $this->position->department?->name)
-            ->line('Level: ' . $this->position->level->label())
-            ->line('Status: ' . $this->position->status->label())
+            ->line('Position: '.$this->position->title)
+            ->line('Department: '.$this->position->department?->name)
+            ->line('Level: '.$this->position->level->label())
+            ->line('Status: '.$this->position->status->label())
             ->action('View Position', $url)
             ->line('Please review the position details and requirements.')
             ->salutation('Best regards, HR Team');
@@ -77,7 +77,7 @@ class PositionCreated extends Notification implements ShouldQueue
             'skills_required' => $this->position->skills_required,
             'created_at' => $this->position->created_at->toISOString(),
             'type' => 'position_created',
-            'message' => 'New position "' . $this->position->title . '" has been created in ' . $this->position->department?->name,
+            'message' => 'New position "'.$this->position->title.'" has been created in '.$this->position->department?->name,
         ];
     }
 
@@ -107,7 +107,7 @@ class PositionCreated extends Notification implements ShouldQueue
             'skills_required' => $this->position->skills_required,
             'created_at' => $this->position->created_at->toISOString(),
             'type' => 'position_created',
-            'message' => 'New position "' . $this->position->title . '" has been created in ' . $this->position->department?->name,
+            'message' => 'New position "'.$this->position->title.'" has been created in '.$this->position->department?->name,
             'timestamp' => now()->toISOString(),
         ]);
     }

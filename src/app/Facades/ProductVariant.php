@@ -2,12 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Facades;
 
-use Illuminate\Support\Facades\Facade;
-use Fereydooni\Shopping\app\Services\ProductVariantService;
-use Fereydooni\Shopping\app\Models\ProductVariant;
 use Fereydooni\Shopping\app\DTOs\ProductVariantDTO;
+use Fereydooni\Shopping\app\Models\ProductVariant;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static Collection all()

@@ -2,21 +2,23 @@
 
 namespace Fereydooni\Shopping\app\Events\EmployeePosition;
 
-use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Queue\SerializesModels;
+use Fereydooni\Shopping\app\DTOs\EmployeePositionDTO;
+use Fereydooni\Shopping\app\Models\EmployeePosition;
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Fereydooni\Shopping\app\Models\EmployeePosition;
-use Fereydooni\Shopping\app\DTOs\EmployeePositionDTO;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class EmployeePositionCreated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public EmployeePosition $position;
+
     public EmployeePositionDTO $positionDTO;
+
     public array $metadata;
 
     /**
@@ -46,7 +48,7 @@ class EmployeePositionCreated implements ShouldBroadcast
     {
         $channels = [
             new PrivateChannel('employee-positions'),
-            new PrivateChannel('departments.' . $this->position->department_id),
+            new PrivateChannel('departments.'.$this->position->department_id),
         ];
 
         // Add role-based channels
@@ -117,9 +119,9 @@ class EmployeePositionCreated implements ShouldBroadcast
         return [
             'employee-position',
             'position-created',
-            'department-' . $this->position->department_id,
-            'level-' . $this->position->level->value,
-            'status-' . $this->position->status->value,
+            'department-'.$this->position->department_id,
+            'level-'.$this->position->level->value,
+            'status-'.$this->position->status->value,
         ];
     }
 

@@ -2,12 +2,8 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\MapName;
-use Spatie\LaravelData\Attributes\WithTransformer;
-use Spatie\LaravelData\Transformers\DateTimeTransformer;
 use Illuminate\Support\Carbon;
-use Fereydooni\Shopping\app\Models\ShipmentItem;
+use Spatie\LaravelData\Data;
 
 class ShipmentItemDTO extends Data
 {
@@ -22,8 +18,7 @@ class ShipmentItemDTO extends Data
         public ?Carbon $updated_at = null,
         public ?array $shipment = null,
         public ?array $order_item = null,
-    ) {
-    }
+    ) {}
 
     public static function fromModel($shipmentItem): static
     {
@@ -71,6 +66,7 @@ class ShipmentItemDTO extends Data
         if ($this->order_item && isset($this->order_item['weight'])) {
             return $this->order_item['weight'] * $this->quantity;
         }
+
         return $this->total_weight ?? 0.0;
     }
 
@@ -81,6 +77,7 @@ class ShipmentItemDTO extends Data
             // This is a placeholder - actual calculation would depend on dimension format
             return $this->total_volume ?? 0.0;
         }
+
         return $this->total_volume ?? 0.0;
     }
 
@@ -89,6 +86,7 @@ class ShipmentItemDTO extends Data
         if ($this->order_item && isset($this->order_item['quantity'])) {
             return $this->order_item['quantity'] - $this->quantity;
         }
+
         return 0;
     }
 
@@ -97,6 +95,7 @@ class ShipmentItemDTO extends Data
         if ($this->order_item && isset($this->order_item['quantity'])) {
             return $this->quantity >= $this->order_item['quantity'];
         }
+
         return false;
     }
 
@@ -105,6 +104,7 @@ class ShipmentItemDTO extends Data
         if ($this->order_item && isset($this->order_item['quantity']) && $this->order_item['quantity'] > 0) {
             return ($this->quantity / $this->order_item['quantity']) * 100;
         }
+
         return 0.0;
     }
 
@@ -113,6 +113,7 @@ class ShipmentItemDTO extends Data
         if ($this->order_item && isset($this->order_item['quantity'])) {
             return $this->quantity <= $this->order_item['quantity'];
         }
+
         return true;
     }
 

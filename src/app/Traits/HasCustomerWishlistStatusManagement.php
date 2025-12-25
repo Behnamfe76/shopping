@@ -2,10 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
-use Illuminate\Support\Facades\Log;
-use Fereydooni\Shopping\app\DTOs\CustomerWishlistDTO;
-use Fereydooni\Shopping\app\Models\CustomerWishlist;
 use Fereydooni\Shopping\app\Enums\WishlistPriority;
+use Fereydooni\Shopping\app\Models\CustomerWishlist;
+use Illuminate\Support\Facades\Log;
 
 trait HasCustomerWishlistStatusManagement
 {
@@ -16,18 +15,19 @@ trait HasCustomerWishlistStatusManagement
     {
         try {
             $result = $this->repository->makePublic($wishlist);
-            
+
             if ($result) {
                 // Trigger event for wishlist made public
                 event(new \Fereydooni\Shopping\app\Events\CustomerWishlist\WishlistMadePublic($wishlist));
             }
-            
+
             return $result;
         } catch (\Exception $e) {
             Log::error('Failed to make wishlist public', [
                 'wishlist_id' => $wishlist->id,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -39,18 +39,19 @@ trait HasCustomerWishlistStatusManagement
     {
         try {
             $result = $this->repository->makePrivate($wishlist);
-            
+
             if ($result) {
                 // Trigger event for wishlist made private
                 event(new \Fereydooni\Shopping\app\Events\CustomerWishlist\WishlistMadePrivate($wishlist));
             }
-            
+
             return $result;
         } catch (\Exception $e) {
             Log::error('Failed to make wishlist private', [
                 'wishlist_id' => $wishlist->id,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -63,12 +64,12 @@ trait HasCustomerWishlistStatusManagement
         try {
             $oldPriority = $wishlist->priority;
             $result = $this->repository->setPriority($wishlist, $priority->value);
-            
+
             if ($result && $oldPriority !== $priority) {
                 // Trigger event for priority change
                 event(new \Fereydooni\Shopping\app\Events\CustomerWishlist\WishlistPriorityChanged($wishlist, $oldPriority, $priority));
             }
-            
+
             return $result;
         } catch (\Exception $e) {
             Log::error('Failed to set wishlist priority', [
@@ -76,6 +77,7 @@ trait HasCustomerWishlistStatusManagement
                 'priority' => $priority->value,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -87,18 +89,19 @@ trait HasCustomerWishlistStatusManagement
     {
         try {
             $result = $this->repository->markAsNotified($wishlist);
-            
+
             if ($result) {
                 // Trigger event for wishlist marked as notified
                 event(new \Fereydooni\Shopping\app\Events\CustomerWishlist\WishlistMarkedAsNotified($wishlist));
             }
-            
+
             return $result;
         } catch (\Exception $e) {
             Log::error('Failed to mark wishlist as notified', [
                 'wishlist_id' => $wishlist->id,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -115,6 +118,7 @@ trait HasCustomerWishlistStatusManagement
                 'wishlist_id' => $wishlist->id,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -127,17 +131,17 @@ trait HasCustomerWishlistStatusManagement
         try {
             $oldPrice = $wishlist->current_price;
             $result = $this->repository->updateCurrentPrice($wishlist, $currentPrice);
-            
+
             if ($result) {
                 // Trigger event for price update
                 event(new \Fereydooni\Shopping\app\Events\CustomerWishlist\WishlistPriceUpdated($wishlist, $oldPrice, $currentPrice));
-                
+
                 // Check for price drop
                 if ($this->checkPriceDrop($wishlist)) {
                     event(new \Fereydooni\Shopping\app\Events\CustomerWishlist\WishlistPriceDropDetected($wishlist));
                 }
             }
-            
+
             return $result;
         } catch (\Exception $e) {
             Log::error('Failed to update wishlist current price', [
@@ -145,6 +149,7 @@ trait HasCustomerWishlistStatusManagement
                 'current_price' => $currentPrice,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -156,18 +161,19 @@ trait HasCustomerWishlistStatusManagement
     {
         try {
             $hasPriceDrop = $this->repository->checkPriceDrop($wishlist);
-            
-            if ($hasPriceDrop && $wishlist->price_drop_notification && !$wishlist->is_notified) {
+
+            if ($hasPriceDrop && $wishlist->price_drop_notification && ! $wishlist->is_notified) {
                 // Trigger price drop event
                 event(new \Fereydooni\Shopping\app\Events\CustomerWishlist\WishlistPriceDropDetected($wishlist));
             }
-            
+
             return $hasPriceDrop;
         } catch (\Exception $e) {
             Log::error('Failed to check price drop', [
                 'wishlist_id' => $wishlist->id,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -181,7 +187,7 @@ trait HasCustomerWishlistStatusManagement
             // Validate priority changes
             if (isset($changes['priority'])) {
                 $priority = WishlistPriority::tryFrom($changes['priority']);
-                if (!$priority) {
+                if (! $priority) {
                     return false;
                 }
             }
@@ -189,7 +195,7 @@ trait HasCustomerWishlistStatusManagement
             // Validate boolean fields
             $booleanFields = ['is_public', 'is_notified', 'price_drop_notification'];
             foreach ($booleanFields as $field) {
-                if (isset($changes[$field]) && !is_bool($changes[$field])) {
+                if (isset($changes[$field]) && ! is_bool($changes[$field])) {
                     return false;
                 }
             }
@@ -206,6 +212,7 @@ trait HasCustomerWishlistStatusManagement
                 'changes' => $changes,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -257,6 +264,7 @@ trait HasCustomerWishlistStatusManagement
                 'wishlist_id' => $wishlist->id,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -272,18 +280,19 @@ trait HasCustomerWishlistStatusManagement
                 'is_notified' => false,
                 'notification_sent_at' => null,
             ]);
-            
+
             if ($result) {
                 // Trigger event for notification settings changed
                 event(new \Fereydooni\Shopping\app\Events\CustomerWishlist\WishlistPriceUpdated($wishlist, null, null));
             }
-            
+
             return $result;
         } catch (\Exception $e) {
             Log::error('Failed to enable price drop notifications', [
                 'wishlist_id' => $wishlist->id,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -302,6 +311,7 @@ trait HasCustomerWishlistStatusManagement
                 'wishlist_id' => $wishlist->id,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -313,7 +323,7 @@ trait HasCustomerWishlistStatusManagement
     {
         try {
             $wishlists = $this->repository->findNotNotified();
-            
+
             return $wishlists->filter(function ($wishlist) {
                 return $wishlist->should_send_notification;
             })->toArray();
@@ -321,6 +331,7 @@ trait HasCustomerWishlistStatusManagement
             Log::error('Failed to get wishlist items needing notifications', [
                 'error' => $e->getMessage(),
             ]);
+
             return [];
         }
     }
@@ -333,7 +344,7 @@ trait HasCustomerWishlistStatusManagement
         try {
             $results = [];
             $wishlists = $this->repository->findNotNotified();
-            
+
             foreach ($wishlists as $wishlist) {
                 if ($wishlist->should_send_notification) {
                     $success = $this->markWishlistAsNotified($wishlist);
@@ -346,12 +357,13 @@ trait HasCustomerWishlistStatusManagement
                     ];
                 }
             }
-            
+
             return $results;
         } catch (\Exception $e) {
             Log::error('Failed to process price drop notifications', [
                 'error' => $e->getMessage(),
             ]);
+
             return [];
         }
     }

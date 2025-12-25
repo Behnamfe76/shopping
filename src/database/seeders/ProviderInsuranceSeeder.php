@@ -2,13 +2,13 @@
 
 namespace Database\Seeders;
 
+use App\Enums\InsuranceStatus;
+use App\Enums\InsuranceType;
+use App\Enums\VerificationStatus;
+use App\Models\Provider;
+use App\Models\ProviderInsurance;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use App\Models\ProviderInsurance;
-use App\Models\Provider;
-use App\Enums\InsuranceType;
-use App\Enums\InsuranceStatus;
-use App\Enums\VerificationStatus;
 
 class ProviderInsuranceSeeder extends Seeder
 {
@@ -36,7 +36,7 @@ class ProviderInsuranceSeeder extends Seeder
             'auto_insurance' => 'Auto Insurance',
             'property_insurance' => 'Property Insurance',
             'cyber_insurance' => 'Cyber Insurance',
-            'other' => 'Other Insurance'
+            'other' => 'Other Insurance',
         ];
 
         foreach ($types as $key => $name) {
@@ -46,7 +46,7 @@ class ProviderInsuranceSeeder extends Seeder
                     'name' => $name,
                     'description' => "Insurance coverage for {$name}",
                     'created_at' => now(),
-                    'updated_at' => now()
+                    'updated_at' => now(),
                 ]
             );
         }
@@ -62,7 +62,7 @@ class ProviderInsuranceSeeder extends Seeder
             'expired' => 'Expired',
             'cancelled' => 'Cancelled',
             'pending' => 'Pending',
-            'suspended' => 'Suspended'
+            'suspended' => 'Suspended',
         ];
 
         foreach ($statuses as $key => $name) {
@@ -72,7 +72,7 @@ class ProviderInsuranceSeeder extends Seeder
                     'name' => $name,
                     'description' => "Insurance status: {$name}",
                     'created_at' => now(),
-                    'updated_at' => now()
+                    'updated_at' => now(),
                 ]
             );
         }
@@ -88,7 +88,7 @@ class ProviderInsuranceSeeder extends Seeder
             'pending' => 'Pending Verification',
             'verified' => 'Verified',
             'rejected' => 'Rejected',
-            'requires_update' => 'Requires Update'
+            'requires_update' => 'Requires Update',
         ];
 
         foreach ($statuses as $key => $name) {
@@ -98,7 +98,7 @@ class ProviderInsuranceSeeder extends Seeder
                     'name' => $name,
                     'description' => "Verification status: {$name}",
                     'created_at' => now(),
-                    'updated_at' => now()
+                    'updated_at' => now(),
                 ]
             );
         }
@@ -113,6 +113,7 @@ class ProviderInsuranceSeeder extends Seeder
 
         if ($providers->isEmpty()) {
             $this->command->warn('No providers found. Skipping insurance data seeding.');
+
             return;
         }
 
@@ -126,7 +127,7 @@ class ProviderInsuranceSeeder extends Seeder
                 'end_date' => '2024-12-31',
                 'status' => InsuranceStatus::ACTIVE,
                 'verification_status' => VerificationStatus::VERIFIED,
-                'notes' => 'General liability coverage for business operations'
+                'notes' => 'General liability coverage for business operations',
             ],
             [
                 'insurance_type' => InsuranceType::PROFESSIONAL_LIABILITY,
@@ -137,7 +138,7 @@ class ProviderInsuranceSeeder extends Seeder
                 'end_date' => '2024-12-31',
                 'status' => InsuranceStatus::ACTIVE,
                 'verification_status' => VerificationStatus::VERIFIED,
-                'notes' => 'Professional liability coverage for services'
+                'notes' => 'Professional liability coverage for services',
             ],
             [
                 'insurance_type' => InsuranceType::WORKERS_COMPENSATION,
@@ -148,7 +149,7 @@ class ProviderInsuranceSeeder extends Seeder
                 'end_date' => '2024-12-31',
                 'status' => InsuranceStatus::ACTIVE,
                 'verification_status' => VerificationStatus::VERIFIED,
-                'notes' => 'Workers compensation coverage for employees'
+                'notes' => 'Workers compensation coverage for employees',
             ],
             [
                 'insurance_type' => InsuranceType::AUTO_INSURANCE,
@@ -159,7 +160,7 @@ class ProviderInsuranceSeeder extends Seeder
                 'end_date' => '2024-12-31',
                 'status' => InsuranceStatus::ACTIVE,
                 'verification_status' => VerificationStatus::VERIFIED,
-                'notes' => 'Auto insurance coverage for company vehicles'
+                'notes' => 'Auto insurance coverage for company vehicles',
             ],
             [
                 'insurance_type' => InsuranceType::PROPERTY_INSURANCE,
@@ -170,7 +171,7 @@ class ProviderInsuranceSeeder extends Seeder
                 'end_date' => '2024-12-31',
                 'status' => InsuranceStatus::ACTIVE,
                 'verification_status' => VerificationStatus::VERIFIED,
-                'notes' => 'Property insurance coverage for business premises'
+                'notes' => 'Property insurance coverage for business premises',
             ],
             [
                 'insurance_type' => InsuranceType::CYBER_INSURANCE,
@@ -181,7 +182,7 @@ class ProviderInsuranceSeeder extends Seeder
                 'end_date' => '2024-12-31',
                 'status' => InsuranceStatus::PENDING,
                 'verification_status' => VerificationStatus::PENDING,
-                'notes' => 'Cyber insurance coverage for data protection'
+                'notes' => 'Cyber insurance coverage for data protection',
             ],
             [
                 'insurance_type' => InsuranceType::PRODUCT_LIABILITY,
@@ -192,8 +193,8 @@ class ProviderInsuranceSeeder extends Seeder
                 'end_date' => '2023-12-31',
                 'status' => InsuranceStatus::EXPIRED,
                 'verification_status' => VerificationStatus::REJECTED,
-                'notes' => 'Expired product liability coverage'
-            ]
+                'notes' => 'Expired product liability coverage',
+            ],
         ];
 
         foreach ($providers as $index => $provider) {
@@ -205,7 +206,7 @@ class ProviderInsuranceSeeder extends Seeder
                 ProviderInsurance::create([
                     'provider_id' => $provider->id,
                     'insurance_type' => $insurance['insurance_type'],
-                    'policy_number' => $insurance['policy_number'] . '-' . ($index + 1) . '-' . ($i + 1),
+                    'policy_number' => $insurance['policy_number'].'-'.($index + 1).'-'.($i + 1),
                     'provider_name' => $insurance['provider_name'],
                     'coverage_amount' => $insurance['coverage_amount'],
                     'start_date' => $insurance['start_date'],
@@ -217,7 +218,7 @@ class ProviderInsuranceSeeder extends Seeder
                     'notes' => $insurance['notes'],
                     'documents' => json_encode(['certificate.pdf']),
                     'created_at' => now(),
-                    'updated_at' => now()
+                    'updated_at' => now(),
                 ]);
             }
         }

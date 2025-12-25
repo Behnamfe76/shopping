@@ -2,17 +2,17 @@
 
 namespace Fereydooni\Shopping\app\Listeners\CustomerCommunication;
 
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
+use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationBounced;
+use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationCancelled;
+use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationClicked;
 use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationCreated;
-use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationScheduled;
-use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationSent;
 use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationDelivered;
 use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationOpened;
-use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationClicked;
-use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationBounced;
+use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationScheduled;
+use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationSent;
 use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationUnsubscribed;
-use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationCancelled;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
 
 class SendCommunicationNotification implements ShouldQueue
 {
@@ -24,7 +24,7 @@ class SendCommunicationNotification implements ShouldQueue
     public function handle($event): void
     {
         $communication = $event->communication;
-        
+
         // Send appropriate notifications based on event type
         switch (get_class($event)) {
             case CustomerCommunicationCreated::class:

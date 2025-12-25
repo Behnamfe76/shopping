@@ -2,8 +2,8 @@
 
 namespace Fereydooni\Shopping\database\factories;
 
-use Fereydooni\Shopping\app\Models\ProviderNote;
 use Fereydooni\Shopping\app\Models\Provider;
+use Fereydooni\Shopping\app\Models\ProviderNote;
 use Fereydooni\Shopping\app\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -64,7 +64,9 @@ class ProviderNoteFactory extends Factory
         $numTags = rand(1, 4);
 
         foreach ($tagCategories as $category => $categoryTags) {
-            if (count($tags) >= $numTags) break;
+            if (count($tags) >= $numTags) {
+                break;
+            }
 
             if ($this->faker->boolean(60)) {
                 $tags[] = $this->faker->randomElement($categoryTags);
@@ -73,7 +75,7 @@ class ProviderNoteFactory extends Factory
 
         // Add some custom tags
         if (count($tags) < $numTags && $this->faker->boolean(40)) {
-            $customTags = ['custom-' . $this->faker->word(), 'tag-' . $this->faker->word()];
+            $customTags = ['custom-'.$this->faker->word(), 'tag-'.$this->faker->word()];
             $tags = array_merge($tags, array_slice($customTags, 0, $numTags - count($tags)));
         }
 
@@ -91,8 +93,8 @@ class ProviderNoteFactory extends Factory
 
         for ($i = 0; $i < $numAttachments; $i++) {
             $type = $this->faker->randomElement($attachmentTypes);
-            $filename = $this->faker->slug() . '.' . $type;
-            $attachments[] = 'attachments/provider-notes/' . $filename;
+            $filename = $this->faker->slug().'.'.$type;
+            $attachments[] = 'attachments/provider-notes/'.$filename;
         }
 
         return $attachments;
@@ -217,7 +219,7 @@ class ProviderNoteFactory extends Factory
         $numTags = rand(5, 10);
 
         for ($i = 0; $i < $numTags; $i++) {
-            $tags[] = 'tag-' . $this->faker->word() . '-' . $i;
+            $tags[] = 'tag-'.$this->faker->word().'-'.$i;
         }
 
         return $tags;
@@ -233,8 +235,8 @@ class ProviderNoteFactory extends Factory
 
         for ($i = 0; $i < $numAttachments; $i++) {
             $type = $this->faker->randomElement(['pdf', 'doc', 'jpg', 'png']);
-            $filename = 'attachment-' . $i . '.' . $type;
-            $attachments[] = 'attachments/provider-notes/' . $filename;
+            $filename = 'attachment-'.$i.'.'.$type;
+            $attachments[] = 'attachments/provider-notes/'.$filename;
         }
 
         return $attachments;

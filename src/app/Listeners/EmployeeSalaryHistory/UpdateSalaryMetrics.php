@@ -36,7 +36,7 @@ class UpdateSalaryMetrics implements ShouldQueue
     private function updateDepartmentMetrics($salaryHistory): void
     {
         $employee = $salaryHistory->employee;
-        if (!$employee || !$employee->department) {
+        if (! $employee || ! $employee->department) {
             return;
         }
 

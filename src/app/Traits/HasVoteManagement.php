@@ -61,7 +61,7 @@ trait HasVoteManagement
      */
     public function getHelpfulPercentage($item): float
     {
-        if (!property_exists($item, 'helpful_votes') || !property_exists($item, 'total_votes')) {
+        if (! property_exists($item, 'helpful_votes') || ! property_exists($item, 'total_votes')) {
             return 0.0;
         }
 

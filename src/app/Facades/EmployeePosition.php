@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Facades;
 
-use Illuminate\Support\Facades\Facade;
-use Illuminate\Support\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Fereydooni\Shopping\app\Models\EmployeePosition;
 use Fereydooni\Shopping\app\DTOs\EmployeePositionDTO;
+use Fereydooni\Shopping\app\Models\EmployeePosition;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static Collection all()

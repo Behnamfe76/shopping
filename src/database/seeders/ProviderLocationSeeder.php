@@ -2,10 +2,10 @@
 
 namespace Fereydooni\Shopping\Database\Seeders;
 
+use Fereydooni\Shopping\App\Enums\Country;
+use Fereydooni\Shopping\App\Enums\LocationType;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Fereydooni\Shopping\App\Enums\LocationType;
-use Fereydooni\Shopping\App\Enums\Country;
 
 class ProviderLocationSeeder extends Seeder
 {
@@ -390,7 +390,7 @@ class ProviderLocationSeeder extends Seeder
                 'address' => "{$providerId}00 Business Center Drive",
                 'city' => 'New York',
                 'state' => 'NY',
-                'postal_code' => '1000' . $providerId,
+                'postal_code' => '1000'.$providerId,
                 'country' => Country::UNITED_STATES->value,
                 'phone' => "+1-212-555-{$providerId}000",
                 'email' => "hq-provider{$providerId}@company.com",
@@ -425,7 +425,7 @@ class ProviderLocationSeeder extends Seeder
                     'location_type' => LocationType::STORE->value,
                     'city' => 'Los Angeles',
                     'state' => 'CA',
-                    'postal_code' => '9000' . $providerId,
+                    'postal_code' => '9000'.$providerId,
                     'phone' => "+1-213-555-{$providerId}000",
                     'latitude' => 34.0522 + ($providerId * 0.001),
                     'longitude' => -118.2437 + ($providerId * 0.001),
@@ -435,7 +435,7 @@ class ProviderLocationSeeder extends Seeder
                     'location_type' => LocationType::WAREHOUSE->value,
                     'city' => 'Chicago',
                     'state' => 'IL',
-                    'postal_code' => '6060' . $providerId,
+                    'postal_code' => '6060'.$providerId,
                     'phone' => "+1-312-555-{$providerId}000",
                     'latitude' => 41.8781 + ($providerId * 0.001),
                     'longitude' => -87.6298 + ($providerId * 0.001),
@@ -454,4 +454,4 @@ class ProviderLocationSeeder extends Seeder
             }
         }
     }
-};
+}

@@ -2,10 +2,10 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 use App\Enums\PerformanceGrade;
 use App\Enums\PeriodType;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateProviderPerformanceRequest extends FormRequest
 {
@@ -28,141 +28,141 @@ class UpdateProviderPerformanceRequest extends FormRequest
             'provider_id' => [
                 'sometimes',
                 'integer',
-                'exists:providers,id'
+                'exists:providers,id',
             ],
             'period_start' => [
                 'sometimes',
                 'date',
-                'before_or_equal:period_end'
+                'before_or_equal:period_end',
             ],
             'period_end' => [
                 'sometimes',
                 'date',
-                'after_or_equal:period_start'
+                'after_or_equal:period_start',
             ],
             'period_type' => [
                 'sometimes',
-                Rule::in(PeriodType::values())
+                Rule::in(PeriodType::values()),
             ],
             'total_orders' => [
                 'sometimes',
                 'integer',
-                'min:0'
+                'min:0',
             ],
             'total_revenue' => [
                 'sometimes',
                 'numeric',
-                'min:0'
+                'min:0',
             ],
             'average_order_value' => [
                 'sometimes',
                 'numeric',
-                'min:0'
+                'min:0',
             ],
             'on_time_delivery_rate' => [
                 'sometimes',
                 'numeric',
                 'min:0',
-                'max:100'
+                'max:100',
             ],
             'return_rate' => [
                 'sometimes',
                 'numeric',
                 'min:0',
-                'max:100'
+                'max:100',
             ],
             'defect_rate' => [
                 'sometimes',
                 'numeric',
                 'min:0',
-                'max:100'
+                'max:100',
             ],
             'customer_satisfaction_score' => [
                 'sometimes',
                 'numeric',
                 'min:0',
-                'max:10'
+                'max:10',
             ],
             'response_time_avg' => [
                 'sometimes',
                 'numeric',
-                'min:0'
+                'min:0',
             ],
             'quality_rating' => [
                 'sometimes',
                 'numeric',
                 'min:0',
-                'max:10'
+                'max:10',
             ],
             'delivery_rating' => [
                 'sometimes',
                 'numeric',
                 'min:0',
-                'max:10'
+                'max:10',
             ],
             'communication_rating' => [
                 'sometimes',
                 'numeric',
                 'min:0',
-                'max:10'
+                'max:10',
             ],
             'cost_efficiency_score' => [
                 'sometimes',
                 'numeric',
                 'min:0',
-                'max:10'
+                'max:10',
             ],
             'inventory_turnover_rate' => [
                 'sometimes',
                 'numeric',
-                'min:0'
+                'min:0',
             ],
             'lead_time_avg' => [
                 'sometimes',
                 'numeric',
-                'min:0'
+                'min:0',
             ],
             'fill_rate' => [
                 'sometimes',
                 'numeric',
                 'min:0',
-                'max:100'
+                'max:100',
             ],
             'accuracy_rate' => [
                 'sometimes',
                 'numeric',
                 'min:0',
-                'max:100'
+                'max:100',
             ],
             'performance_score' => [
                 'sometimes',
                 'numeric',
                 'min:0',
-                'max:100'
+                'max:100',
             ],
             'performance_grade' => [
                 'sometimes',
-                Rule::in(PerformanceGrade::values())
+                Rule::in(PerformanceGrade::values()),
             ],
             'is_verified' => [
                 'sometimes',
-                'boolean'
+                'boolean',
             ],
             'verified_by' => [
                 'sometimes',
                 'integer',
-                'exists:users,id'
+                'exists:users,id',
             ],
             'verified_at' => [
                 'sometimes',
-                'date'
+                'date',
             ],
             'notes' => [
                 'sometimes',
                 'nullable',
                 'string',
-                'max:1000'
-            ]
+                'max:1000',
+            ],
         ];
     }
 
@@ -206,7 +206,7 @@ class UpdateProviderPerformanceRequest extends FormRequest
             'performance_score.max' => 'Performance score cannot exceed 100.',
             'performance_grade.in' => 'The selected performance grade is invalid.',
             'verified_by.exists' => 'The selected verifier does not exist.',
-            'notes.max' => 'Notes cannot exceed 1000 characters.'
+            'notes.max' => 'Notes cannot exceed 1000 characters.',
         ];
     }
 
@@ -241,7 +241,7 @@ class UpdateProviderPerformanceRequest extends FormRequest
             'is_verified' => 'verification status',
             'verified_by' => 'verifier',
             'verified_at' => 'verification date',
-            'notes' => 'notes'
+            'notes' => 'notes',
         ];
     }
 
@@ -257,7 +257,7 @@ class UpdateProviderPerformanceRequest extends FormRequest
             'customer_satisfaction_score', 'response_time_avg',
             'quality_rating', 'delivery_rating', 'communication_rating',
             'cost_efficiency_score', 'inventory_turnover_rate',
-            'lead_time_avg', 'fill_rate', 'accuracy_rate', 'performance_score'
+            'lead_time_avg', 'fill_rate', 'accuracy_rate', 'performance_score',
         ];
 
         foreach ($numericFields as $field) {

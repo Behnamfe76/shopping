@@ -2,10 +2,10 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
-use Illuminate\Support\Carbon;
-use Fereydooni\Shopping\app\Models\Category;
 use Fereydooni\Shopping\app\Enums\CategoryStatus;
+use Fereydooni\Shopping\app\Models\Category;
+use Illuminate\Support\Carbon;
+use Spatie\LaravelData\Data;
 
 class CategoryDTO extends Data
 {
@@ -26,8 +26,7 @@ class CategoryDTO extends Data
         public ?int $depth = null,
         public ?array $path = null,
         public ?array $media = null,
-    ) {
-    }
+    ) {}
 
     public static function fromModel(Category $category): static
     {
@@ -43,7 +42,7 @@ class CategoryDTO extends Data
             created_at: $category->created_at,
             updated_at: $category->updated_at,
             parent: $category->parent ? static::fromModel($category->parent) : null,
-            children: $category->children ? $category->children->map(fn($child) => static::fromModel($child))->toArray() : null,
+            children: $category->children ? $category->children->map(fn ($child) => static::fromModel($child))->toArray() : null,
             products_count: $category->products_count ?? null,
             depth: null, // Will be calculated separately
             path: null, // Will be calculated separately
@@ -58,7 +57,7 @@ class CategoryDTO extends Data
             'slug' => 'nullable|string|max:255|unique:categories,slug',
             'description' => 'nullable|string',
             'parent_id' => 'nullable|integer|exists:categories,id',
-            'status' => 'required|in:' . implode(',', array_column(CategoryStatus::cases(), 'value')),
+            'status' => 'required|in:'.implode(',', array_column(CategoryStatus::cases(), 'value')),
             'sort_order' => 'integer|min:0',
             'is_default' => 'boolean',
         ];

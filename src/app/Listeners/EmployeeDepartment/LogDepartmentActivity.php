@@ -2,11 +2,11 @@
 
 namespace App\Listeners\EmployeeDepartment;
 
+use App\Events\EmployeeDepartment\EmployeeDepartmentArchived;
 use App\Events\EmployeeDepartment\EmployeeDepartmentCreated;
-use App\Events\EmployeeDepartment\EmployeeDepartmentUpdated;
 use App\Events\EmployeeDepartment\EmployeeDepartmentManagerAssigned;
 use App\Events\EmployeeDepartment\EmployeeDepartmentMoved;
-use App\Events\EmployeeDepartment\EmployeeDepartmentArchived;
+use App\Events\EmployeeDepartment\EmployeeDepartmentUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
@@ -16,7 +16,9 @@ class LogDepartmentActivity implements ShouldQueue
     use InteractsWithQueue;
 
     public $queue = 'audit';
+
     public $tries = 3;
+
     public $timeout = 30;
 
     /**
@@ -47,7 +49,7 @@ class LogDepartmentActivity implements ShouldQueue
         } catch (\Exception $e) {
             Log::error('Error logging department activity', [
                 'event' => get_class($event),
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -71,13 +73,13 @@ class LogDepartmentActivity implements ShouldQueue
                     'budget' => $event->department->budget,
                     'headcount_limit' => $event->department->headcount_limit,
                     'location' => $event->department->location,
-                    'status' => $event->department->status
-                ]
+                    'status' => $event->department->status,
+                ],
             ]);
         } catch (\Exception $e) {
             Log::error('Error logging department created activity', [
                 'department_id' => $event->department->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -97,13 +99,13 @@ class LogDepartmentActivity implements ShouldQueue
                 'changes' => $event->changes,
                 'details' => [
                     'previous_values' => $this->getPreviousValues($event->department, $event->changes),
-                    'new_values' => $event->changes
-                ]
+                    'new_values' => $event->changes,
+                ],
             ]);
         } catch (\Exception $e) {
             Log::error('Error logging department updated activity', [
                 'department_id' => $event->department->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -124,13 +126,13 @@ class LogDepartmentActivity implements ShouldQueue
                 'timestamp' => $event->timestamp,
                 'details' => [
                     'assignment_type' => $event->previousManagerId ? 'reassigned' : 'assigned',
-                    'department_code' => $event->department->code
-                ]
+                    'department_code' => $event->department->code,
+                ],
             ]);
         } catch (\Exception $e) {
             Log::error('Error logging manager assigned activity', [
                 'department_id' => $event->department->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -151,13 +153,13 @@ class LogDepartmentActivity implements ShouldQueue
                 'timestamp' => $event->timestamp,
                 'details' => [
                     'move_type' => $event->previousParentId ? 'repositioned' : 'positioned',
-                    'department_code' => $event->department->code
-                ]
+                    'department_code' => $event->department->code,
+                ],
             ]);
         } catch (\Exception $e) {
             Log::error('Error logging department moved activity', [
                 'department_id' => $event->department->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -178,13 +180,13 @@ class LogDepartmentActivity implements ShouldQueue
                 'details' => [
                     'department_code' => $event->department->code,
                     'final_status' => $event->department->status,
-                    'archive_reason' => $event->reason
-                ]
+                    'archive_reason' => $event->reason,
+                ],
             ]);
         } catch (\Exception $e) {
             Log::error('Error logging department archived activity', [
                 'department_id' => $event->department->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -200,7 +202,7 @@ class LogDepartmentActivity implements ShouldQueue
 
             $logData = [
                 'audit_type' => 'department_activity',
-                'data' => $data
+                'data' => $data,
             ];
 
             Log::channel('audit')->info('Department activity logged', $logData);
@@ -213,7 +215,7 @@ class LogDepartmentActivity implements ShouldQueue
         } catch (\Exception $e) {
             Log::error('Error logging to audit system', [
                 'audit_data' => $data,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -235,8 +237,9 @@ class LogDepartmentActivity implements ShouldQueue
             return $previousValues;
         } catch (\Exception $e) {
             Log::error('Error getting previous values', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return [];
         }
     }
@@ -248,7 +251,7 @@ class LogDepartmentActivity implements ShouldQueue
     {
         Log::error('Department activity logging job failed', [
             'event' => get_class($event),
-            'error' => $exception->getMessage()
+            'error' => $exception->getMessage(),
         ]);
     }
 }

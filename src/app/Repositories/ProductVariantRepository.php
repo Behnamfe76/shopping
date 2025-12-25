@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Repositories;
 
+use Fereydooni\Shopping\app\DTOs\ProductVariantDTO;
+use Fereydooni\Shopping\app\Models\ProductVariant;
+use Fereydooni\Shopping\app\Repositories\Interfaces\ProductVariantRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Fereydooni\Shopping\app\Models\ProductVariant;
-use Fereydooni\Shopping\app\DTOs\ProductVariantDTO;
-use Fereydooni\Shopping\app\Repositories\Interfaces\ProductVariantRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -33,6 +33,7 @@ class ProductVariantRepository implements ProductVariantRepositoryInterface
     public function findDTO(int $id): ?ProductVariantDTO
     {
         $variant = $this->find($id);
+
         return $variant ? ProductVariantDTO::fromModel($variant) : null;
     }
 
@@ -44,6 +45,7 @@ class ProductVariantRepository implements ProductVariantRepositoryInterface
     public function createAndReturnDTO(array $data): ProductVariantDTO
     {
         $variant = $this->create($data);
+
         return ProductVariantDTO::fromModel($variant);
     }
 
@@ -177,18 +179,19 @@ class ProductVariantRepository implements ProductVariantRepositoryInterface
 
     public function toggleActive(ProductVariant $variant): bool
     {
-        return $variant->update(['is_active' => !$variant->is_active]);
+        return $variant->update(['is_active' => ! $variant->is_active]);
     }
 
     public function toggleFeatured(ProductVariant $variant): bool
     {
-        return $variant->update(['is_featured' => !$variant->is_featured]);
+        return $variant->update(['is_featured' => ! $variant->is_featured]);
     }
 
     public function updateStock(ProductVariant $variant, int $quantity): bool
     {
         $variant->stock = $quantity;
         $variant->available_stock = $quantity - $variant->reserved_stock;
+
         return $variant->save();
     }
 
@@ -197,8 +200,10 @@ class ProductVariantRepository implements ProductVariantRepositoryInterface
         if ($variant->available_stock >= $quantity) {
             $variant->reserved_stock += $quantity;
             $variant->available_stock -= $quantity;
+
             return $variant->save();
         }
+
         return false;
     }
 
@@ -207,33 +212,39 @@ class ProductVariantRepository implements ProductVariantRepositoryInterface
         if ($variant->reserved_stock >= $quantity) {
             $variant->reserved_stock -= $quantity;
             $variant->available_stock += $quantity;
+
             return $variant->save();
         }
+
         return false;
     }
 
-    public function adjustStock(ProductVariant $variant, int $quantity, string $reason = null): bool
+    public function adjustStock(ProductVariant $variant, int $quantity, ?string $reason = null): bool
     {
         $variant->stock += $quantity;
         $variant->available_stock += $quantity;
+
         return $variant->save();
     }
 
     public function getVariantStock(int $variantId): int
     {
         $variant = ProductVariant::find($variantId);
+
         return $variant ? $variant->stock : 0;
     }
 
     public function getVariantAvailableStock(int $variantId): int
     {
         $variant = ProductVariant::find($variantId);
+
         return $variant ? $variant->available_stock : 0;
     }
 
     public function getVariantReservedStock(int $variantId): int
     {
         $variant = ProductVariant::find($variantId);
+
         return $variant ? $variant->reserved_stock : 0;
     }
 
@@ -256,13 +267,13 @@ class ProductVariantRepository implements ProductVariantRepositoryInterface
     {
         return ProductVariant::where(function ($q) use ($query) {
             $q->where('sku', 'like', "%{$query}%")
-              ->orWhere('barcode', 'like', "%{$query}%")
-              ->orWhereHas('product', function ($productQuery) use ($query) {
-                  $productQuery->where('title', 'like', "%{$query}%");
-              });
+                ->orWhere('barcode', 'like', "%{$query}%")
+                ->orWhereHas('product', function ($productQuery) use ($query) {
+                    $productQuery->where('title', 'like', "%{$query}%");
+                });
         })
-        ->with(['product', 'attributeValues'])
-        ->get();
+            ->with(['product', 'attributeValues'])
+            ->get();
     }
 
     public function getVariantCount(): int
@@ -273,7 +284,7 @@ class ProductVariantRepository implements ProductVariantRepositoryInterface
     public function getVariantAnalytics(int $variantId): array
     {
         $variant = ProductVariant::find($variantId);
-        if (!$variant) {
+        if (! $variant) {
             return [];
         }
 
@@ -331,7 +342,7 @@ class ProductVariantRepository implements ProductVariantRepositoryInterface
     public function getVariantInventory(int $variantId): array
     {
         $variant = ProductVariant::find($variantId);
-        if (!$variant) {
+        if (! $variant) {
             return [];
         }
 
@@ -387,7 +398,7 @@ class ProductVariantRepository implements ProductVariantRepositoryInterface
                 $variant = ProductVariant::find($data['id']);
                 if ($variant) {
                     unset($data['id']);
-                    if (!$this->update($variant, $data)) {
+                    if (! $this->update($variant, $data)) {
                         $success = false;
                     }
                 }
@@ -414,9 +425,11 @@ class ProductVariantRepository implements ProductVariantRepositoryInterface
             $this->bulkCreate($productId, $variantData);
 
             DB::commit();
+
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
+
             return false;
         }
     }
@@ -468,19 +481,21 @@ class ProductVariantRepository implements ProductVariantRepositoryInterface
             }
 
             // Create new variants
-            if (!empty($newVariants)) {
+            if (! empty($newVariants)) {
                 $this->bulkCreate($productId, $newVariants);
             }
 
             // Update existing variants
-            if (!empty($updateVariants)) {
+            if (! empty($updateVariants)) {
                 $this->bulkUpdate($updateVariants);
             }
 
             DB::commit();
+
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
+
             return false;
         }
     }
@@ -491,7 +506,7 @@ class ProductVariantRepository implements ProductVariantRepositoryInterface
 
         $validator = validator($data, $rules);
 
-        return !$validator->fails();
+        return ! $validator->fails();
     }
 
     public function isSkuUnique(string $sku, ?int $excludeId = null): bool
@@ -502,7 +517,7 @@ class ProductVariantRepository implements ProductVariantRepositoryInterface
             $query->where('id', '!=', $excludeId);
         }
 
-        return !$query->exists();
+        return ! $query->exists();
     }
 
     public function isBarcodeUnique(string $barcode, ?int $excludeId = null): bool
@@ -513,17 +528,17 @@ class ProductVariantRepository implements ProductVariantRepositoryInterface
             $query->where('id', '!=', $excludeId);
         }
 
-        return !$query->exists();
+        return ! $query->exists();
     }
 
     public function generateSku(int $productId, array $attributeValues): string
     {
         $product = \Fereydooni\Shopping\app\Models\Product::find($productId);
-        $baseSku = $product ? $product->sku : 'PROD' . $productId;
+        $baseSku = $product ? $product->sku : 'PROD'.$productId;
 
         $attributeString = implode('-', array_values($attributeValues));
         $attributeString = Str::upper(Str::slug($attributeString));
 
-        return $baseSku . '-' . $attributeString;
+        return $baseSku.'-'.$attributeString;
     }
 }

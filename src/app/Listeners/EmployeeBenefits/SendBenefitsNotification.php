@@ -2,18 +2,17 @@
 
 namespace App\Listeners\EmployeeBenefits;
 
-use App\Events\EmployeeBenefits\EmployeeBenefitsCreated;
-use App\Events\EmployeeBenefits\EmployeeBenefitsUpdated;
-use App\Events\EmployeeBenefits\EmployeeBenefitsEnrolled;
-use App\Events\EmployeeBenefits\EmployeeBenefitsTerminated;
 use App\Events\EmployeeBenefits\EmployeeBenefitsCancelled;
+use App\Events\EmployeeBenefits\EmployeeBenefitsCreated;
+use App\Events\EmployeeBenefits\EmployeeBenefitsEnrolled;
 use App\Events\EmployeeBenefits\EmployeeBenefitsExpiring;
-use App\Notifications\EmployeeBenefits\BenefitsEnrollmentCreated;
+use App\Events\EmployeeBenefits\EmployeeBenefitsTerminated;
+use App\Events\EmployeeBenefits\EmployeeBenefitsUpdated;
+use App\Notifications\EmployeeBenefits\BenefitsCostChange;
 use App\Notifications\EmployeeBenefits\BenefitsEnrollmentApproved;
+use App\Notifications\EmployeeBenefits\BenefitsEnrollmentCreated;
 use App\Notifications\EmployeeBenefits\BenefitsEnrollmentTerminated;
 use App\Notifications\EmployeeBenefits\BenefitsExpiringReminder;
-use App\Notifications\EmployeeBenefits\BenefitsRenewalNotice;
-use App\Notifications\EmployeeBenefits\BenefitsCostChange;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
@@ -41,7 +40,7 @@ class SendBenefitsNotification implements ShouldQueue
             Log::error('Error sending benefits notification', [
                 'event' => get_class($event),
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
         }
     }
@@ -61,7 +60,7 @@ class SendBenefitsNotification implements ShouldQueue
 
         Log::info('Benefits enrollment created notification sent', [
             'benefit_id' => $benefit->id,
-            'employee_id' => $benefit->employee_id
+            'employee_id' => $benefit->employee_id,
         ]);
     }
 
@@ -84,7 +83,7 @@ class SendBenefitsNotification implements ShouldQueue
         Log::info('Benefits updated notification sent', [
             'benefit_id' => $benefit->id,
             'employee_id' => $benefit->employee_id,
-            'changes' => $changes
+            'changes' => $changes,
         ]);
     }
 
@@ -103,7 +102,7 @@ class SendBenefitsNotification implements ShouldQueue
 
         Log::info('Benefits enrollment approved notification sent', [
             'benefit_id' => $benefit->id,
-            'employee_id' => $benefit->employee_id
+            'employee_id' => $benefit->employee_id,
         ]);
     }
 
@@ -123,7 +122,7 @@ class SendBenefitsNotification implements ShouldQueue
         Log::info('Benefits termination notification sent', [
             'benefit_id' => $benefit->id,
             'employee_id' => $benefit->employee_id,
-            'reason' => $event->reason
+            'reason' => $event->reason,
         ]);
     }
 
@@ -143,7 +142,7 @@ class SendBenefitsNotification implements ShouldQueue
         Log::info('Benefits cancellation notification sent', [
             'benefit_id' => $benefit->id,
             'employee_id' => $benefit->employee_id,
-            'reason' => $event->reason
+            'reason' => $event->reason,
         ]);
     }
 
@@ -162,7 +161,7 @@ class SendBenefitsNotification implements ShouldQueue
 
         Log::info('Benefits expiring reminder sent', [
             'benefit_id' => $benefit->id,
-            'employee_id' => $benefit->employee_id
+            'employee_id' => $benefit->employee_id,
         ]);
     }
 }

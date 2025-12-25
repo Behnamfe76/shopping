@@ -13,6 +13,7 @@ class EmergencyContactUpdated extends Notification implements ShouldQueue
     use Queueable;
 
     public $contact;
+
     public $changes;
 
     /**
@@ -46,17 +47,17 @@ class EmergencyContactUpdated extends Notification implements ShouldQueue
         $message = (new MailMessage)
             ->subject('Emergency Contact Updated')
             ->greeting("Hello {$employee->first_name},")
-            ->line("Your emergency contact information has been updated.");
+            ->line('Your emergency contact information has been updated.');
 
-        if (!empty($changes)) {
-            $message->line("**Changes Made:**");
+        if (! empty($changes)) {
+            $message->line('**Changes Made:**');
             foreach ($changes as $field => $value) {
                 $fieldName = ucwords(str_replace('_', ' ', $field));
                 $message->line("• {$fieldName}: {$value}");
             }
         }
 
-        $message->line("**Current Contact Details:**")
+        $message->line('**Current Contact Details:**')
             ->line("Name: {$contact->contact_name}")
             ->line("Relationship: {$contact->relationship}")
             ->line("Primary Phone: {$contact->phone_primary}");
@@ -70,10 +71,10 @@ class EmergencyContactUpdated extends Notification implements ShouldQueue
         }
 
         if ($contact->is_primary) {
-            $message->line("**This contact is your primary emergency contact.**");
+            $message->line('**This contact is your primary emergency contact.**');
         }
 
-        $message->line("If you did not request this change or if any information is incorrect, please contact HR immediately.")
+        $message->line('If you did not request this change or if any information is incorrect, please contact HR immediately.')
             ->action('View Your Profile', url('/employee/profile'))
             ->line('Thank you for keeping your emergency contact information up to date.');
 
@@ -125,8 +126,8 @@ class EmergencyContactUpdated extends Notification implements ShouldQueue
     {
         return [
             'emergency_contact',
-            'employee_' . $this->contact->employee_id,
-            'contact_' . $this->contact->id,
+            'employee_'.$this->contact->employee_id,
+            'contact_'.$this->contact->id,
         ];
     }
 }

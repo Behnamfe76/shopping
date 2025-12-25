@@ -36,7 +36,7 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
             ->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return CustomerSegment::with(['customers', 'calculatedBy'])
             ->orderBy('id')
@@ -51,6 +51,7 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
     public function findDTO(int $id): ?CustomerSegmentDTO
     {
         $segment = $this->find($id);
+
         return $segment ? CustomerSegmentDTO::fromModel($segment) : null;
     }
 
@@ -62,6 +63,7 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
     public function findByNameDTO(string $name): ?CustomerSegmentDTO
     {
         $segment = $this->findByName($name);
+
         return $segment ? CustomerSegmentDTO::fromModel($segment) : null;
     }
 
@@ -74,7 +76,7 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
     {
         return CustomerSegment::where('type', $type)
             ->get()
-            ->map(fn($segment) => CustomerSegmentDTO::fromModel($segment));
+            ->map(fn ($segment) => CustomerSegmentDTO::fromModel($segment));
     }
 
     public function findByStatus(string $status): Collection
@@ -86,7 +88,7 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
     {
         return CustomerSegment::where('status', $status)
             ->get()
-            ->map(fn($segment) => CustomerSegmentDTO::fromModel($segment));
+            ->map(fn ($segment) => CustomerSegmentDTO::fromModel($segment));
     }
 
     public function findByPriority(string $priority): Collection
@@ -98,7 +100,7 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
     {
         return CustomerSegment::where('priority', $priority)
             ->get()
-            ->map(fn($segment) => CustomerSegmentDTO::fromModel($segment));
+            ->map(fn ($segment) => CustomerSegmentDTO::fromModel($segment));
     }
 
     public function findAutomatic(): Collection
@@ -110,7 +112,7 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
     {
         return CustomerSegment::where('is_automatic', true)
             ->get()
-            ->map(fn($segment) => CustomerSegmentDTO::fromModel($segment));
+            ->map(fn ($segment) => CustomerSegmentDTO::fromModel($segment));
     }
 
     public function findManual(): Collection
@@ -122,7 +124,7 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
     {
         return CustomerSegment::where('is_automatic', false)
             ->get()
-            ->map(fn($segment) => CustomerSegmentDTO::fromModel($segment));
+            ->map(fn ($segment) => CustomerSegmentDTO::fromModel($segment));
     }
 
     public function findDynamic(): Collection
@@ -134,7 +136,7 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
     {
         return CustomerSegment::where('is_dynamic', true)
             ->get()
-            ->map(fn($segment) => CustomerSegmentDTO::fromModel($segment));
+            ->map(fn ($segment) => CustomerSegmentDTO::fromModel($segment));
     }
 
     public function findStatic(): Collection
@@ -146,7 +148,7 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
     {
         return CustomerSegment::where('is_dynamic', false)
             ->get()
-            ->map(fn($segment) => CustomerSegmentDTO::fromModel($segment));
+            ->map(fn ($segment) => CustomerSegmentDTO::fromModel($segment));
     }
 
     public function findByCustomerCount(int $minCount, int $maxCount): Collection
@@ -158,7 +160,7 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
     {
         return CustomerSegment::whereBetween('customer_count', [$minCount, $maxCount])
             ->get()
-            ->map(fn($segment) => CustomerSegmentDTO::fromModel($segment));
+            ->map(fn ($segment) => CustomerSegmentDTO::fromModel($segment));
     }
 
     public function findByLastCalculatedDate(string $startDate, string $endDate): Collection
@@ -170,7 +172,7 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
     {
         return CustomerSegment::whereBetween('last_calculated_at', [$startDate, $endDate])
             ->get()
-            ->map(fn($segment) => CustomerSegmentDTO::fromModel($segment));
+            ->map(fn ($segment) => CustomerSegmentDTO::fromModel($segment));
     }
 
     public function create(array $data): CustomerSegment
@@ -181,6 +183,7 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
     public function createAndReturnDTO(array $data): CustomerSegmentDTO
     {
         $segment = $this->create($data);
+
         return CustomerSegmentDTO::fromModel($segment);
     }
 
@@ -192,6 +195,7 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
     public function updateAndReturnDTO(CustomerSegment $segment, array $data): ?CustomerSegmentDTO
     {
         $updated = $this->update($segment, $data);
+
         return $updated ? CustomerSegmentDTO::fromModel($segment->fresh()) : null;
     }
 
@@ -240,36 +244,37 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
         try {
             $criteria = $segment->criteria;
             $conditions = $segment->conditions;
-            
+
             // Build query based on criteria and conditions
             $query = DB::table('customers');
-            
+
             // Apply criteria filters
-            if (!empty($criteria)) {
+            if (! empty($criteria)) {
                 foreach ($criteria as $criterion) {
                     $this->applyCriterion($query, $criterion);
                 }
             }
-            
+
             // Apply conditions
-            if (!empty($conditions)) {
+            if (! empty($conditions)) {
                 foreach ($conditions as $condition) {
                     $this->applyCondition($query, $condition);
                 }
             }
-            
+
             $count = $query->count();
-            
+
             // Update segment with new count
             $segment->update([
                 'customer_count' => $count,
                 'last_calculated_at' => now(),
-                'calculated_by' => auth()->id()
+                'calculated_by' => auth()->id(),
             ]);
-            
+
             return $count;
         } catch (\Exception $e) {
-            Log::error('Error calculating customers for segment: ' . $e->getMessage());
+            Log::error('Error calculating customers for segment: '.$e->getMessage());
+
             return 0;
         }
     }
@@ -278,14 +283,15 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
     {
         try {
             $segments = CustomerSegment::where('is_automatic', true)->get();
-            
+
             foreach ($segments as $segment) {
                 $this->calculateCustomers($segment);
             }
-            
+
             return true;
         } catch (\Exception $e) {
-            Log::error('Error recalculating all segments: ' . $e->getMessage());
+            Log::error('Error recalculating all segments: '.$e->getMessage());
+
             return false;
         }
     }
@@ -295,9 +301,11 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
         try {
             $segment->customers()->attach($customerId);
             $this->updateCustomerCount($segment);
+
             return true;
         } catch (\Exception $e) {
-            Log::error('Error adding customer to segment: ' . $e->getMessage());
+            Log::error('Error adding customer to segment: '.$e->getMessage());
+
             return false;
         }
     }
@@ -307,9 +315,11 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
         try {
             $segment->customers()->detach($customerId);
             $this->updateCustomerCount($segment);
+
             return true;
         } catch (\Exception $e) {
-            Log::error('Error removing customer from segment: ' . $e->getMessage());
+            Log::error('Error removing customer from segment: '.$e->getMessage());
+
             return false;
         }
     }
@@ -328,10 +338,11 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
     {
         // Basic validation for criteria structure
         foreach ($criteria as $criterion) {
-            if (!isset($criterion['field']) || !isset($criterion['operator'])) {
+            if (! isset($criterion['field']) || ! isset($criterion['operator'])) {
                 return false;
             }
         }
+
         return true;
     }
 
@@ -339,10 +350,11 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
     {
         // Basic validation for conditions structure
         foreach ($conditions as $condition) {
-            if (!isset($condition['type']) || !isset($condition['value'])) {
+            if (! isset($condition['type']) || ! isset($condition['value'])) {
                 return false;
             }
         }
+
         return true;
     }
 
@@ -406,26 +418,26 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
     public function searchDTO(string $query): Collection
     {
         return $this->search($query)
-            ->map(fn($segment) => CustomerSegmentDTO::fromModel($segment));
+            ->map(fn ($segment) => CustomerSegmentDTO::fromModel($segment));
     }
 
     public function searchByCriteria(array $criteria): Collection
     {
         $query = CustomerSegment::query();
-        
+
         foreach ($criteria as $criterion) {
             if (isset($criterion['field']) && isset($criterion['value'])) {
                 $query->where($criterion['field'], $criterion['value']);
             }
         }
-        
+
         return $query->get();
     }
 
     public function searchByCriteriaDTO(array $criteria): Collection
     {
         return $this->searchByCriteria($criteria)
-            ->map(fn($segment) => CustomerSegmentDTO::fromModel($segment));
+            ->map(fn ($segment) => CustomerSegmentDTO::fromModel($segment));
     }
 
     public function getRecentSegments(int $limit = 10): Collection
@@ -436,7 +448,7 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
     public function getRecentSegmentsDTO(int $limit = 10): Collection
     {
         return $this->getRecentSegments($limit)
-            ->map(fn($segment) => CustomerSegmentDTO::fromModel($segment));
+            ->map(fn ($segment) => CustomerSegmentDTO::fromModel($segment));
     }
 
     public function getSegmentsByCustomerCount(int $minCount, int $maxCount): Collection
@@ -452,22 +464,24 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
     public function getSegmentsByLastCalculated(int $daysAgo): Collection
     {
         $date = now()->subDays($daysAgo);
+
         return CustomerSegment::where('last_calculated_at', '<=', $date)->get();
     }
 
     public function getSegmentsByLastCalculatedDTO(int $daysAgo): Collection
     {
         return $this->getSegmentsByLastCalculated($daysAgo)
-            ->map(fn($segment) => CustomerSegmentDTO::fromModel($segment));
+            ->map(fn ($segment) => CustomerSegmentDTO::fromModel($segment));
     }
 
     public function getSegmentsNeedingRecalculation(): Collection
     {
         $date = now()->subDays(7); // Recalculate segments older than 7 days
+
         return CustomerSegment::where('is_automatic', true)
-            ->where(function($query) use ($date) {
+            ->where(function ($query) use ($date) {
                 $query->whereNull('last_calculated_at')
-                      ->orWhere('last_calculated_at', '<=', $date);
+                    ->orWhere('last_calculated_at', '<=', $date);
             })
             ->get();
     }
@@ -475,7 +489,7 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
     public function getSegmentsNeedingRecalculationDTO(): Collection
     {
         return $this->getSegmentsNeedingRecalculation()
-            ->map(fn($segment) => CustomerSegmentDTO::fromModel($segment));
+            ->map(fn ($segment) => CustomerSegmentDTO::fromModel($segment));
     }
 
     public function getOverlappingSegments(CustomerSegment $segment): Collection
@@ -484,7 +498,7 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
         return CustomerSegment::where('id', '!=', $segment->id)
             ->where('type', $segment->type)
             ->get()
-            ->filter(function($otherSegment) use ($segment) {
+            ->filter(function ($otherSegment) use ($segment) {
                 return $this->hasOverlap($segment, $otherSegment);
             });
     }
@@ -492,7 +506,7 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
     public function getOverlappingSegmentsDTO(CustomerSegment $segment): Collection
     {
         return $this->getOverlappingSegments($segment)
-            ->map(fn($otherSegment) => CustomerSegmentDTO::fromModel($otherSegment));
+            ->map(fn ($otherSegment) => CustomerSegmentDTO::fromModel($otherSegment));
     }
 
     public function getSegmentStats(): array
@@ -514,6 +528,7 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
         foreach (SegmentType::cases() as $type) {
             $stats[$type->value] = $this->getSegmentCountByType($type->value);
         }
+
         return $stats;
     }
 
@@ -523,6 +538,7 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
         foreach (SegmentStatus::cases() as $status) {
             $stats[$status->value] = $this->getSegmentCountByStatus($status->value);
         }
+
         return $stats;
     }
 
@@ -532,6 +548,7 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
         foreach (SegmentPriority::cases() as $priority) {
             $stats[$priority->value] = $this->getSegmentCountByPriority($priority->value);
         }
+
         return $stats;
     }
 
@@ -540,15 +557,15 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
         $query = CustomerSegment::selectRaw('DATE(created_at) as date, COUNT(*) as count')
             ->groupBy('date')
             ->orderBy('date');
-            
+
         if ($period === 'weekly') {
             $query->selectRaw('YEARWEEK(created_at) as week, COUNT(*) as count')
-                  ->groupBy('week');
+                ->groupBy('week');
         } elseif ($period === 'monthly') {
             $query->selectRaw('DATE_FORMAT(created_at, "%Y-%m") as month, COUNT(*) as count')
-                  ->groupBy('month');
+                ->groupBy('month');
         }
-        
+
         return $query->get()->toArray();
     }
 
@@ -598,11 +615,11 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
     {
         $segment1 = $this->find($segmentId1);
         $segment2 = $this->find($segmentId2);
-        
-        if (!$segment1 || !$segment2) {
+
+        if (! $segment1 || ! $segment2) {
             return [];
         }
-        
+
         return [
             'segment1' => CustomerSegmentDTO::fromModel($segment1),
             'segment2' => CustomerSegmentDTO::fromModel($segment2),
@@ -610,20 +627,20 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
                 'customer_count_diff' => $segment1->customer_count - $segment2->customer_count,
                 'creation_date_diff' => $segment1->created_at->diffInDays($segment2->created_at),
                 'last_calculated_diff' => $segment1->last_calculated_at?->diffInDays($segment2->last_calculated_at),
-            ]
+            ],
         ];
     }
 
     public function getSegmentForecast(int $segmentId): array
     {
         $segment = $this->find($segmentId);
-        if (!$segment) {
+        if (! $segment) {
             return [];
         }
-        
+
         // Simple forecasting based on historical data
         $growthRate = $this->calculateGrowthRate($segment);
-        
+
         return [
             'current_customers' => $segment->customer_count,
             'projected_growth_rate' => $growthRate,
@@ -645,15 +662,15 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
     {
         $segmentData = $data['segment'] ?? $data;
         unset($segmentData['id']); // Ensure we create a new segment
-        
+
         $segment = $this->create($segmentData);
-        
+
         // Import customers if provided
         if (isset($data['customers']) && is_array($data['customers'])) {
             $segment->customers()->attach($data['customers']);
             $this->updateCustomerCount($segment);
         }
-        
+
         return $segment;
     }
 
@@ -662,49 +679,49 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
         $newSegment = $segment->replicate();
         $newSegment->name = $newName;
         $newSegment->save();
-        
+
         // Copy customers
         $customerIds = $segment->customers->pluck('id')->toArray();
         $newSegment->customers()->attach($customerIds);
-        
+
         return $newSegment;
     }
 
     public function mergeSegments(array $segmentIds, string $newName): CustomerSegment
     {
         $segments = CustomerSegment::whereIn('id', $segmentIds)->get();
-        
+
         // Create new merged segment
         $mergedSegment = $this->create([
             'name' => $newName,
-            'description' => 'Merged segment from: ' . $segments->pluck('name')->implode(', '),
+            'description' => 'Merged segment from: '.$segments->pluck('name')->implode(', '),
             'type' => $segments->first()->type,
             'status' => SegmentStatus::ACTIVE,
             'priority' => SegmentPriority::NORMAL,
             'is_automatic' => false,
             'is_dynamic' => false,
         ]);
-        
+
         // Merge all customers
         $allCustomerIds = [];
         foreach ($segments as $segment) {
             $allCustomerIds = array_merge($allCustomerIds, $segment->customers->pluck('id')->toArray());
         }
-        
+
         $mergedSegment->customers()->attach(array_unique($allCustomerIds));
         $this->updateCustomerCount($mergedSegment);
-        
+
         return $mergedSegment;
     }
 
     public function splitSegment(CustomerSegment $segment, array $criteria): array
     {
         $newSegments = [];
-        
+
         foreach ($criteria as $criterion) {
             $newSegment = $this->create([
-                'name' => $segment->name . ' - ' . ($criterion['name'] ?? 'Split'),
-                'description' => $segment->description . ' (Split by: ' . json_encode($criterion) . ')',
+                'name' => $segment->name.' - '.($criterion['name'] ?? 'Split'),
+                'description' => $segment->description.' (Split by: '.json_encode($criterion).')',
                 'type' => $segment->type,
                 'status' => SegmentStatus::ACTIVE,
                 'priority' => $segment->priority,
@@ -712,10 +729,10 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
                 'is_dynamic' => $segment->is_dynamic,
                 'criteria' => [$criterion],
             ]);
-            
+
             $newSegments[] = $newSegment;
         }
-        
+
         return $newSegments;
     }
 
@@ -751,7 +768,7 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
         $field = $criterion['field'];
         $operator = $criterion['operator'];
         $value = $criterion['value'] ?? null;
-        
+
         switch ($operator) {
             case 'equals':
                 $query->where($field, $value);
@@ -778,7 +795,7 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
     {
         $type = $condition['type'];
         $value = $condition['value'];
-        
+
         switch ($type) {
             case 'age_range':
                 $query->whereBetween('age', $value);
@@ -804,11 +821,11 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
         if ($segment1->type !== $segment2->type) {
             return false;
         }
-        
+
         // Check if criteria overlap (simplified)
         $criteria1 = $segment1->criteria ?? [];
         $criteria2 = $segment2->criteria ?? [];
-        
+
         foreach ($criteria1 as $c1) {
             foreach ($criteria2 as $c2) {
                 if ($c1['field'] === $c2['field'] && $c1['operator'] === $c2['operator']) {
@@ -816,13 +833,14 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
                 }
             }
         }
-        
+
         return false;
     }
 
     private function getMostPopularSegmentType(): string
     {
         $typeCounts = $this->getSegmentStatsByType();
+
         return array_keys($typeCounts, max($typeCounts))[0] ?? 'demographic';
     }
 
@@ -844,7 +862,7 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
     {
         $potentialMerges = [];
         $segments = CustomerSegment::all();
-        
+
         foreach ($segments as $segment1) {
             foreach ($segments as $segment2) {
                 if ($segment1->id !== $segment2->id && $segment1->type === $segment2->type) {
@@ -853,13 +871,13 @@ class CustomerSegmentRepository implements CustomerSegmentRepositoryInterface
                         $potentialMerges[] = [
                             'segment1' => $segment1->name,
                             'segment2' => $segment2->name,
-                            'reason' => 'Similar criteria and type'
+                            'reason' => 'Similar criteria and type',
                         ];
                     }
                 }
             }
         }
-        
+
         return $potentialMerges;
     }
 

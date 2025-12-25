@@ -2,14 +2,13 @@
 
 namespace Fereydooni\Shopping\app\Facades;
 
-use Illuminate\Support\Facades\Facade;
-use Fereydooni\Shopping\app\Services\OrderStatusHistoryService;
-use Fereydooni\Shopping\app\Models\OrderStatusHistory;
 use Fereydooni\Shopping\app\DTOs\OrderStatusHistoryDTO;
+use Fereydooni\Shopping\app\Models\OrderStatusHistory;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static Collection all()

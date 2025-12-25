@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Permissions;
 
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
-use Illuminate\Support\Facades\DB;
 
 class EmployeeTimeOffPermissions
 {
@@ -231,4 +231,3 @@ class EmployeeTimeOffPermissions
         }
     }
 }
-

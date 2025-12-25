@@ -2,8 +2,6 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
-use Illuminate\Support\Arr;
-
 trait GetPaginationAttibutes
 {
     public function getMeta($resource)
@@ -30,15 +28,16 @@ trait GetPaginationAttibutes
                 ];
             case $resource instanceof \Illuminate\Pagination\CursorPaginator:
                 return [
-                    "path" => $this->path(),
-                    "per_page" => $this->perPage(),
-                    "next_cursor" => $this->nextCursor()?->encode(),
-                    "prev_cursor" => $this->previousCursor()?->encode()
+                    'path' => $this->path(),
+                    'per_page' => $this->perPage(),
+                    'next_cursor' => $this->nextCursor()?->encode(),
+                    'prev_cursor' => $this->previousCursor()?->encode(),
                 ];
             default:
                 return null;
         }
     }
+
     public function getLinks($resource)
     {
         $links = [

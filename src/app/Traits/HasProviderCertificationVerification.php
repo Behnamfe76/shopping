@@ -2,14 +2,12 @@
 
 namespace App\Traits;
 
-use App\Models\ProviderCertification;
-use App\Models\User;
-use App\Enums\CertificationVerificationStatus;
 use App\Enums\CertificationStatus;
+use App\Enums\CertificationVerificationStatus;
+use App\Models\ProviderCertification;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 trait HasProviderCertificationVerification
 {
@@ -56,6 +54,7 @@ trait HasProviderCertificationVerification
                 'certification_id' => $certification->id,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -99,6 +98,7 @@ trait HasProviderCertificationVerification
                 'certification_id' => $certification->id,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -126,6 +126,7 @@ trait HasProviderCertificationVerification
                 'certification_id' => $certification->id,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -156,6 +157,7 @@ trait HasProviderCertificationVerification
                 'certification_id' => $certification->id,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }

@@ -4,7 +4,6 @@ namespace Fereydooni\Shopping\app\Permissions;
 
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
-use Illuminate\Support\Facades\DB;
 
 class EmployeeEmergencyContactPermissions
 {
@@ -191,7 +190,7 @@ class EmployeeEmergencyContactPermissions
 
             foreach ($permissions as $permission) {
                 $permissionModel = Permission::where('name', $permission)->first();
-                if ($permissionModel && !$role->hasPermissionTo($permissionModel)) {
+                if ($permissionModel && ! $role->hasPermissionTo($permissionModel)) {
                     $role->givePermissionTo($permissionModel);
                 }
             }
@@ -441,7 +440,7 @@ class EmployeeEmergencyContactPermissions
         }
 
         foreach ($required as $permission) {
-            if (!in_array($permission, $userPermissions)) {
+            if (! in_array($permission, $userPermissions)) {
                 return false;
             }
         }
@@ -477,7 +476,7 @@ class EmployeeEmergencyContactPermissions
         $existingPermissions = Permission::where('name', 'like', 'employee-emergency-contact.%')->get();
 
         foreach ($existingPermissions as $permission) {
-            if (!array_key_exists($permission->name, self::PERMISSIONS)) {
+            if (! array_key_exists($permission->name, self::PERMISSIONS)) {
                 $permission->delete();
             }
         }

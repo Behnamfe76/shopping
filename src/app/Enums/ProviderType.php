@@ -85,7 +85,7 @@ enum ProviderType: string
 
     public function getDefaultCommissionRate(): float
     {
-        return match($this) {
+        return match ($this) {
             self::MANUFACTURER => 5.0,
             self::DISTRIBUTOR => 8.0,
             self::WHOLESALER => 10.0,
@@ -97,7 +97,7 @@ enum ProviderType: string
 
     public function getDefaultCreditLimit(): float
     {
-        return match($this) {
+        return match ($this) {
             self::MANUFACTURER => 50000.0,
             self::DISTRIBUTOR => 25000.0,
             self::WHOLESALER => 15000.0,

@@ -9,9 +9,6 @@ class CalculateContractMetricsAction
 {
     /**
      * Execute the action to calculate contract metrics
-     *
-     * @param ProviderContract $contract
-     * @return array
      */
     public function execute(ProviderContract $contract): array
     {
@@ -29,7 +26,7 @@ class CalculateContractMetricsAction
 
             Log::info('Contract metrics calculated successfully', [
                 'contract_id' => $contract->id,
-                'metrics' => $metrics
+                'metrics' => $metrics,
             ]);
 
             return $metrics;
@@ -37,7 +34,7 @@ class CalculateContractMetricsAction
         } catch (\Exception $e) {
             Log::error('Failed to calculate contract metrics', [
                 'contract_id' => $contract->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             return [];
@@ -46,9 +43,6 @@ class CalculateContractMetricsAction
 
     /**
      * Calculate contract value
-     *
-     * @param ProviderContract $contract
-     * @return float
      */
     protected function calculateContractValue(ProviderContract $contract): float
     {
@@ -62,9 +56,6 @@ class CalculateContractMetricsAction
 
     /**
      * Calculate additional value from contract terms
-     *
-     * @param ProviderContract $contract
-     * @return float
      */
     protected function calculateAdditionalValue(ProviderContract $contract): float
     {
@@ -85,13 +76,10 @@ class CalculateContractMetricsAction
 
     /**
      * Calculate commission amount
-     *
-     * @param ProviderContract $contract
-     * @return float
      */
     protected function calculateCommissionAmount(ProviderContract $contract): float
     {
-        if (!$contract->commission_rate || !$contract->contract_value) {
+        if (! $contract->commission_rate || ! $contract->contract_value) {
             return 0;
         }
 
@@ -100,13 +88,10 @@ class CalculateContractMetricsAction
 
     /**
      * Calculate days remaining in contract
-     *
-     * @param ProviderContract $contract
-     * @return int
      */
     protected function calculateDaysRemaining(ProviderContract $contract): int
     {
-        if (!$contract->end_date) {
+        if (! $contract->end_date) {
             return 0;
         }
 
@@ -122,13 +107,10 @@ class CalculateContractMetricsAction
 
     /**
      * Calculate days elapsed since contract start
-     *
-     * @param ProviderContract $contract
-     * @return int
      */
     protected function calculateDaysElapsed(ProviderContract $contract): int
     {
-        if (!$contract->start_date) {
+        if (! $contract->start_date) {
             return 0;
         }
 
@@ -144,13 +126,10 @@ class CalculateContractMetricsAction
 
     /**
      * Calculate completion percentage
-     *
-     * @param ProviderContract $contract
-     * @return float
      */
     protected function calculateCompletionPercentage(ProviderContract $contract): float
     {
-        if (!$contract->start_date || !$contract->end_date) {
+        if (! $contract->start_date || ! $contract->end_date) {
             return 0;
         }
 
@@ -178,9 +157,6 @@ class CalculateContractMetricsAction
 
     /**
      * Calculate renewal probability
-     *
-     * @param ProviderContract $contract
-     * @return float
      */
     protected function calculateRenewalProbability(ProviderContract $contract): float
     {
@@ -218,9 +194,6 @@ class CalculateContractMetricsAction
 
     /**
      * Calculate performance score
-     *
-     * @param ProviderContract $contract
-     * @return float
      */
     protected function calculatePerformanceScore(ProviderContract $contract): float
     {
@@ -258,9 +231,6 @@ class CalculateContractMetricsAction
 
     /**
      * Calculate financial impact
-     *
-     * @param ProviderContract $contract
-     * @return array
      */
     protected function calculateFinancialImpact(ProviderContract $contract): array
     {
@@ -279,17 +249,15 @@ class CalculateContractMetricsAction
 
     /**
      * Calculate ROI percentage
-     *
-     * @param ProviderContract $contract
-     * @return float
      */
     protected function calculateROI(ProviderContract $contract): float
     {
-        if (!$contract->contract_value || !$contract->investment_amount) {
+        if (! $contract->contract_value || ! $contract->investment_amount) {
             return 0;
         }
 
         $profit = $contract->contract_value - $contract->investment_amount;
+
         return ($profit / $contract->investment_amount) * 100;
     }
 }

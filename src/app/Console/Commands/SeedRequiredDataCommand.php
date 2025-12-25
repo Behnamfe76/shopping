@@ -2,16 +2,15 @@
 
 namespace Fereydooni\Shopping\app\Console\Commands;
 
-use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
-use Fereydooni\Shopping\app\Models\Employee;
 use Fereydooni\Shopping\app\Enums\EmployeeStatus;
 use Fereydooni\Shopping\app\Enums\EmploymentType;
 use Fereydooni\Shopping\app\Enums\Gender;
+use Fereydooni\Shopping\app\Models\Employee;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class SeedRequiredDataCommand extends Command
 {
@@ -56,7 +55,7 @@ class SeedRequiredDataCommand extends Command
         $fresh = $this->option('fresh');
 
         // If no specific option is provided, run all
-        if (!$users && !$roles && !$permissions && !$employees) {
+        if (! $users && ! $roles && ! $permissions && ! $employees) {
             $users = $roles = $permissions = $employees = true;
         }
 
@@ -66,9 +65,10 @@ class SeedRequiredDataCommand extends Command
             Artisan::call('migrate:fresh', [], $this->getOutput());
         }
 
-        if (!$force) {
-            if (!$this->confirm('Are you sure you want to seed required data? This will create users, roles, and permissions.')) {
+        if (! $force) {
+            if (! $this->confirm('Are you sure you want to seed required data? This will create users, roles, and permissions.')) {
                 $this->info('Seeding cancelled.');
+
                 return;
             }
         }
@@ -85,7 +85,7 @@ class SeedRequiredDataCommand extends Command
 
         if ($users) {
             // Ensure roles exist before creating users
-            if (!$roles) {
+            if (! $roles) {
                 $this->seedRoles();
             }
             $this->seedUsers();
@@ -93,7 +93,7 @@ class SeedRequiredDataCommand extends Command
 
         if ($employees) {
             // Ensure users exist before creating employees
-            if (!$users) {
+            if (! $users) {
                 $this->seedUsers();
             }
             $this->seedEmployees();
@@ -141,10 +141,10 @@ class SeedRequiredDataCommand extends Command
                 $this->info("Running {$seeder}...");
                 Artisan::call('shopping:seed', [
                     '--class' => $seeder,
-                    '--force' => true
+                    '--force' => true,
                 ], $this->getOutput());
             } catch (\Exception $e) {
-                $this->warn("Warning: Could not run {$seeder}: " . $e->getMessage());
+                $this->warn("Warning: Could not run {$seeder}: ".$e->getMessage());
             }
         }
     }

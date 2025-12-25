@@ -2,14 +2,14 @@
 
 namespace Fereydooni\Shopping\app\Actions\EmployeeTimeOff;
 
+use Carbon\Carbon;
+use Fereydooni\Shopping\app\DTOs\EmployeeTimeOffDTO;
+use Fereydooni\Shopping\app\Enums\TimeOffStatus;
+use Fereydooni\Shopping\app\Enums\TimeOffType;
+use Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeTimeOffRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use Fereydooni\Shopping\app\DTOs\EmployeeTimeOffDTO;
-use Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeTimeOffRepositoryInterface;
-use Fereydooni\Shopping\app\Enums\TimeOffStatus;
-use Fereydooni\Shopping\app\Enums\TimeOffType;
-use Carbon\Carbon;
 
 class CreateEmployeeTimeOffAction
 {
@@ -48,7 +48,7 @@ class CreateEmployeeTimeOffAction
             Log::info('Time-off request created successfully', [
                 'id' => $timeOff->id,
                 'employee_id' => $timeOff->employee_id,
-                'type' => $timeOff->time_off_type->value
+                'type' => $timeOff->time_off_type->value,
             ]);
 
             return EmployeeTimeOffDTO::fromModel($timeOff);
@@ -57,7 +57,7 @@ class CreateEmployeeTimeOffAction
             DB::rollBack();
             Log::error('Failed to create time-off request', [
                 'error' => $e->getMessage(),
-                'data' => $data
+                'data' => $data,
             ]);
             throw $e;
         }
@@ -68,7 +68,7 @@ class CreateEmployeeTimeOffAction
         $rules = [
             'employee_id' => 'required|integer|exists:employees,id',
             'user_id' => 'required|integer|exists:users,id',
-            'time_off_type' => 'required|string|in:' . implode(',', array_column(TimeOffType::cases(), 'value')),
+            'time_off_type' => 'required|string|in:'.implode(',', array_column(TimeOffType::cases(), 'value')),
             'start_date' => 'required|date|after:today',
             'end_date' => 'required|date|after:start_date',
             'start_time' => 'nullable|date_format:H:i:s',
@@ -121,8 +121,7 @@ class CreateEmployeeTimeOffAction
         Log::info('Notification sent for new time-off request', [
             'time_off_id' => $timeOff->id,
             'employee_id' => $timeOff->employee_id,
-            'type' => $timeOff->time_off_type->value
+            'type' => $timeOff->time_off_type->value,
         ]);
     }
 }
-

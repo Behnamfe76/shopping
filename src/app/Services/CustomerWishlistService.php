@@ -2,28 +2,24 @@
 
 namespace Fereydooni\Shopping\app\Services;
 
+use Fereydooni\Shopping\app\DTOs\CustomerWishlistDTO;
+use Fereydooni\Shopping\app\Models\CustomerWishlist;
 use Fereydooni\Shopping\app\Repositories\Interfaces\CustomerWishlistRepositoryInterface;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
-use Fereydooni\Shopping\app\Traits\HasSearchOperations;
 use Fereydooni\Shopping\app\Traits\HasCustomerWishlistOperations;
 use Fereydooni\Shopping\app\Traits\HasCustomerWishlistStatusManagement;
 use Fereydooni\Shopping\app\Traits\HasNotesManagement;
-use Fereydooni\Shopping\app\DTOs\CustomerWishlistDTO;
-use Fereydooni\Shopping\app\Models\CustomerWishlist;
-use Fereydooni\Shopping\app\Enums\WishlistPriority;
+use Fereydooni\Shopping\app\Traits\HasSearchOperations;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Support\Facades\Log;
 
 class CustomerWishlistService
 {
-    use HasCrudOperations, 
-        HasSearchOperations, 
-        HasCustomerWishlistOperations, 
-        HasCustomerWishlistStatusManagement, 
-        HasNotesManagement;
+    use HasCrudOperations,
+        HasCustomerWishlistOperations,
+        HasCustomerWishlistStatusManagement,
+        HasNotesManagement,
+        HasSearchOperations;
 
     public function __construct(
         private CustomerWishlistRepositoryInterface $repository
@@ -41,7 +37,7 @@ class CustomerWishlistService
     {
         try {
             // Get current product price if not provided
-            if (!isset($data['price_when_added'])) {
+            if (! isset($data['price_when_added'])) {
                 $product = app(\Fereydooni\Shopping\app\Models\Product::class)->find($productId);
                 if ($product && $product->price) {
                     $data['price_when_added'] = $product->price;
@@ -50,12 +46,12 @@ class CustomerWishlistService
             }
 
             $wishlist = $this->addToWishlist($customerId, $productId, $data);
-            
+
             if ($wishlist) {
                 // Trigger event for product added to wishlist
                 event(new \Fereydooni\Shopping\app\Events\CustomerWishlist\ProductAddedToWishlist($wishlist));
             }
-            
+
             return $wishlist;
         } catch (\Exception $e) {
             Log::error('Failed to add product to wishlist', [
@@ -63,6 +59,7 @@ class CustomerWishlistService
                 'product_id' => $productId,
                 'error' => $e->getMessage(),
             ]);
+
             return null;
         }
     }
@@ -74,18 +71,18 @@ class CustomerWishlistService
     {
         try {
             $wishlist = $this->repository->findByCustomerAndProduct($customerId, $productId);
-            
+
             if ($wishlist) {
                 $result = $this->removeFromWishlist($customerId, $productId);
-                
+
                 if ($result) {
                     // Trigger event for product removed from wishlist
                     event(new \Fereydooni\Shopping\app\Events\CustomerWishlist\ProductRemovedFromWishlist($wishlist));
                 }
-                
+
                 return $result;
             }
-            
+
             return false;
         } catch (\Exception $e) {
             Log::error('Failed to remove product from wishlist', [
@@ -93,6 +90,7 @@ class CustomerWishlistService
                 'product_id' => $productId,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -104,29 +102,30 @@ class CustomerWishlistService
     {
         try {
             $wishlist = $this->repository->find($wishlistId);
-            
-            if (!$wishlist) {
+
+            if (! $wishlist) {
                 return null;
             }
 
             // Validate status changes
-            if (!$this->validateWishlistStatusChange($wishlist, $data)) {
+            if (! $this->validateWishlistStatusChange($wishlist, $data)) {
                 return null;
             }
 
             $updatedWishlist = $this->updateCustomerWishlist($wishlist, $data);
-            
+
             if ($updatedWishlist) {
                 // Trigger event for wishlist updated
                 event(new \Fereydooni\Shopping\app\Events\CustomerWishlist\CustomerWishlistUpdated($wishlist));
             }
-            
+
             return $updatedWishlist;
         } catch (\Exception $e) {
             Log::error('Failed to update wishlist item', [
                 'wishlist_id' => $wishlistId,
                 'error' => $e->getMessage(),
             ]);
+
             return null;
         }
     }
@@ -163,7 +162,7 @@ class CustomerWishlistService
                     $currentPrice = $wishlist->current_price ?? 0;
                     $minPrice = $filters['min_price'] ?? 0;
                     $maxPrice = $filters['max_price'] ?? PHP_FLOAT_MAX;
-                    
+
                     return $currentPrice >= $minPrice && $currentPrice <= $maxPrice;
                 });
             }
@@ -175,6 +174,7 @@ class CustomerWishlistService
                 'filters' => $filters,
                 'error' => $e->getMessage(),
             ]);
+
             return collect();
         }
     }
@@ -186,24 +186,25 @@ class CustomerWishlistService
     {
         try {
             $recommendations = $this->getWishlistRecommendations($customerId, $limit);
-            
+
             // Get customer's wishlist categories for better recommendations
             $customerWishlists = $this->getCustomerWishlist($customerId);
             $customerCategories = $customerWishlists->pluck('product.category_id')->unique();
-            
+
             // Filter recommendations by customer's preferred categories
             if ($customerCategories->isNotEmpty()) {
                 $recommendations = $recommendations->filter(function ($wishlist) use ($customerCategories) {
                     return $customerCategories->contains($wishlist->product?->category_id);
                 });
             }
-            
+
             return $recommendations->take($limit);
         } catch (\Exception $e) {
             Log::error('Failed to get personalized wishlist recommendations', [
                 'customer_id' => $customerId,
                 'error' => $e->getMessage(),
             ]);
+
             return collect();
         }
     }
@@ -216,15 +217,15 @@ class CustomerWishlistService
         try {
             $results = [];
             $wishlists = $this->repository->all();
-            
+
             foreach ($wishlists as $wishlist) {
                 if ($wishlist->product && $wishlist->product->price) {
                     $oldPrice = $wishlist->current_price;
                     $newPrice = $wishlist->product->price;
-                    
+
                     if ($oldPrice !== $newPrice) {
                         $success = $this->updateWishlistCurrentPrice($wishlist, $newPrice);
-                        
+
                         $results[] = [
                             'wishlist_id' => $wishlist->id,
                             'customer_id' => $wishlist->customer_id,
@@ -237,12 +238,13 @@ class CustomerWishlistService
                     }
                 }
             }
-            
+
             return $results;
         } catch (\Exception $e) {
             Log::error('Failed to process wishlist price updates', [
                 'error' => $e->getMessage(),
             ]);
+
             return [];
         }
     }
@@ -258,7 +260,7 @@ class CustomerWishlistService
             $priceDrops = $this->getPriceDropStatsByCustomer($customerId);
             $recentAdditions = $this->getRecentWishlistAdditionsByCustomer($customerId, 5);
             $recommendations = $this->getPersonalizedWishlistRecommendations($customerId, 5);
-            
+
             return [
                 'analytics' => $analytics,
                 'stats' => $stats,
@@ -276,6 +278,7 @@ class CustomerWishlistService
                 'customer_id' => $customerId,
                 'error' => $e->getMessage(),
             ]);
+
             return [];
         }
     }
@@ -287,20 +290,20 @@ class CustomerWishlistService
     {
         try {
             $sourceWishlists = $this->getCustomerWishlist($sourceCustomerId);
-            
+
             if ($sourceWishlists->isEmpty()) {
                 return false;
             }
 
             $sharedCount = 0;
             $sharePublicOnly = $options['public_only'] ?? true;
-            
+
             foreach ($sourceWishlists as $wishlist) {
                 // Only share public items if specified
-                if ($sharePublicOnly && !$wishlist->is_public) {
+                if ($sharePublicOnly && ! $wishlist->is_public) {
                     continue;
                 }
-                
+
                 $success = $this->addProductToWishlist($targetCustomerId, $wishlist->product_id, [
                     'notes' => $wishlist->notes,
                     'priority' => $wishlist->priority?->value,
@@ -308,12 +311,12 @@ class CustomerWishlistService
                     'price_when_added' => $wishlist->current_price,
                     'current_price' => $wishlist->current_price,
                 ]);
-                
+
                 if ($success) {
                     $sharedCount++;
                 }
             }
-            
+
             return $sharedCount > 0;
         } catch (\Exception $e) {
             Log::error('Failed to share wishlist', [
@@ -321,6 +324,7 @@ class CustomerWishlistService
                 'target_customer_id' => $targetCustomerId,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -333,19 +337,19 @@ class CustomerWishlistService
         try {
             $wishlist1 = $this->getCustomerWishlist($customerId1);
             $wishlist2 = $this->getCustomerWishlist($customerId2);
-            
+
             $products1 = $wishlist1->pluck('product_id')->toArray();
             $products2 = $wishlist2->pluck('product_id')->toArray();
-            
+
             $commonProducts = array_intersect($products1, $products2);
             $uniqueToCustomer1 = array_diff($products1, $products2);
             $uniqueToCustomer2 = array_diff($products2, $products1);
-            
+
             return [
                 'common_products' => count($commonProducts),
                 'unique_to_customer_1' => count($uniqueToCustomer1),
                 'unique_to_customer_2' => count($uniqueToCustomer2),
-                'similarity_percentage' => count($commonProducts) > 0 
+                'similarity_percentage' => count($commonProducts) > 0
                     ? round((count($commonProducts) / max(count($products1), count($products2))) * 100, 2)
                     : 0,
                 'common_product_ids' => array_values($commonProducts),
@@ -358,6 +362,7 @@ class CustomerWishlistService
                 'customer_id_2' => $customerId2,
                 'error' => $e->getMessage(),
             ]);
+
             return [];
         }
     }
@@ -370,13 +375,13 @@ class CustomerWishlistService
         try {
             $wishlists = $this->getCustomerWishlist($customerId);
             $analytics = $this->getWishlistAnalytics($customerId);
-            
+
             // Calculate insights
             $insights = [
                 'total_items' => $analytics['total_items'],
                 'total_value' => $analytics['total_value'],
-                'average_item_value' => $analytics['total_items'] > 0 
-                    ? round($analytics['total_value'] / $analytics['total_items'], 2) 
+                'average_item_value' => $analytics['total_items'] > 0
+                    ? round($analytics['total_value'] / $analytics['total_items'], 2)
                     : 0,
                 'price_drops' => $analytics['price_drops'],
                 'potential_savings' => $wishlists->sum(function ($wishlist) {
@@ -390,13 +395,14 @@ class CustomerWishlistService
                     'private' => $analytics['private_items'],
                 ],
             ];
-            
+
             return $insights;
         } catch (\Exception $e) {
             Log::error('Failed to get wishlist insights', [
                 'customer_id' => $customerId,
                 'error' => $e->getMessage(),
             ]);
+
             return [];
         }
     }
@@ -404,22 +410,22 @@ class CustomerWishlistService
     /**
      * Override trait methods for wishlist-specific behavior
      */
-    
+
     /**
      * Create customer wishlist with additional validation
      */
     public function createCustomerWishlist(array $data): CustomerWishlistDTO
     {
         // Validate wishlist data
-        if (!$this->validateWishlistData($data)) {
+        if (! $this->validateWishlistData($data)) {
             throw new \InvalidArgumentException('Invalid wishlist data provided');
         }
-        
+
         // Check if already in wishlist
         if ($this->isInWishlist($data['customer_id'], $data['product_id'])) {
             throw new \InvalidArgumentException('Product already in wishlist');
         }
-        
+
         return $this->createCustomerWishlistItem($data);
     }
 
@@ -429,10 +435,10 @@ class CustomerWishlistService
     public function updateCustomerWishlist(CustomerWishlist $wishlist, array $data): ?CustomerWishlistDTO
     {
         // Validate status changes
-        if (!$this->validateWishlistStatusChange($wishlist, $data)) {
+        if (! $this->validateWishlistStatusChange($wishlist, $data)) {
             throw new \InvalidArgumentException('Invalid status change data provided');
         }
-        
+
         return $this->updateCustomerWishlistItem($wishlist, $data);
     }
 
@@ -443,18 +449,19 @@ class CustomerWishlistService
     {
         try {
             $result = $this->deleteCustomerWishlistItem($wishlist);
-            
+
             if ($result) {
                 // Trigger event for wishlist deleted
                 event(new \Fereydooni\Shopping\app\Events\CustomerWishlist\CustomerWishlistDeleted($wishlist));
             }
-            
+
             return $result;
         } catch (\Exception $e) {
             Log::error('Failed to delete customer wishlist', [
                 'wishlist_id' => $wishlist->id,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }

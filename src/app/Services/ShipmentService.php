@@ -2,30 +2,30 @@
 
 namespace Fereydooni\Shopping\app\Services;
 
-use Fereydooni\Shopping\app\Repositories\Interfaces\ShipmentRepositoryInterface;
-use Fereydooni\Shopping\app\Models\Shipment;
 use Fereydooni\Shopping\app\DTOs\ShipmentDTO;
+use Fereydooni\Shopping\app\Models\Shipment;
+use Fereydooni\Shopping\app\Repositories\Interfaces\ShipmentRepositoryInterface;
+use Fereydooni\Shopping\app\Traits\HasAnalyticsOperations;
+use Fereydooni\Shopping\app\Traits\HasCarrierIntegration;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
+use Fereydooni\Shopping\app\Traits\HasDeliveryManagement;
+use Fereydooni\Shopping\app\Traits\HasSearchOperations;
 use Fereydooni\Shopping\app\Traits\HasStatusManagement;
 use Fereydooni\Shopping\app\Traits\HasTrackingOperations;
-use Fereydooni\Shopping\app\Traits\HasDeliveryManagement;
-use Fereydooni\Shopping\app\Traits\HasCarrierIntegration;
-use Fereydooni\Shopping\app\Traits\HasAnalyticsOperations;
-use Fereydooni\Shopping\app\Traits\HasSearchOperations;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
 
 class ShipmentService
 {
-    use HasCrudOperations,
-        HasStatusManagement,
-        HasTrackingOperations,
-        HasDeliveryManagement,
+    use HasAnalyticsOperations,
         HasCarrierIntegration,
-        HasAnalyticsOperations,
-        HasSearchOperations;
+        HasCrudOperations,
+        HasDeliveryManagement,
+        HasSearchOperations,
+        HasStatusManagement,
+        HasTrackingOperations;
 
     protected ShipmentRepositoryInterface $repository;
 
@@ -49,7 +49,7 @@ class ShipmentService
      */
     public function allDTO(): Collection
     {
-        return $this->all()->map(fn($shipment) => ShipmentDTO::fromModel($shipment));
+        return $this->all()->map(fn ($shipment) => ShipmentDTO::fromModel($shipment));
     }
 
     /**
@@ -71,7 +71,7 @@ class ShipmentService
     /**
      * Get cursor paginated shipments
      */
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->repository->cursorPaginate($perPage, $cursor);
     }
@@ -105,7 +105,7 @@ class ShipmentService
      */
     public function findByOrderIdDTO(int $orderId): Collection
     {
-        return $this->repository->findByOrderId($orderId)->map(fn($shipment) => ShipmentDTO::fromModel($shipment));
+        return $this->repository->findByOrderId($orderId)->map(fn ($shipment) => ShipmentDTO::fromModel($shipment));
     }
 
     /**
@@ -121,7 +121,7 @@ class ShipmentService
      */
     public function findByCarrierDTO(string $carrier): Collection
     {
-        return $this->repository->findByCarrier($carrier)->map(fn($shipment) => ShipmentDTO::fromModel($shipment));
+        return $this->repository->findByCarrier($carrier)->map(fn ($shipment) => ShipmentDTO::fromModel($shipment));
     }
 
     /**
@@ -137,7 +137,7 @@ class ShipmentService
      */
     public function findByStatusDTO(string $status): Collection
     {
-        return $this->repository->findByStatus($status)->map(fn($shipment) => ShipmentDTO::fromModel($shipment));
+        return $this->repository->findByStatus($status)->map(fn ($shipment) => ShipmentDTO::fromModel($shipment));
     }
 
     /**
@@ -154,6 +154,7 @@ class ShipmentService
     public function findByTrackingNumberDTO(string $trackingNumber): ?ShipmentDTO
     {
         $shipment = $this->repository->findByTrackingNumber($trackingNumber);
+
         return $shipment ? ShipmentDTO::fromModel($shipment) : null;
     }
 
@@ -170,7 +171,7 @@ class ShipmentService
      */
     public function getPendingDTO(): Collection
     {
-        return $this->repository->findPending()->map(fn($shipment) => ShipmentDTO::fromModel($shipment));
+        return $this->repository->findPending()->map(fn ($shipment) => ShipmentDTO::fromModel($shipment));
     }
 
     /**
@@ -186,7 +187,7 @@ class ShipmentService
      */
     public function getInTransitDTO(): Collection
     {
-        return $this->repository->findInTransit()->map(fn($shipment) => ShipmentDTO::fromModel($shipment));
+        return $this->repository->findInTransit()->map(fn ($shipment) => ShipmentDTO::fromModel($shipment));
     }
 
     /**
@@ -202,7 +203,7 @@ class ShipmentService
      */
     public function getDeliveredDTO(): Collection
     {
-        return $this->repository->findDelivered()->map(fn($shipment) => ShipmentDTO::fromModel($shipment));
+        return $this->repository->findDelivered()->map(fn ($shipment) => ShipmentDTO::fromModel($shipment));
     }
 
     /**
@@ -218,7 +219,7 @@ class ShipmentService
      */
     public function getReturnedDTO(): Collection
     {
-        return $this->repository->findReturned()->map(fn($shipment) => ShipmentDTO::fromModel($shipment));
+        return $this->repository->findReturned()->map(fn ($shipment) => ShipmentDTO::fromModel($shipment));
     }
 
     /**
@@ -234,7 +235,7 @@ class ShipmentService
      */
     public function getOverdueDTO(): Collection
     {
-        return $this->repository->findOverdue()->map(fn($shipment) => ShipmentDTO::fromModel($shipment));
+        return $this->repository->findOverdue()->map(fn ($shipment) => ShipmentDTO::fromModel($shipment));
     }
 
     /**
@@ -250,7 +251,7 @@ class ShipmentService
      */
     public function getDelayedDTO(): Collection
     {
-        return $this->repository->findDelayed()->map(fn($shipment) => ShipmentDTO::fromModel($shipment));
+        return $this->repository->findDelayed()->map(fn ($shipment) => ShipmentDTO::fromModel($shipment));
     }
 
     /**
@@ -266,7 +267,7 @@ class ShipmentService
      */
     public function getOnTimeDTO(): Collection
     {
-        return $this->repository->findOnTime()->map(fn($shipment) => ShipmentDTO::fromModel($shipment));
+        return $this->repository->findOnTime()->map(fn ($shipment) => ShipmentDTO::fromModel($shipment));
     }
 
     /**
@@ -288,7 +289,7 @@ class ShipmentService
     /**
      * Return a shipment
      */
-    public function return(Shipment $shipment, string $reason = null): bool
+    public function return(Shipment $shipment, ?string $reason = null): bool
     {
         return $this->repository->return($shipment, $reason);
     }
@@ -330,7 +331,7 @@ class ShipmentService
      */
     public function searchDTO(string $query): Collection
     {
-        return $this->repository->search($query)->map(fn($shipment) => ShipmentDTO::fromModel($shipment));
+        return $this->repository->search($query)->map(fn ($shipment) => ShipmentDTO::fromModel($shipment));
     }
 
     /**
@@ -346,7 +347,7 @@ class ShipmentService
      */
     public function searchByOrderIdDTO(int $orderId, string $query): Collection
     {
-        return $this->repository->searchByOrderId($orderId, $query)->map(fn($shipment) => ShipmentDTO::fromModel($shipment));
+        return $this->repository->searchByOrderId($orderId, $query)->map(fn ($shipment) => ShipmentDTO::fromModel($shipment));
     }
 
     /**
@@ -362,7 +363,7 @@ class ShipmentService
      */
     public function searchByCarrierDTO(string $carrier, string $query): Collection
     {
-        return $this->repository->searchByCarrier($carrier, $query)->map(fn($shipment) => ShipmentDTO::fromModel($shipment));
+        return $this->repository->searchByCarrier($carrier, $query)->map(fn ($shipment) => ShipmentDTO::fromModel($shipment));
     }
 
     /**
@@ -440,7 +441,7 @@ class ShipmentService
     /**
      * Get delivery performance
      */
-    public function getDeliveryPerformance(string $carrier = null): array
+    public function getDeliveryPerformance(?string $carrier = null): array
     {
         return $this->repository->getDeliveryPerformance($carrier);
     }
@@ -448,7 +449,7 @@ class ShipmentService
     /**
      * Get shipping costs
      */
-    public function getShippingCosts(string $carrier = null): array
+    public function getShippingCosts(?string $carrier = null): array
     {
         return $this->repository->getShippingCosts($carrier);
     }
@@ -456,7 +457,7 @@ class ShipmentService
     /**
      * Get delivery times
      */
-    public function getDeliveryTimes(string $carrier = null): array
+    public function getDeliveryTimes(?string $carrier = null): array
     {
         return $this->repository->getDeliveryTimes($carrier);
     }
@@ -464,7 +465,7 @@ class ShipmentService
     /**
      * Get return rates
      */
-    public function getReturnRates(string $carrier = null): array
+    public function getReturnRates(?string $carrier = null): array
     {
         return $this->repository->getReturnRates($carrier);
     }

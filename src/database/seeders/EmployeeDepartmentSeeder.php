@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\EmployeeDepartment;
 use App\Models\Employee;
+use App\Models\EmployeeDepartment;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -51,8 +51,8 @@ class EmployeeDepartmentSeeder extends Seeder
                     'code_review_policy' => 'Mandatory for all changes',
                     'testing_requirements' => 'Unit tests + Integration tests',
                     'deployment_frequency' => 'Daily',
-                    'on_call_schedule' => '24/7 rotation'
-                ]
+                    'on_call_schedule' => '24/7 rotation',
+                ],
             ],
             [
                 'name' => 'Sales',
@@ -69,8 +69,8 @@ class EmployeeDepartmentSeeder extends Seeder
                     'quota_period' => 'Quarterly',
                     'commission_structure' => 'Base + Commission + Bonuses',
                     'sales_tools' => ['CRM', 'Salesforce', 'HubSpot'],
-                    'territory_assignment' => 'Geographic + Industry vertical'
-                ]
+                    'territory_assignment' => 'Geographic + Industry vertical',
+                ],
             ],
             [
                 'name' => 'Marketing',
@@ -87,8 +87,8 @@ class EmployeeDepartmentSeeder extends Seeder
                     'campaign_frequency' => 'Weekly',
                     'kpis' => ['Lead Generation', 'Brand Awareness', 'Conversion Rate'],
                     'tools_platforms' => ['Google Analytics', 'HubSpot', 'Mailchimp'],
-                    'content_strategy' => 'Educational + Thought Leadership'
-                ]
+                    'content_strategy' => 'Educational + Thought Leadership',
+                ],
             ],
             [
                 'name' => 'Finance',
@@ -104,8 +104,8 @@ class EmployeeDepartmentSeeder extends Seeder
                     'budget_cycle' => 'Quarterly',
                     'approval_workflow' => 'Manager + Finance + HR',
                     'key_metrics' => ['Budget Variance', 'Cash Flow', 'Profitability'],
-                    'compliance_requirements' => ['SOX', 'GAAP', 'Tax Regulations']
-                ]
+                    'compliance_requirements' => ['SOX', 'GAAP', 'Tax Regulations'],
+                ],
             ],
             [
                 'name' => 'Human Resources',
@@ -121,9 +121,9 @@ class EmployeeDepartmentSeeder extends Seeder
                     'employee_benefits' => ['Health Insurance', '401k', 'Stock Options'],
                     'performance_management' => 'Quarterly Reviews',
                     'training_programs' => ['Leadership', 'Technical Skills', 'Soft Skills'],
-                    'diversity_initiatives' => ['Inclusive Hiring', 'Equal Pay', 'Cultural Training']
-                ]
-            ]
+                    'diversity_initiatives' => ['Inclusive Hiring', 'Equal Pay', 'Cultural Training'],
+                ],
+            ],
         ];
 
         foreach ($rootDepartments as $department) {
@@ -170,7 +170,7 @@ class EmployeeDepartmentSeeder extends Seeder
                 'location' => 'San Francisco',
                 'budget' => 800000.00,
                 'headcount_limit' => 45,
-                'parent_id' => $parentId
+                'parent_id' => $parentId,
             ],
             [
                 'name' => 'Backend Development',
@@ -179,7 +179,7 @@ class EmployeeDepartmentSeeder extends Seeder
                 'location' => 'San Francisco',
                 'budget' => 900000.00,
                 'headcount_limit' => 50,
-                'parent_id' => $parentId
+                'parent_id' => $parentId,
             ],
             [
                 'name' => 'DevOps',
@@ -188,7 +188,7 @@ class EmployeeDepartmentSeeder extends Seeder
                 'location' => 'San Francisco',
                 'budget' => 600000.00,
                 'headcount_limit' => 30,
-                'parent_id' => $parentId
+                'parent_id' => $parentId,
             ],
             [
                 'name' => 'Quality Assurance',
@@ -197,8 +197,8 @@ class EmployeeDepartmentSeeder extends Seeder
                 'location' => 'San Francisco',
                 'budget' => 400000.00,
                 'headcount_limit' => 25,
-                'parent_id' => $parentId
-            ]
+                'parent_id' => $parentId,
+            ],
         ];
 
         foreach ($subDepartments as $department) {
@@ -219,7 +219,7 @@ class EmployeeDepartmentSeeder extends Seeder
                 'location' => 'New York',
                 'budget' => 1000000.00,
                 'headcount_limit' => 50,
-                'parent_id' => $parentId
+                'parent_id' => $parentId,
             ],
             [
                 'name' => 'SMB Sales',
@@ -228,7 +228,7 @@ class EmployeeDepartmentSeeder extends Seeder
                 'location' => 'New York',
                 'budget' => 500000.00,
                 'headcount_limit' => 30,
-                'parent_id' => $parentId
+                'parent_id' => $parentId,
             ],
             [
                 'name' => 'Sales Development',
@@ -237,8 +237,8 @@ class EmployeeDepartmentSeeder extends Seeder
                 'location' => 'New York',
                 'budget' => 300000.00,
                 'headcount_limit' => 20,
-                'parent_id' => $parentId
-            ]
+                'parent_id' => $parentId,
+            ],
         ];
 
         foreach ($subDepartments as $department) {
@@ -259,7 +259,7 @@ class EmployeeDepartmentSeeder extends Seeder
                 'location' => 'London',
                 'budget' => 500000.00,
                 'headcount_limit' => 35,
-                'parent_id' => $parentId
+                'parent_id' => $parentId,
             ],
             [
                 'name' => 'Content Marketing',
@@ -268,7 +268,7 @@ class EmployeeDepartmentSeeder extends Seeder
                 'location' => 'London',
                 'budget' => 400000.00,
                 'headcount_limit' => 25,
-                'parent_id' => $parentId
+                'parent_id' => $parentId,
             ],
             [
                 'name' => 'Product Marketing',
@@ -277,8 +277,8 @@ class EmployeeDepartmentSeeder extends Seeder
                 'location' => 'London',
                 'budget' => 300000.00,
                 'headcount_limit' => 20,
-                'parent_id' => $parentId
-            ]
+                'parent_id' => $parentId,
+            ],
         ];
 
         foreach ($subDepartments as $department) {
@@ -317,7 +317,7 @@ class EmployeeDepartmentSeeder extends Seeder
                 'budget' => 500000.00,
                 'headcount_limit' => 30,
                 'is_active' => true,
-                'status' => 'active'
+                'status' => 'active',
             ],
             [
                 'name' => 'Legal',
@@ -327,7 +327,7 @@ class EmployeeDepartmentSeeder extends Seeder
                 'budget' => 400000.00,
                 'headcount_limit' => 15,
                 'is_active' => true,
-                'status' => 'active'
+                'status' => 'active',
             ],
             [
                 'name' => 'Research & Development',
@@ -337,8 +337,8 @@ class EmployeeDepartmentSeeder extends Seeder
                 'budget' => 1500000.00,
                 'headcount_limit' => 60,
                 'is_active' => true,
-                'status' => 'active'
-            ]
+                'status' => 'active',
+            ],
         ];
 
         foreach ($sampleDepartments as $department) {

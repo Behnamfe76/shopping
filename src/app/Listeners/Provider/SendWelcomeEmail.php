@@ -26,6 +26,6 @@ class SendWelcomeEmail implements ShouldQueue
         // Send welcome email to new provider
         // This would typically integrate with a mail service
         // For now, we'll just log the action
-        \Log::info('Welcome email sent to provider: ' . $event->provider->company_name);
+        \Log::info('Welcome email sent to provider: '.$event->provider->company_name);
     }
 }

@@ -69,7 +69,7 @@ class EmployeeDepartmentPolicy
         }
 
         // Check basic edit permission
-        if (!$user->can('employee-department.edit')) {
+        if (! $user->can('employee-department.edit')) {
             return false;
         }
 
@@ -101,7 +101,7 @@ class EmployeeDepartmentPolicy
         }
 
         // Check basic delete permission
-        if (!$user->can('employee-department.delete')) {
+        if (! $user->can('employee-department.delete')) {
             return false;
         }
 
@@ -197,7 +197,7 @@ class EmployeeDepartmentPolicy
     /**
      * Determine whether the user can export department data.
      */
-    public function export(User $user, EmployeeDepartment $employeeDepartment = null): bool
+    public function export(User $user, ?EmployeeDepartment $employeeDepartment = null): bool
     {
         return $user->can('employee-department.export') ||
                $user->can('employee-department.manage-all');
@@ -206,7 +206,7 @@ class EmployeeDepartmentPolicy
     /**
      * Determine whether the user can import department data.
      */
-    public function import(User $user, EmployeeDepartment $employeeDepartment = null): bool
+    public function import(User $user, ?EmployeeDepartment $employeeDepartment = null): bool
     {
         return $user->can('employee-department.import') ||
                $user->can('employee-department.manage-all');
@@ -215,7 +215,7 @@ class EmployeeDepartmentPolicy
     /**
      * Determine whether the user can view department statistics.
      */
-    public function viewStatistics(User $user, EmployeeDepartment $employeeDepartment = null): bool
+    public function viewStatistics(User $user, ?EmployeeDepartment $employeeDepartment = null): bool
     {
         return $user->can('employee-department.statistics') ||
                $user->can('employee-department.view-all') ||
@@ -225,7 +225,7 @@ class EmployeeDepartmentPolicy
     /**
      * Determine whether the user can audit department activities.
      */
-    public function audit(User $user, EmployeeDepartment $employeeDepartment = null): bool
+    public function audit(User $user, ?EmployeeDepartment $employeeDepartment = null): bool
     {
         return $user->can('employee-department.audit') ||
                $user->can('employee-department.manage-all');

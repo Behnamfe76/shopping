@@ -168,7 +168,7 @@ class EmployeeSkill extends Model
      */
     public function isCertificationExpiring(int $days = 30): bool
     {
-        if (!$this->certification_expiry) {
+        if (! $this->certification_expiry) {
             return false;
         }
 
@@ -183,7 +183,7 @@ class EmployeeSkill extends Model
      */
     public function isCertificationExpired(): bool
     {
-        if (!$this->certification_expiry) {
+        if (! $this->certification_expiry) {
             return false;
         }
 
@@ -236,7 +236,7 @@ class EmployeeSkill extends Model
     public function getFullDescription(): string
     {
         $description = "{$this->skill_name} - {$this->proficiency_level->label()}";
-        
+
         if ($this->years_experience > 0) {
             $description .= " ({$this->years_experience} years)";
         }

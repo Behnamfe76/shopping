@@ -116,11 +116,12 @@ class OrderSearchResource extends JsonResource
      */
     private function highlightText(?string $text, string $query): ?string
     {
-        if (!$text) {
+        if (! $text) {
             return null;
         }
 
         $query = preg_quote($query, '/');
+
         return preg_replace("/($query)/i", '<mark>$1</mark>', $text);
     }
 }

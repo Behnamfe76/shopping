@@ -6,25 +6,36 @@ class ProviderNotePermissions
 {
     // Basic CRUD permissions
     public const VIEW = 'provider-note.view';
+
     public const CREATE = 'provider-note.create';
+
     public const EDIT = 'provider-note.edit';
+
     public const DELETE = 'provider-note.delete';
+
     public const ARCHIVE = 'provider-note.archive';
 
     // Ownership-based permissions
     public const VIEW_OWN = 'provider-note.view-own';
+
     public const CREATE_OWN = 'provider-note.create-own';
+
     public const EDIT_OWN = 'provider-note.edit-own';
 
     // Team and department permissions
     public const VIEW_TEAM = 'provider-note.view-team';
+
     public const VIEW_DEPARTMENT = 'provider-note.view-department';
+
     public const VIEW_ALL = 'provider-note.view-all';
 
     // Administrative permissions
     public const MANAGE_ALL = 'provider-note.manage-all';
+
     public const EXPORT = 'provider-note.export';
+
     public const IMPORT = 'provider-note.import';
+
     public const STATISTICS = 'provider-note.statistics';
 
     /**

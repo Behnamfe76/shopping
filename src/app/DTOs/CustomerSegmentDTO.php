@@ -2,24 +2,21 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Email;
+use Fereydooni\Shopping\app\Enums\SegmentPriority;
+use Fereydooni\Shopping\app\Enums\SegmentStatus;
+use Fereydooni\Shopping\app\Enums\SegmentType;
+use Fereydooni\Shopping\app\Models\CustomerSegment;
+use Illuminate\Support\Carbon;
+use Spatie\LaravelData\Attributes\Validation\BooleanType;
+use Spatie\LaravelData\Attributes\Validation\Date;
+use Spatie\LaravelData\Attributes\Validation\In;
+use Spatie\LaravelData\Attributes\Validation\IntegerType;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\Min;
 use Spatie\LaravelData\Attributes\Validation\Nullable;
 use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
-use Spatie\LaravelData\Attributes\Validation\BooleanType;
-use Spatie\LaravelData\Attributes\Validation\Date;
-use Spatie\LaravelData\Attributes\Validation\Numeric;
-use Spatie\LaravelData\Attributes\Validation\In;
-use Spatie\LaravelData\Attributes\Validation\Unique;
-use Illuminate\Support\Carbon;
-use Fereydooni\Shopping\app\Enums\SegmentType;
-use Fereydooni\Shopping\app\Enums\SegmentStatus;
-use Fereydooni\Shopping\app\Enums\SegmentPriority;
-use Fereydooni\Shopping\app\Models\CustomerSegment;
+use Spatie\LaravelData\Data;
 
 class CustomerSegmentDTO extends Data
 {
@@ -145,8 +142,7 @@ class CustomerSegmentDTO extends Data
 
         #[Nullable]
         public mixed $segment_history = null,
-    ) {
-    }
+    ) {}
 
     public static function fromModel(CustomerSegment $customerSegment): static
     {

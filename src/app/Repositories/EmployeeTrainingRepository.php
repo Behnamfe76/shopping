@@ -2,25 +2,26 @@
 
 namespace Fereydooni\Shopping\Repositories;
 
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Cache;
-use Fereydooni\Shopping\Repositories\Interfaces\EmployeeTrainingRepositoryInterface;
-use Fereydooni\Shopping\Models\EmployeeTraining;
 use Fereydooni\Shopping\DTOs\EmployeeTrainingDTO;
+use Fereydooni\Shopping\Enums\TrainingMethod;
 use Fereydooni\Shopping\Enums\TrainingStatus;
 use Fereydooni\Shopping\Enums\TrainingType;
-use Fereydooni\Shopping\Enums\TrainingMethod;
-use Carbon\Carbon;
+use Fereydooni\Shopping\Models\EmployeeTraining;
+use Fereydooni\Shopping\Repositories\Interfaces\EmployeeTrainingRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
 {
     protected $model;
+
     protected $cachePrefix = 'employee_training_';
+
     protected $cacheTtl = 3600; // 1 hour
 
     public function __construct(EmployeeTraining $model)
@@ -30,7 +31,7 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
 
     public function all(): Collection
     {
-        return Cache::remember($this->cachePrefix . 'all', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'all', $this->cacheTtl, function () {
             return $this->model->with('employee')->get();
         });
     }
@@ -58,7 +59,7 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
 
     public function find(int $id): ?EmployeeTraining
     {
-        return Cache::remember($this->cachePrefix . 'find_' . $id, $this->cacheTtl, function () use ($id) {
+        return Cache::remember($this->cachePrefix.'find_'.$id, $this->cacheTtl, function () use ($id) {
             return $this->model->with('employee')->find($id);
         });
     }
@@ -66,12 +67,13 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
     public function findDTO(int $id): ?EmployeeTrainingDTO
     {
         $training = $this->find($id);
+
         return $training ? EmployeeTrainingDTO::fromModel($training) : null;
     }
 
     public function findByEmployeeId(int $employeeId): Collection
     {
-        return Cache::remember($this->cachePrefix . 'employee_' . $employeeId, $this->cacheTtl, function () use ($employeeId) {
+        return Cache::remember($this->cachePrefix.'employee_'.$employeeId, $this->cacheTtl, function () use ($employeeId) {
             return $this->model->with('employee')
                 ->where('employee_id', $employeeId)
                 ->orderBy('created_at', 'desc')
@@ -82,12 +84,13 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
     public function findByEmployeeIdDTO(int $employeeId): Collection
     {
         $trainings = $this->findByEmployeeId($employeeId);
-        return $trainings->map(fn($training) => EmployeeTrainingDTO::fromModel($training));
+
+        return $trainings->map(fn ($training) => EmployeeTrainingDTO::fromModel($training));
     }
 
     public function findByTrainingType(string $trainingType): Collection
     {
-        return Cache::remember($this->cachePrefix . 'type_' . $trainingType, $this->cacheTtl, function () use ($trainingType) {
+        return Cache::remember($this->cachePrefix.'type_'.$trainingType, $this->cacheTtl, function () use ($trainingType) {
             return $this->model->with('employee')
                 ->where('training_type', $trainingType)
                 ->orderBy('created_at', 'desc')
@@ -98,12 +101,13 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
     public function findByTrainingTypeDTO(string $trainingType): Collection
     {
         $trainings = $this->findByTrainingType($trainingType);
-        return $trainings->map(fn($training) => EmployeeTrainingDTO::fromModel($training));
+
+        return $trainings->map(fn ($training) => EmployeeTrainingDTO::fromModel($training));
     }
 
     public function findByStatus(string $status): Collection
     {
-        return Cache::remember($this->cachePrefix . 'status_' . $status, $this->cacheTtl, function () use ($status) {
+        return Cache::remember($this->cachePrefix.'status_'.$status, $this->cacheTtl, function () use ($status) {
             return $this->model->with('employee')
                 ->where('status', $status)
                 ->orderBy('created_at', 'desc')
@@ -114,7 +118,8 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
     public function findByStatusDTO(string $status): Collection
     {
         $trainings = $this->findByStatus($status);
-        return $trainings->map(fn($training) => EmployeeTrainingDTO::fromModel($training));
+
+        return $trainings->map(fn ($training) => EmployeeTrainingDTO::fromModel($training));
     }
 
     public function findByProvider(string $provider): Collection
@@ -128,7 +133,8 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
     public function findByProviderDTO(string $provider): Collection
     {
         $trainings = $this->findByProvider($provider);
-        return $trainings->map(fn($training) => EmployeeTrainingDTO::fromModel($training));
+
+        return $trainings->map(fn ($training) => EmployeeTrainingDTO::fromModel($training));
     }
 
     public function findByDateRange(string $startDate, string $endDate): Collection
@@ -143,7 +149,8 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
     public function findByDateRangeDTO(string $startDate, string $endDate): Collection
     {
         $trainings = $this->findByDateRange($startDate, $endDate);
-        return $trainings->map(fn($training) => EmployeeTrainingDTO::fromModel($training));
+
+        return $trainings->map(fn ($training) => EmployeeTrainingDTO::fromModel($training));
     }
 
     public function findByEmployeeAndType(int $employeeId, string $trainingType): Collection
@@ -158,12 +165,13 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
     public function findByEmployeeAndTypeDTO(int $employeeId, string $trainingType): Collection
     {
         $trainings = $this->findByEmployeeAndType($employeeId, $trainingType);
-        return $trainings->map(fn($training) => EmployeeTrainingDTO::fromModel($training));
+
+        return $trainings->map(fn ($training) => EmployeeTrainingDTO::fromModel($training));
     }
 
     public function findCompleted(): Collection
     {
-        return Cache::remember($this->cachePrefix . 'completed', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'completed', $this->cacheTtl, function () {
             return $this->model->with('employee')->completed()->get();
         });
     }
@@ -171,12 +179,13 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
     public function findCompletedDTO(): Collection
     {
         $trainings = $this->findCompleted();
-        return $trainings->map(fn($training) => EmployeeTrainingDTO::fromModel($training));
+
+        return $trainings->map(fn ($training) => EmployeeTrainingDTO::fromModel($training));
     }
 
     public function findInProgress(): Collection
     {
-        return Cache::remember($this->cachePrefix . 'in_progress', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'in_progress', $this->cacheTtl, function () {
             return $this->model->with('employee')
                 ->where('status', TrainingStatus::IN_PROGRESS)
                 ->get();
@@ -186,12 +195,13 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
     public function findInProgressDTO(): Collection
     {
         $trainings = $this->findInProgress();
-        return $trainings->map(fn($training) => EmployeeTrainingDTO::fromModel($training));
+
+        return $trainings->map(fn ($training) => EmployeeTrainingDTO::fromModel($training));
     }
 
     public function findNotStarted(): Collection
     {
-        return Cache::remember($this->cachePrefix . 'not_started', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'not_started', $this->cacheTtl, function () {
             return $this->model->with('employee')
                 ->where('status', TrainingStatus::NOT_STARTED)
                 ->get();
@@ -201,12 +211,13 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
     public function findNotStartedDTO(): Collection
     {
         $trainings = $this->findNotStarted();
-        return $trainings->map(fn($training) => EmployeeTrainingDTO::fromModel($training));
+
+        return $trainings->map(fn ($training) => EmployeeTrainingDTO::fromModel($training));
     }
 
     public function findFailed(): Collection
     {
-        return Cache::remember($this->cachePrefix . 'failed', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'failed', $this->cacheTtl, function () {
             return $this->model->with('employee')
                 ->where('status', TrainingStatus::FAILED)
                 ->get();
@@ -216,12 +227,13 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
     public function findFailedDTO(): Collection
     {
         $trainings = $this->findFailed();
-        return $trainings->map(fn($training) => EmployeeTrainingDTO::fromModel($training));
+
+        return $trainings->map(fn ($training) => EmployeeTrainingDTO::fromModel($training));
     }
 
     public function findMandatory(): Collection
     {
-        return Cache::remember($this->cachePrefix . 'mandatory', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'mandatory', $this->cacheTtl, function () {
             return $this->model->with('employee')->mandatory()->get();
         });
     }
@@ -229,12 +241,13 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
     public function findMandatoryDTO(): Collection
     {
         $trainings = $this->findMandatory();
-        return $trainings->map(fn($training) => EmployeeTrainingDTO::fromModel($training));
+
+        return $trainings->map(fn ($training) => EmployeeTrainingDTO::fromModel($training));
     }
 
     public function findCertifications(): Collection
     {
-        return Cache::remember($this->cachePrefix . 'certifications', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'certifications', $this->cacheTtl, function () {
             return $this->model->with('employee')->certifications()->get();
         });
     }
@@ -242,12 +255,13 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
     public function findCertificationsDTO(): Collection
     {
         $trainings = $this->findCertifications();
-        return $trainings->map(fn($training) => EmployeeTrainingDTO::fromModel($training));
+
+        return $trainings->map(fn ($training) => EmployeeTrainingDTO::fromModel($training));
     }
 
     public function findExpiringSoon(int $days = 30): Collection
     {
-        return Cache::remember($this->cachePrefix . 'expiring_' . $days, $this->cacheTtl, function () use ($days) {
+        return Cache::remember($this->cachePrefix.'expiring_'.$days, $this->cacheTtl, function () use ($days) {
             return $this->model->with('employee')->expiringSoon($days)->get();
         });
     }
@@ -255,7 +269,8 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
     public function findExpiringSoonDTO(int $days = 30): Collection
     {
         $trainings = $this->findExpiringSoon($days);
-        return $trainings->map(fn($training) => EmployeeTrainingDTO::fromModel($training));
+
+        return $trainings->map(fn ($training) => EmployeeTrainingDTO::fromModel($training));
     }
 
     public function findByInstructor(string $instructor): Collection
@@ -269,7 +284,8 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
     public function findByInstructorDTO(string $instructor): Collection
     {
         $trainings = $this->findByInstructor($instructor);
-        return $trainings->map(fn($training) => EmployeeTrainingDTO::fromModel($training));
+
+        return $trainings->map(fn ($training) => EmployeeTrainingDTO::fromModel($training));
     }
 
     public function findByTrainingMethod(string $trainingMethod): Collection
@@ -283,7 +299,8 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
     public function findByTrainingMethodDTO(string $trainingMethod): Collection
     {
         $trainings = $this->findByTrainingMethod($trainingMethod);
-        return $trainings->map(fn($training) => EmployeeTrainingDTO::fromModel($training));
+
+        return $trainings->map(fn ($training) => EmployeeTrainingDTO::fromModel($training));
     }
 
     public function findByScoreRange(float $minScore, float $maxScore): Collection
@@ -297,22 +314,23 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
     public function findByScoreRangeDTO(float $minScore, float $maxScore): Collection
     {
         $trainings = $this->findByScoreRange($minScore, $maxScore);
-        return $trainings->map(fn($training) => EmployeeTrainingDTO::fromModel($training));
+
+        return $trainings->map(fn ($training) => EmployeeTrainingDTO::fromModel($training));
     }
 
     public function create(array $data): EmployeeTraining
     {
         try {
             DB::beginTransaction();
-            
+
             $training = $this->model->create($data);
-            
+
             $this->clearCache();
-            
+
             DB::commit();
-            
+
             Log::info('Employee training created', ['id' => $training->id, 'employee_id' => $training->employee_id]);
-            
+
             return $training;
         } catch (\Exception $e) {
             DB::rollBack();
@@ -324,6 +342,7 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
     public function createAndReturnDTO(array $data): EmployeeTrainingDTO
     {
         $training = $this->create($data);
+
         return EmployeeTrainingDTO::fromModel($training);
     }
 
@@ -331,17 +350,17 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
     {
         try {
             DB::beginTransaction();
-            
+
             $updated = $training->update($data);
-            
+
             if ($updated) {
                 $this->clearCache();
             }
-            
+
             DB::commit();
-            
+
             Log::info('Employee training updated', ['id' => $training->id, 'employee_id' => $training->employee_id]);
-            
+
             return $updated;
         } catch (\Exception $e) {
             DB::rollBack();
@@ -353,6 +372,7 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
     public function updateAndReturnDTO(EmployeeTraining $training, array $data): ?EmployeeTrainingDTO
     {
         $updated = $this->update($training, $data);
+
         return $updated ? EmployeeTrainingDTO::fromModel($training->fresh()) : null;
     }
 
@@ -360,17 +380,17 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
     {
         try {
             DB::beginTransaction();
-            
+
             $deleted = $training->delete();
-            
+
             if ($deleted) {
                 $this->clearCache();
             }
-            
+
             DB::commit();
-            
+
             Log::info('Employee training deleted', ['id' => $training->id, 'employee_id' => $training->employee_id]);
-            
+
             return $deleted;
         } catch (\Exception $e) {
             DB::rollBack();
@@ -433,7 +453,7 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
 
     public function renew(EmployeeTraining $training, ?string $renewalDate = null): bool
     {
-        if (!$training->canBeRenewed()) {
+        if (! $training->canBeRenewed()) {
             return false;
         }
 
@@ -454,14 +474,14 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
 
     public function getEmployeeTrainingCount(int $employeeId): int
     {
-        return Cache::remember($this->cachePrefix . 'count_employee_' . $employeeId, $this->cacheTtl, function () use ($employeeId) {
+        return Cache::remember($this->cachePrefix.'count_employee_'.$employeeId, $this->cacheTtl, function () use ($employeeId) {
             return $this->model->where('employee_id', $employeeId)->count();
         });
     }
 
     public function getEmployeeTrainingCountByType(int $employeeId, string $trainingType): int
     {
-        return Cache::remember($this->cachePrefix . 'count_employee_type_' . $employeeId . '_' . $trainingType, $this->cacheTtl, function () use ($employeeId, $trainingType) {
+        return Cache::remember($this->cachePrefix.'count_employee_type_'.$employeeId.'_'.$trainingType, $this->cacheTtl, function () use ($employeeId, $trainingType) {
             return $this->model->where('employee_id', $employeeId)
                 ->where('training_type', $trainingType)
                 ->count();
@@ -470,7 +490,7 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
 
     public function getEmployeeTrainingCountByStatus(int $employeeId, string $status): int
     {
-        return Cache::remember($this->cachePrefix . 'count_employee_status_' . $employeeId . '_' . $status, $this->cacheTtl, function () use ($employeeId, $status) {
+        return Cache::remember($this->cachePrefix.'count_employee_status_'.$employeeId.'_'.$status, $this->cacheTtl, function () use ($employeeId, $status) {
             return $this->model->where('employee_id', $employeeId)
                 ->where('status', $status)
                 ->count();
@@ -479,7 +499,7 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
 
     public function getEmployeeTotalHours(int $employeeId): float
     {
-        return Cache::remember($this->cachePrefix . 'hours_employee_' . $employeeId, $this->cacheTtl, function () use ($employeeId) {
+        return Cache::remember($this->cachePrefix.'hours_employee_'.$employeeId, $this->cacheTtl, function () use ($employeeId) {
             return $this->model->where('employee_id', $employeeId)
                 ->where('status', TrainingStatus::COMPLETED)
                 ->sum('total_hours');
@@ -488,14 +508,14 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
 
     public function getEmployeeTotalCost(int $employeeId): float
     {
-        return Cache::remember($this->cachePrefix . 'cost_employee_' . $employeeId, $this->cacheTtl, function () use ($employeeId) {
+        return Cache::remember($this->cachePrefix.'cost_employee_'.$employeeId, $this->cacheTtl, function () use ($employeeId) {
             return $this->model->where('employee_id', $employeeId)->sum('cost');
         });
     }
 
     public function getEmployeeAverageScore(int $employeeId): float
     {
-        return Cache::remember($this->cachePrefix . 'score_employee_' . $employeeId, $this->cacheTtl, function () use ($employeeId) {
+        return Cache::remember($this->cachePrefix.'score_employee_'.$employeeId, $this->cacheTtl, function () use ($employeeId) {
             return $this->model->where('employee_id', $employeeId)
                 ->where('status', TrainingStatus::COMPLETED)
                 ->whereNotNull('score')
@@ -505,7 +525,7 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
 
     public function getEmployeeCertifications(int $employeeId): Collection
     {
-        return Cache::remember($this->cachePrefix . 'certifications_employee_' . $employeeId, $this->cacheTtl, function () use ($employeeId) {
+        return Cache::remember($this->cachePrefix.'certifications_employee_'.$employeeId, $this->cacheTtl, function () use ($employeeId) {
             return $this->model->with('employee')
                 ->where('employee_id', $employeeId)
                 ->where('is_certification', true)
@@ -517,12 +537,13 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
     public function getEmployeeCertificationsDTO(int $employeeId): Collection
     {
         $trainings = $this->getEmployeeCertifications($employeeId);
-        return $trainings->map(fn($training) => EmployeeTrainingDTO::fromModel($training));
+
+        return $trainings->map(fn ($training) => EmployeeTrainingDTO::fromModel($training));
     }
 
     public function getEmployeeMandatoryTrainings(int $employeeId): Collection
     {
-        return Cache::remember($this->cachePrefix . 'mandatory_employee_' . $employeeId, $this->cacheTtl, function () use ($employeeId) {
+        return Cache::remember($this->cachePrefix.'mandatory_employee_'.$employeeId, $this->cacheTtl, function () use ($employeeId) {
             return $this->model->with('employee')
                 ->where('employee_id', $employeeId)
                 ->where('is_mandatory', true)
@@ -533,47 +554,48 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
     public function getEmployeeMandatoryTrainingsDTO(int $employeeId): Collection
     {
         $trainings = $this->getEmployeeMandatoryTrainings($employeeId);
-        return $trainings->map(fn($training) => EmployeeTrainingDTO::fromModel($training));
+
+        return $trainings->map(fn ($training) => EmployeeTrainingDTO::fromModel($training));
     }
 
     public function getTotalTrainingCount(): int
     {
-        return Cache::remember($this->cachePrefix . 'total_count', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'total_count', $this->cacheTtl, function () {
             return $this->model->count();
         });
     }
 
     public function getTotalTrainingCountByType(string $trainingType): int
     {
-        return Cache::remember($this->cachePrefix . 'total_count_type_' . $trainingType, $this->cacheTtl, function () use ($trainingType) {
+        return Cache::remember($this->cachePrefix.'total_count_type_'.$trainingType, $this->cacheTtl, function () use ($trainingType) {
             return $this->model->where('training_type', $trainingType)->count();
         });
     }
 
     public function getTotalTrainingCountByStatus(string $status): int
     {
-        return Cache::remember($this->cachePrefix . 'total_count_status_' . $status, $this->cacheTtl, function () use ($status) {
+        return Cache::remember($this->cachePrefix.'total_count_status_'.$status, $this->cacheTtl, function () use ($status) {
             return $this->model->where('status', $status)->count();
         });
     }
 
     public function getTotalHours(): float
     {
-        return Cache::remember($this->cachePrefix . 'total_hours', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'total_hours', $this->cacheTtl, function () {
             return $this->model->where('status', TrainingStatus::COMPLETED)->sum('total_hours');
         });
     }
 
     public function getTotalCost(): float
     {
-        return Cache::remember($this->cachePrefix . 'total_cost', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'total_cost', $this->cacheTtl, function () {
             return $this->model->sum('cost');
         });
     }
 
     public function getAverageScore(): float
     {
-        return Cache::remember($this->cachePrefix . 'average_score', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'average_score', $this->cacheTtl, function () {
             return $this->model->where('status', TrainingStatus::COMPLETED)
                 ->whereNotNull('score')
                 ->avg('score') ?: 0;
@@ -597,7 +619,7 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
 
     public function getExpiringCertificationsCount(int $days = 30): int
     {
-        return Cache::remember($this->cachePrefix . 'expiring_certifications_' . $days, $this->cacheTtl, function () use ($days) {
+        return Cache::remember($this->cachePrefix.'expiring_certifications_'.$days, $this->cacheTtl, function () use ($days) {
             return $this->model->where('is_certification', true)
                 ->where('status', TrainingStatus::COMPLETED)
                 ->where('expiry_date', '<=', now()->addDays($days))
@@ -611,9 +633,9 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
         return $this->model->with('employee')
             ->where(function ($q) use ($query) {
                 $q->where('training_name', 'like', "%{$query}%")
-                  ->orWhere('provider', 'like', "%{$query}%")
-                  ->orWhere('description', 'like', "%{$query}%")
-                  ->orWhere('instructor', 'like', "%{$query}%");
+                    ->orWhere('provider', 'like', "%{$query}%")
+                    ->orWhere('description', 'like', "%{$query}%")
+                    ->orWhere('instructor', 'like', "%{$query}%");
             })
             ->orderBy('created_at', 'desc')
             ->get();
@@ -622,7 +644,8 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
     public function searchTrainingsDTO(string $query): Collection
     {
         $trainings = $this->searchTrainings($query);
-        return $trainings->map(fn($training) => EmployeeTrainingDTO::fromModel($training));
+
+        return $trainings->map(fn ($training) => EmployeeTrainingDTO::fromModel($training));
     }
 
     public function searchTrainingsByEmployee(int $employeeId, string $query): Collection
@@ -631,8 +654,8 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
             ->where('employee_id', $employeeId)
             ->where(function ($q) use ($query) {
                 $q->where('training_name', 'like', "%{$query}%")
-                  ->orWhere('provider', 'like', "%{$query}%")
-                  ->orWhere('description', 'like', "%{$query}%");
+                    ->orWhere('provider', 'like', "%{$query}%")
+                    ->orWhere('description', 'like', "%{$query}%");
             })
             ->orderBy('created_at', 'desc')
             ->get();
@@ -641,7 +664,8 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
     public function searchTrainingsByEmployeeDTO(int $employeeId, string $query): Collection
     {
         $trainings = $this->searchTrainingsByEmployee($employeeId, $query);
-        return $trainings->map(fn($training) => EmployeeTrainingDTO::fromModel($training));
+
+        return $trainings->map(fn ($training) => EmployeeTrainingDTO::fromModel($training));
     }
 
     public function exportTrainingData(array $filters = []): string
@@ -678,7 +702,7 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
                 "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s\n",
                 $training->id,
                 $training->employee_id,
-                $training->employee ? $training->employee->first_name . ' ' . $training->employee->last_name : 'N/A',
+                $training->employee ? $training->employee->first_name.' '.$training->employee->last_name : 'N/A',
                 $training->training_type->value,
                 $training->training_name,
                 $training->provider,
@@ -706,10 +730,12 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
             $headers = str_getcsv(array_shift($lines));
 
             foreach ($lines as $line) {
-                if (empty(trim($line))) continue;
+                if (empty(trim($line))) {
+                    continue;
+                }
 
                 $row = array_combine($headers, str_getcsv($line));
-                
+
                 if (isset($row['Employee ID']) && isset($row['Training Name'])) {
                     $this->model->create([
                         'employee_id' => $row['Employee ID'],
@@ -726,11 +752,11 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
             }
 
             $this->clearCache();
-            
+
             DB::commit();
-            
+
             Log::info('Training data imported successfully');
-            
+
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
@@ -741,11 +767,11 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
 
     public function getTrainingStatistics(?int $employeeId = null): array
     {
-        $cacheKey = $this->cachePrefix . 'stats' . ($employeeId ? '_employee_' . $employeeId : '');
-        
+        $cacheKey = $this->cachePrefix.'stats'.($employeeId ? '_employee_'.$employeeId : '');
+
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($employeeId) {
             $query = $this->model;
-            
+
             if ($employeeId) {
                 $query->where('employee_id', $employeeId);
             }
@@ -767,9 +793,9 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
 
     public function getDepartmentTrainingStatistics(int $departmentId): array
     {
-        return Cache::remember($this->cachePrefix . 'stats_department_' . $departmentId, $this->cacheTtl, function () use ($departmentId) {
+        return Cache::remember($this->cachePrefix.'stats_department_'.$departmentId, $this->cacheTtl, function () use ($departmentId) {
             $employeeIds = DB::table('employees')->where('department_id', $departmentId)->pluck('id');
-            
+
             return $this->getTrainingStatistics($employeeIds->toArray());
         });
     }
@@ -781,17 +807,17 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
 
     public function getTrainingEffectiveness(?int $employeeId = null): array
     {
-        $cacheKey = $this->cachePrefix . 'effectiveness' . ($employeeId ? '_employee_' . $employeeId : '');
-        
+        $cacheKey = $this->cachePrefix.'effectiveness'.($employeeId ? '_employee_'.$employeeId : '');
+
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($employeeId) {
             $query = $this->model;
-            
+
             if ($employeeId) {
                 $query->where('employee_id', $employeeId);
             }
 
             $completedTrainings = $query->where('status', TrainingStatus::COMPLETED)->get();
-            
+
             $effectiveness = [
                 'completion_rate' => 0,
                 'average_score' => 0,
@@ -812,15 +838,15 @@ class EmployeeTrainingRepository implements EmployeeTrainingRepositoryInterface
 
     public function getTrainingTrends(?string $startDate = null, ?string $endDate = null): array
     {
-        $cacheKey = $this->cachePrefix . 'trends_' . ($startDate ?: 'all') . '_' . ($endDate ?: 'all');
-        
+        $cacheKey = $this->cachePrefix.'trends_'.($startDate ?: 'all').'_'.($endDate ?: 'all');
+
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($startDate, $endDate) {
             $query = $this->model;
-            
+
             if ($startDate) {
                 $query->where('created_at', '>=', $startDate);
             }
-            
+
             if ($endDate) {
                 $query->where('created_at', '<=', $endDate);
             }

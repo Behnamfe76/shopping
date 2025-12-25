@@ -2,14 +2,14 @@
 
 namespace Fereydooni\Shopping\app\Listeners\EmployeeTimeOff;
 
+use Fereydooni\Shopping\app\Events\EmployeeTimeOff\EmployeeTimeOffApproved;
+use Fereydooni\Shopping\app\Events\EmployeeTimeOff\EmployeeTimeOffCancelled;
+use Fereydooni\Shopping\app\Events\EmployeeTimeOff\EmployeeTimeOffCreated;
+use Fereydooni\Shopping\app\Events\EmployeeTimeOff\EmployeeTimeOffRejected;
+use Fereydooni\Shopping\app\Events\EmployeeTimeOff\EmployeeTimeOffUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
-use Fereydooni\Shopping\app\Events\EmployeeTimeOff\EmployeeTimeOffCreated;
-use Fereydooni\Shopping\app\Events\EmployeeTimeOff\EmployeeTimeOffUpdated;
-use Fereydooni\Shopping\app\Events\EmployeeTimeOff\EmployeeTimeOffApproved;
-use Fereydooni\Shopping\app\Events\EmployeeTimeOff\EmployeeTimeOffRejected;
-use Fereydooni\Shopping\app\Events\EmployeeTimeOff\EmployeeTimeOffCancelled;
 
 class SendTimeOffNotification implements ShouldQueue
 {
@@ -41,7 +41,7 @@ class SendTimeOffNotification implements ShouldQueue
         } catch (\Exception $e) {
             Log::error('Failed to send time-off notification', [
                 'event' => get_class($event),
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -50,7 +50,7 @@ class SendTimeOffNotification implements ShouldQueue
     {
         Log::info('Sending time-off created notification', [
             'time_off_id' => $event->timeOff->id,
-            'employee_id' => $event->timeOff->employee_id
+            'employee_id' => $event->timeOff->employee_id,
         ]);
 
         // TODO: Implement actual notification sending
@@ -62,7 +62,7 @@ class SendTimeOffNotification implements ShouldQueue
         Log::info('Sending time-off updated notification', [
             'time_off_id' => $event->timeOff->id,
             'employee_id' => $event->timeOff->employee_id,
-            'changes' => $event->changes
+            'changes' => $event->changes,
         ]);
 
         // TODO: Implement actual notification sending
@@ -74,7 +74,7 @@ class SendTimeOffNotification implements ShouldQueue
         Log::info('Sending time-off approved notification', [
             'time_off_id' => $event->timeOff->id,
             'employee_id' => $event->timeOff->employee_id,
-            'approved_by' => $event->approvedBy
+            'approved_by' => $event->approvedBy,
         ]);
 
         // TODO: Implement actual notification sending
@@ -87,7 +87,7 @@ class SendTimeOffNotification implements ShouldQueue
             'time_off_id' => $event->timeOff->id,
             'employee_id' => $event->timeOff->employee_id,
             'rejected_by' => $event->rejectedBy,
-            'reason' => $event->rejectionReason
+            'reason' => $event->rejectionReason,
         ]);
 
         // TODO: Implement actual notification sending
@@ -99,7 +99,7 @@ class SendTimeOffNotification implements ShouldQueue
         Log::info('Sending time-off cancelled notification', [
             'time_off_id' => $event->timeOff->id,
             'employee_id' => $event->timeOff->employee_id,
-            'reason' => $event->cancellationReason
+            'reason' => $event->cancellationReason,
         ]);
 
         // TODO: Implement actual notification sending

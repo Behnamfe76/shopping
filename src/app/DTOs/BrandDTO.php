@@ -2,13 +2,10 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\MapName;
-use Spatie\LaravelData\Attributes\WithTransformer;
-use Spatie\LaravelData\Transformers\DateTimeTransformer;
-use Illuminate\Support\Carbon;
 use Fereydooni\Shopping\app\Enums\BrandStatus;
 use Fereydooni\Shopping\app\Enums\BrandType;
+use Illuminate\Support\Carbon;
+use Spatie\LaravelData\Data;
 
 class BrandDTO extends Data
 {
@@ -36,8 +33,7 @@ class BrandDTO extends Data
         public ?Carbon $updated_at = null,
         public ?int $products_count = null,
         public ?array $media = null,
-    ) {
-    }
+    ) {}
 
     public static function fromModel($brand): static
     {
@@ -77,7 +73,7 @@ class BrandDTO extends Data
             'website' => 'nullable|url|max:255',
             'email' => 'nullable|email|max:255',
             'phone' => 'nullable|string|max:20',
-            'founded_year' => 'nullable|integer|min:1800|max:' . (date('Y') + 1),
+            'founded_year' => 'nullable|integer|min:1800|max:'.(date('Y') + 1),
             'headquarters' => 'nullable|string|max:255',
             'logo_url' => 'nullable|url|max:500',
             'banner_url' => 'nullable|url|max:500',
@@ -87,8 +83,8 @@ class BrandDTO extends Data
             'is_active' => 'boolean',
             'is_featured' => 'boolean',
             'sort_order' => 'integer|min:0',
-            'status' => 'nullable|in:' . implode(',', array_column(BrandStatus::cases(), 'value')),
-            'type' => 'nullable|in:' . implode(',', array_column(BrandType::cases(), 'value')),
+            'status' => 'nullable|in:'.implode(',', array_column(BrandStatus::cases(), 'value')),
+            'type' => 'nullable|in:'.implode(',', array_column(BrandType::cases(), 'value')),
         ];
     }
 

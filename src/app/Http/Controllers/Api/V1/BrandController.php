@@ -2,22 +2,20 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
-use Illuminate\View\View;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Gate;
-use Fereydooni\Shopping\app\Models\Brand;
 use Fereydooni\Shopping\app\Enums\BrandStatus;
-use Fereydooni\Shopping\app\Services\BrandService;
 use Fereydooni\Shopping\app\Facades\Brand as BrandFacade;
-use Fereydooni\Shopping\app\Http\Resources\BrandResource;
-use Fereydooni\Shopping\app\Http\Resources\BrandCollection;
-use Fereydooni\Shopping\app\Http\Requests\StoreBrandRequest;
 use Fereydooni\Shopping\app\Http\Requests\SearchBrandRequest;
-use Fereydooni\Shopping\app\Http\Requests\UpdateBrandRequest;
+use Fereydooni\Shopping\app\Http\Requests\StoreBrandRequest;
 use Fereydooni\Shopping\app\Http\Requests\ToggleBrandStatusRequest;
-
+use Fereydooni\Shopping\app\Http\Requests\UpdateBrandRequest;
+use Fereydooni\Shopping\app\Http\Resources\BrandCollection;
+use Fereydooni\Shopping\app\Http\Resources\BrandResource;
+use Fereydooni\Shopping\app\Models\Brand;
+use Fereydooni\Shopping\app\Services\BrandService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class BrandController extends Controller
 {
@@ -60,9 +58,9 @@ class BrandController extends Controller
 
         try {
             return response()->json([
-                'data' => array_map(fn($status) => [
+                'data' => array_map(fn ($status) => [
                     'id' => $status->value,
-                    'name' => __('brands.statuses.' . $status->value),
+                    'name' => __('brands.statuses.'.$status->value),
                 ], BrandStatus::cases()),
             ], 200);
         } catch (\Exception $e) {
@@ -94,7 +92,6 @@ class BrandController extends Controller
             ], 500);
         }
     }
-
 
     /**
      * Store a newly created brand in storage.
@@ -236,7 +233,7 @@ class BrandController extends Controller
         if ($toggled) {
             return response()->json([
                 'message' => 'Brand active status toggled successfully',
-                'brand' => new BrandResource($brand->fresh())
+                'brand' => new BrandResource($brand->fresh()),
             ]);
         }
 
@@ -255,7 +252,7 @@ class BrandController extends Controller
         if ($toggled) {
             return response()->json([
                 'message' => 'Brand featured status toggled successfully',
-                'brand' => new BrandResource($brand->fresh())
+                'brand' => new BrandResource($brand->fresh()),
             ]);
         }
 
@@ -274,7 +271,7 @@ class BrandController extends Controller
 
         return response()->json([
             'brands' => new BrandCollection($brands),
-            'query' => $query
+            'query' => $query,
         ]);
     }
 
@@ -288,7 +285,7 @@ class BrandController extends Controller
         $brands = $this->brandService->getActive();
 
         return response()->json([
-            'brands' => new BrandCollection($brands)
+            'brands' => new BrandCollection($brands),
         ]);
     }
 
@@ -302,7 +299,7 @@ class BrandController extends Controller
         $brands = $this->brandService->getFeatured();
 
         return response()->json([
-            'brands' => new BrandCollection($brands)
+            'brands' => new BrandCollection($brands),
         ]);
     }
 
@@ -317,7 +314,7 @@ class BrandController extends Controller
         $brands = $this->brandService->getPopular($limit);
 
         return response()->json([
-            'brands' => new BrandCollection($brands)
+            'brands' => new BrandCollection($brands),
         ]);
     }
 
@@ -332,7 +329,7 @@ class BrandController extends Controller
 
         return response()->json([
             'brands' => new BrandCollection($brands),
-            'letter' => $letter
+            'letter' => $letter,
         ]);
     }
 }

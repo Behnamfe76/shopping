@@ -13,7 +13,7 @@ enum ProviderPaymentMethod: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::BANK_TRANSFER => 'Bank Transfer',
             self::CHECK => 'Check',
             self::CREDIT_CARD => 'Credit Card',
@@ -40,7 +40,7 @@ enum ProviderPaymentMethod: string
 
     public function icon(): string
     {
-        return match($this) {
+        return match ($this) {
             self::BANK_TRANSFER => 'bank',
             self::CHECK => 'file-text',
             self::CREDIT_CARD => 'credit-card',

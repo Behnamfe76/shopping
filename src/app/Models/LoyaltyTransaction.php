@@ -2,15 +2,14 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
+use Fereydooni\Shopping\app\Enums\LoyaltyReferenceType;
+use Fereydooni\Shopping\app\Enums\LoyaltyTransactionStatus;
+use Fereydooni\Shopping\app\Enums\LoyaltyTransactionType;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Carbon;
-use Fereydooni\Shopping\app\Enums\LoyaltyTransactionType;
-use Fereydooni\Shopping\app\Enums\LoyaltyTransactionStatus;
-use Fereydooni\Shopping\app\Enums\LoyaltyReferenceType;
 
 class LoyaltyTransaction extends Model
 {
@@ -94,16 +93,16 @@ class LoyaltyTransaction extends Model
     public function scopeActive($query)
     {
         return $query->where('status', LoyaltyTransactionStatus::COMPLETED)
-                    ->where(function ($q) {
-                        $q->whereNull('expires_at')
-                          ->orWhere('expires_at', '>', now());
-                    });
+            ->where(function ($q) {
+                $q->whereNull('expires_at')
+                    ->orWhere('expires_at', '>', now());
+            });
     }
 
     public function scopeExpired($query)
     {
         return $query->where('status', LoyaltyTransactionStatus::COMPLETED)
-                    ->where('expires_at', '<=', now());
+            ->where('expires_at', '<=', now());
     }
 
     public function scopeReversed($query)
@@ -116,7 +115,7 @@ class LoyaltyTransaction extends Model
         return $query->whereIn('transaction_type', [
             LoyaltyTransactionType::EARNED,
             LoyaltyTransactionType::BONUS,
-            LoyaltyTransactionType::ADJUSTMENT
+            LoyaltyTransactionType::ADJUSTMENT,
         ]);
     }
 
@@ -138,7 +137,7 @@ class LoyaltyTransaction extends Model
 
     public function getIsActiveAttribute(): bool
     {
-        return $this->status === LoyaltyTransactionStatus::COMPLETED && !$this->is_expired;
+        return $this->status === LoyaltyTransactionStatus::COMPLETED && ! $this->is_expired;
     }
 
     public function getFormattedPointsAttribute(): string
@@ -148,7 +147,7 @@ class LoyaltyTransaction extends Model
 
     public function getFormattedPointsValueAttribute(): string
     {
-        return '$' . number_format($this->points_value, 2);
+        return '$'.number_format($this->points_value, 2);
     }
 
     // Mutators
@@ -163,7 +162,7 @@ class LoyaltyTransaction extends Model
     }
 
     // Methods
-    public function reverse(string $reason = null, int $reversedBy = null): bool
+    public function reverse(?string $reason = null, ?int $reversedBy = null): bool
     {
         $this->update([
             'status' => LoyaltyTransactionStatus::REVERSED,

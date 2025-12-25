@@ -2,30 +2,29 @@
 
 namespace Fereydooni\Shopping\App\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Required;
-use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
-use Spatie\LaravelData\Attributes\Validation\Numeric;
+use Carbon\Carbon;
+use Fereydooni\Shopping\App\Enums\InvoiceStatus;
+use Fereydooni\Shopping\App\Enums\PaymentTerms;
+use Fereydooni\Shopping\App\Models\ProviderInvoice;
+use Spatie\LaravelData\Attributes\Validation\AfterOrEqual;
 use Spatie\LaravelData\Attributes\Validation\Date;
 use Spatie\LaravelData\Attributes\Validation\In;
+use Spatie\LaravelData\Attributes\Validation\IntegerType;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\Min;
 use Spatie\LaravelData\Attributes\Validation\Nullable;
-use Spatie\LaravelData\Attributes\Validation\AfterOrEqual;
-use Spatie\LaravelData\Attributes\Validation\BeforeOrEqual;
+use Spatie\LaravelData\Attributes\Validation\Numeric;
+use Spatie\LaravelData\Attributes\Validation\Required;
+use Spatie\LaravelData\Attributes\Validation\StringType;
 use Spatie\LaravelData\Attributes\WithTransformer;
+use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Transformers\DateTimeTransformer;
-use Fereydooni\Shopping\App\Models\ProviderInvoice;
-use Fereydooni\Shopping\App\Enums\InvoiceStatus;
-use Fereydooni\Shopping\App\Enums\PaymentTerms;
-use Carbon\Carbon;
 
 class ProviderInvoiceDTO extends Data
 {
     public function __construct(
         #[Nullable]
-        public ?int $id = null,
+        public ?int $id,
 
         #[Required, IntegerType]
         public int $provider_id,
@@ -152,8 +151,8 @@ class ProviderInvoiceDTO extends Data
             'discount_amount' => ['required', 'numeric', 'min:0'],
             'shipping_amount' => ['required', 'numeric', 'min:0'],
             'currency' => ['required', 'string', 'max:3'],
-            'status' => ['required', 'string', 'in:' . implode(',', InvoiceStatus::all())],
-            'payment_terms' => ['required', 'string', 'in:' . implode(',', PaymentTerms::all())],
+            'status' => ['required', 'string', 'in:'.implode(',', InvoiceStatus::all())],
+            'payment_terms' => ['required', 'string', 'in:'.implode(',', PaymentTerms::all())],
             'payment_method' => ['nullable', 'string', 'max:100'],
             'reference_number' => ['nullable', 'string', 'max:100'],
             'notes' => ['nullable', 'string', 'max:1000'],
@@ -214,6 +213,7 @@ class ProviderInvoiceDTO extends Data
         }
 
         $dueDate = Carbon::parse($this->due_date);
+
         return $dueDate->isPast();
     }
 
@@ -222,11 +222,12 @@ class ProviderInvoiceDTO extends Data
      */
     public function getDaysOverdue(): int
     {
-        if (!$this->isOverdue()) {
+        if (! $this->isOverdue()) {
             return 0;
         }
 
         $dueDate = Carbon::parse($this->due_date);
+
         return $dueDate->diffInDays(now());
     }
 
@@ -250,6 +251,7 @@ class ProviderInvoiceDTO extends Data
     public function canBeEdited(): bool
     {
         $status = InvoiceStatus::from($this->status);
+
         return $status->isEditable();
     }
 
@@ -269,7 +271,7 @@ class ProviderInvoiceDTO extends Data
         return in_array($this->status, [
             InvoiceStatus::SENT->value,
             InvoiceStatus::OVERDUE->value,
-            InvoiceStatus::PARTIALLY_PAID->value
+            InvoiceStatus::PARTIALLY_PAID->value,
         ]);
     }
 
@@ -280,7 +282,7 @@ class ProviderInvoiceDTO extends Data
     {
         return in_array($this->status, [
             InvoiceStatus::DRAFT->value,
-            InvoiceStatus::SENT->value
+            InvoiceStatus::SENT->value,
         ]);
     }
 
@@ -308,4 +310,3 @@ class ProviderInvoiceDTO extends Data
         return InvoiceStatus::from($this->status)->color();
     }
 }
-

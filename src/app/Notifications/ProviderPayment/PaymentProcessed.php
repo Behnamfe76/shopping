@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\App\Notifications\ProviderPayment;
 
+use Fereydooni\Shopping\App\Models\ProviderPayment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Fereydooni\Shopping\App\Models\ProviderPayment;
 
 class PaymentProcessed extends Notification implements ShouldQueue
 {
@@ -43,12 +43,12 @@ class PaymentProcessed extends Notification implements ShouldQueue
             ->greeting('Hello!')
             ->line('Your provider payment has been processed successfully.')
             ->line('Payment Details:')
-            ->line('Payment Number: ' . $this->payment->payment_number)
-            ->line('Amount: ' . $this->payment->currency . ' ' . number_format($this->payment->amount, 2))
-            ->line('Payment Method: ' . $this->payment->payment_method)
-            ->line('Status: ' . ucfirst($this->payment->status))
-            ->line('Processed Date: ' . $this->payment->processed_at->format('M d, Y H:i'))
-            ->action('View Payment', url('/provider-payments/' . $this->payment->id))
+            ->line('Payment Number: '.$this->payment->payment_number)
+            ->line('Amount: '.$this->payment->currency.' '.number_format($this->payment->amount, 2))
+            ->line('Payment Method: '.$this->payment->payment_method)
+            ->line('Status: '.ucfirst($this->payment->status))
+            ->line('Processed Date: '.$this->payment->processed_at->format('M d, Y H:i'))
+            ->action('View Payment', url('/provider-payments/'.$this->payment->id))
             ->line('Thank you for using our application!');
     }
 
@@ -67,7 +67,7 @@ class PaymentProcessed extends Notification implements ShouldQueue
             'status' => $this->payment->status,
             'processed_at' => $this->payment->processed_at,
             'type' => 'payment_processed',
-            'message' => 'Provider payment processed: ' . $this->payment->payment_number
+            'message' => 'Provider payment processed: '.$this->payment->payment_number,
         ];
     }
 }

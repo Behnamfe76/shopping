@@ -2,8 +2,6 @@
 
 namespace App\Traits;
 
-use App\DTOs\ProviderInsuranceDTO;
-use App\Models\ProviderInsurance;
 use App\Services\ProviderInsuranceService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\App;
@@ -89,7 +87,7 @@ trait HasProviderInsuranceRenewalManagement
     public function isInsuranceExpiringSoon(int $insuranceId, int $days = 30): bool
     {
         $insurance = $this->findProviderInsurance($insuranceId);
-        if (!$insurance) {
+        if (! $insurance) {
             return false;
         }
 
@@ -105,11 +103,12 @@ trait HasProviderInsuranceRenewalManagement
     public function isInsuranceExpired(int $insuranceId): bool
     {
         $insurance = $this->findProviderInsurance($insuranceId);
-        if (!$insurance) {
+        if (! $insurance) {
             return false;
         }
 
         $expirationDate = \Carbon\Carbon::parse($insurance->end_date);
+
         return $expirationDate->isPast();
     }
 
@@ -119,6 +118,7 @@ trait HasProviderInsuranceRenewalManagement
     public function isInsuranceActive(int $insuranceId): bool
     {
         $insurance = $this->findProviderInsurance($insuranceId);
+
         return $insurance && $insurance->status === 'active';
     }
 

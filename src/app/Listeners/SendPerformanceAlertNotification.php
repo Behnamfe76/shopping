@@ -2,26 +2,28 @@
 
 namespace App\Listeners;
 
+use App\Events\PerformanceAlertGenerated;
 use App\Events\ProviderPerformanceCreated;
 use App\Events\ProviderPerformanceUpdated;
-use App\Events\PerformanceAlertGenerated;
 use App\Notifications\ProviderPerformanceAlert;
 use App\Notifications\ProviderPerformanceCreated as PerformanceCreatedNotification;
 use App\Notifications\ProviderPerformanceUpdated as PerformanceUpdatedNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\DB;
 
 class SendPerformanceAlertNotification implements ShouldQueue
 {
     use InteractsWithQueue;
 
     public $queue = 'notifications';
+
     public $connection = 'redis';
+
     public $tries = 3;
+
     public $timeout = 60;
 
     /**
@@ -438,7 +440,7 @@ class SendPerformanceAlertNotification implements ShouldQueue
      */
     public function uniqueId(): string
     {
-        return 'performance_alert_notification_' . uniqid();
+        return 'performance_alert_notification_'.uniqid();
     }
 
     /**

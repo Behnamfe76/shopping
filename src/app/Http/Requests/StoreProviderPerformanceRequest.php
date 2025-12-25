@@ -26,145 +26,145 @@ class StoreProviderPerformanceRequest extends FormRequest
             'provider_id' => [
                 'required',
                 'integer',
-                'exists:providers,id'
+                'exists:providers,id',
             ],
             'period_start' => [
                 'required',
                 'date',
-                'before_or_equal:period_end'
+                'before_or_equal:period_end',
             ],
             'period_end' => [
                 'required',
                 'date',
-                'after_or_equal:period_start'
+                'after_or_equal:period_start',
             ],
             'period_type' => [
                 'required',
                 'string',
-                Rule::in(PeriodType::values())
+                Rule::in(PeriodType::values()),
             ],
             'total_orders' => [
                 'required',
                 'integer',
-                'min:0'
+                'min:0',
             ],
             'total_revenue' => [
                 'required',
                 'numeric',
                 'min:0',
-                'decimal:0,2'
+                'decimal:0,2',
             ],
             'average_order_value' => [
                 'required',
                 'numeric',
                 'min:0',
-                'decimal:0,2'
+                'decimal:0,2',
             ],
             'on_time_delivery_rate' => [
                 'required',
                 'numeric',
                 'between:0,100',
-                'decimal:0,2'
+                'decimal:0,2',
             ],
             'return_rate' => [
                 'required',
                 'numeric',
                 'between:0,100',
-                'decimal:0,2'
+                'decimal:0,2',
             ],
             'defect_rate' => [
                 'required',
                 'numeric',
                 'between:0,100',
-                'decimal:0,2'
+                'decimal:0,2',
             ],
             'customer_satisfaction_score' => [
                 'required',
                 'numeric',
                 'between:1,10',
-                'decimal:0,2'
+                'decimal:0,2',
             ],
             'response_time_avg' => [
                 'required',
                 'numeric',
                 'min:0',
-                'decimal:0,2'
+                'decimal:0,2',
             ],
             'quality_rating' => [
                 'required',
                 'numeric',
                 'between:1,10',
-                'decimal:0,2'
+                'decimal:0,2',
             ],
             'delivery_rating' => [
                 'required',
                 'numeric',
                 'between:1,10',
-                'decimal:0,2'
+                'decimal:0,2',
             ],
             'communication_rating' => [
                 'required',
                 'numeric',
                 'between:1,10',
-                'decimal:0,2'
+                'decimal:0,2',
             ],
             'cost_efficiency_score' => [
                 'required',
                 'numeric',
                 'between:0,100',
-                'decimal:0,2'
+                'decimal:0,2',
             ],
             'inventory_turnover_rate' => [
                 'required',
                 'numeric',
                 'min:0',
-                'decimal:0,2'
+                'decimal:0,2',
             ],
             'lead_time_avg' => [
                 'required',
                 'numeric',
                 'min:0',
-                'decimal:0,2'
+                'decimal:0,2',
             ],
             'fill_rate' => [
                 'required',
                 'numeric',
                 'between:0,100',
-                'decimal:0,2'
+                'decimal:0,2',
             ],
             'accuracy_rate' => [
                 'required',
                 'numeric',
                 'between:0,100',
-                'decimal:0,2'
+                'decimal:0,2',
             ],
             'performance_score' => [
                 'nullable',
                 'numeric',
                 'between:0,100',
-                'decimal:0,2'
+                'decimal:0,2',
             ],
             'performance_grade' => [
                 'nullable',
                 'string',
-                Rule::in(PerformanceGrade::values())
+                Rule::in(PerformanceGrade::values()),
             ],
             'is_verified' => [
-                'boolean'
+                'boolean',
             ],
             'verified_by' => [
                 'nullable',
                 'integer',
-                'exists:users,id'
+                'exists:users,id',
             ],
             'verified_at' => [
                 'nullable',
-                'date'
+                'date',
             ],
             'notes' => [
                 'nullable',
                 'string',
-                'max:1000'
+                'max:1000',
             ],
         ];
     }

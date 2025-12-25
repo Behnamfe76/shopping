@@ -2,30 +2,26 @@
 
 namespace Fereydooni\Shopping\App\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Email;
-use Spatie\LaravelData\Attributes\Validation\Url;
-use Spatie\LaravelData\Attributes\Validation\Numeric;
-use Spatie\LaravelData\Attributes\Validation\Min;
-use Spatie\LaravelData\Attributes\Validation\Max;
+use Fereydooni\Shopping\App\Enums\ContractStatus;
+use Fereydooni\Shopping\App\Enums\ContractType;
+use Fereydooni\Shopping\App\Models\ProviderContract;
+use Spatie\LaravelData\Attributes\Validation\ArrayType;
+use Spatie\LaravelData\Attributes\Validation\BooleanType;
 use Spatie\LaravelData\Attributes\Validation\Date;
+use Spatie\LaravelData\Attributes\Validation\FloatType;
+use Spatie\LaravelData\Attributes\Validation\In;
+use Spatie\LaravelData\Attributes\Validation\IntegerType;
+use Spatie\LaravelData\Attributes\Validation\Max;
+use Spatie\LaravelData\Attributes\Validation\Min;
 use Spatie\LaravelData\Attributes\Validation\Nullable;
 use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
-use Spatie\LaravelData\Attributes\Validation\FloatType;
-use Spatie\LaravelData\Attributes\Validation\ArrayType;
-use Spatie\LaravelData\Attributes\Validation\In;
-use Spatie\LaravelData\Attributes\Validation\BooleanType;
-use Fereydooni\Shopping\App\Enums\ContractType;
-use Fereydooni\Shopping\App\Enums\ContractStatus;
-use Fereydooni\Shopping\App\Models\ProviderContract;
-use Carbon\Carbon;
+use Spatie\LaravelData\Data;
 
 class ProviderContractDTO extends Data
 {
     public function __construct(
         #[IntegerType, Nullable]
-        public ?int $id = null,
+        public ?int $id,
 
         #[IntegerType]
         public int $provider_id,
@@ -40,7 +36,7 @@ class ProviderContractDTO extends Data
         public string $title,
 
         #[StringType, Min(10), Max(1000), Nullable]
-        public ?string $description = null,
+        public ?string $description,
 
         #[Date]
         public string $start_date,
@@ -140,7 +136,7 @@ class ProviderContractDTO extends Data
         return [
             'provider_id' => 'required|integer|exists:providers,id',
             'contract_number' => 'required|string|min:5|max:50|unique:provider_contracts,contract_number',
-            'contract_type' => 'required|string|in:' . implode(',', ContractType::values()),
+            'contract_type' => 'required|string|in:'.implode(',', ContractType::values()),
             'title' => 'required|string|min:3|max:255',
             'description' => 'nullable|string|min:10|max:1000',
             'start_date' => 'required|date|after_or_equal:today',
@@ -149,7 +145,7 @@ class ProviderContractDTO extends Data
             'conditions' => 'nullable|array',
             'commission_rate' => 'required|numeric|min:0|max:100',
             'payment_terms' => 'nullable|array',
-            'status' => 'required|string|in:' . implode(',', ContractStatus::values()),
+            'status' => 'required|string|in:'.implode(',', ContractStatus::values()),
             'signed_by' => 'nullable|integer|exists:users,id',
             'signed_at' => 'nullable|date',
             'renewal_date' => 'nullable|date|after:end_date',

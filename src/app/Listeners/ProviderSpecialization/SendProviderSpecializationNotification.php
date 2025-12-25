@@ -2,20 +2,19 @@
 
 namespace Fereydooni\Shopping\App\Listeners\ProviderSpecialization;
 
+use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderPrimarySpecializationChanged;
+use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationActivated;
+use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationCreated;
+use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationDeactivated;
+use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationRejected;
+use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationVerified;
+use Fereydooni\Shopping\App\Notifications\ProviderSpecialization\PrimarySpecializationChanged;
+use Fereydooni\Shopping\App\Notifications\ProviderSpecialization\SpecializationAdded;
+use Fereydooni\Shopping\App\Notifications\ProviderSpecialization\SpecializationRejected;
+use Fereydooni\Shopping\App\Notifications\ProviderSpecialization\SpecializationStatusChanged;
+use Fereydooni\Shopping\App\Notifications\ProviderSpecialization\SpecializationVerified;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationCreated;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationUpdated;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationVerified;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationRejected;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationActivated;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationDeactivated;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderPrimarySpecializationChanged;
-use Fereydooni\Shopping\App\Notifications\ProviderSpecialization\SpecializationAdded;
-use Fereydooni\Shopping\App\Notifications\ProviderSpecialization\SpecializationVerified;
-use Fereydooni\Shopping\App\Notifications\ProviderSpecialization\SpecializationRejected;
-use Fereydooni\Shopping\App\Notifications\ProviderSpecialization\PrimarySpecializationChanged;
-use Fereydooni\Shopping\App\Notifications\ProviderSpecialization\SpecializationStatusChanged;
 
 class SendProviderSpecializationNotification implements ShouldQueue
 {

@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\App\Events\ProviderInvoice;
 
+use Fereydooni\Shopping\App\Models\ProviderInvoice;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Fereydooni\Shopping\App\Models\ProviderInvoice;
 
 class ProviderInvoiceCreated
 {
@@ -20,4 +20,3 @@ class ProviderInvoiceCreated
         $this->invoice = $invoice;
     }
 }
-

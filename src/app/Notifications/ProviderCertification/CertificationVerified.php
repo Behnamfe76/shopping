@@ -43,26 +43,26 @@ class CertificationVerified extends Notification implements ShouldQueue
 
         $url = URL::route('provider.certifications.show', [
             'provider' => $provider->id,
-            'certification' => $certification->id
+            'certification' => $certification->id,
         ]);
 
         return (new MailMessage)
-            ->subject('Certification Verified - ' . $certification->certification_name)
-            ->greeting('Congratulations ' . $provider->name . '!')
+            ->subject('Certification Verified - '.$certification->certification_name)
+            ->greeting('Congratulations '.$provider->name.'!')
             ->line('Your certification has been successfully verified.')
             ->line('**Certification Details:**')
-            ->line('• **Name:** ' . $certification->certification_name)
-            ->line('• **Number:** ' . $certification->certification_number)
-            ->line('• **Issuing Organization:** ' . $certification->issuing_organization)
-            ->line('• **Category:** ' . ucfirst(str_replace('_', ' ', $certification->category)))
-            ->line('• **Verification Date:** ' . $certification->verified_at->format('M d, Y'))
-            ->line('• **Status:** ' . ucfirst($certification->status))
-            ->line('• **Verification Status:** ' . ucfirst(str_replace('_', ' ', $certification->verification_status)))
+            ->line('• **Name:** '.$certification->certification_name)
+            ->line('• **Number:** '.$certification->certification_number)
+            ->line('• **Issuing Organization:** '.$certification->issuing_organization)
+            ->line('• **Category:** '.ucfirst(str_replace('_', ' ', $certification->category)))
+            ->line('• **Verification Date:** '.$certification->verified_at->format('M d, Y'))
+            ->line('• **Status:** '.ucfirst($certification->status))
+            ->line('• **Verification Status:** '.ucfirst(str_replace('_', ' ', $certification->verification_status)))
             ->action('View Certification', $url)
             ->line('Your certification is now active and visible to potential clients.')
             ->line('This verification enhances your professional credibility and trustworthiness.')
             ->line('Keep your certification up to date by monitoring the expiry date and renewal requirements.')
-            ->salutation('Best regards,<br>' . config('app.name') . ' Team');
+            ->salutation('Best regards,<br>'.config('app.name').' Team');
     }
 
     /**
@@ -82,10 +82,10 @@ class CertificationVerified extends Notification implements ShouldQueue
             'status' => $this->certification->status,
             'verification_status' => $this->certification->verification_status,
             'verified_at' => $this->certification->verified_at->toISOString(),
-            'message' => 'Your certification "' . $this->certification->certification_name . '" has been verified.',
+            'message' => 'Your certification "'.$this->certification->certification_name.'" has been verified.',
             'action_url' => URL::route('provider.certifications.show', [
                 'provider' => $notifiable->id,
-                'certification' => $this->certification->id
+                'certification' => $this->certification->id,
             ]),
             'created_at' => now()->toISOString(),
         ];
@@ -117,8 +117,8 @@ class CertificationVerified extends Notification implements ShouldQueue
         return [
             'provider_certification',
             'certification_verified',
-            'provider_' . $this->certification->provider_id,
-            'certification_' . $this->certification->id
+            'provider_'.$this->certification->provider_id,
+            'certification_'.$this->certification->id,
         ];
     }
 }

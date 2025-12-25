@@ -2,14 +2,13 @@
 
 namespace Fereydooni\Shopping\app\Actions\EmployeeTimeOff;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
 use Fereydooni\Shopping\app\DTOs\EmployeeTimeOffDTO;
+use Fereydooni\Shopping\app\Enums\TimeOffStatus;
 use Fereydooni\Shopping\app\Models\EmployeeTimeOff;
 use Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeTimeOffRepositoryInterface;
-use Fereydooni\Shopping\app\Enums\TimeOffStatus;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class CancelEmployeeTimeOffAction
 {
@@ -31,7 +30,7 @@ class CancelEmployeeTimeOffAction
             // Cancel the time-off request
             $cancelled = $this->repository->cancel($timeOff, $data['cancellation_reason'] ?? null);
 
-            if (!$cancelled) {
+            if (! $cancelled) {
                 throw new \RuntimeException('Failed to cancel time-off request');
             }
 
@@ -43,7 +42,7 @@ class CancelEmployeeTimeOffAction
             Log::info('Time-off request cancelled successfully', [
                 'id' => $timeOff->id,
                 'employee_id' => $timeOff->employee_id,
-                'reason' => $data['cancellation_reason'] ?? null
+                'reason' => $data['cancellation_reason'] ?? null,
             ]);
 
             return EmployeeTimeOffDTO::fromModel($timeOff->fresh());
@@ -53,7 +52,7 @@ class CancelEmployeeTimeOffAction
             Log::error('Failed to cancel time-off request', [
                 'error' => $e->getMessage(),
                 'time_off_id' => $timeOff->id,
-                'data' => $data
+                'data' => $data,
             ]);
             throw $e;
         }
@@ -81,7 +80,7 @@ class CancelEmployeeTimeOffAction
         // Implementation depends on your notification system
         Log::info('Cancellation notifications would be sent here', [
             'time_off_id' => $timeOff->id,
-            'employee_id' => $timeOff->employee_id
+            'employee_id' => $timeOff->employee_id,
         ]);
     }
 }

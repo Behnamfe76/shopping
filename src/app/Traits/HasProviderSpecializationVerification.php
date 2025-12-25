@@ -2,13 +2,12 @@
 
 namespace Fereydooni\Shopping\App\Traits;
 
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Auth;
 use Exception;
-use Fereydooni\Shopping\App\Models\ProviderSpecialization;
 use Fereydooni\Shopping\App\Enums\VerificationStatus;
+use Fereydooni\Shopping\App\Models\ProviderSpecialization;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 trait HasProviderSpecializationVerification
 {
@@ -36,7 +35,7 @@ trait HasProviderSpecializationVerification
 
             return $result;
         } catch (Exception $e) {
-            Log::error("Failed to submit specialization {$specializationId} for verification: " . $e->getMessage());
+            Log::error("Failed to submit specialization {$specializationId} for verification: ".$e->getMessage());
             throw $e;
         }
     }
@@ -44,7 +43,7 @@ trait HasProviderSpecializationVerification
     /**
      * Verify a specialization.
      */
-    public function verifySpecialization(int $specializationId, int $verifiedBy = null): bool
+    public function verifySpecialization(int $specializationId, ?int $verifiedBy = null): bool
     {
         try {
             $specialization = $this->specializations()->findOrFail($specializationId);
@@ -55,7 +54,7 @@ trait HasProviderSpecializationVerification
 
             $verifiedBy = $verifiedBy ?? Auth::id();
 
-            if (!$verifiedBy) {
+            if (! $verifiedBy) {
                 throw new Exception('Verifier ID is required.');
             }
 
@@ -67,7 +66,7 @@ trait HasProviderSpecializationVerification
 
             return $result;
         } catch (Exception $e) {
-            Log::error("Failed to verify specialization {$specializationId}: " . $e->getMessage());
+            Log::error("Failed to verify specialization {$specializationId}: ".$e->getMessage());
             throw $e;
         }
     }
@@ -75,7 +74,7 @@ trait HasProviderSpecializationVerification
     /**
      * Reject a specialization.
      */
-    public function rejectSpecialization(int $specializationId, string $reason = null): bool
+    public function rejectSpecialization(int $specializationId, ?string $reason = null): bool
     {
         try {
             $specialization = $this->specializations()->findOrFail($specializationId);
@@ -92,7 +91,7 @@ trait HasProviderSpecializationVerification
 
             return $result;
         } catch (Exception $e) {
-            Log::error("Failed to reject specialization {$specializationId}: " . $e->getMessage());
+            Log::error("Failed to reject specialization {$specializationId}: ".$e->getMessage());
             throw $e;
         }
     }
@@ -110,12 +109,12 @@ trait HasProviderSpecializationVerification
                 $result = $this->submitSpecializationForVerification($specialization->id);
                 $results[$specialization->id] = [
                     'success' => $result,
-                    'message' => $result ? 'Verification requested' : 'Failed to request verification'
+                    'message' => $result ? 'Verification requested' : 'Failed to request verification',
                 ];
             } catch (Exception $e) {
                 $results[$specialization->id] = [
                     'success' => false,
-                    'message' => $e->getMessage()
+                    'message' => $e->getMessage(),
                 ];
             }
         }
@@ -131,7 +130,7 @@ trait HasProviderSpecializationVerification
         return $this->specializations()
             ->whereIn('verification_status', [
                 VerificationStatus::UNVERIFIED,
-                VerificationStatus::PENDING
+                VerificationStatus::PENDING,
             ])
             ->get();
     }
@@ -165,13 +164,13 @@ trait HasProviderSpecializationVerification
     {
         $specialization = $this->specializations()->find($specializationId);
 
-        if (!$specialization) {
+        if (! $specialization) {
             return false;
         }
 
         return in_array($specialization->verification_status, [
             VerificationStatus::UNVERIFIED,
-            VerificationStatus::PENDING
+            VerificationStatus::PENDING,
         ]);
     }
 
@@ -182,13 +181,13 @@ trait HasProviderSpecializationVerification
     {
         $specialization = $this->specializations()->find($specializationId);
 
-        if (!$specialization) {
+        if (! $specialization) {
             return false;
         }
 
         return in_array($specialization->verification_status, [
             VerificationStatus::UNVERIFIED,
-            VerificationStatus::PENDING
+            VerificationStatus::PENDING,
         ]);
     }
 
@@ -226,15 +225,15 @@ trait HasProviderSpecializationVerification
             [
                 'event' => 'created',
                 'timestamp' => $specialization->created_at,
-                'description' => 'Specialization created'
-            ]
+                'description' => 'Specialization created',
+            ],
         ];
 
         if ($specialization->verification_status === VerificationStatus::PENDING) {
             $timeline[] = [
                 'event' => 'submitted_for_verification',
                 'timestamp' => $specialization->updated_at,
-                'description' => 'Submitted for verification'
+                'description' => 'Submitted for verification',
             ];
         }
 
@@ -242,7 +241,7 @@ trait HasProviderSpecializationVerification
             $timeline[] = [
                 'event' => 'verified',
                 'timestamp' => $specialization->verified_at,
-                'description' => 'Verified by ' . ($specialization->verifiedBy ? $specialization->verifiedBy->name : 'Unknown')
+                'description' => 'Verified by '.($specialization->verifiedBy ? $specialization->verifiedBy->name : 'Unknown'),
             ];
         }
 
@@ -250,7 +249,7 @@ trait HasProviderSpecializationVerification
             $timeline[] = [
                 'event' => 'rejected',
                 'timestamp' => $specialization->updated_at,
-                'description' => 'Rejected'
+                'description' => 'Rejected',
             ];
         }
 
@@ -266,23 +265,23 @@ trait HasProviderSpecializationVerification
 
         $requirements = [
             'basic_info' => [
-                'specialization_name' => !empty($specialization->specialization_name),
-                'category' => !empty($specialization->category),
-                'description' => !empty($specialization->description),
-                'proficiency_level' => !empty($specialization->proficiency_level),
+                'specialization_name' => ! empty($specialization->specialization_name),
+                'category' => ! empty($specialization->category),
+                'description' => ! empty($specialization->description),
+                'proficiency_level' => ! empty($specialization->proficiency_level),
             ],
             'experience' => [
                 'years_experience' => $specialization->years_experience > 0,
                 'experience_validation' => $specialization->years_experience <= 50,
             ],
             'certifications' => [
-                'has_certifications' => !empty($specialization->certifications),
+                'has_certifications' => ! empty($specialization->certifications),
                 'certification_count' => is_array($specialization->certifications) ? count($specialization->certifications) : 0,
             ],
             'completeness' => [
                 'all_fields_filled' => $this->isSpecializationComplete($specialization),
                 'description_length' => strlen($specialization->description ?? '') >= 50,
-            ]
+            ],
         ];
 
         $requirements['overall_score'] = $this->calculateVerificationScore($requirements);
@@ -300,7 +299,7 @@ trait HasProviderSpecializationVerification
             'category',
             'description',
             'proficiency_level',
-            'years_experience'
+            'years_experience',
         ];
 
         foreach ($requiredFields as $field) {
@@ -358,6 +357,7 @@ trait HasProviderSpecializationVerification
     public function getLastVerificationDate(int $specializationId): ?string
     {
         $specialization = $this->specializations()->find($specializationId);
+
         return $specialization?->verified_at?->toDateString();
     }
 
@@ -367,6 +367,7 @@ trait HasProviderSpecializationVerification
     public function getDaysSinceVerification(int $specializationId): ?int
     {
         $specialization = $this->specializations()->find($specializationId);
+
         return $specialization?->getDaysSinceVerification();
     }
 
@@ -376,6 +377,7 @@ trait HasProviderSpecializationVerification
     public function needsRenewal(int $specializationId, int $renewalThresholdDays = 365): bool
     {
         $specialization = $this->specializations()->find($specializationId);
+
         return $specialization?->needsRenewal($renewalThresholdDays) ?? false;
     }
 

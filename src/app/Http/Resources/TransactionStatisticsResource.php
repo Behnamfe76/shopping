@@ -207,6 +207,6 @@ class TransactionStatisticsResource extends JsonResource
      */
     private function formatAmount(float $amount, string $currency): string
     {
-        return number_format($amount, 2) . ' ' . strtoupper($currency);
+        return number_format($amount, 2).' '.strtoupper($currency);
     }
 }

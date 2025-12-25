@@ -41,17 +41,17 @@ class BenefitsEnrollmentApproved extends Notification implements ShouldQueue
         return (new MailMessage)
             ->subject('Your Benefits Enrollment Has Been Approved')
             ->greeting("Hello {$notifiable->name},")
-            ->line("Great news! Your benefits enrollment has been approved and is now active.")
-            ->line("**Enrollment Details:**")
+            ->line('Great news! Your benefits enrollment has been approved and is now active.')
+            ->line('**Enrollment Details:**')
             ->line("- **Benefit Type:** {$this->benefit->benefit_type}")
             ->line("- **Benefit Name:** {$this->benefit->benefit_name}")
             ->line("- **Provider:** {$this->benefit->provider}")
             ->line("- **Coverage Level:** {$this->benefit->coverage_level}")
             ->line("- **Effective Date:** {$this->benefit->effective_date}")
-            ->line("- **Monthly Premium:** $" . number_format($this->benefit->premium_amount, 2))
-            ->line("- **Your Monthly Contribution:** $" . number_format($this->benefit->employee_contribution, 2))
-            ->line("- **Employer Contribution:** $" . number_format($this->benefit->employer_contribution, 2))
-            ->action('View Benefits Details', url('/employee/benefits/' . $this->benefit->id))
+            ->line('- **Monthly Premium:** $'.number_format($this->benefit->premium_amount, 2))
+            ->line('- **Your Monthly Contribution:** $'.number_format($this->benefit->employee_contribution, 2))
+            ->line('- **Employer Contribution:** $'.number_format($this->benefit->employer_contribution, 2))
+            ->action('View Benefits Details', url('/employee/benefits/'.$this->benefit->id))
             ->line('Your benefits will be effective from the effective date listed above.')
             ->line('If you have any questions about your benefits, please contact HR.')
             ->salutation('Best regards, HR Team');
@@ -80,7 +80,7 @@ class BenefitsEnrollmentApproved extends Notification implements ShouldQueue
             'employee_contribution' => $this->benefit->employee_contribution,
             'employer_contribution' => $this->benefit->employer_contribution,
             'created_at' => now()->toISOString(),
-            'action_url' => '/employee/benefits/' . $this->benefit->id
+            'action_url' => '/employee/benefits/'.$this->benefit->id,
         ];
     }
 

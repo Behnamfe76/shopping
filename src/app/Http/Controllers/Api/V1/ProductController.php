@@ -2,26 +2,26 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Gate;
-use Fereydooni\Shopping\app\Models\Brand;
-use Fereydooni\Shopping\app\Models\Product;
-use Fereydooni\Shopping\app\Models\Category;
 use Fereydooni\Shopping\app\Enums\ProductStatus;
 use Fereydooni\Shopping\app\Enums\ProductType;
-use Fereydooni\Shopping\app\Http\Resources\ProductResource;
 use Fereydooni\Shopping\app\Facades\Product as ProductFacade;
-use Fereydooni\Shopping\app\Http\Resources\ProductCollection;
-use Fereydooni\Shopping\app\Http\Requests\StoreProductRequest;
+use Fereydooni\Shopping\app\Http\Requests\BulkProductOperationsRequest;
 use Fereydooni\Shopping\app\Http\Requests\SearchProductRequest;
+use Fereydooni\Shopping\app\Http\Requests\StoreProductRequest;
+use Fereydooni\Shopping\app\Http\Requests\ToggleProductStatusRequest;
 use Fereydooni\Shopping\app\Http\Requests\UpdateProductRequest;
-use Fereydooni\Shopping\app\Http\Resources\ProductMediaResource;
-use Fereydooni\Shopping\app\Http\Resources\ProductSearchResource;
 use Fereydooni\Shopping\app\Http\Requests\UploadProductMediaRequest;
 use Fereydooni\Shopping\app\Http\Resources\ProductAnalyticsResource;
-use Fereydooni\Shopping\app\Http\Requests\ToggleProductStatusRequest;
-use Fereydooni\Shopping\app\Http\Requests\BulkProductOperationsRequest;
+use Fereydooni\Shopping\app\Http\Resources\ProductCollection;
+use Fereydooni\Shopping\app\Http\Resources\ProductMediaResource;
+use Fereydooni\Shopping\app\Http\Resources\ProductResource;
+use Fereydooni\Shopping\app\Http\Resources\ProductSearchResource;
+use Fereydooni\Shopping\app\Models\Brand;
+use Fereydooni\Shopping\app\Models\Category;
+use Fereydooni\Shopping\app\Models\Product;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class ProductController extends \App\Http\Controllers\Controller
 {
@@ -36,7 +36,7 @@ class ProductController extends \App\Http\Controllers\Controller
             $perPage = $request->get('per_page', 15);
             $paginationType = $request->get('pagination', 'regular');
 
-            $products = match($paginationType) {
+            $products = match ($paginationType) {
                 'simplePaginate' => ProductFacade::simplePaginate($perPage),
                 'cursorPaginate' => ProductFacade::cursorPaginate($perPage),
                 default => ProductFacade::paginate($perPage),
@@ -54,7 +54,7 @@ class ProductController extends \App\Http\Controllers\Controller
         }
     }
 
-     /**
+    /**
      * Display a listing of product statuses.
      */
     public function statuses(): JsonResponse
@@ -63,9 +63,9 @@ class ProductController extends \App\Http\Controllers\Controller
 
         try {
             return response()->json([
-                'data' => array_map(fn($status) => [
+                'data' => array_map(fn ($status) => [
                     'id' => $status->toString(),
-                    'name' => __('products.statuses.' . $status->toString()),
+                    'name' => __('products.statuses.'.$status->toString()),
                 ], ProductStatus::cases()),
             ], 200);
         } catch (\Exception $e) {
@@ -85,9 +85,9 @@ class ProductController extends \App\Http\Controllers\Controller
 
         try {
             return response()->json([
-                'data' => array_map(fn($type) => [
+                'data' => array_map(fn ($type) => [
                     'id' => $type->toString(),
-                    'name' => __('products.types.' . $type->toString()),
+                    'name' => __('products.types.'.$type->toString()),
                 ], ProductType::cases()),
             ], 200);
         } catch (\Exception $e) {
@@ -144,12 +144,12 @@ class ProductController extends \App\Http\Controllers\Controller
     public function update(UpdateProductRequest $request, Product $product): JsonResponse
     {
         Gate::authorize('update', $product);
-        
+
         $updated = ProductFacade::update($product, $request->validated());
 
-        if (!$updated) {
+        if (! $updated) {
             return response()->json([
-                'message' => 'Failed to update product'
+                'message' => 'Failed to update product',
             ], 422);
         }
 
@@ -157,7 +157,7 @@ class ProductController extends \App\Http\Controllers\Controller
 
         return response()->json([
             'message' => 'Product updated successfully',
-            'data' => new ProductResource($product)
+            'data' => new ProductResource($product),
         ]);
     }
 
@@ -170,14 +170,14 @@ class ProductController extends \App\Http\Controllers\Controller
 
         $deleted = app('shopping.product')->delete($product);
 
-        if (!$deleted) {
+        if (! $deleted) {
             return response()->json([
-                'message' => 'Failed to delete product'
+                'message' => 'Failed to delete product',
             ], 422);
         }
 
         return response()->json([
-            'message' => 'Product deleted successfully'
+            'message' => 'Product deleted successfully',
         ]);
     }
 
@@ -190,9 +190,9 @@ class ProductController extends \App\Http\Controllers\Controller
 
         $toggled = app('shopping.product')->toggleActive($product);
 
-        if (!$toggled) {
+        if (! $toggled) {
             return response()->json([
-                'message' => 'Failed to toggle product status'
+                'message' => 'Failed to toggle product status',
             ], 422);
         }
 
@@ -200,7 +200,7 @@ class ProductController extends \App\Http\Controllers\Controller
 
         return response()->json([
             'message' => 'Product status toggled successfully',
-            'data' => new ProductResource($product)
+            'data' => new ProductResource($product),
         ]);
     }
 
@@ -213,9 +213,9 @@ class ProductController extends \App\Http\Controllers\Controller
 
         $toggled = app('shopping.product')->toggleFeatured($product);
 
-        if (!$toggled) {
+        if (! $toggled) {
             return response()->json([
-                'message' => 'Failed to toggle product featured status'
+                'message' => 'Failed to toggle product featured status',
             ], 422);
         }
 
@@ -223,7 +223,7 @@ class ProductController extends \App\Http\Controllers\Controller
 
         return response()->json([
             'message' => 'Product featured status toggled successfully',
-            'data' => new ProductResource($product)
+            'data' => new ProductResource($product),
         ]);
     }
 
@@ -236,9 +236,9 @@ class ProductController extends \App\Http\Controllers\Controller
 
         $published = app('shopping.product')->publish($product);
 
-        if (!$published) {
+        if (! $published) {
             return response()->json([
-                'message' => 'Failed to publish product'
+                'message' => 'Failed to publish product',
             ], 422);
         }
 
@@ -246,7 +246,7 @@ class ProductController extends \App\Http\Controllers\Controller
 
         return response()->json([
             'message' => 'Product published successfully',
-            'data' => new ProductResource($product)
+            'data' => new ProductResource($product),
         ]);
     }
 
@@ -259,9 +259,9 @@ class ProductController extends \App\Http\Controllers\Controller
 
         $unpublished = app('shopping.product')->unpublish($product);
 
-        if (!$unpublished) {
+        if (! $unpublished) {
             return response()->json([
-                'message' => 'Failed to unpublish product'
+                'message' => 'Failed to unpublish product',
             ], 422);
         }
 
@@ -269,7 +269,7 @@ class ProductController extends \App\Http\Controllers\Controller
 
         return response()->json([
             'message' => 'Product unpublished successfully',
-            'data' => new ProductResource($product)
+            'data' => new ProductResource($product),
         ]);
     }
 
@@ -282,9 +282,9 @@ class ProductController extends \App\Http\Controllers\Controller
 
         $archived = app('shopping.product')->archive($product);
 
-        if (!$archived) {
+        if (! $archived) {
             return response()->json([
-                'message' => 'Failed to archive product'
+                'message' => 'Failed to archive product',
             ], 422);
         }
 
@@ -292,7 +292,7 @@ class ProductController extends \App\Http\Controllers\Controller
 
         return response()->json([
             'message' => 'Product archived successfully',
-            'data' => new ProductResource($product)
+            'data' => new ProductResource($product),
         ]);
     }
 
@@ -361,7 +361,7 @@ class ProductController extends \App\Http\Controllers\Controller
         return response()->json([
             'data' => ProductResource::collection($products),
             'threshold' => $threshold,
-            'count' => $products->count()
+            'count' => $products->count(),
         ]);
     }
 
@@ -391,7 +391,7 @@ class ProductController extends \App\Http\Controllers\Controller
         return response()->json([
             'data' => ProductResource::collection($products),
             'limit' => $limit,
-            'count' => $products->count()
+            'count' => $products->count(),
         ]);
     }
 
@@ -408,7 +408,7 @@ class ProductController extends \App\Http\Controllers\Controller
         return response()->json([
             'data' => ProductResource::collection($products),
             'limit' => $limit,
-            'count' => $products->count()
+            'count' => $products->count(),
         ]);
     }
 
@@ -425,7 +425,7 @@ class ProductController extends \App\Http\Controllers\Controller
         return response()->json([
             'data' => ProductResource::collection($products),
             'limit' => $limit,
-            'count' => $products->count()
+            'count' => $products->count(),
         ]);
     }
 
@@ -442,7 +442,7 @@ class ProductController extends \App\Http\Controllers\Controller
         return response()->json([
             'data' => ProductResource::collection($products),
             'limit' => $limit,
-            'count' => $products->count()
+            'count' => $products->count(),
         ]);
     }
 
@@ -459,7 +459,7 @@ class ProductController extends \App\Http\Controllers\Controller
         return response()->json([
             'data' => ProductResource::collection($products),
             'limit' => $limit,
-            'count' => $products->count()
+            'count' => $products->count(),
         ]);
     }
 
@@ -502,7 +502,7 @@ class ProductController extends \App\Http\Controllers\Controller
         return response()->json([
             'data' => ProductResource::collection($products),
             'limit' => $limit,
-            'count' => $products->count()
+            'count' => $products->count(),
         ]);
     }
 
@@ -516,7 +516,7 @@ class ProductController extends \App\Http\Controllers\Controller
         $count = app('shopping.product')->getProductCount();
 
         return response()->json([
-            'count' => $count
+            'count' => $count,
         ]);
     }
 
@@ -530,7 +530,7 @@ class ProductController extends \App\Http\Controllers\Controller
         $analytics = app('shopping.product')->getProductAnalytics();
 
         return response()->json([
-            'data' => new ProductAnalyticsResource($analytics)
+            'data' => new ProductAnalyticsResource($analytics),
         ]);
     }
 
@@ -545,7 +545,7 @@ class ProductController extends \App\Http\Controllers\Controller
 
         return response()->json([
             'message' => 'Media uploaded successfully',
-            'data' => new ProductMediaResource($media)
+            'data' => new ProductMediaResource($media),
         ], 201);
     }
 
@@ -558,14 +558,14 @@ class ProductController extends \App\Http\Controllers\Controller
 
         $deleted = app('shopping.product')->deleteMedia($product, $mediaId);
 
-        if (!$deleted) {
+        if (! $deleted) {
             return response()->json([
-                'message' => 'Failed to delete media'
+                'message' => 'Failed to delete media',
             ], 422);
         }
 
         return response()->json([
-            'message' => 'Media deleted successfully'
+            'message' => 'Media deleted successfully',
         ]);
     }
 
@@ -578,15 +578,15 @@ class ProductController extends \App\Http\Controllers\Controller
 
         $duplicated = app('shopping.product')->duplicate($product);
 
-        if (!$duplicated) {
+        if (! $duplicated) {
             return response()->json([
-                'message' => 'Failed to duplicate product'
+                'message' => 'Failed to duplicate product',
             ], 422);
         }
 
         return response()->json([
             'message' => 'Product duplicated successfully',
-            'data' => new ProductResource($duplicated)
+            'data' => new ProductResource($duplicated),
         ], 201);
     }
 
@@ -604,7 +604,7 @@ class ProductController extends \App\Http\Controllers\Controller
 
         return response()->json([
             'message' => 'Bulk operation completed successfully',
-            'data' => $result
+            'data' => $result,
         ]);
     }
 
@@ -623,8 +623,8 @@ class ProductController extends \App\Http\Controllers\Controller
                 'inventory_level' => $level,
                 'stock_quantity' => $product->stock_quantity,
                 'min_stock_level' => $product->min_stock_level,
-                'max_stock_level' => $product->max_stock_level
-            ]
+                'max_stock_level' => $product->max_stock_level,
+            ],
         ]);
     }
 
@@ -638,7 +638,7 @@ class ProductController extends \App\Http\Controllers\Controller
         $request->validate([
             'product_id' => 'required|exists:products,id',
             'quantity' => 'required|integer',
-            'operation' => 'required|in:increase,decrease,set'
+            'operation' => 'required|in:increase,decrease,set',
         ]);
 
         $product = Product::findOrFail($request->product_id);
@@ -650,9 +650,9 @@ class ProductController extends \App\Http\Controllers\Controller
             $request->operation
         );
 
-        if (!$updated) {
+        if (! $updated) {
             return response()->json([
-                'message' => 'Failed to update inventory'
+                'message' => 'Failed to update inventory',
             ], 422);
         }
 
@@ -662,8 +662,8 @@ class ProductController extends \App\Http\Controllers\Controller
             'message' => 'Inventory updated successfully',
             'data' => [
                 'product_id' => $product->id,
-                'new_stock_quantity' => $product->stock_quantity
-            ]
+                'new_stock_quantity' => $product->stock_quantity,
+            ],
         ]);
     }
 }

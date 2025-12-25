@@ -37,13 +37,13 @@ class SendCommunicationNotification implements ShouldQueue
             Log::info('Communication notification sent successfully', [
                 'communication_id' => $communication->id,
                 'type' => $communication->communication_type,
-                'recipient' => $communication->provider_id
+                'recipient' => $communication->provider_id,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to send communication notification', [
                 'communication_id' => $communication->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -53,7 +53,7 @@ class SendCommunicationNotification implements ShouldQueue
         // Implementation for email notification
         // This would typically use Laravel's notification system
         Log::info('Email notification sent for communication', [
-            'communication_id' => $communication->id
+            'communication_id' => $communication->id,
         ]);
     }
 
@@ -67,7 +67,7 @@ class SendCommunicationNotification implements ShouldQueue
     {
         // Implementation for SMS notification
         Log::info('SMS notification sent for communication', [
-            'communication_id' => $communication->id
+            'communication_id' => $communication->id,
         ]);
     }
 
@@ -75,7 +75,7 @@ class SendCommunicationNotification implements ShouldQueue
     {
         // Implementation for in-app notification
         Log::info('In-app notification sent for communication', [
-            'communication_id' => $communication->id
+            'communication_id' => $communication->id,
         ]);
     }
 }

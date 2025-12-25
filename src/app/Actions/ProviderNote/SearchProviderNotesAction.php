@@ -34,7 +34,7 @@ class SearchProviderNotesAction
             $notes = $this->sortResults($notes, $sortBy, $sortOrder);
 
             // Convert to DTOs
-            return $notes->map(fn($note) => ProviderNoteDTO::fromModel($note));
+            return $notes->map(fn ($note) => ProviderNoteDTO::fromModel($note));
 
         } catch (\Exception $e) {
             // Log error and return empty collection
@@ -51,11 +51,11 @@ class SearchProviderNotesAction
     private function applyFilters(Collection $notes, ?string $noteType, ?string $priority): Collection
     {
         if ($noteType) {
-            $notes = $notes->filter(fn($note) => $note->note_type === $noteType || $note->type === $noteType);
+            $notes = $notes->filter(fn ($note) => $note->note_type === $noteType || $note->type === $noteType);
         }
 
         if ($priority) {
-            $notes = $notes->filter(fn($note) => $note->priority === $priority);
+            $notes = $notes->filter(fn ($note) => $note->priority === $priority);
         }
 
         return $notes;
@@ -66,11 +66,11 @@ class SearchProviderNotesAction
         $validSortFields = ['created_at', 'updated_at', 'title', 'priority', 'note_type'];
         $validSortOrders = ['asc', 'desc'];
 
-        if (!in_array($sortBy, $validSortFields)) {
+        if (! in_array($sortBy, $validSortFields)) {
             $sortBy = 'created_at';
         }
 
-        if (!in_array($sortOrder, $validSortOrders)) {
+        if (! in_array($sortOrder, $validSortOrders)) {
             $sortOrder = 'desc';
         }
 

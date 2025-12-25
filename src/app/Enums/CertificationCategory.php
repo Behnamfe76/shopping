@@ -17,7 +17,7 @@ enum CertificationCategory: string
      */
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::PROFESSIONAL => 'Professional',
             self::TECHNICAL => 'Technical',
             self::SAFETY => 'Safety',
@@ -33,7 +33,7 @@ enum CertificationCategory: string
      */
     public function description(): string
     {
-        return match($this) {
+        return match ($this) {
             self::PROFESSIONAL => 'Professional certifications and licenses',
             self::TECHNICAL => 'Technical skills and competencies',
             self::SAFETY => 'Safety training and certifications',
@@ -49,7 +49,7 @@ enum CertificationCategory: string
      */
     public static function toArray(): array
     {
-        return array_map(fn($case) => [
+        return array_map(fn ($case) => [
             'value' => $case->value,
             'label' => $case->label(),
             'description' => $case->description(),

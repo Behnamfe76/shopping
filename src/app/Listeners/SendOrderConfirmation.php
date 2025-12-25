@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
+use Fereydooni\Shopping\app\Events\OrderCreated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Fereydooni\Shopping\app\Events\OrderCreated;
 
 class SendOrderConfirmation implements ShouldQueue
 {
@@ -30,6 +30,6 @@ class SendOrderConfirmation implements ShouldQueue
         // Mail::to($order->user->email)->send(new OrderConfirmationMail($order));
 
         // For now, just log the action
-        \Log::info('Order confirmation email sent for order #' . $order->id);
+        \Log::info('Order confirmation email sent for order #'.$order->id);
     }
 }

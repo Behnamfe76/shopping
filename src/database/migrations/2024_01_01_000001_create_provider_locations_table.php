@@ -34,7 +34,7 @@ return new class extends Migration
                 'distribution_center',
                 'retail_outlet',
                 'service_center',
-                'other'
+                'other',
             ])->default('office');
             $table->json('operating_hours')->nullable();
             $table->string('timezone', 50)->default('UTC');

@@ -14,6 +14,7 @@ trait HasDefaultItem
     public function setDefault(object $item): bool
     {
         $this->validateDefaultItem($item);
+
         return $this->repository->setDefault($item);
     }
 
@@ -25,7 +26,7 @@ trait HasDefaultItem
         $this->validateDefaultItem($item);
         $success = $this->repository->setDefault($item);
 
-        if (!$success) {
+        if (! $success) {
             return null;
         }
 
@@ -38,6 +39,7 @@ trait HasDefaultItem
     public function unsetDefault(object $item): bool
     {
         $this->validateUnsetDefault($item);
+
         return $this->repository->unsetDefault($item);
     }
 
@@ -119,7 +121,7 @@ trait HasDefaultItem
             $type = $data['type'] ?? null;
             $userId = $data['user_id'];
 
-            if ($type && !$this->repository->hasDefaultAddress($userId, $type)) {
+            if ($type && ! $this->repository->hasDefaultAddress($userId, $type)) {
                 $data['is_default'] = true;
             }
         }
@@ -174,7 +176,7 @@ trait HasDefaultItem
         }
 
         // Check if item is valid (has required fields)
-        if (!$this->isItemComplete($item)) {
+        if (! $this->isItemComplete($item)) {
             $validator->errors()->add('item', 'Item must have complete information to be set as default.');
         }
 

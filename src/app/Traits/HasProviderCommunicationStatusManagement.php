@@ -137,6 +137,7 @@ trait HasProviderCommunicationStatusManagement
     {
         try {
             $communication->update(['status' => $status]);
+
             return true;
         } catch (\Exception $e) {
             return false;
@@ -150,6 +151,7 @@ trait HasProviderCommunicationStatusManagement
     {
         try {
             $communication->update(['priority' => $priority]);
+
             return true;
         } catch (\Exception $e) {
             return false;

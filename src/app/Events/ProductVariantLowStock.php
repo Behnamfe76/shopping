@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Events;
 
+use Fereydooni\Shopping\app\Models\ProductVariant;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Fereydooni\Shopping\app\Models\ProductVariant;
 
 class ProductVariantLowStock
 {
@@ -14,6 +14,5 @@ class ProductVariantLowStock
         public ProductVariant $variant,
         public int $currentStock,
         public int $threshold
-    ) {
-    }
+    ) {}
 }

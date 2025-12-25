@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Policies;
 
+use Fereydooni\Shopping\app\Models\LoyaltyTransaction;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User;
-use Fereydooni\Shopping\app\Models\LoyaltyTransaction;
 
 class LoyaltyTransactionPolicy
 {
@@ -23,7 +23,7 @@ class LoyaltyTransactionPolicy
      */
     public function view(User $user, LoyaltyTransaction $loyaltyTransaction): bool
     {
-        return $user->can('loyalty-transactions.view') || 
+        return $user->can('loyalty-transactions.view') ||
                $user->id === $loyaltyTransaction->user_id ||
                $user->can('loyalty-transactions.viewAll');
     }
@@ -41,7 +41,7 @@ class LoyaltyTransactionPolicy
      */
     public function update(User $user, LoyaltyTransaction $loyaltyTransaction): bool
     {
-        return $user->can('loyalty-transactions.update') || 
+        return $user->can('loyalty-transactions.update') ||
                $user->id === $loyaltyTransaction->user_id ||
                $user->can('loyalty-transactions.updateAll');
     }
@@ -51,7 +51,7 @@ class LoyaltyTransactionPolicy
      */
     public function delete(User $user, LoyaltyTransaction $loyaltyTransaction): bool
     {
-        return $user->can('loyalty-transactions.delete') || 
+        return $user->can('loyalty-transactions.delete') ||
                $user->can('loyalty-transactions.deleteAll');
     }
 
@@ -60,7 +60,7 @@ class LoyaltyTransactionPolicy
      */
     public function restore(User $user, LoyaltyTransaction $loyaltyTransaction): bool
     {
-        return $user->can('loyalty-transactions.restore') || 
+        return $user->can('loyalty-transactions.restore') ||
                $user->can('loyalty-transactions.restoreAll');
     }
 
@@ -69,7 +69,7 @@ class LoyaltyTransactionPolicy
      */
     public function forceDelete(User $user, LoyaltyTransaction $loyaltyTransaction): bool
     {
-        return $user->can('loyalty-transactions.forceDelete') || 
+        return $user->can('loyalty-transactions.forceDelete') ||
                $user->can('loyalty-transactions.forceDeleteAll');
     }
 
@@ -78,7 +78,7 @@ class LoyaltyTransactionPolicy
      */
     public function reverse(User $user, LoyaltyTransaction $loyaltyTransaction): bool
     {
-        return $user->can('loyalty-transactions.reverse') || 
+        return $user->can('loyalty-transactions.reverse') ||
                $user->can('loyalty-transactions.reverseAll');
     }
 
@@ -87,7 +87,7 @@ class LoyaltyTransactionPolicy
      */
     public function addPoints(User $user): bool
     {
-        return $user->can('loyalty-transactions.addPoints') || 
+        return $user->can('loyalty-transactions.addPoints') ||
                $user->can('loyalty-transactions.managePoints');
     }
 
@@ -96,7 +96,7 @@ class LoyaltyTransactionPolicy
      */
     public function deductPoints(User $user): bool
     {
-        return $user->can('loyalty-transactions.deductPoints') || 
+        return $user->can('loyalty-transactions.deductPoints') ||
                $user->can('loyalty-transactions.managePoints');
     }
 
@@ -105,7 +105,7 @@ class LoyaltyTransactionPolicy
      */
     public function calculateBalance(User $user): bool
     {
-        return $user->can('loyalty-transactions.calculateBalance') || 
+        return $user->can('loyalty-transactions.calculateBalance') ||
                $user->can('loyalty-transactions.view');
     }
 
@@ -114,7 +114,7 @@ class LoyaltyTransactionPolicy
      */
     public function checkExpiration(User $user): bool
     {
-        return $user->can('loyalty-transactions.checkExpiration') || 
+        return $user->can('loyalty-transactions.checkExpiration') ||
                $user->can('loyalty-transactions.view');
     }
 
@@ -123,7 +123,7 @@ class LoyaltyTransactionPolicy
      */
     public function calculateTier(User $user): bool
     {
-        return $user->can('loyalty-transactions.calculateTier') || 
+        return $user->can('loyalty-transactions.calculateTier') ||
                $user->can('loyalty-transactions.view');
     }
 
@@ -132,7 +132,7 @@ class LoyaltyTransactionPolicy
      */
     public function validateTransaction(User $user): bool
     {
-        return $user->can('loyalty-transactions.validateTransaction') || 
+        return $user->can('loyalty-transactions.validateTransaction') ||
                $user->can('loyalty-transactions.create');
     }
 
@@ -141,7 +141,7 @@ class LoyaltyTransactionPolicy
      */
     public function viewAnalytics(User $user): bool
     {
-        return $user->can('loyalty-transactions.viewAnalytics') || 
+        return $user->can('loyalty-transactions.viewAnalytics') ||
                $user->can('loyalty-transactions.viewAll');
     }
 
@@ -150,7 +150,7 @@ class LoyaltyTransactionPolicy
      */
     public function exportData(User $user): bool
     {
-        return $user->can('loyalty-transactions.exportData') || 
+        return $user->can('loyalty-transactions.exportData') ||
                $user->can('loyalty-transactions.viewAll');
     }
 
@@ -159,7 +159,7 @@ class LoyaltyTransactionPolicy
      */
     public function importData(User $user): bool
     {
-        return $user->can('loyalty-transactions.importData') || 
+        return $user->can('loyalty-transactions.importData') ||
                $user->can('loyalty-transactions.create');
     }
 
@@ -168,7 +168,7 @@ class LoyaltyTransactionPolicy
      */
     public function viewCustomerTransactions(User $user, int $customerId): bool
     {
-        return $user->can('loyalty-transactions.viewCustomerTransactions') || 
+        return $user->can('loyalty-transactions.viewCustomerTransactions') ||
                $user->can('loyalty-transactions.viewAll') ||
                $user->can('customers.view');
     }
@@ -178,7 +178,7 @@ class LoyaltyTransactionPolicy
      */
     public function manageCustomerPoints(User $user, int $customerId): bool
     {
-        return $user->can('loyalty-transactions.manageCustomerPoints') || 
+        return $user->can('loyalty-transactions.manageCustomerPoints') ||
                $user->can('loyalty-transactions.managePoints') ||
                $user->can('customers.update');
     }
@@ -188,7 +188,7 @@ class LoyaltyTransactionPolicy
      */
     public function viewHistory(User $user): bool
     {
-        return $user->can('loyalty-transactions.viewHistory') || 
+        return $user->can('loyalty-transactions.viewHistory') ||
                $user->can('loyalty-transactions.view');
     }
 
@@ -197,7 +197,7 @@ class LoyaltyTransactionPolicy
      */
     public function viewReports(User $user): bool
     {
-        return $user->can('loyalty-transactions.viewReports') || 
+        return $user->can('loyalty-transactions.viewReports') ||
                $user->can('loyalty-transactions.viewAnalytics');
     }
 
@@ -206,7 +206,7 @@ class LoyaltyTransactionPolicy
      */
     public function manageSettings(User $user): bool
     {
-        return $user->can('loyalty-transactions.manageSettings') || 
+        return $user->can('loyalty-transactions.manageSettings') ||
                $user->can('system.settings');
     }
 
@@ -215,7 +215,7 @@ class LoyaltyTransactionPolicy
      */
     public function approve(User $user, LoyaltyTransaction $loyaltyTransaction): bool
     {
-        return $user->can('loyalty-transactions.approve') || 
+        return $user->can('loyalty-transactions.approve') ||
                $user->can('loyalty-transactions.manageAll');
     }
 
@@ -224,7 +224,7 @@ class LoyaltyTransactionPolicy
      */
     public function reject(User $user, LoyaltyTransaction $loyaltyTransaction): bool
     {
-        return $user->can('loyalty-transactions.reject') || 
+        return $user->can('loyalty-transactions.reject') ||
                $user->can('loyalty-transactions.manageAll');
     }
 
@@ -233,7 +233,7 @@ class LoyaltyTransactionPolicy
      */
     public function process(User $user, LoyaltyTransaction $loyaltyTransaction): bool
     {
-        return $user->can('loyalty-transactions.process') || 
+        return $user->can('loyalty-transactions.process') ||
                $user->can('loyalty-transactions.manageAll');
     }
 
@@ -242,7 +242,7 @@ class LoyaltyTransactionPolicy
      */
     public function viewAuditLogs(User $user): bool
     {
-        return $user->can('loyalty-transactions.viewAuditLogs') || 
+        return $user->can('loyalty-transactions.viewAuditLogs') ||
                $user->can('system.audit');
     }
 }

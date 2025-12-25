@@ -2,20 +2,16 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
-use Illuminate\Support\Facades\Gate;
+use Fereydooni\Shopping\app\Http\Requests\AssignProductAttributeValueRequest;
+use Fereydooni\Shopping\app\Http\Requests\SearchProductAttributeValueRequest;
+use Fereydooni\Shopping\app\Http\Requests\StoreProductAttributeValueRequest;
+use Fereydooni\Shopping\app\Http\Requests\ToggleProductAttributeValueStatusRequest;
+use Fereydooni\Shopping\app\Http\Requests\UpdateProductAttributeValueRequest;
 use Fereydooni\Shopping\app\Models\ProductAttributeValue;
 use Fereydooni\Shopping\app\Services\ProductAttributeValueService;
-use Fereydooni\Shopping\app\Http\Requests\StoreProductAttributeValueRequest;
-use Fereydooni\Shopping\app\Http\Requests\UpdateProductAttributeValueRequest;
-use Fereydooni\Shopping\app\Http\Requests\ToggleProductAttributeValueStatusRequest;
-use Fereydooni\Shopping\app\Http\Requests\SearchProductAttributeValueRequest;
-use Fereydooni\Shopping\app\Http\Requests\AssignProductAttributeValueRequest;
-use Fereydooni\Shopping\app\Http\Resources\ProductAttributeValueResource;
-use Fereydooni\Shopping\app\Http\Resources\ProductAttributeValueCollection;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class ProductAttributeValueController extends Controller
 {

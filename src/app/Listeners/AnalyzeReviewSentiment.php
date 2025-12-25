@@ -2,8 +2,6 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
-use Fereydooni\Shopping\app\Events\ProductReviewCreated;
-use Fereydooni\Shopping\app\Events\ProductReviewUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
@@ -32,13 +30,13 @@ class AnalyzeReviewSentiment implements ShouldQueue
 
         // Update review with sentiment score
         $review->update([
-            'sentiment_score' => $sentimentScore
+            'sentiment_score' => $sentimentScore,
         ]);
 
         Log::info('Review sentiment analyzed', [
             'review_id' => $review->id,
             'sentiment_score' => $sentimentScore,
-            'review_text_length' => strlen($review->review)
+            'review_text_length' => strlen($review->review),
         ]);
     }
 
@@ -87,7 +85,7 @@ class AnalyzeReviewSentiment implements ShouldQueue
     {
         Log::error('Failed to analyze review sentiment', [
             'review_id' => $event->review->id,
-            'error' => $exception->getMessage()
+            'error' => $exception->getMessage(),
         ]);
     }
 }

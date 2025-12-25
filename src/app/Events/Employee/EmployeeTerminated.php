@@ -3,11 +3,8 @@
 namespace Fereydooni\Shopping\app\Events\Employee;
 
 use Fereydooni\Shopping\app\Models\Employee;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -16,6 +13,7 @@ class EmployeeTerminated
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public Employee $employee;
+
     public string $reason;
 
     /**
@@ -46,7 +44,7 @@ class EmployeeTerminated
     {
         return [
             'employee_id' => $this->employee->id,
-            'employee_name' => $this->employee->first_name . ' ' . $this->employee->last_name,
+            'employee_name' => $this->employee->first_name.' '.$this->employee->last_name,
             'status' => 'terminated',
             'reason' => $this->reason,
             'terminated_at' => now(),

@@ -2,17 +2,14 @@
 
 namespace Fereydooni\Shopping\app\Services;
 
+use Fereydooni\Shopping\app\DTOs\AddressDTO;
+use Fereydooni\Shopping\app\Enums\AddressType;
+use Fereydooni\Shopping\app\Models\Address;
 use Fereydooni\Shopping\app\Repositories\Interfaces\AddressRepositoryInterface;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
 use Fereydooni\Shopping\app\Traits\HasDefaultItem;
 use Fereydooni\Shopping\app\Traits\HasSearchOperations;
-use Fereydooni\Shopping\app\DTOs\AddressDTO;
-use Fereydooni\Shopping\app\Models\Address;
-use Fereydooni\Shopping\app\Enums\AddressType;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Support\Facades\Log;
 
 class AddressService
@@ -21,8 +18,7 @@ class AddressService
 
     public function __construct(
         private AddressRepositoryInterface $repository
-    ) {
-    }
+    ) {}
 
     // Address-specific methods that extend the traits
 
@@ -48,7 +44,8 @@ class AddressService
     public function findByUserAndTypeDTO(int $userId, AddressType $type): Collection
     {
         $addresses = $this->repository->findByUserAndType($userId, $type);
-        return $addresses->map(fn($address) => AddressDTO::fromModel($address));
+
+        return $addresses->map(fn ($address) => AddressDTO::fromModel($address));
     }
 
     /**
@@ -118,6 +115,7 @@ class AddressService
         $this->handleDefaultItemLogic($data);
 
         $this->validateData($data);
+
         return $this->repository->create($data);
     }
 
@@ -130,6 +128,7 @@ class AddressService
         $this->handleDefaultItemLogic($data);
 
         $this->validateData($data);
+
         return $this->repository->createAndReturnDTO($data);
     }
 
@@ -142,6 +141,7 @@ class AddressService
         $this->handleDefaultItemLogicUpdate($address, $data);
 
         $this->validateData($data, $address);
+
         return $this->repository->update($address, $data);
     }
 
@@ -154,6 +154,7 @@ class AddressService
         $this->handleDefaultItemLogicUpdate($address, $data);
 
         $this->validateData($data, $address);
+
         return $this->repository->updateAndReturnDTO($address, $data);
     }
 
@@ -208,13 +209,13 @@ class AddressService
      */
     protected function isItemComplete(object $item): bool
     {
-        return !empty($item->first_name) &&
-               !empty($item->last_name) &&
-               !empty($item->address_line_1) &&
-               !empty($item->city) &&
-               !empty($item->state) &&
-               !empty($item->postal_code) &&
-               !empty($item->country);
+        return ! empty($item->first_name) &&
+               ! empty($item->last_name) &&
+               ! empty($item->address_line_1) &&
+               ! empty($item->city) &&
+               ! empty($item->state) &&
+               ! empty($item->postal_code) &&
+               ! empty($item->country);
     }
 
     /**
@@ -233,7 +234,7 @@ class AddressService
             'postal_code',
             'country',
             'phone',
-            'email'
+            'email',
         ];
     }
 
@@ -242,7 +243,7 @@ class AddressService
      */
     protected function getSuggestionText(object $item): string
     {
-        return $item->first_name . ' ' . $item->last_name . ' - ' . $item->full_address;
+        return $item->first_name.' '.$item->last_name.' - '.$item->full_address;
     }
 
     /**

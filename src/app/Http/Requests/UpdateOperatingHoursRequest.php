@@ -23,63 +23,63 @@ class UpdateOperatingHoursRequest extends FormRequest
             'operating_hours' => [
                 'required',
                 'array',
-                'min:1'
+                'min:1',
             ],
             'operating_hours.*.day' => [
                 'required',
                 'string',
-                'in:monday,tuesday,wednesday,thursday,friday,saturday,sunday'
+                'in:monday,tuesday,wednesday,thursday,friday,saturday,sunday',
             ],
             'operating_hours.*.open' => [
                 'required',
                 'string',
-                'regex:/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/'
+                'regex:/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/',
             ],
             'operating_hours.*.close' => [
                 'required',
                 'string',
-                'regex:/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/'
+                'regex:/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/',
             ],
             'operating_hours.*.is_closed' => [
-                'boolean'
+                'boolean',
             ],
             'operating_hours.*.notes' => [
                 'nullable',
                 'string',
-                'max:200'
+                'max:200',
             ],
             'timezone' => [
                 'nullable',
                 'string',
-                'timezone'
+                'timezone',
             ],
             'special_hours' => [
                 'nullable',
-                'array'
+                'array',
             ],
             'special_hours.*.date' => [
                 'required_with:special_hours',
                 'date',
-                'after:today'
+                'after:today',
             ],
             'special_hours.*.open' => [
                 'required_with:special_hours',
                 'string',
-                'regex:/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/'
+                'regex:/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/',
             ],
             'special_hours.*.close' => [
                 'required_with:special_hours',
                 'string',
-                'regex:/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/'
+                'regex:/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/',
             ],
             'special_hours.*.is_closed' => [
-                'boolean'
+                'boolean',
             ],
             'special_hours.*.reason' => [
                 'nullable',
                 'string',
-                'max:200'
-            ]
+                'max:200',
+            ],
         ];
     }
 
@@ -106,7 +106,7 @@ class UpdateOperatingHoursRequest extends FormRequest
             'special_hours.*.open.regex' => 'Opening time must be in HH:MM format.',
             'special_hours.*.close.required_with' => 'Closing time is required for special hours.',
             'special_hours.*.close.regex' => 'Closing time must be in HH:MM format.',
-            'special_hours.*.reason.max' => 'Reason cannot exceed 200 characters.'
+            'special_hours.*.reason.max' => 'Reason cannot exceed 200 characters.',
         ];
     }
 
@@ -128,7 +128,7 @@ class UpdateOperatingHoursRequest extends FormRequest
             'special_hours.*.open' => 'opening time',
             'special_hours.*.close' => 'closing time',
             'special_hours.*.is_closed' => 'closed status',
-            'special_hours.*.reason' => 'reason'
+            'special_hours.*.reason' => 'reason',
         ];
     }
 
@@ -165,7 +165,7 @@ class UpdateOperatingHoursRequest extends FormRequest
         }
 
         // Set default values
-        if (!$this->has('timezone')) {
+        if (! $this->has('timezone')) {
             $this->merge(['timezone' => 'UTC']);
         }
     }

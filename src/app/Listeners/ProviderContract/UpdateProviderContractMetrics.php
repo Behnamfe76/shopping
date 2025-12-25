@@ -3,12 +3,10 @@
 namespace Fereydooni\Shopping\app\Listeners\ProviderContract;
 
 use Fereydooni\Shopping\app\Events\Provider\ProviderContractCreated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderContractUpdated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderContractSigned;
-use Fereydooni\Shopping\app\Events\Provider\ProviderContractRenewed;
-use Fereydooni\Shopping\app\Events\Provider\ProviderContractTerminated;
 use Fereydooni\Shopping\app\Events\Provider\ProviderContractExpiring;
-use Fereydooni\Shopping\app\Events\Provider\ProviderContractExtended;
+use Fereydooni\Shopping\app\Events\Provider\ProviderContractRenewed;
+use Fereydooni\Shopping\app\Events\Provider\ProviderContractSigned;
+use Fereydooni\Shopping\app\Events\Provider\ProviderContractTerminated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
@@ -28,7 +26,7 @@ class UpdateProviderContractMetrics implements ShouldQueue
             Log::error('Failed to update provider contract metrics', [
                 'event' => get_class($event),
                 'error' => $e->getMessage(),
-                'contract_id' => $event->contract->id ?? null
+                'contract_id' => $event->contract->id ?? null,
             ]);
         }
     }
@@ -73,7 +71,7 @@ class UpdateProviderContractMetrics implements ShouldQueue
 
         Log::info('Provider contract creation metrics updated', [
             'contract_id' => $contract->id,
-            'provider_id' => $provider->id
+            'provider_id' => $provider->id,
         ]);
     }
 
@@ -92,7 +90,7 @@ class UpdateProviderContractMetrics implements ShouldQueue
 
         Log::info('Provider contract signing metrics updated', [
             'contract_id' => $contract->id,
-            'provider_id' => $provider->id
+            'provider_id' => $provider->id,
         ]);
     }
 
@@ -106,7 +104,7 @@ class UpdateProviderContractMetrics implements ShouldQueue
 
         Log::info('Provider contract renewal metrics updated', [
             'contract_id' => $contract->id,
-            'provider_id' => $provider->id
+            'provider_id' => $provider->id,
         ]);
     }
 
@@ -123,7 +121,7 @@ class UpdateProviderContractMetrics implements ShouldQueue
 
         Log::info('Provider contract termination metrics updated', [
             'contract_id' => $contract->id,
-            'provider_id' => $provider->id
+            'provider_id' => $provider->id,
         ]);
     }
 
@@ -137,7 +135,7 @@ class UpdateProviderContractMetrics implements ShouldQueue
 
         Log::info('Provider contract expiration metrics updated', [
             'contract_id' => $contract->id,
-            'provider_id' => $provider->id
+            'provider_id' => $provider->id,
         ]);
     }
 

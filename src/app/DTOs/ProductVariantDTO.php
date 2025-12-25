@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
 use Fereydooni\Shopping\app\Models\ProductVariant;
 use Illuminate\Support\Carbon;
+use Spatie\LaravelData\Data;
 
 class ProductVariantDTO extends Data
 {
@@ -31,8 +31,7 @@ class ProductVariantDTO extends Data
         public ?Carbon $created_at = null,
         public ?Carbon $updated_at = null,
         public ?int $id = null,
-    ) {
-    }
+    ) {}
 
     public static function fromModel(ProductVariant $variant): self
     {

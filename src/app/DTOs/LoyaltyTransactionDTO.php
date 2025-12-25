@@ -2,25 +2,22 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Email;
+use Fereydooni\Shopping\app\Enums\LoyaltyReferenceType;
+use Fereydooni\Shopping\app\Enums\LoyaltyTransactionStatus;
+use Fereydooni\Shopping\app\Enums\LoyaltyTransactionType;
+use Fereydooni\Shopping\app\Models\LoyaltyTransaction;
+use Illuminate\Support\Carbon;
+use Spatie\LaravelData\Attributes\Validation\Date;
+use Spatie\LaravelData\Attributes\Validation\Exists;
+use Spatie\LaravelData\Attributes\Validation\In;
+use Spatie\LaravelData\Attributes\Validation\IntegerType;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\Min;
 use Spatie\LaravelData\Attributes\Validation\Nullable;
+use Spatie\LaravelData\Attributes\Validation\Numeric;
 use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
-use Spatie\LaravelData\Attributes\Validation\BooleanType;
-use Spatie\LaravelData\Attributes\Validation\Date;
-use Spatie\LaravelData\Attributes\Validation\Numeric;
-use Spatie\LaravelData\Attributes\Validation\In;
-use Spatie\LaravelData\Attributes\Validation\Exists;
-use Illuminate\Support\Carbon;
-use Fereydooni\Shopping\app\Enums\LoyaltyTransactionType;
-use Fereydooni\Shopping\app\Enums\LoyaltyTransactionStatus;
-use Fereydooni\Shopping\app\Enums\LoyaltyReferenceType;
-use Fereydooni\Shopping\app\Models\LoyaltyTransaction;
-use Fereydooni\Shopping\app\Models\Customer;
+use Spatie\LaravelData\Data;
 
 class LoyaltyTransactionDTO extends Data
 {
@@ -88,8 +85,7 @@ class LoyaltyTransactionDTO extends Data
 
         #[Nullable]
         public ?array $reference,
-    ) {
-    }
+    ) {}
 
     public static function fromModel(LoyaltyTransaction $transaction): self
     {
@@ -194,7 +190,7 @@ class LoyaltyTransactionDTO extends Data
 
     public function isActive(): bool
     {
-        return $this->status === LoyaltyTransactionStatus::COMPLETED && !$this->isExpired();
+        return $this->status === LoyaltyTransactionStatus::COMPLETED && ! $this->isExpired();
     }
 
     public function getFormattedPoints(): string
@@ -204,6 +200,6 @@ class LoyaltyTransactionDTO extends Data
 
     public function getFormattedPointsValue(): string
     {
-        return '$' . number_format($this->points_value, 2);
+        return '$'.number_format($this->points_value, 2);
     }
 }

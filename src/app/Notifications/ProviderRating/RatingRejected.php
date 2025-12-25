@@ -13,6 +13,7 @@ class RatingRejected extends Notification implements ShouldQueue
     use Queueable;
 
     public ProviderRating $rating;
+
     public ?string $reason;
 
     /**
@@ -44,7 +45,7 @@ class RatingRejected extends Notification implements ShouldQueue
         $mail = (new MailMessage)
             ->subject('Your provider rating has been reviewed')
             ->greeting("Hello {$notifiable->name},")
-            ->line('We have reviewed your rating for ' . $provider->name . ' and unfortunately, it does not meet our community guidelines.')
+            ->line('We have reviewed your rating for '.$provider->name.' and unfortunately, it does not meet our community guidelines.')
             ->line("Rating: {$this->rating->rating_value}/{$this->rating->max_rating} stars")
             ->line("Category: {$this->rating->category}");
 

@@ -41,7 +41,7 @@ class ProviderInsuranceSearchResource extends JsonResource
                 'company_name' => $this->resource->provider->company_name,
                 'contact_person' => $this->resource->provider->contact_person,
                 'email' => $this->resource->provider->email,
-                'phone' => $this->resource->provider->phone
+                'phone' => $this->resource->provider->phone,
             ];
         }
 
@@ -106,7 +106,7 @@ class ProviderInsuranceSearchResource extends JsonResource
     protected function highlightText(string $text, string $query): string
     {
         $highlighted = preg_replace(
-            '/(' . preg_quote($query, '/') . ')/i',
+            '/('.preg_quote($query, '/').')/i',
             '<mark>$1</mark>',
             $text
         );
@@ -120,7 +120,9 @@ class ProviderInsuranceSearchResource extends JsonResource
     protected function isExpired(): bool
     {
         $endDate = $this->resource->end_date ?? null;
-        if (!$endDate) return false;
+        if (! $endDate) {
+            return false;
+        }
 
         return now()->isAfter($endDate);
     }
@@ -131,9 +133,11 @@ class ProviderInsuranceSearchResource extends JsonResource
     protected function isExpiringSoon(int $days = 30): bool
     {
         $endDate = $this->resource->end_date ?? null;
-        if (!$endDate) return false;
+        if (! $endDate) {
+            return false;
+        }
 
-        return now()->addDays($days)->isAfter($endDate) && !$this->isExpired();
+        return now()->addDays($days)->isAfter($endDate) && ! $this->isExpired();
     }
 
     /**
@@ -142,7 +146,9 @@ class ProviderInsuranceSearchResource extends JsonResource
     protected function daysUntilExpiry(): ?int
     {
         $endDate = $this->resource->end_date ?? null;
-        if (!$endDate) return null;
+        if (! $endDate) {
+            return null;
+        }
 
         if ($this->isExpired()) {
             return 0;
@@ -157,7 +163,8 @@ class ProviderInsuranceSearchResource extends JsonResource
     protected function formatCoverageAmount(): string
     {
         $amount = $this->resource->coverage_amount ?? 0;
-        return '$' . number_format($amount, 2);
+
+        return '$'.number_format($amount, 2);
     }
 
     /**

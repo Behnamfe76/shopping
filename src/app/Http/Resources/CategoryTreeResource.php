@@ -83,6 +83,7 @@ class CategoryTreeResource extends ResourceCollection
                 $maxDepth = $depth;
             }
         }
+
         return $maxDepth;
     }
 

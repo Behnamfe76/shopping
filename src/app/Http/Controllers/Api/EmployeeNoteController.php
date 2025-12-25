@@ -3,9 +3,9 @@
 namespace Fereydooni\Shopping\app\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 use Fereydooni\Shopping\app\Services\EmployeeNoteService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class EmployeeNoteController extends Controller
 {
@@ -17,7 +17,7 @@ class EmployeeNoteController extends Controller
     {
         $perPage = $request->get('per_page', 15);
         $notes = $this->employeeNoteService->getAllNotes($perPage);
-        
+
         return response()->json(['data' => $notes]);
     }
 
@@ -33,23 +33,23 @@ class EmployeeNoteController extends Controller
             'is_private' => 'boolean',
             'tags' => 'array',
         ]);
-        
+
         $note = $this->employeeNoteService->createNote($validated);
-        
+
         return response()->json([
             'message' => 'Employee note created successfully',
-            'data' => $note
+            'data' => $note,
         ], 201);
     }
 
     public function show(int $id): JsonResponse
     {
         $note = $this->employeeNoteService->findNote($id);
-        
-        if (!$note) {
+
+        if (! $note) {
             return response()->json(['message' => 'Employee note not found'], 404);
         }
-        
+
         return response()->json(['data' => $note]);
     }
 
@@ -63,56 +63,56 @@ class EmployeeNoteController extends Controller
             'is_private' => 'boolean',
             'tags' => 'array',
         ]);
-        
+
         $note = $this->employeeNoteService->updateNote($id, $validated);
-        
-        if (!$note) {
+
+        if (! $note) {
             return response()->json(['message' => 'Employee note not found'], 404);
         }
-        
+
         return response()->json([
             'message' => 'Employee note updated successfully',
-            'data' => $note
+            'data' => $note,
         ]);
     }
 
     public function destroy(int $id): JsonResponse
     {
         $deleted = $this->employeeNoteService->deleteNote($id);
-        
-        if (!$deleted) {
+
+        if (! $deleted) {
             return response()->json(['message' => 'Employee note not found'], 404);
         }
-        
+
         return response()->json(['message' => 'Employee note deleted successfully']);
     }
 
     public function employeeNotes(int $employeeId): JsonResponse
     {
         $notes = $this->employeeNoteService->getEmployeeNotes($employeeId);
-        
+
         return response()->json(['data' => $notes]);
     }
 
     public function archive(int $id): JsonResponse
     {
         $archived = $this->employeeNoteService->archiveNote($id);
-        
-        if (!$archived) {
+
+        if (! $archived) {
             return response()->json(['message' => 'Employee note not found'], 404);
         }
-        
+
         return response()->json(['message' => 'Employee note archived successfully']);
     }
 
     public function unarchive(int $id): JsonResponse
     {
         $unarchived = $this->employeeNoteService->unarchiveNote($id);
-        
-        if (!$unarchived) {
+
+        if (! $unarchived) {
             return response()->json(['message' => 'Employee note not found'], 404);
         }
-        
+
         return response()->json(['message' => 'Employee note unarchived successfully']);
     }
 
@@ -120,13 +120,13 @@ class EmployeeNoteController extends Controller
     {
         $query = $request->get('q');
         $employeeId = $request->get('employee_id');
-        
+
         if ($employeeId) {
             $notes = $this->employeeNoteService->searchEmployeeNotes($employeeId, $query);
         } else {
             $notes = $this->employeeNoteService->searchNotes($query);
         }
-        
+
         return response()->json(['data' => $notes]);
     }
 }

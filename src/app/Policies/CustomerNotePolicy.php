@@ -2,8 +2,8 @@
 
 namespace Fereydooni\Shopping\app\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Fereydooni\Shopping\app\Models\CustomerNote;
+use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User;
 
 class CustomerNotePolicy
@@ -24,12 +24,12 @@ class CustomerNotePolicy
     public function view(User $user, CustomerNote $customerNote): bool
     {
         // Check if user has general permission
-        if (!$user->hasPermissionTo('customer-notes.view')) {
+        if (! $user->hasPermissionTo('customer-notes.view')) {
             return false;
         }
 
         // Check if note is private and user is not the creator or admin
-        if ($customerNote->is_private && $customerNote->user_id !== $user->id && !$user->hasRole('admin')) {
+        if ($customerNote->is_private && $customerNote->user_id !== $user->id && ! $user->hasRole('admin')) {
             return false;
         }
 
@@ -50,7 +50,7 @@ class CustomerNotePolicy
     public function update(User $user, CustomerNote $customerNote): bool
     {
         // Check if user has general permission
-        if (!$user->hasPermissionTo('customer-notes.update')) {
+        if (! $user->hasPermissionTo('customer-notes.update')) {
             return false;
         }
 
@@ -64,7 +64,7 @@ class CustomerNotePolicy
     public function delete(User $user, CustomerNote $customerNote): bool
     {
         // Check if user has general permission
-        if (!$user->hasPermissionTo('customer-notes.delete')) {
+        if (! $user->hasPermissionTo('customer-notes.delete')) {
             return false;
         }
 
@@ -77,7 +77,7 @@ class CustomerNotePolicy
      */
     public function restore(User $user, CustomerNote $customerNote): bool
     {
-        return $user->hasPermissionTo('customer-notes.restore') && 
+        return $user->hasPermissionTo('customer-notes.restore') &&
                ($customerNote->user_id === $user->id || $user->hasRole('admin'));
     }
 
@@ -94,7 +94,7 @@ class CustomerNotePolicy
      */
     public function pin(User $user, CustomerNote $customerNote): bool
     {
-        return $user->hasPermissionTo('customer-notes.pin') && 
+        return $user->hasPermissionTo('customer-notes.pin') &&
                ($customerNote->user_id === $user->id || $user->hasRole('admin'));
     }
 
@@ -103,7 +103,7 @@ class CustomerNotePolicy
      */
     public function unpin(User $user, CustomerNote $customerNote): bool
     {
-        return $user->hasPermissionTo('customer-notes.unpin') && 
+        return $user->hasPermissionTo('customer-notes.unpin') &&
                ($customerNote->user_id === $user->id || $user->hasRole('admin'));
     }
 
@@ -112,7 +112,7 @@ class CustomerNotePolicy
      */
     public function makePrivate(User $user, CustomerNote $customerNote): bool
     {
-        return $user->hasPermissionTo('customer-notes.makePrivate') && 
+        return $user->hasPermissionTo('customer-notes.makePrivate') &&
                ($customerNote->user_id === $user->id || $user->hasRole('admin'));
     }
 
@@ -121,7 +121,7 @@ class CustomerNotePolicy
      */
     public function makePublic(User $user, CustomerNote $customerNote): bool
     {
-        return $user->hasPermissionTo('customer-notes.makePublic') && 
+        return $user->hasPermissionTo('customer-notes.makePublic') &&
                ($customerNote->user_id === $user->id || $user->hasRole('admin'));
     }
 
@@ -130,7 +130,7 @@ class CustomerNotePolicy
      */
     public function manageTags(User $user, CustomerNote $customerNote): bool
     {
-        return $user->hasPermissionTo('customer-notes.manageTags') && 
+        return $user->hasPermissionTo('customer-notes.manageTags') &&
                ($customerNote->user_id === $user->id || $user->hasRole('admin'));
     }
 
@@ -139,7 +139,7 @@ class CustomerNotePolicy
      */
     public function manageAttachments(User $user, CustomerNote $customerNote): bool
     {
-        return $user->hasPermissionTo('customer-notes.manageAttachments') && 
+        return $user->hasPermissionTo('customer-notes.manageAttachments') &&
                ($customerNote->user_id === $user->id || $user->hasRole('admin'));
     }
 
@@ -164,7 +164,7 @@ class CustomerNotePolicy
      */
     public function viewCustomerNotes(User $user, int $customerId): bool
     {
-        return $user->hasPermissionTo('customer-notes.view') || 
+        return $user->hasPermissionTo('customer-notes.view') ||
                $user->hasPermissionTo('customers.view');
     }
 
@@ -173,7 +173,7 @@ class CustomerNotePolicy
      */
     public function createCustomerNotes(User $user, int $customerId): bool
     {
-        return $user->hasPermissionTo('customer-notes.create') || 
+        return $user->hasPermissionTo('customer-notes.create') ||
                $user->hasPermissionTo('customers.update');
     }
 

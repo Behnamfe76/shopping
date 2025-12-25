@@ -3,12 +3,11 @@
 namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
 use Fereydooni\Shopping\app\Http\Controllers\Controller;
-use Fereydooni\Shopping\app\Models\CustomerPreference;
 use Fereydooni\Shopping\app\Models\Customer;
+use Fereydooni\Shopping\app\Models\CustomerPreference;
 use Fereydooni\Shopping\app\Services\CustomerPreferenceService;
-use Fereydooni\Shopping\app\DTOs\CustomerPreferenceDTO;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Validation\ValidationException;
@@ -50,17 +49,17 @@ class CustomerPreferenceController extends Controller
 
             return response()->json([
                 'message' => 'Customer preference created successfully',
-                'data' => $preference
+                'data' => $preference,
             ], 201);
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Validation failed',
-                'errors' => $e->errors()
+                'errors' => $e->errors(),
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to create customer preference',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -75,7 +74,7 @@ class CustomerPreferenceController extends Controller
         $preferenceDTO = $this->preferenceService->getPreferenceDTO($preference->id);
 
         return response()->json([
-            'data' => $preferenceDTO
+            'data' => $preferenceDTO,
         ]);
     }
 
@@ -97,25 +96,25 @@ class CustomerPreferenceController extends Controller
 
             $updatedPreference = $this->preferenceService->updatePreference($preference, $validated);
 
-            if (!$updatedPreference) {
+            if (! $updatedPreference) {
                 return response()->json([
-                    'message' => 'Failed to update customer preference'
+                    'message' => 'Failed to update customer preference',
                 ], 500);
             }
 
             return response()->json([
                 'message' => 'Customer preference updated successfully',
-                'data' => $updatedPreference
+                'data' => $updatedPreference,
             ]);
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Validation failed',
-                'errors' => $e->errors()
+                'errors' => $e->errors(),
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to update customer preference',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -130,19 +129,19 @@ class CustomerPreferenceController extends Controller
         try {
             $deleted = $this->preferenceService->deletePreference($preference);
 
-            if (!$deleted) {
+            if (! $deleted) {
                 return response()->json([
-                    'message' => 'Failed to delete customer preference'
+                    'message' => 'Failed to delete customer preference',
                 ], 500);
             }
 
             return response()->json([
-                'message' => 'Customer preference deleted successfully'
+                'message' => 'Customer preference deleted successfully',
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to delete customer preference',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -158,19 +157,19 @@ class CustomerPreferenceController extends Controller
             $reason = $request->get('reason');
             $activated = $this->preferenceService->activateCustomerPreference($preference, $reason);
 
-            if (!$activated) {
+            if (! $activated) {
                 return response()->json([
-                    'message' => 'Failed to activate customer preference'
+                    'message' => 'Failed to activate customer preference',
                 ], 500);
             }
 
             return response()->json([
-                'message' => 'Customer preference activated successfully'
+                'message' => 'Customer preference activated successfully',
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to activate customer preference',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -186,19 +185,19 @@ class CustomerPreferenceController extends Controller
             $reason = $request->get('reason');
             $deactivated = $this->preferenceService->deactivateCustomerPreference($preference, $reason);
 
-            if (!$deactivated) {
+            if (! $deactivated) {
                 return response()->json([
-                    'message' => 'Failed to deactivate customer preference'
+                    'message' => 'Failed to deactivate customer preference',
                 ], 500);
             }
 
             return response()->json([
-                'message' => 'Customer preference deactivated successfully'
+                'message' => 'Customer preference deactivated successfully',
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to deactivate customer preference',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -223,12 +222,12 @@ class CustomerPreferenceController extends Controller
             }
 
             return response()->json([
-                'data' => $preferences
+                'data' => $preferences,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to get customer preferences',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -256,24 +255,24 @@ class CustomerPreferenceController extends Controller
                 $validated['description'] ?? null
             );
 
-            if (!$set) {
+            if (! $set) {
                 return response()->json([
-                    'message' => 'Failed to set customer preference'
+                    'message' => 'Failed to set customer preference',
                 ], 500);
             }
 
             return response()->json([
-                'message' => 'Customer preference set successfully'
+                'message' => 'Customer preference set successfully',
             ]);
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Validation failed',
-                'errors' => $e->errors()
+                'errors' => $e->errors(),
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to set customer preference',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -290,20 +289,20 @@ class CustomerPreferenceController extends Controller
 
             if ($preference === null) {
                 return response()->json([
-                    'message' => 'Customer preference not found'
+                    'message' => 'Customer preference not found',
                 ], 404);
             }
 
             return response()->json([
                 'data' => [
                     'key' => $key,
-                    'value' => $preference
-                ]
+                    'value' => $preference,
+                ],
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to get customer preference',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -330,24 +329,24 @@ class CustomerPreferenceController extends Controller
                 $validated['description'] ?? null
             );
 
-            if (!$updated) {
+            if (! $updated) {
                 return response()->json([
-                    'message' => 'Failed to update customer preference'
+                    'message' => 'Failed to update customer preference',
                 ], 500);
             }
 
             return response()->json([
-                'message' => 'Customer preference updated successfully'
+                'message' => 'Customer preference updated successfully',
             ]);
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Validation failed',
-                'errors' => $e->errors()
+                'errors' => $e->errors(),
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to update customer preference',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -362,19 +361,19 @@ class CustomerPreferenceController extends Controller
         try {
             $removed = $this->preferenceService->removeCustomerPreference($customer->id, $key);
 
-            if (!$removed) {
+            if (! $removed) {
                 return response()->json([
-                    'message' => 'Failed to remove customer preference'
+                    'message' => 'Failed to remove customer preference',
                 ], 500);
             }
 
             return response()->json([
-                'message' => 'Customer preference removed successfully'
+                'message' => 'Customer preference removed successfully',
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to remove customer preference',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -389,19 +388,19 @@ class CustomerPreferenceController extends Controller
         try {
             $reset = $this->preferenceService->resetCustomerPreferences($customer->id);
 
-            if (!$reset) {
+            if (! $reset) {
                 return response()->json([
-                    'message' => 'Failed to reset customer preferences'
+                    'message' => 'Failed to reset customer preferences',
                 ], 500);
             }
 
             return response()->json([
-                'message' => 'Customer preferences reset successfully'
+                'message' => 'Customer preferences reset successfully',
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to reset customer preferences',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -424,24 +423,24 @@ class CustomerPreferenceController extends Controller
 
             $imported = $this->preferenceService->importCustomerPreferences($customer->id, $validated['preferences']);
 
-            if (!$imported) {
+            if (! $imported) {
                 return response()->json([
-                    'message' => 'Failed to import customer preferences'
+                    'message' => 'Failed to import customer preferences',
                 ], 500);
             }
 
             return response()->json([
-                'message' => 'Customer preferences imported successfully'
+                'message' => 'Customer preferences imported successfully',
             ]);
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Validation failed',
-                'errors' => $e->errors()
+                'errors' => $e->errors(),
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to import customer preferences',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -457,12 +456,12 @@ class CustomerPreferenceController extends Controller
             $preferences = $this->preferenceService->exportCustomerPreferences($customer->id);
 
             return response()->json([
-                'data' => $preferences
+                'data' => $preferences,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to export customer preferences',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -485,24 +484,24 @@ class CustomerPreferenceController extends Controller
 
             $synced = $this->preferenceService->syncCustomerPreferences($customer->id, $validated['preferences']);
 
-            if (!$synced) {
+            if (! $synced) {
                 return response()->json([
-                    'message' => 'Failed to sync customer preferences'
+                    'message' => 'Failed to sync customer preferences',
                 ], 500);
             }
 
             return response()->json([
-                'message' => 'Customer preferences synced successfully'
+                'message' => 'Customer preferences synced successfully',
             ]);
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Validation failed',
-                'errors' => $e->errors()
+                'errors' => $e->errors(),
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to sync customer preferences',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -525,17 +524,17 @@ class CustomerPreferenceController extends Controller
             }
 
             return response()->json([
-                'data' => $preferences
+                'data' => $preferences,
             ]);
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Validation failed',
-                'errors' => $e->errors()
+                'errors' => $e->errors(),
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to search customer preferences',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -555,12 +554,12 @@ class CustomerPreferenceController extends Controller
             }
 
             return response()->json([
-                'data' => $stats
+                'data' => $stats,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to get preference statistics',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -576,12 +575,12 @@ class CustomerPreferenceController extends Controller
             $summary = $this->preferenceService->getCustomerPreferenceSummary($customer->id);
 
             return response()->json([
-                'data' => $summary
+                'data' => $summary,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to get customer preference summary',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -596,19 +595,19 @@ class CustomerPreferenceController extends Controller
         try {
             $initialized = $this->preferenceService->initializeCustomerPreferences($customer->id);
 
-            if (!$initialized) {
+            if (! $initialized) {
                 return response()->json([
-                    'message' => 'Failed to initialize customer preferences'
+                    'message' => 'Failed to initialize customer preferences',
                 ], 500);
             }
 
             return response()->json([
-                'message' => 'Customer preferences initialized successfully'
+                'message' => 'Customer preferences initialized successfully',
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to initialize customer preferences',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -622,12 +621,12 @@ class CustomerPreferenceController extends Controller
             $templates = $this->preferenceService->getPreferenceTemplates();
 
             return response()->json([
-                'data' => $templates
+                'data' => $templates,
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to get preference templates',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -646,26 +645,25 @@ class CustomerPreferenceController extends Controller
 
             $applied = $this->preferenceService->applyPreferenceTemplate($customer->id, $validated['template_name']);
 
-            if (!$applied) {
+            if (! $applied) {
                 return response()->json([
-                    'message' => 'Failed to apply preference template'
+                    'message' => 'Failed to apply preference template',
                 ], 500);
             }
 
             return response()->json([
-                'message' => 'Preference template applied successfully'
+                'message' => 'Preference template applied successfully',
             ]);
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => 'Validation failed',
-                'errors' => $e->errors()
+                'errors' => $e->errors(),
             ], 422);
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Failed to apply preference template',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
 }
-

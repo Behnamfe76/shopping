@@ -7,13 +7,13 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Log;
 
 class RatingReceived extends Notification implements ShouldQueue
 {
     use Queueable;
 
     public ProviderRating $rating;
+
     public string $type;
 
     /**
@@ -52,8 +52,8 @@ class RatingReceived extends Notification implements ShouldQueue
             : "Hello {$notifiable->name},";
 
         $message = $this->type === 'updated'
-            ? "A user has updated their rating for your service."
-            : "Congratulations! You have received a new rating from a user.";
+            ? 'A user has updated their rating for your service.'
+            : 'Congratulations! You have received a new rating from a user.';
 
         return (new MailMessage)
             ->subject($subject)
@@ -73,7 +73,7 @@ class RatingReceived extends Notification implements ShouldQueue
             ->when($this->rating->cons, function ($mail) {
                 return $mail->line("Cons: {$this->rating->cons}");
             })
-            ->line("Would recommend: " . ($this->rating->would_recommend ? 'Yes' : 'No'))
+            ->line('Would recommend: '.($this->rating->would_recommend ? 'Yes' : 'No'))
             ->action('View Rating Details', url("/provider/ratings/{$this->rating->id}"))
             ->line('Thank you for providing excellent service!')
             ->salutation('Best regards, The Team');

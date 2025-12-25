@@ -24,18 +24,18 @@ class UploadInsuranceDocumentRequest extends FormRequest
                 'required',
                 'file',
                 'mimes:pdf,jpg,jpeg,png,doc,docx',
-                'max:10240' // 10MB max
+                'max:10240', // 10MB max
             ],
             'document_type' => [
                 'nullable',
                 'string',
-                'max:100'
+                'max:100',
             ],
             'description' => [
                 'nullable',
                 'string',
-                'max:500'
-            ]
+                'max:500',
+            ],
         ];
     }
 
@@ -50,7 +50,7 @@ class UploadInsuranceDocumentRequest extends FormRequest
             'document.mimes' => 'Document must be a PDF, JPG, JPEG, PNG, DOC, or DOCX file.',
             'document.max' => 'Document size cannot exceed 10MB.',
             'document_type.max' => 'Document type cannot exceed 100 characters.',
-            'description.max' => 'Description cannot exceed 500 characters.'
+            'description.max' => 'Description cannot exceed 500 characters.',
         ];
     }
 
@@ -62,7 +62,7 @@ class UploadInsuranceDocumentRequest extends FormRequest
         return [
             'document' => 'document file',
             'document_type' => 'document type',
-            'description' => 'description'
+            'description' => 'description',
         ];
     }
 }

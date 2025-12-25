@@ -42,7 +42,7 @@ class RatingVerified extends Notification implements ShouldQueue
         return (new MailMessage)
             ->subject('Your provider rating has been verified!')
             ->greeting("Hello {$notifiable->name},")
-            ->line('Excellent! Your rating for ' . $provider->name . ' has been verified and is now marked as verified.')
+            ->line('Excellent! Your rating for '.$provider->name.' has been verified and is now marked as verified.')
             ->line("Rating: {$this->rating->rating_value}/{$this->rating->max_rating} stars")
             ->line("Category: {$this->rating->category}")
             ->when($this->rating->title, function ($mail) {

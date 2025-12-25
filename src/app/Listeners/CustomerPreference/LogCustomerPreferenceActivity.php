@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Listeners\CustomerPreference;
 
-use Fereydooni\Shopping\app\Events\CustomerPreference\CustomerPreferenceCreated;
-use Fereydooni\Shopping\app\Events\CustomerPreference\CustomerPreferenceUpdated;
-use Fereydooni\Shopping\app\Events\CustomerPreference\CustomerPreferenceDeleted;
 use Fereydooni\Shopping\app\Events\CustomerPreference\CustomerPreferenceActivated;
+use Fereydooni\Shopping\app\Events\CustomerPreference\CustomerPreferenceCreated;
 use Fereydooni\Shopping\app\Events\CustomerPreference\CustomerPreferenceDeactivated;
+use Fereydooni\Shopping\app\Events\CustomerPreference\CustomerPreferenceDeleted;
+use Fereydooni\Shopping\app\Events\CustomerPreference\CustomerPreferenceUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
@@ -38,7 +38,7 @@ class LogCustomerPreferenceActivity implements ShouldQueue
             'preference_key' => $preferenceKey,
             'preference_type' => $preference->preference_type,
             'event' => get_class($event),
-            'timestamp' => now()->toISOString()
+            'timestamp' => now()->toISOString(),
         ]);
     }
 }

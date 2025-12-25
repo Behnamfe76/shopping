@@ -12,7 +12,7 @@ enum TrainingStatus: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::NOT_STARTED => 'Not Started',
             self::IN_PROGRESS => 'In Progress',
             self::COMPLETED => 'Completed',
@@ -23,7 +23,7 @@ enum TrainingStatus: string
 
     public function description(): string
     {
-        return match($this) {
+        return match ($this) {
             self::NOT_STARTED => 'Training has been assigned but not yet started',
             self::IN_PROGRESS => 'Training is currently being undertaken',
             self::COMPLETED => 'Training has been successfully completed',
@@ -61,7 +61,7 @@ enum TrainingStatus: string
     {
         return array_combine(
             self::values(),
-            array_map(fn($case) => $case->label(), self::cases())
+            array_map(fn ($case) => $case->label(), self::cases())
         );
     }
 }

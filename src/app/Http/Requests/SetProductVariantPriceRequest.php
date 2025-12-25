@@ -3,7 +3,6 @@
 namespace Fereydooni\Shopping\app\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Fereydooni\Shopping\app\Models\ProductVariant;
 
 class SetProductVariantPriceRequest extends FormRequest
 {
@@ -13,6 +12,7 @@ class SetProductVariantPriceRequest extends FormRequest
     public function authorize(): bool
     {
         $variant = $this->route('variant');
+
         return $this->user()->can('managePricing', $variant);
     }
 

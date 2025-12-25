@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Repositories\Interfaces;
 
-use Fereydooni\Shopping\app\Models\Brand;
 use Fereydooni\Shopping\app\DTOs\BrandDTO;
+use Fereydooni\Shopping\app\Models\Brand;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 
 interface BrandRepositoryInterface
@@ -29,7 +29,7 @@ interface BrandRepositoryInterface
     /**
      * Get cursor paginated brands
      */
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator;
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator;
 
     /**
      * Get cursor paginated categories

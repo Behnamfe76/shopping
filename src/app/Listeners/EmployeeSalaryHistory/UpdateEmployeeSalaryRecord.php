@@ -23,7 +23,7 @@ class UpdateEmployeeSalaryRecord implements ShouldQueue
     {
         $employee = $salaryHistory->employee;
 
-        if (!$employee) {
+        if (! $employee) {
             return;
         }
 

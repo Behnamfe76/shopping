@@ -40,14 +40,14 @@ class InvoiceCreated extends Notification implements ShouldQueue
         $provider = $this->invoice->provider;
 
         return (new MailMessage)
-            ->subject('New Provider Invoice Created - ' . $this->invoice->invoice_number)
-            ->greeting('Hello ' . ($notifiable->name ?? 'Team Member'))
+            ->subject('New Provider Invoice Created - '.$this->invoice->invoice_number)
+            ->greeting('Hello '.($notifiable->name ?? 'Team Member'))
             ->line('A new provider invoice has been created.')
-            ->line('Invoice Number: ' . $this->invoice->invoice_number)
-            ->line('Provider: ' . ($provider->name ?? 'Unknown Provider'))
-            ->line('Amount: $' . number_format($this->invoice->total_amount, 2))
-            ->line('Due Date: ' . $this->invoice->due_date->format('M d, Y'))
-            ->action('View Invoice', url('/provider-invoices/' . $this->invoice->id))
+            ->line('Invoice Number: '.$this->invoice->invoice_number)
+            ->line('Provider: '.($provider->name ?? 'Unknown Provider'))
+            ->line('Amount: $'.number_format($this->invoice->total_amount, 2))
+            ->line('Due Date: '.$this->invoice->due_date->format('M d, Y'))
+            ->action('View Invoice', url('/provider-invoices/'.$this->invoice->id))
             ->line('Please review and process this invoice as needed.');
     }
 
@@ -67,7 +67,7 @@ class InvoiceCreated extends Notification implements ShouldQueue
             'due_date' => $this->invoice->due_date->toISOString(),
             'status' => $this->invoice->status,
             'type' => 'invoice_created',
-            'message' => 'New provider invoice created: ' . $this->invoice->invoice_number
+            'message' => 'New provider invoice created: '.$this->invoice->invoice_number,
         ];
     }
 
@@ -79,4 +79,3 @@ class InvoiceCreated extends Notification implements ShouldQueue
         return $this->toArray($notifiable);
     }
 }
-

@@ -2,10 +2,10 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
-use Illuminate\Validation\Rule;
-use Illuminate\Foundation\Http\FormRequest;
 use Fereydooni\Shopping\app\DTOs\CategoryDTO;
 use Fereydooni\Shopping\app\Enums\CategoryStatus;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateCategoryRequest extends FormRequest
 {
@@ -33,7 +33,7 @@ class UpdateCategoryRequest extends FormRequest
             ],
             'description' => 'nullable|string',
             'parent_id' => 'nullable|integer|exists:categories,id',
-            'status' => 'required|in:' . implode(',', array_column(CategoryStatus::cases(), 'value')),
+            'status' => 'required|in:'.implode(',', array_column(CategoryStatus::cases(), 'value')),
             'sort_order' => 'integer|min:0',
             'is_default' => 'boolean',
         ];
@@ -73,9 +73,9 @@ class UpdateCategoryRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         // Generate slug if not provided
-        if (!$this->has('slug') || empty($this->slug)) {
+        if (! $this->has('slug') || empty($this->slug)) {
             $this->merge([
-                'slug' => \Illuminate\Support\Str::slug($this->name)
+                'slug' => \Illuminate\Support\Str::slug($this->name),
             ]);
         }
 

@@ -2,14 +2,14 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers\Web;
 
-use Illuminate\Http\Request;
-use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Controller;
-use Fereydooni\Shopping\app\Services\CustomerNoteService;
-use Fereydooni\Shopping\app\Models\CustomerNote;
 use Fereydooni\Shopping\app\Http\Requests\CustomerNote\StoreCustomerNoteRequest;
 use Fereydooni\Shopping\app\Http\Requests\CustomerNote\UpdateCustomerNoteRequest;
+use Fereydooni\Shopping\app\Models\CustomerNote;
+use Fereydooni\Shopping\app\Services\CustomerNoteService;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class CustomerNoteController extends Controller
 {
@@ -103,7 +103,7 @@ class CustomerNoteController extends Controller
         $data = $request->validated();
         $updated = $this->customerNoteService->updateNote($customerNote, $data);
 
-        if (!$updated) {
+        if (! $updated) {
             return back()->with('error', 'Failed to update customer note.');
         }
 
@@ -121,7 +121,7 @@ class CustomerNoteController extends Controller
 
         $deleted = $this->customerNoteService->deleteNote($customerNote);
 
-        if (!$deleted) {
+        if (! $deleted) {
             return back()->with('error', 'Failed to delete customer note.');
         }
 
@@ -139,7 +139,7 @@ class CustomerNoteController extends Controller
 
         $pinned = $this->customerNoteService->pinCustomerNote($customerNote);
 
-        if (!$pinned) {
+        if (! $pinned) {
             return back()->with('error', 'Failed to pin customer note.');
         }
 
@@ -155,7 +155,7 @@ class CustomerNoteController extends Controller
 
         $unpinned = $this->customerNoteService->unpinCustomerNote($customerNote);
 
-        if (!$unpinned) {
+        if (! $unpinned) {
             return back()->with('error', 'Failed to unpin customer note.');
         }
 
@@ -171,7 +171,7 @@ class CustomerNoteController extends Controller
 
         $madePrivate = $this->customerNoteService->makeCustomerNotePrivate($customerNote);
 
-        if (!$madePrivate) {
+        if (! $madePrivate) {
             return back()->with('error', 'Failed to make customer note private.');
         }
 
@@ -187,7 +187,7 @@ class CustomerNoteController extends Controller
 
         $madePublic = $this->customerNoteService->makeCustomerNotePublic($customerNote);
 
-        if (!$madePublic) {
+        if (! $madePublic) {
             return back()->with('error', 'Failed to make customer note public.');
         }
 
@@ -207,7 +207,7 @@ class CustomerNoteController extends Controller
 
         $tagAdded = $this->customerNoteService->addCustomerNoteTag($customerNote, $request->tag);
 
-        if (!$tagAdded) {
+        if (! $tagAdded) {
             return back()->with('error', 'Failed to add tag to customer note.');
         }
 
@@ -223,7 +223,7 @@ class CustomerNoteController extends Controller
 
         $tagRemoved = $this->customerNoteService->removeCustomerNoteTag($customerNote, $tag);
 
-        if (!$tagRemoved) {
+        if (! $tagRemoved) {
             return back()->with('error', 'Failed to remove tag from customer note.');
         }
 
@@ -243,7 +243,7 @@ class CustomerNoteController extends Controller
 
         $attachmentAdded = $this->customerNoteService->addCustomerNoteAttachment($customerNote, $request->file('file'));
 
-        if (!$attachmentAdded) {
+        if (! $attachmentAdded) {
             return back()->with('error', 'Failed to add attachment to customer note.');
         }
 
@@ -259,7 +259,7 @@ class CustomerNoteController extends Controller
 
         $attachmentRemoved = $this->customerNoteService->removeCustomerNoteAttachment($customerNote, $mediaId);
 
-        if (!$attachmentRemoved) {
+        if (! $attachmentRemoved) {
             return back()->with('error', 'Failed to remove attachment from customer note.');
         }
 
@@ -306,7 +306,7 @@ class CustomerNoteController extends Controller
         $this->authorize('viewStats');
 
         $customerId = $request->get('customer_id');
-        
+
         if ($customerId) {
             $stats = $this->customerNoteService->getNoteStatsByCustomer($customerId);
         } else {
@@ -345,7 +345,7 @@ class CustomerNoteController extends Controller
         $format = $request->get('format', 'json');
         $exported = $this->customerNoteService->exportCustomerNotes($customerId, $format);
 
-        $filename = "customer_notes_{$customerId}_" . now()->format('Y-m-d_H-i-s') . ".{$format}";
+        $filename = "customer_notes_{$customerId}_".now()->format('Y-m-d_H-i-s').".{$format}";
 
         return response($exported)
             ->header('Content-Type', $format === 'json' ? 'application/json' : 'text/csv')

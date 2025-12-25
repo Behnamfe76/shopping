@@ -46,10 +46,11 @@ class UninstallRoutesCommand extends Command
             }
         }
 
-        if (!$force) {
+        if (! $force) {
             $confirmed = $this->confirm('Are you sure you want to uninstall shopping package routes?');
-            if (!$confirmed) {
+            if (! $confirmed) {
                 $this->info('Uninstallation cancelled.');
+
                 return;
             }
         }
@@ -72,15 +73,17 @@ class UninstallRoutesCommand extends Command
 
         $routesPath = base_path("routes/{$routeType}.php");
 
-        if (!File::exists($routesPath)) {
+        if (! File::exists($routesPath)) {
             $this->warn("Routes file {$routeType}.php not found!");
+
             return;
         }
 
         $content = File::get($routesPath);
 
-        if (!str_contains($content, 'shopping')) {
+        if (! str_contains($content, 'shopping')) {
             $this->warn("No shopping routes found in {$routeType}.php");
+
             return;
         }
 
@@ -110,6 +113,7 @@ class UninstallRoutesCommand extends Command
                 $inShoppingSection = true;
                 $skipNextLines = true;
                 $braceCount = 0;
+
                 continue;
             }
 
@@ -121,6 +125,7 @@ class UninstallRoutesCommand extends Command
                     $skipNextLines = false;
                     $inShoppingSection = false;
                 }
+
                 continue;
             }
 

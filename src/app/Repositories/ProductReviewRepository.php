@@ -2,15 +2,14 @@
 
 namespace Fereydooni\Shopping\app\Repositories;
 
-use Fereydooni\Shopping\app\Repositories\Interfaces\ProductReviewRepositoryInterface;
-use Fereydooni\Shopping\app\Models\ProductReview;
 use Fereydooni\Shopping\app\DTOs\ProductReviewDTO;
 use Fereydooni\Shopping\app\Enums\ReviewStatus;
+use Fereydooni\Shopping\app\Models\ProductReview;
+use Fereydooni\Shopping\app\Repositories\Interfaces\ProductReviewRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 class ProductReviewRepository implements ProductReviewRepositoryInterface
 {
@@ -34,6 +33,7 @@ class ProductReviewRepository implements ProductReviewRepositoryInterface
     public function findDTO(int $id): ?ProductReviewDTO
     {
         $review = $this->find($id);
+
         return $review ? ProductReviewDTO::fromModel($review) : null;
     }
 
@@ -53,6 +53,7 @@ class ProductReviewRepository implements ProductReviewRepositoryInterface
     public function createAndReturnDTO(array $data): ProductReviewDTO
     {
         $review = $this->create($data);
+
         return ProductReviewDTO::fromModel($review);
     }
 
@@ -260,7 +261,7 @@ class ProductReviewRepository implements ProductReviewRepositoryInterface
         $updated = $review->update([
             'status' => ReviewStatus::APPROVED,
             'moderation_status' => 'approved',
-            'updated_by' => auth()->id()
+            'updated_by' => auth()->id(),
         ]);
 
         if ($updated) {
@@ -270,13 +271,13 @@ class ProductReviewRepository implements ProductReviewRepositoryInterface
         return $updated;
     }
 
-    public function reject(ProductReview $review, string $reason = null): bool
+    public function reject(ProductReview $review, ?string $reason = null): bool
     {
         $updated = $review->update([
             'status' => ReviewStatus::REJECTED,
             'moderation_status' => 'rejected',
             'moderation_notes' => $reason,
-            'updated_by' => auth()->id()
+            'updated_by' => auth()->id(),
         ]);
 
         if ($updated) {
@@ -290,7 +291,7 @@ class ProductReviewRepository implements ProductReviewRepositoryInterface
     {
         $updated = $review->update([
             'is_featured' => true,
-            'updated_by' => auth()->id()
+            'updated_by' => auth()->id(),
         ]);
 
         if ($updated) {
@@ -304,7 +305,7 @@ class ProductReviewRepository implements ProductReviewRepositoryInterface
     {
         $updated = $review->update([
             'is_featured' => false,
-            'updated_by' => auth()->id()
+            'updated_by' => auth()->id(),
         ]);
 
         if ($updated) {
@@ -318,7 +319,7 @@ class ProductReviewRepository implements ProductReviewRepositoryInterface
     {
         $updated = $review->update([
             'is_verified' => true,
-            'updated_by' => auth()->id()
+            'updated_by' => auth()->id(),
         ]);
 
         if ($updated) {
@@ -332,7 +333,7 @@ class ProductReviewRepository implements ProductReviewRepositoryInterface
     {
         $updated = $review->update([
             'is_verified' => false,
-            'updated_by' => auth()->id()
+            'updated_by' => auth()->id(),
         ]);
 
         if ($updated) {
@@ -389,9 +390,9 @@ class ProductReviewRepository implements ProductReviewRepositoryInterface
         return ProductReview::with(['product', 'user'])
             ->where(function ($q) use ($query) {
                 $q->where('review', 'like', "%{$query}%")
-                  ->orWhere('title', 'like', "%{$query}%")
-                  ->orWhere('pros', 'like', "%{$query}%")
-                  ->orWhere('cons', 'like', "%{$query}%");
+                    ->orWhere('title', 'like', "%{$query}%")
+                    ->orWhere('pros', 'like', "%{$query}%")
+                    ->orWhere('cons', 'like', "%{$query}%");
             })
             ->orderBy('created_at', 'desc')
             ->get();
@@ -476,7 +477,7 @@ class ProductReviewRepository implements ProductReviewRepositoryInterface
     {
         $review = $this->find($reviewId);
 
-        if (!$review) {
+        if (! $review) {
             return [];
         }
 
@@ -574,7 +575,7 @@ class ProductReviewRepository implements ProductReviewRepositoryInterface
             'status' => ReviewStatus::FLAGGED,
             'moderation_status' => 'flagged',
             'moderation_notes' => $reason,
-            'updated_by' => auth()->id()
+            'updated_by' => auth()->id(),
         ]);
     }
 

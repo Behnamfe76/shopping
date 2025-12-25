@@ -3,11 +3,10 @@
 namespace Fereydooni\Shopping\App\Traits;
 
 use App\Models\ProviderRating;
-use App\DTOs\ProviderRatingDTO;
 use App\Repositories\Interfaces\ProviderRatingRepositoryInterface;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 trait HasProviderRatingModeration
 {
@@ -40,13 +39,14 @@ trait HasProviderRatingModeration
     /**
      * Approve a rating
      */
-    public function approveRating(int $ratingId, int $moderatorId, string $notes = null): bool
+    public function approveRating(int $ratingId, int $moderatorId, ?string $notes = null): bool
     {
         try {
             $rating = $this->providerRatingRepository->find($ratingId);
 
-            if (!$rating) {
+            if (! $rating) {
                 Log::warning("Attempted to approve non-existent rating: {$ratingId}");
+
                 return false;
             }
 
@@ -62,7 +62,8 @@ trait HasProviderRatingModeration
 
             return $result;
         } catch (\Exception $e) {
-            Log::error("Error approving rating {$ratingId}: " . $e->getMessage());
+            Log::error("Error approving rating {$ratingId}: ".$e->getMessage());
+
             return false;
         }
     }
@@ -70,13 +71,14 @@ trait HasProviderRatingModeration
     /**
      * Reject a rating
      */
-    public function rejectRating(int $ratingId, int $moderatorId, string $reason, string $notes = null): bool
+    public function rejectRating(int $ratingId, int $moderatorId, string $reason, ?string $notes = null): bool
     {
         try {
             $rating = $this->providerRatingRepository->find($ratingId);
 
-            if (!$rating) {
+            if (! $rating) {
                 Log::warning("Attempted to reject non-existent rating: {$ratingId}");
+
                 return false;
             }
 
@@ -88,7 +90,8 @@ trait HasProviderRatingModeration
 
             return $result;
         } catch (\Exception $e) {
-            Log::error("Error rejecting rating {$ratingId}: " . $e->getMessage());
+            Log::error("Error rejecting rating {$ratingId}: ".$e->getMessage());
+
             return false;
         }
     }
@@ -96,13 +99,14 @@ trait HasProviderRatingModeration
     /**
      * Flag a rating for review
      */
-    public function flagRating(int $ratingId, int $moderatorId, string $reason, string $notes = null): bool
+    public function flagRating(int $ratingId, int $moderatorId, string $reason, ?string $notes = null): bool
     {
         try {
             $rating = $this->providerRatingRepository->find($ratingId);
 
-            if (!$rating) {
+            if (! $rating) {
                 Log::warning("Attempted to flag non-existent rating: {$ratingId}");
+
                 return false;
             }
 
@@ -114,7 +118,8 @@ trait HasProviderRatingModeration
 
             return $result;
         } catch (\Exception $e) {
-            Log::error("Error flagging rating {$ratingId}: " . $e->getMessage());
+            Log::error("Error flagging rating {$ratingId}: ".$e->getMessage());
+
             return false;
         }
     }
@@ -127,8 +132,9 @@ trait HasProviderRatingModeration
         try {
             $rating = $this->providerRatingRepository->find($ratingId);
 
-            if (!$rating) {
+            if (! $rating) {
                 Log::warning("Attempted to verify non-existent rating: {$ratingId}");
+
                 return false;
             }
 
@@ -144,7 +150,8 @@ trait HasProviderRatingModeration
 
             return $result;
         } catch (\Exception $e) {
-            Log::error("Error verifying rating {$ratingId}: " . $e->getMessage());
+            Log::error("Error verifying rating {$ratingId}: ".$e->getMessage());
+
             return false;
         }
     }
@@ -226,7 +233,7 @@ trait HasProviderRatingModeration
     {
         // Basic content filtering - you can enhance this with more sophisticated algorithms
         $inappropriateWords = [
-            'spam', 'fake', 'scam', 'fraud', 'illegal', 'inappropriate'
+            'spam', 'fake', 'scam', 'fraud', 'illegal', 'inappropriate',
         ];
 
         $content = strtolower($content);
@@ -290,7 +297,7 @@ trait HasProviderRatingModeration
         }
 
         // Rating with inappropriate content
-        if (!$this->isRatingContentAppropriate($rating->comment)) {
+        if (! $this->isRatingContentAppropriate($rating->comment)) {
             $suspicious = true;
         }
 

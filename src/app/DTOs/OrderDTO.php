@@ -2,13 +2,10 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\MapName;
-use Spatie\LaravelData\Attributes\WithTransformer;
-use Spatie\LaravelData\Transformers\DateTimeTransformer;
-use Illuminate\Support\Carbon;
 use Fereydooni\Shopping\app\Enums\OrderStatus;
 use Fereydooni\Shopping\app\Enums\PaymentStatus;
+use Illuminate\Support\Carbon;
+use Spatie\LaravelData\Data;
 
 class OrderDTO extends Data
 {
@@ -42,8 +39,7 @@ class OrderDTO extends Data
         public ?array $billing_address = null,
         public ?array $user = null,
         public ?array $notes_array = null,
-    ) {
-    }
+    ) {}
 
     public static function fromModel($order): static
     {
@@ -84,11 +80,11 @@ class OrderDTO extends Data
     {
         return [
             'user_id' => 'required|integer|exists:users,id',
-            'status' => 'required|in:' . implode(',', array_column(OrderStatus::cases(), 'value')),
+            'status' => 'required|in:'.implode(',', array_column(OrderStatus::cases(), 'value')),
             'total_amount' => 'required|numeric|min:0',
             'discount_amount' => 'nullable|numeric|min:0',
             'shipping_amount' => 'nullable|numeric|min:0',
-            'payment_status' => 'required|in:' . implode(',', array_column(PaymentStatus::cases(), 'value')),
+            'payment_status' => 'required|in:'.implode(',', array_column(PaymentStatus::cases(), 'value')),
             'payment_method' => 'nullable|string|max:100',
             'shipping_address_id' => 'required|integer|exists:addresses,id',
             'billing_address_id' => 'required|integer|exists:addresses,id',
@@ -255,7 +251,8 @@ class OrderDTO extends Data
     public function getNotesByType(string $type): array
     {
         $notes = $this->getNotesArray();
-        return array_filter($notes, fn($note) => $note['type'] === $type);
+
+        return array_filter($notes, fn ($note) => $note['type'] === $type);
     }
 
     /**

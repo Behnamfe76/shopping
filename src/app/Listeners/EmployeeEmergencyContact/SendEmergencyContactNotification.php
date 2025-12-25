@@ -3,13 +3,13 @@
 namespace App\Listeners\EmployeeEmergencyContact;
 
 use App\Events\EmployeeEmergencyContact\EmployeeEmergencyContactCreated;
-use App\Events\EmployeeEmergencyContact\EmployeeEmergencyContactUpdated;
-use App\Events\EmployeeEmergencyContact\EmployeeEmergencyContactSetPrimary;
 use App\Events\EmployeeEmergencyContact\EmployeeEmergencyContactDeleted;
+use App\Events\EmployeeEmergencyContact\EmployeeEmergencyContactSetPrimary;
+use App\Events\EmployeeEmergencyContact\EmployeeEmergencyContactUpdated;
 use App\Notifications\EmployeeEmergencyContact\EmergencyContactAdded;
-use App\Notifications\EmployeeEmergencyContact\EmergencyContactUpdated;
-use App\Notifications\EmployeeEmergencyContact\EmergencyContactSetPrimary;
 use App\Notifications\EmployeeEmergencyContact\EmergencyContactRemoved;
+use App\Notifications\EmployeeEmergencyContact\EmergencyContactSetPrimary;
+use App\Notifications\EmployeeEmergencyContact\EmergencyContactUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
@@ -26,11 +26,12 @@ class SendEmergencyContactNotification implements ShouldQueue
         try {
             $employee = $event->contact->employee;
 
-            if (!$employee) {
+            if (! $employee) {
                 Log::warning('Employee not found for emergency contact notification', [
                     'contact_id' => $event->contact->id,
                     'employee_id' => $event->contact->employee_id,
                 ]);
+
                 return;
             }
 

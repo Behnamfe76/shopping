@@ -68,7 +68,7 @@ class AssignProductAttributeValueRequest extends FormRequest
                        $this->input('category_id') ||
                        $this->input('brand_id');
 
-            if (!$hasAnyId) {
+            if (! $hasAnyId) {
                 $validator->errors()->add('general', 'At least one entity ID must be provided.');
             }
         });

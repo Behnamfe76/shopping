@@ -2,26 +2,24 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
-use Illuminate\Support\Facades\Gate;
+use Fereydooni\Shopping\app\Http\Requests\AddProductAttributeValueRequest;
+use Fereydooni\Shopping\app\Http\Requests\SearchProductAttributeRequest;
+use Fereydooni\Shopping\app\Http\Requests\StoreProductAttributeRequest;
+use Fereydooni\Shopping\app\Http\Requests\ToggleProductAttributeStatusRequest;
+use Fereydooni\Shopping\app\Http\Requests\UpdateProductAttributeRequest;
+use Fereydooni\Shopping\app\Http\Requests\UpdateProductAttributeValueRequest;
 use Fereydooni\Shopping\app\Models\ProductAttribute;
 use Fereydooni\Shopping\app\Services\ProductAttributeService;
-use Fereydooni\Shopping\app\Http\Requests\StoreProductAttributeRequest;
-use Fereydooni\Shopping\app\Http\Requests\UpdateProductAttributeRequest;
-use Fereydooni\Shopping\app\Http\Requests\ToggleProductAttributeStatusRequest;
-use Fereydooni\Shopping\app\Http\Requests\SearchProductAttributeRequest;
-use Fereydooni\Shopping\app\Http\Requests\AddProductAttributeValueRequest;
-use Fereydooni\Shopping\app\Http\Requests\UpdateProductAttributeValueRequest;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class ProductAttributeController extends Controller
 {
     public function __construct(
         private ProductAttributeService $productAttributeService
-    ) {
-    }
+    ) {}
 
     /**
      * Display a listing of the product attributes.
@@ -410,4 +408,3 @@ class ProductAttributeController extends Controller
         ]);
     }
 }
-

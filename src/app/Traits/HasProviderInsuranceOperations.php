@@ -6,9 +6,9 @@ use App\DTOs\ProviderInsuranceDTO;
 use App\Models\ProviderInsurance;
 use App\Services\ProviderInsuranceService;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Support\Facades\App;
 
 /**
@@ -62,7 +62,7 @@ trait HasProviderInsuranceOperations
     /**
      * Cursor paginate provider insurance records
      */
-    public function cursorPaginateProviderInsurance(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginateProviderInsurance(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return App::make(ProviderInsuranceService::class)->cursorPaginate($perPage, $cursor);
     }

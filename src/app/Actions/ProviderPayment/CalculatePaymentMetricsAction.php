@@ -2,8 +2,8 @@
 
 namespace Fereydooni\Shopping\App\Actions\ProviderPayment;
 
-use Illuminate\Support\Facades\Log;
 use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderPaymentRepositoryInterface;
+use Illuminate\Support\Facades\Log;
 
 class CalculatePaymentMetricsAction
 {
@@ -14,7 +14,7 @@ class CalculatePaymentMetricsAction
     /**
      * Execute the action to calculate payment metrics.
      */
-    public function execute(int $providerId = null, string $startDate = null, string $endDate = null): array
+    public function execute(?int $providerId = null, ?string $startDate = null, ?string $endDate = null): array
     {
         try {
             $metrics = [];
@@ -31,7 +31,7 @@ class CalculatePaymentMetricsAction
                 'provider_id' => $providerId,
                 'start_date' => $startDate,
                 'end_date' => $endDate,
-                'metrics_count' => count($metrics)
+                'metrics_count' => count($metrics),
             ]);
 
             return $metrics;
@@ -41,7 +41,7 @@ class CalculatePaymentMetricsAction
                 'error' => $e->getMessage(),
                 'provider_id' => $providerId,
                 'start_date' => $startDate,
-                'end_date' => $endDate
+                'end_date' => $endDate,
             ]);
 
             throw $e;
@@ -51,7 +51,7 @@ class CalculatePaymentMetricsAction
     /**
      * Calculate provider-specific payment metrics.
      */
-    protected function calculateProviderMetrics(int $providerId, string $startDate = null, string $endDate = null): array
+    protected function calculateProviderMetrics(int $providerId, ?string $startDate = null, ?string $endDate = null): array
     {
         $metrics = [];
 
@@ -84,7 +84,7 @@ class CalculatePaymentMetricsAction
     /**
      * Calculate global payment metrics.
      */
-    protected function calculateGlobalMetrics(string $startDate = null, string $endDate = null): array
+    protected function calculateGlobalMetrics(?string $startDate = null, ?string $endDate = null): array
     {
         $metrics = [];
 

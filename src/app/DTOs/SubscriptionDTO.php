@@ -2,21 +2,20 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
+use Fereydooni\Shopping\app\Enums\BillingCycle;
+use Fereydooni\Shopping\app\Models\Subscription;
+use Illuminate\Support\Carbon;
+use Spatie\LaravelData\Attributes\Validation\Exists;
+use Spatie\LaravelData\Attributes\Validation\GreaterThanOrEqualTo;
+use Spatie\LaravelData\Attributes\Validation\In;
+use Spatie\LaravelData\Attributes\Validation\IntegerType;
+use Spatie\LaravelData\Attributes\Validation\Max;
+use Spatie\LaravelData\Attributes\Validation\Min;
+use Spatie\LaravelData\Attributes\Validation\Nullable;
+use Spatie\LaravelData\Attributes\Validation\Numeric;
 use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\Numeric;
-use Spatie\LaravelData\Attributes\Validation\Min;
-use Spatie\LaravelData\Attributes\Validation\Max;
-use Spatie\LaravelData\Attributes\Validation\In;
-use Spatie\LaravelData\Attributes\Validation\Exists;
-use Spatie\LaravelData\Attributes\Validation\Nullable;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
-use Spatie\LaravelData\Attributes\Validation\GreaterThanOrEqualTo;
-use Fereydooni\Shopping\app\Models\Subscription;
-use Fereydooni\Shopping\app\Models\Product;
-use Fereydooni\Shopping\app\Enums\BillingCycle;
-use Illuminate\Support\Carbon;
+use Spatie\LaravelData\Data;
 
 class SubscriptionDTO extends Data
 {
@@ -61,8 +60,7 @@ class SubscriptionDTO extends Data
 
         #[Nullable]
         public ?int $user_subscriptions_count = null,
-    ) {
-    }
+    ) {}
 
     public static function fromModel(Subscription $subscription): self
     {
@@ -124,13 +122,13 @@ class SubscriptionDTO extends Data
 
     private static function calculateNextBillingDate(Subscription $subscription, ?string $startDate = null): ?Carbon
     {
-        if (!$startDate) {
+        if (! $startDate) {
             $startDate = now();
         }
 
         $start = Carbon::parse($startDate);
 
-        return match($subscription->billing_cycle) {
+        return match ($subscription->billing_cycle) {
             BillingCycle::DAILY => $start->addDays($subscription->billing_interval),
             BillingCycle::WEEKLY => $start->addWeeks($subscription->billing_interval),
             BillingCycle::MONTHLY => $start->addMonths($subscription->billing_interval),

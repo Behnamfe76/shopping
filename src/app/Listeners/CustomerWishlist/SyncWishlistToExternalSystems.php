@@ -3,8 +3,8 @@
 namespace Fereydooni\Shopping\app\Listeners\CustomerWishlist;
 
 use Fereydooni\Shopping\app\Events\CustomerWishlist\CustomerWishlistCreated;
-use Fereydooni\Shopping\app\Events\CustomerWishlist\CustomerWishlistUpdated;
 use Fereydooni\Shopping\app\Events\CustomerWishlist\CustomerWishlistDeleted;
+use Fereydooni\Shopping\app\Events\CustomerWishlist\CustomerWishlistUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
@@ -33,10 +33,10 @@ class SyncWishlistToExternalSystems implements ShouldQueue
     {
         // Sync to CRM system
         $this->syncToCRM($wishlist, 'created');
-        
+
         // Sync to analytics platform
         $this->syncToAnalytics($wishlist, 'created');
-        
+
         // Sync to marketing automation
         $this->syncToMarketing($wishlist, 'created');
     }
@@ -48,10 +48,10 @@ class SyncWishlistToExternalSystems implements ShouldQueue
     {
         // Sync to CRM system
         $this->syncToCRM($wishlist, 'updated');
-        
+
         // Sync to analytics platform
         $this->syncToAnalytics($wishlist, 'updated');
-        
+
         // Sync to marketing automation
         $this->syncToMarketing($wishlist, 'updated');
     }
@@ -63,10 +63,10 @@ class SyncWishlistToExternalSystems implements ShouldQueue
     {
         // Sync to CRM system
         $this->syncToCRM($wishlist, 'deleted');
-        
+
         // Sync to analytics platform
         $this->syncToAnalytics($wishlist, 'deleted');
-        
+
         // Sync to marketing automation
         $this->syncToMarketing($wishlist, 'deleted');
     }

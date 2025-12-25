@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
+use Exception;
 use Fereydooni\Shopping\app\Events\Provider\PrimaryLocationChanged;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
-use Exception;
 
 class SendPrimaryLocationChangedNotification implements ShouldQueue
 {
@@ -57,14 +57,14 @@ class SendPrimaryLocationChangedNotification implements ShouldQueue
                 'new_location_id' => $newPrimaryLocation->id,
                 'provider_id' => $newPrimaryLocation->provider_id,
                 'change_type' => $event->determineChangeType(),
-                'user_id' => $user?->id
+                'user_id' => $user?->id,
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to send primary location changed notifications', [
                 'new_location_id' => $event->newPrimaryLocation->id,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             // Re-throw the exception to mark the job as failed
@@ -81,11 +81,12 @@ class SendPrimaryLocationChangedNotification implements ShouldQueue
             // Get provider email
             $providerEmail = $newLocation->provider->email ?? null;
 
-            if (!$providerEmail) {
+            if (! $providerEmail) {
                 Log::warning('No provider email found for primary location change notification', [
                     'location_id' => $newLocation->id,
-                    'provider_id' => $newLocation->provider_id
+                    'provider_id' => $newLocation->provider_id,
                 ]);
+
                 return;
             }
 
@@ -96,13 +97,13 @@ class SendPrimaryLocationChangedNotification implements ShouldQueue
             Log::info('Email notification sent for primary location change', [
                 'new_location_id' => $newLocation->id,
                 'provider_email' => $providerEmail,
-                'change_type' => $changeData['change_type'] ?? 'unknown'
+                'change_type' => $changeData['change_type'] ?? 'unknown',
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to send email notification for primary location change', [
                 'new_location_id' => $newLocation->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -115,7 +116,7 @@ class SendPrimaryLocationChangedNotification implements ShouldQueue
         try {
             $phone = $newLocation->phone;
 
-            if (!$phone) {
+            if (! $phone) {
                 return;
             }
 
@@ -126,13 +127,13 @@ class SendPrimaryLocationChangedNotification implements ShouldQueue
             Log::info('SMS notification sent for primary location change', [
                 'new_location_id' => $newLocation->id,
                 'phone' => $phone,
-                'change_type' => $changeData['change_type'] ?? 'unknown'
+                'change_type' => $changeData['change_type'] ?? 'unknown',
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to send SMS notification for primary location change', [
                 'new_location_id' => $newLocation->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -154,14 +155,14 @@ class SendPrimaryLocationChangedNotification implements ShouldQueue
                 Log::info('In-app notification sent for primary location change', [
                     'new_location_id' => $newLocation->id,
                     'user_id' => $notifyUser->id,
-                    'change_type' => $changeData['change_type'] ?? 'unknown'
+                    'change_type' => $changeData['change_type'] ?? 'unknown',
                 ]);
             }
 
         } catch (Exception $e) {
             Log::error('Failed to send in-app notification for primary location change', [
                 'new_location_id' => $newLocation->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -202,7 +203,7 @@ class SendPrimaryLocationChangedNotification implements ShouldQueue
         } catch (Exception $e) {
             Log::error('Failed to get users to notify for primary location change', [
                 'new_location_id' => $newLocation->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
 
@@ -217,7 +218,7 @@ class SendPrimaryLocationChangedNotification implements ShouldQueue
         Log::error('Primary location changed notification job failed', [
             'new_location_id' => $event->newPrimaryLocation->id,
             'error' => $exception->getMessage(),
-            'trace' => $exception->getTraceAsString()
+            'trace' => $exception->getTraceAsString(),
         ]);
     }
 }

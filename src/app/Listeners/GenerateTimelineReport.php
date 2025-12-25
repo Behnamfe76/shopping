@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
+use Fereydooni\Shopping\app\Events\OrderTimelineGenerated;
+use Fereydooni\Shopping\app\Services\OrderStatusHistoryService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Storage;
-use Fereydooni\Shopping\app\Events\OrderTimelineGenerated;
-use Fereydooni\Shopping\app\Services\OrderStatusHistoryService;
 
 class GenerateTimelineReport implements ShouldQueue
 {
@@ -53,7 +53,7 @@ class GenerateTimelineReport implements ShouldQueue
             'generated_at' => now(),
         ]);
 
-        $filename = "order-{$order->id}-timeline-" . now()->format('Y-m-d-H-i-s') . '.pdf';
+        $filename = "order-{$order->id}-timeline-".now()->format('Y-m-d-H-i-s').'.pdf';
         $path = "reports/order-timelines/{$filename}";
 
         Storage::put($path, $pdf->output());
@@ -66,7 +66,7 @@ class GenerateTimelineReport implements ShouldQueue
      */
     private function generateCsvReport($order, $timeline): string
     {
-        $filename = "order-{$order->id}-timeline-" . now()->format('Y-m-d-H-i-s') . '.csv';
+        $filename = "order-{$order->id}-timeline-".now()->format('Y-m-d-H-i-s').'.csv';
         $path = "reports/order-timelines/{$filename}";
 
         $csvData = [];
@@ -89,8 +89,8 @@ class GenerateTimelineReport implements ShouldQueue
         $csvContent = '';
         foreach ($csvData as $row) {
             $csvContent .= implode(',', array_map(function ($field) {
-                return '"' . str_replace('"', '""', $field) . '"';
-            }, $row)) . "\n";
+                return '"'.str_replace('"', '""', $field).'"';
+            }, $row))."\n";
         }
 
         Storage::put($path, $csvContent);
@@ -113,7 +113,7 @@ class GenerateTimelineReport implements ShouldQueue
             'generated_by' => auth()->id(),
         ];
 
-        $metadataKey = "reports.order-{$order->id}.timeline." . now()->format('Y-m-d-H-i-s');
+        $metadataKey = "reports.order-{$order->id}.timeline.".now()->format('Y-m-d-H-i-s');
         Storage::put("reports/metadata/{$metadataKey}.json", json_encode($metadata));
     }
 
@@ -130,9 +130,9 @@ class GenerateTimelineReport implements ShouldQueue
                 'csvPath' => $csvPath,
             ], function ($message) use ($order, $pdfPath, $csvPath) {
                 $message->to($order->user->email)
-                        ->subject("Order #{$order->id} Timeline Report")
-                        ->attach(Storage::path($pdfPath), ['as' => basename($pdfPath)])
-                        ->attach(Storage::path($csvPath), ['as' => basename($csvPath)]);
+                    ->subject("Order #{$order->id} Timeline Report")
+                    ->attach(Storage::path($pdfPath), ['as' => basename($pdfPath)])
+                    ->attach(Storage::path($csvPath), ['as' => basename($csvPath)]);
             });
         }
 
@@ -149,9 +149,9 @@ class GenerateTimelineReport implements ShouldQueue
                 'csvPath' => $csvPath,
             ], function ($message) use ($admin, $order, $pdfPath, $csvPath) {
                 $message->to($admin->email)
-                        ->subject("Order #{$order->id} Timeline Report - Admin")
-                        ->attach(Storage::path($pdfPath), ['as' => basename($pdfPath)])
-                        ->attach(Storage::path($csvPath), ['as' => basename($csvPath)]);
+                    ->subject("Order #{$order->id} Timeline Report - Admin")
+                    ->attach(Storage::path($pdfPath), ['as' => basename($pdfPath)])
+                    ->attach(Storage::path($csvPath), ['as' => basename($csvPath)]);
             });
         }
     }

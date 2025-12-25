@@ -11,7 +11,7 @@ enum CommunicationPriority: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::LOW => 'Low',
             self::NORMAL => 'Normal',
             self::HIGH => 'High',
@@ -21,7 +21,7 @@ enum CommunicationPriority: string
 
     public function description(): string
     {
-        return match($this) {
+        return match ($this) {
             self::LOW => 'Low priority communication',
             self::NORMAL => 'Normal priority communication',
             self::HIGH => 'High priority communication',
@@ -31,7 +31,7 @@ enum CommunicationPriority: string
 
     public function getWeight(): int
     {
-        return match($this) {
+        return match ($this) {
             self::LOW => 1,
             self::NORMAL => 2,
             self::HIGH => 3,
@@ -41,7 +41,7 @@ enum CommunicationPriority: string
 
     public function getColor(): string
     {
-        return match($this) {
+        return match ($this) {
             self::LOW => 'gray',
             self::NORMAL => 'blue',
             self::HIGH => 'orange',
@@ -56,7 +56,7 @@ enum CommunicationPriority: string
 
     public static function toArray(): array
     {
-        return array_map(fn($case) => [
+        return array_map(fn ($case) => [
             'value' => $case->value,
             'label' => $case->label(),
             'description' => $case->description(),

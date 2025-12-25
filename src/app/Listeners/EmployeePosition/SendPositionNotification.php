@@ -2,15 +2,15 @@
 
 namespace App\Listeners\EmployeePosition;
 
+use App\Events\EmployeePosition\EmployeePositionArchived;
 use App\Events\EmployeePosition\EmployeePositionCreated;
-use App\Events\EmployeePosition\EmployeePositionUpdated;
 use App\Events\EmployeePosition\EmployeePositionSalaryUpdated;
 use App\Events\EmployeePosition\EmployeePositionSetHiring;
-use App\Events\EmployeePosition\EmployeePositionArchived;
+use App\Events\EmployeePosition\EmployeePositionUpdated;
+use App\Notifications\EmployeePosition\PositionArchived;
 use App\Notifications\EmployeePosition\PositionCreated;
 use App\Notifications\EmployeePosition\PositionSalaryUpdated;
 use App\Notifications\EmployeePosition\PositionSetHiring;
-use App\Notifications\EmployeePosition\PositionArchived;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
@@ -41,7 +41,7 @@ class SendPositionNotification implements ShouldQueue
             Log::error('Failed to send position notification', [
                 'event' => get_class($event),
                 'position_id' => $event->position->id ?? null,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -68,7 +68,7 @@ class SendPositionNotification implements ShouldQueue
 
         Log::info('Position created notification sent', [
             'position_id' => $position->id,
-            'title' => $position->title
+            'title' => $position->title,
         ]);
     }
 
@@ -82,7 +82,7 @@ class SendPositionNotification implements ShouldQueue
 
         // Only send notifications for significant changes
         $significantChanges = ['status', 'level', 'department_id', 'requirements'];
-        $hasSignificantChanges = !empty(array_intersect(array_keys($changes), $significantChanges));
+        $hasSignificantChanges = ! empty(array_intersect(array_keys($changes), $significantChanges));
 
         if ($hasSignificantChanges) {
             // Notify department managers
@@ -97,7 +97,7 @@ class SendPositionNotification implements ShouldQueue
         Log::info('Position updated notification sent', [
             'position_id' => $position->id,
             'title' => $position->title,
-            'changes' => $changes
+            'changes' => $changes,
         ]);
     }
 
@@ -127,7 +127,7 @@ class SendPositionNotification implements ShouldQueue
         Log::info('Salary updated notification sent', [
             'position_id' => $position->id,
             'title' => $position->title,
-            'salary_changes' => $salaryChanges
+            'salary_changes' => $salaryChanges,
         ]);
     }
 
@@ -153,7 +153,7 @@ class SendPositionNotification implements ShouldQueue
         Log::info('Position set to hiring notification sent', [
             'position_id' => $position->id,
             'title' => $position->title,
-            'hiring_details' => $hiringDetails
+            'hiring_details' => $hiringDetails,
         ]);
     }
 
@@ -183,7 +183,7 @@ class SendPositionNotification implements ShouldQueue
         Log::info('Position archived notification sent', [
             'position_id' => $position->id,
             'title' => $position->title,
-            'archive_details' => $archiveDetails
+            'archive_details' => $archiveDetails,
         ]);
     }
 

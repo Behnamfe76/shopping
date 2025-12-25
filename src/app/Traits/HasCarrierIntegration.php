@@ -163,6 +163,7 @@ trait HasCarrierIntegration
     public function validateCarrier(string $carrier): bool
     {
         $availableCarriers = array_keys($this->getAvailableCarriers());
+
         return in_array($carrier, $availableCarriers);
     }
 
@@ -172,6 +173,7 @@ trait HasCarrierIntegration
     public function getCarrierLabel(string $carrier): string
     {
         $carriers = $this->getAvailableCarriers();
+
         return $carriers[$carrier] ?? $carrier;
     }
 
@@ -254,6 +256,7 @@ trait HasCarrierIntegration
     public function carrierSupportsService(string $carrier, string $service): bool
     {
         $capabilities = $this->getCarrierCapabilities($carrier);
+
         return $capabilities[$service] ?? false;
     }
 
@@ -263,6 +266,7 @@ trait HasCarrierIntegration
     public function getCarrierServiceOptions(string $carrier): array
     {
         $capabilities = $this->getCarrierCapabilities($carrier);
+
         return array_keys(array_filter($capabilities));
     }
 
@@ -368,7 +372,7 @@ trait HasCarrierIntegration
     /**
      * Get carrier analytics
      */
-    public function getCarrierAnalytics(string $carrier = null): array
+    public function getCarrierAnalytics(?string $carrier = null): array
     {
         $performance = $this->getCarrierPerformance();
 
@@ -388,7 +392,9 @@ trait HasCarrierIntegration
         $carriers = $this->getAvailableCarriers();
 
         foreach ($carriers as $carrierKey => $carrierName) {
-            if ($carrierKey === 'other') continue;
+            if ($carrierKey === 'other') {
+                continue;
+            }
 
             $rates = $this->getCarrierRates($carrierKey, $packageData);
             $capabilities = $this->getCarrierCapabilities($carrierKey);
@@ -405,7 +411,7 @@ trait HasCarrierIntegration
         }
 
         // Sort by recommendation score
-        usort($recommendations, function($a, $b) {
+        usort($recommendations, function ($a, $b) {
             return $b['recommendation_score'] <=> $a['recommendation_score'];
         });
 
@@ -420,13 +426,13 @@ trait HasCarrierIntegration
         $score = 0;
 
         // Rate-based scoring
-        if (!empty($rates)) {
+        if (! empty($rates)) {
             $lowestRate = min(array_values($rates));
             $score += (1 / $lowestRate) * 10; // Lower rates get higher scores
         }
 
         // Performance-based scoring
-        if (!empty($performance)) {
+        if (! empty($performance)) {
             $onTimePercentage = $performance['delivery_performance']['on_time_percentage'] ?? 0;
             $score += $onTimePercentage * 0.5; // Higher on-time percentage gets higher scores
         }

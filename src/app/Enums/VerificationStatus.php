@@ -15,7 +15,7 @@ enum VerificationStatus: string
      */
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::UNVERIFIED => 'Unverified',
             self::PENDING => 'Pending',
             self::VERIFIED => 'Verified',
@@ -29,7 +29,7 @@ enum VerificationStatus: string
      */
     public function description(): string
     {
-        return match($this) {
+        return match ($this) {
             self::UNVERIFIED => 'Certification has not been submitted for verification',
             self::PENDING => 'Certification is pending verification review',
             self::VERIFIED => 'Certification has been verified and approved',
@@ -43,7 +43,7 @@ enum VerificationStatus: string
      */
     public function color(): string
     {
-        return match($this) {
+        return match ($this) {
             self::UNVERIFIED => 'secondary',
             self::PENDING => 'warning',
             self::VERIFIED => 'success',
@@ -113,7 +113,7 @@ enum VerificationStatus: string
      */
     public static function toArray(): array
     {
-        return array_map(fn($case) => [
+        return array_map(fn ($case) => [
             'value' => $case->value,
             'label' => $case->label(),
             'description' => $case->description(),

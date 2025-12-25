@@ -2,16 +2,15 @@
 
 namespace Fereydooni\Shopping\app\Services;
 
-use Illuminate\Support\Str;
-use Illuminate\Pagination\CursorPaginator;
-use Fereydooni\Shopping\app\Models\Category;
-use Illuminate\Database\Eloquent\Collection;
 use Fereydooni\Shopping\app\DTOs\CategoryDTO;
 use Fereydooni\Shopping\app\Enums\CategoryStatus;
-use Fereydooni\Shopping\app\Traits\HasDefaultItem;
-use Fereydooni\Shopping\app\Traits\HasCrudOperations;
-use Fereydooni\Shopping\app\Traits\HasSearchOperations;
+use Fereydooni\Shopping\app\Models\Category;
 use Fereydooni\Shopping\app\Repositories\Interfaces\CategoryRepositoryInterface;
+use Fereydooni\Shopping\app\Traits\HasCrudOperations;
+use Fereydooni\Shopping\app\Traits\HasDefaultItem;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Support\Str;
 
 class CategoryService
 {
@@ -57,11 +56,12 @@ class CategoryService
     public function create(array $data): Category
     {
         // Generate slug if not provided
-        if (!isset($data['slug']) && isset($data['name'])) {
+        if (! isset($data['slug']) && isset($data['name'])) {
             $data['slug'] = $this->generateSlug($data['name']);
         }
 
         $this->validateData($data);
+
         return $this->repository->create($data);
     }
 
@@ -69,11 +69,12 @@ class CategoryService
     public function createDTO(array $data): CategoryDTO
     {
         // Generate slug if not provided
-        if (!isset($data['slug']) && isset($data['name'])) {
+        if (! isset($data['slug']) && isset($data['name'])) {
             $data['slug'] = $this->generateSlug($data['name']);
         }
 
         $this->validateData($data);
+
         return $this->repository->createAndReturnDTO($data);
     }
 
@@ -81,11 +82,12 @@ class CategoryService
     public function update(Category $category, array $data): bool
     {
         // Generate slug if name changed and slug not provided
-        if (isset($data['name']) && !isset($data['slug'])) {
+        if (isset($data['name']) && ! isset($data['slug'])) {
             $data['slug'] = $this->generateSlug($data['name'], $category->id);
         }
 
         $this->validateData($data, $category);
+
         return $this->repository->update($category, $data);
     }
 
@@ -93,11 +95,12 @@ class CategoryService
     public function updateDTO(Category $category, array $data): ?CategoryDTO
     {
         // Generate slug if name changed and slug not provided
-        if (isset($data['name']) && !isset($data['slug'])) {
+        if (isset($data['name']) && ! isset($data['slug'])) {
             $data['slug'] = $this->generateSlug($data['name'], $category->id);
         }
 
         $this->validateData($data, $category);
+
         return $this->repository->updateAndReturnDTO($category, $data);
     }
 
@@ -244,7 +247,7 @@ class CategoryService
         $counter = 1;
 
         while ($this->slugExists($slug, $excludeId)) {
-            $slug = $baseSlug . '-' . $counter;
+            $slug = $baseSlug.'-'.$counter;
             $counter++;
         }
 
@@ -285,7 +288,7 @@ class CategoryService
         // Additional category-specific validation can be added here
         if (isset($data['parent_id']) && $data['parent_id']) {
             $parent = Category::find($data['parent_id']);
-            if (!$parent) {
+            if (! $parent) {
                 throw new \InvalidArgumentException('Parent category not found');
             }
 
@@ -303,12 +306,13 @@ class CategoryService
         }
 
         $parent = Category::find($newParentId);
-        if (!$parent) {
+        if (! $parent) {
             return false;
         }
 
         // Check if new parent is a descendant of current category
         $descendants = $this->getDescendants($category->id);
+
         return $descendants->contains('id', $newParentId);
     }
 }

@@ -2,18 +2,18 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
-use Fereydooni\Shopping\app\Events\Provider\ProviderLocationCreated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderLocationUpdated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderLocationDeleted;
-use Fereydooni\Shopping\app\Events\Provider\PrimaryLocationChanged;
+use Exception;
 use Fereydooni\Shopping\app\Events\Provider\LocationCoordinatesUpdated;
-use Fereydooni\Shopping\app\Events\Provider\LocationOperatingHoursUpdated;
 use Fereydooni\Shopping\app\Events\Provider\LocationGeocoded;
+use Fereydooni\Shopping\app\Events\Provider\LocationOperatingHoursUpdated;
+use Fereydooni\Shopping\app\Events\Provider\PrimaryLocationChanged;
+use Fereydooni\Shopping\app\Events\Provider\ProviderLocationCreated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderLocationDeleted;
+use Fereydooni\Shopping\app\Events\Provider\ProviderLocationUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
-use Exception;
+use Illuminate\Support\Facades\Log;
 
 class LogLocationActivity implements ShouldQueue
 {
@@ -50,13 +50,13 @@ class LogLocationActivity implements ShouldQueue
             $this->logActivity('location_created', $location, $user, [
                 'action' => 'location_created',
                 'location_data' => $locationData,
-                'geospatial_data' => $event->geospatialData
+                'geospatial_data' => $event->geospatialData,
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to log location created activity', [
                 'location_id' => $event->providerLocation->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -79,13 +79,13 @@ class LogLocationActivity implements ShouldQueue
                 'original_data' => $originalData,
                 'new_data' => $newData,
                 'geospatial_changes' => $event->geospatialChanges,
-                'has_significant_changes' => $event->hasSignificantChanges()
+                'has_significant_changes' => $event->hasSignificantChanges(),
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to log location updated activity', [
                 'location_id' => $event->providerLocation->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -107,13 +107,13 @@ class LogLocationActivity implements ShouldQueue
                 'geospatial_data' => $event->geospatialData,
                 'reason' => $reason,
                 'was_primary' => $event->wasPrimary(),
-                'was_active' => $event->wasActive()
+                'was_active' => $event->wasActive(),
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to log location deleted activity', [
                 'location_id' => $event->providerLocation->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -135,16 +135,16 @@ class LogLocationActivity implements ShouldQueue
                 'previous_primary_location' => $previousLocation ? [
                     'id' => $previousLocation->id,
                     'location_name' => $previousLocation->location_name,
-                    'address' => $previousLocation->address
+                    'address' => $previousLocation->address,
                 ] : null,
                 'change_data' => $changeData,
-                'is_first_primary' => $event->isFirstPrimary()
+                'is_first_primary' => $event->isFirstPrimary(),
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to log primary location changed activity', [
                 'location_id' => $event->newPrimaryLocation->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -167,13 +167,13 @@ class LogLocationActivity implements ShouldQueue
                 'coordinates_removed' => $event->coordinatesRemoved(),
                 'coordinates_updated' => $event->coordinatesUpdated(),
                 'distance_change' => $event->getDistanceChange(),
-                'update_source' => $event->getUpdateSource()
+                'update_source' => $event->getUpdateSource(),
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to log coordinates updated activity', [
                 'location_id' => $event->providerLocation->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -198,13 +198,13 @@ class LogLocationActivity implements ShouldQueue
                 'has_days_opened' => $event->hasDaysOpened(),
                 'has_hours_modified' => $event->hasHoursModified(),
                 'changed_days_count' => $event->getChangedDaysCount(),
-                'update_reason' => $event->getUpdateReason()
+                'update_reason' => $event->getUpdateReason(),
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to log operating hours updated activity', [
                 'location_id' => $event->providerLocation->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -233,13 +233,13 @@ class LogLocationActivity implements ShouldQueue
                 'formatted_address' => $event->getFormattedAddress(),
                 'place_id' => $event->getPlaceId(),
                 'was_automatic' => $event->wasAutomatic(),
-                'was_manual' => $event->wasManual()
+                'was_manual' => $event->wasManual(),
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to log location geocoded activity', [
                 'location_id' => $event->providerLocation->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -259,7 +259,7 @@ class LogLocationActivity implements ShouldQueue
                 'causer_id' => $user?->id,
                 'properties' => json_encode($details),
                 'created_at' => now(),
-                'updated_at' => now()
+                'updated_at' => now(),
             ];
 
             // Insert into activity log table
@@ -271,14 +271,14 @@ class LogLocationActivity implements ShouldQueue
                 'location_id' => $location->id,
                 'provider_id' => $location->provider_id,
                 'user_id' => $user?->id,
-                'details' => $details
+                'details' => $details,
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to log activity to database', [
                 'action' => $action,
                 'location_id' => $location->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -330,7 +330,7 @@ class LogLocationActivity implements ShouldQueue
             'location_id' => $locationId,
             'provider_id' => $providerId,
             'error' => $exception->getMessage(),
-            'trace' => $exception->getTraceAsString()
+            'trace' => $exception->getTraceAsString(),
         ]);
     }
 }

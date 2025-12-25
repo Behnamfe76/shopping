@@ -2,13 +2,13 @@
 
 namespace Fereydooni\Shopping\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Fereydooni\Shopping\Models\EmployeeTraining;
-use Fereydooni\Shopping\Models\Employee;
-use Fereydooni\Shopping\Enums\TrainingType;
-use Fereydooni\Shopping\Enums\TrainingStatus;
-use Fereydooni\Shopping\Enums\TrainingMethod;
 use Carbon\Carbon;
+use Fereydooni\Shopping\Enums\TrainingMethod;
+use Fereydooni\Shopping\Enums\TrainingStatus;
+use Fereydooni\Shopping\Enums\TrainingType;
+use Fereydooni\Shopping\Models\Employee;
+use Fereydooni\Shopping\Models\EmployeeTraining;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class EmployeeTrainingFactory extends Factory
 {
@@ -42,7 +42,7 @@ class EmployeeTrainingFactory extends Factory
             'status' => $this->getStatus($isCompleted, $startDate, $endDate),
             'score' => $score,
             'grade' => $grade,
-            'certificate_number' => $isCertification && $isCompleted ? 'CERT-' . $this->faker->unique()->numberBetween(1000, 9999) : null,
+            'certificate_number' => $isCertification && $isCompleted ? 'CERT-'.$this->faker->unique()->numberBetween(1000, 9999) : null,
             'certificate_url' => $isCertification && $isCompleted ? $this->faker->url() : null,
             'hours_completed' => $hoursCompleted,
             'total_hours' => $totalHours,
@@ -127,7 +127,7 @@ class EmployeeTrainingFactory extends Factory
                 'score' => $score,
                 'grade' => $grade,
                 'hours_completed' => $attributes['total_hours'] ?? 20,
-                'certificate_number' => $attributes['is_certification'] ? 'CERT-' . $this->faker->unique()->numberBetween(1000, 9999) : null,
+                'certificate_number' => $attributes['is_certification'] ? 'CERT-'.$this->faker->unique()->numberBetween(1000, 9999) : null,
                 'certificate_url' => $attributes['is_certification'] ? $this->faker->url() : null,
             ];
         });
@@ -158,7 +158,7 @@ class EmployeeTrainingFactory extends Factory
                     'Difficulty understanding material',
                     'Technical issues during training',
                     'Personal circumstances',
-                    'Inadequate preparation'
+                    'Inadequate preparation',
                 ]),
                 'certificate_number' => null,
                 'certificate_url' => null,
@@ -188,7 +188,7 @@ class EmployeeTrainingFactory extends Factory
                     'Budget constraints',
                     'Change in priorities',
                     'Employee request',
-                    'Organizational changes'
+                    'Organizational changes',
                 ]),
                 'certificate_number' => null,
                 'certificate_url' => null,
@@ -207,7 +207,7 @@ class EmployeeTrainingFactory extends Factory
                 'status' => $this->faker->randomElement([
                     TrainingStatus::NOT_STARTED->value,
                     TrainingStatus::IN_PROGRESS->value,
-                    TrainingStatus::COMPLETED->value
+                    TrainingStatus::COMPLETED->value,
                 ]),
             ];
         });
@@ -243,7 +243,7 @@ class EmployeeTrainingFactory extends Factory
                     'Machine Learning Basics',
                     'Database Design Principles',
                     'API Development',
-                    'Cybersecurity Fundamentals'
+                    'Cybersecurity Fundamentals',
                 ]),
             ];
         });
@@ -265,7 +265,7 @@ class EmployeeTrainingFactory extends Factory
                     'Time Management',
                     'Presentation Skills',
                     'Emotional Intelligence',
-                    'Customer Service Excellence'
+                    'Customer Service Excellence',
                 ]),
             ];
         });
@@ -287,7 +287,7 @@ class EmployeeTrainingFactory extends Factory
                     'Industry Regulations',
                     'Code of Conduct',
                     'Risk Management',
-                    'Legal Compliance'
+                    'Legal Compliance',
                 ]),
                 'is_mandatory' => true,
             ];
@@ -315,7 +315,7 @@ class EmployeeTrainingFactory extends Factory
         return $this->state(function (array $attributes) {
             return [
                 'training_method' => TrainingMethod::IN_PERSON->value,
-                'location' => $this->faker->city() . ' Training Center',
+                'location' => $this->faker->city().' Training Center',
             ];
         });
     }
@@ -334,7 +334,7 @@ class EmployeeTrainingFactory extends Factory
                 'Software Testing Methods',
                 'System Architecture Design',
                 'Network Security',
-                'Mobile App Development'
+                'Mobile App Development',
             ],
             'soft_skills' => [
                 'Effective Communication Skills',
@@ -344,7 +344,7 @@ class EmployeeTrainingFactory extends Factory
                 'Public Speaking',
                 'Negotiation Skills',
                 'Stress Management',
-                'Creative Thinking'
+                'Creative Thinking',
             ],
             'compliance' => [
                 'Workplace Safety Training',
@@ -354,7 +354,7 @@ class EmployeeTrainingFactory extends Factory
                 'Industry Standards',
                 'Legal Requirements',
                 'Risk Assessment',
-                'Emergency Procedures'
+                'Emergency Procedures',
             ],
             'safety' => [
                 'Fire Safety Training',
@@ -364,7 +364,7 @@ class EmployeeTrainingFactory extends Factory
                 'Safety Equipment Usage',
                 'Accident Prevention',
                 'Chemical Safety',
-                'Electrical Safety'
+                'Electrical Safety',
             ],
             'leadership' => [
                 'Strategic Leadership',
@@ -374,7 +374,7 @@ class EmployeeTrainingFactory extends Factory
                 'Performance Management',
                 'Coaching and Mentoring',
                 'Strategic Planning',
-                'Organizational Development'
+                'Organizational Development',
             ],
             'product' => [
                 'Product Knowledge Training',
@@ -384,7 +384,7 @@ class EmployeeTrainingFactory extends Factory
                 'Competitive Analysis',
                 'Sales Techniques',
                 'Product Demonstration',
-                'Customer Support'
+                'Customer Support',
             ],
             'other' => [
                 'Company Policies',
@@ -394,11 +394,12 @@ class EmployeeTrainingFactory extends Factory
                 'Language Skills',
                 'Cultural Awareness',
                 'Professional Development',
-                'Industry Trends'
-            ]
+                'Industry Trends',
+            ],
         ];
 
         $type = $this->faker->randomElement(array_keys($names));
+
         return $this->faker->randomElement($names[$type]);
     }
 
@@ -427,10 +428,10 @@ class EmployeeTrainingFactory extends Factory
 
         for ($i = 0; $i < $count; $i++) {
             $attachments[] = [
-                'name' => $this->faker->words(3, true) . '.pdf',
+                'name' => $this->faker->words(3, true).'.pdf',
                 'url' => $this->faker->url(),
-                'size' => $this->faker->numberBetween(100, 5000) . 'KB',
-                'type' => 'application/pdf'
+                'size' => $this->faker->numberBetween(100, 5000).'KB',
+                'type' => 'application/pdf',
             ];
         }
 
@@ -464,10 +465,19 @@ class EmployeeTrainingFactory extends Factory
      */
     protected function getGradeFromScore(float $score): string
     {
-        if ($score >= 90) return 'A';
-        if ($score >= 80) return 'B';
-        if ($score >= 70) return 'C';
-        if ($score >= 60) return 'D';
+        if ($score >= 90) {
+            return 'A';
+        }
+        if ($score >= 80) {
+            return 'B';
+        }
+        if ($score >= 70) {
+            return 'C';
+        }
+        if ($score >= 60) {
+            return 'D';
+        }
+
         return 'F';
     }
 }

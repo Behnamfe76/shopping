@@ -2,24 +2,23 @@
 
 namespace App\Models;
 
+use App\Enums\SalaryChangeType;
+use App\Traits\HasEmployeeSalaryHistoryAnalytics;
+use App\Traits\HasEmployeeSalaryHistoryApprovalManagement;
+use App\Traits\HasEmployeeSalaryHistoryOperations;
+use App\Traits\HasEmployeeSalaryHistoryRetroactiveManagement;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Traits\HasEmployeeSalaryHistoryOperations;
-use App\Traits\HasEmployeeSalaryHistoryApprovalManagement;
-use App\Traits\HasEmployeeSalaryHistoryRetroactiveManagement;
-use App\Traits\HasEmployeeSalaryHistoryAnalytics;
-use App\Enums\SalaryChangeType;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class EmployeeSalaryHistory extends Model
 {
-    use HasFactory, SoftDeletes;
-    use HasEmployeeSalaryHistoryOperations;
-    use HasEmployeeSalaryHistoryApprovalManagement;
-    use HasEmployeeSalaryHistoryRetroactiveManagement;
     use HasEmployeeSalaryHistoryAnalytics;
+    use HasEmployeeSalaryHistoryApprovalManagement;
+    use HasEmployeeSalaryHistoryOperations;
+    use HasEmployeeSalaryHistoryRetroactiveManagement;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'employee_salary_histories';
 
@@ -44,7 +43,7 @@ class EmployeeSalaryHistory extends Model
         'rejected_by',
         'rejected_at',
         'processed_at',
-        'metadata'
+        'metadata',
     ];
 
     protected $casts = [
@@ -61,7 +60,7 @@ class EmployeeSalaryHistory extends Model
         'rejected_at' => 'datetime',
         'attachments' => 'array',
         'metadata' => 'array',
-        'change_type' => SalaryChangeType::class
+        'change_type' => SalaryChangeType::class,
     ];
 
     protected $dates = [
@@ -73,7 +72,7 @@ class EmployeeSalaryHistory extends Model
         'rejected_at',
         'created_at',
         'updated_at',
-        'deleted_at'
+        'deleted_at',
     ];
 
     // Relationships
@@ -146,7 +145,7 @@ class EmployeeSalaryHistory extends Model
 
     public function getChangePercentageFormattedAttribute(): string
     {
-        return number_format($this->change_percentage, 2) . '%';
+        return number_format($this->change_percentage, 2).'%';
     }
 
     public function getOldSalaryFormattedAttribute(): string
@@ -171,17 +170,17 @@ class EmployeeSalaryHistory extends Model
 
     public function getIsApprovedAttribute(): bool
     {
-        return !is_null($this->approved_at);
+        return ! is_null($this->approved_at);
     }
 
     public function getIsRejectedAttribute(): bool
     {
-        return !is_null($this->rejected_at);
+        return ! is_null($this->rejected_at);
     }
 
     public function getIsProcessedAttribute(): bool
     {
-        return !is_null($this->processed_at);
+        return ! is_null($this->processed_at);
     }
 
     public function getIsRetroactiveAttribute(): bool
@@ -220,6 +219,7 @@ class EmployeeSalaryHistory extends Model
         if ($this->old_salary > 0) {
             return (($this->new_salary - $this->old_salary) / $this->old_salary) * 100;
         }
+
         return 0;
     }
 
@@ -250,12 +250,12 @@ class EmployeeSalaryHistory extends Model
             return "Salary decreased by {$amount} ({$percentage})";
         }
 
-        return "No salary change";
+        return 'No salary change';
     }
 
     public function getRetroactivePeriod(): ?string
     {
-        if (!$this->is_retroactive) {
+        if (! $this->is_retroactive) {
             return null;
         }
 
@@ -267,7 +267,7 @@ class EmployeeSalaryHistory extends Model
 
     public function getRetroactiveDays(): ?int
     {
-        if (!$this->is_retroactive || !$this->retroactive_start_date || !$this->retroactive_end_date) {
+        if (! $this->is_retroactive || ! $this->retroactive_start_date || ! $this->retroactive_end_date) {
             return null;
         }
 
@@ -276,11 +276,12 @@ class EmployeeSalaryHistory extends Model
 
     public function getRetroactiveAmount(): ?float
     {
-        if (!$this->is_retroactive || !$this->retroactive_days) {
+        if (! $this->is_retroactive || ! $this->retroactive_days) {
             return null;
         }
 
         $dailyRate = $this->change_amount / 365; // Assuming 365 days per year
+
         return $dailyRate * $this->retroactive_days;
     }
 

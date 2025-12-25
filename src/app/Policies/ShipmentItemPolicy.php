@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Policies;
 
+use Fereydooni\Shopping\app\Models\ShipmentItem;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User;
-use Fereydooni\Shopping\app\Models\ShipmentItem;
 
 class ShipmentItemPolicy
 {
@@ -200,7 +200,7 @@ class ShipmentItemPolicy
     protected function isShipmentOwnedByUser(User $user, ShipmentItem $shipmentItem): bool
     {
         // Load the shipment relationship if not already loaded
-        if (!$shipmentItem->relationLoaded('shipment')) {
+        if (! $shipmentItem->relationLoaded('shipment')) {
             $shipmentItem->load('shipment');
         }
 

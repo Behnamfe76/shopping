@@ -15,7 +15,7 @@ enum SegmentType: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::DEMOGRAPHIC => 'Demographic',
             self::BEHAVIORAL => 'Behavioral',
             self::GEOGRAPHIC => 'Geographic',
@@ -29,7 +29,7 @@ enum SegmentType: string
 
     public function color(): string
     {
-        return match($this) {
+        return match ($this) {
             self::DEMOGRAPHIC => 'blue',
             self::BEHAVIORAL => 'green',
             self::GEOGRAPHIC => 'purple',
@@ -43,7 +43,7 @@ enum SegmentType: string
 
     public function description(): string
     {
-        return match($this) {
+        return match ($this) {
             self::DEMOGRAPHIC => 'Segments based on customer demographics like age, gender, income',
             self::BEHAVIORAL => 'Segments based on customer behavior and actions',
             self::GEOGRAPHIC => 'Segments based on customer location and geography',
@@ -63,7 +63,7 @@ enum SegmentType: string
             self::GEOGRAPHIC,
             self::TRANSACTIONAL,
             self::ENGAGEMENT,
-            self::LOYALTY
+            self::LOYALTY,
         ]);
     }
 
@@ -78,7 +78,7 @@ enum SegmentType: string
             self::BEHAVIORAL,
             self::TRANSACTIONAL,
             self::ENGAGEMENT,
-            self::LOYALTY
+            self::LOYALTY,
         ]);
     }
 
@@ -88,7 +88,7 @@ enum SegmentType: string
             self::DEMOGRAPHIC,
             self::GEOGRAPHIC,
             self::PSYCHOGRAPHIC,
-            self::CUSTOM
+            self::CUSTOM,
         ]);
     }
 }

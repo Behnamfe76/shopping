@@ -54,6 +54,6 @@ return [
         'hidden' => 'Hidden Input',
         'search' => 'Search Input',
         'custom' => 'Custom Input',
-    ]
+    ],
 
 ];

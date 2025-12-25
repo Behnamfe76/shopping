@@ -2,17 +2,17 @@
 
 namespace App\Facades;
 
-use App\Models\EmployeeSkill;
 use App\DTOs\EmployeeSkillDTO;
+use App\Models\EmployeeSkill;
 use App\Repositories\Interfaces\EmployeeSkillRepositoryInterface;
+use App\Traits\HasEmployeeSkillAnalytics;
+use App\Traits\HasEmployeeSkillCertificationManagement;
 use App\Traits\HasEmployeeSkillOperations;
 use App\Traits\HasEmployeeSkillVerificationManagement;
-use App\Traits\HasEmployeeSkillCertificationManagement;
-use App\Traits\HasEmployeeSkillAnalytics;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Cache;
 
 /**
  * @method static Collection getAllEmployeeSkills()
@@ -61,10 +61,10 @@ use Illuminate\Support\Facades\Cache;
  */
 class EmployeeSkill extends Facade
 {
-    use HasEmployeeSkillOperations,
-        HasEmployeeSkillVerificationManagement,
+    use HasEmployeeSkillAnalytics,
         HasEmployeeSkillCertificationManagement,
-        HasEmployeeSkillAnalytics;
+        HasEmployeeSkillOperations,
+        HasEmployeeSkillVerificationManagement;
 
     protected static function getFacadeAccessor()
     {
@@ -92,9 +92,9 @@ class EmployeeSkill extends Facade
      */
     public static function init(): void
     {
-        $facade = new static();
+        $facade = new static;
         $facade->employeeSkillRepository = static::getRepository();
-        
+
         // Store the instance for static access
         static::$resolvedInstance['employee-skill'] = $facade;
     }
@@ -106,20 +106,20 @@ class EmployeeSkill extends Facade
     {
         try {
             $query = static::getRepository()->findByEmployeeId($employeeId);
-            
+
             // Apply filters
             if (isset($filters['category'])) {
                 $query = $query->where('skill_category', $filters['category']);
             }
-            
+
             if (isset($filters['level'])) {
                 $query = $query->where('proficiency_level', $filters['level']);
             }
-            
+
             if (isset($filters['verified'])) {
                 $query = $query->where('is_verified', $filters['verified']);
             }
-            
+
             if (isset($filters['certified'])) {
                 if ($filters['certified']) {
                     $query = $query->whereNotNull('certification_name');
@@ -127,18 +127,19 @@ class EmployeeSkill extends Facade
                     $query = $query->whereNull('certification_name');
                 }
             }
-            
+
             if (isset($filters['active'])) {
                 $query = $query->where('is_active', $filters['active']);
             }
-            
+
             return $query;
         } catch (\Exception $e) {
             Log::error('Failed to get employee skills with advanced filtering', [
                 'employee_id' => $employeeId,
                 'filters' => $filters,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return collect();
         }
     }
@@ -150,27 +151,28 @@ class EmployeeSkill extends Facade
     {
         try {
             $results = static::getRepository()->searchSkills($query);
-            
+
             // Apply additional filters
             if (isset($filters['category'])) {
                 $results = $results->where('skill_category', $filters['category']);
             }
-            
+
             if (isset($filters['level'])) {
                 $results = $results->where('proficiency_level', $filters['level']);
             }
-            
+
             if (isset($filters['verified'])) {
                 $results = $results->where('is_verified', $filters['verified']);
             }
-            
+
             return $results;
         } catch (\Exception $e) {
             Log::error('Failed to search all skills', [
                 'query' => $query,
                 'filters' => $filters,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return collect();
         }
     }
@@ -178,14 +180,15 @@ class EmployeeSkill extends Facade
     /**
      * Get skills statistics with caching
      */
-    public static function getSkillsStatisticsCached(int $employeeId = null, int $ttl = 3600): array
+    public static function getSkillsStatisticsCached(?int $employeeId = null, int $ttl = 3600): array
     {
         $cacheKey = $employeeId ? "skills_stats_employee_{$employeeId}" : 'skills_stats_all';
-        
+
         return Cache::remember($cacheKey, $ttl, function () use ($employeeId) {
             if ($employeeId) {
                 return static::getRepository()->getSkillsStatistics($employeeId);
             }
+
             return static::getRepository()->getSkillsStatistics();
         });
     }
@@ -200,8 +203,9 @@ class EmployeeSkill extends Facade
         } catch (\Exception $e) {
             Log::error('Failed to export skills data', [
                 'filters' => $filters,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return '';
         }
     }
@@ -213,7 +217,7 @@ class EmployeeSkill extends Facade
     {
         try {
             $result = static::getRepository()->importSkillsData($data);
-            
+
             return [
                 'success' => $result,
                 'message' => $result ? 'Skills imported successfully' : 'Failed to import skills',
@@ -222,12 +226,12 @@ class EmployeeSkill extends Facade
         } catch (\Exception $e) {
             Log::error('Failed to import skills data', [
                 'options' => $options,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
-            
+
             return [
                 'success' => false,
-                'message' => 'Error importing skills: ' . $e->getMessage(),
+                'message' => 'Error importing skills: '.$e->getMessage(),
                 'timestamp' => now()->toISOString(),
             ];
         }
@@ -236,11 +240,11 @@ class EmployeeSkill extends Facade
     /**
      * Get skills dashboard data
      */
-    public static function getSkillsDashboard(int $employeeId = null): array
+    public static function getSkillsDashboard(?int $employeeId = null): array
     {
         try {
             $data = [];
-            
+
             if ($employeeId) {
                 $data['employee_stats'] = static::getSkillsStatisticsCached($employeeId);
                 $data['employee_analytics'] = static::getEmployeeSkillsAnalytics($employeeId);
@@ -259,15 +263,16 @@ class EmployeeSkill extends Facade
                     ->sortByDesc('created_at')
                     ->take(10);
             }
-            
+
             $data['timestamp'] = now()->toISOString();
-            
+
             return $data;
         } catch (\Exception $e) {
             Log::error('Failed to get skills dashboard', [
                 'employee_id' => $employeeId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return ['error' => 'Failed to load dashboard data'];
         }
     }
@@ -282,7 +287,7 @@ class EmployeeSkill extends Facade
             Log::info('All skill-related caches cleared');
         } catch (\Exception $e) {
             Log::error('Failed to clear caches', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -295,25 +300,26 @@ class EmployeeSkill extends Facade
         try {
             $currentSkills = static::getRepository()->findByEmployeeId($employeeId);
             $recommendations = [];
-            
+
             // Get complementary skills
             $complementarySkills = static::getComplementarySkills($currentSkills->pluck('skill_name')->toArray());
-            if (!empty($complementarySkills)) {
+            if (! empty($complementarySkills)) {
                 $recommendations['complementary'] = array_slice($complementarySkills, 0, $limit);
             }
-            
+
             // Get improvement recommendations
             $improvements = static::getSkillImprovementRecommendations($currentSkills);
-            if (!empty($improvements)) {
+            if (! empty($improvements)) {
                 $recommendations['improvements'] = array_slice($improvements, 0, $limit);
             }
-            
+
             return $recommendations;
         } catch (\Exception $e) {
             Log::error('Failed to get skill recommendations', [
                 'employee_id' => $employeeId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return [];
         }
     }
@@ -329,14 +335,14 @@ class EmployeeSkill extends Facade
             'Python' => ['Django', 'Flask', 'Pandas', 'NumPy'],
             'Java' => ['Spring', 'Hibernate', 'Maven', 'JUnit'],
         ];
-        
+
         $recommendations = [];
         foreach ($currentSkills as $skill) {
             if (isset($complementaryMap[$skill])) {
                 $recommendations = array_merge($recommendations, $complementaryMap[$skill]);
             }
         }
-        
+
         return array_unique($recommendations);
     }
 
@@ -346,7 +352,7 @@ class EmployeeSkill extends Facade
     private static function getSkillImprovementRecommendations(Collection $skills): array
     {
         $recommendations = [];
-        
+
         foreach ($skills as $skill) {
             if ($skill->getProficiencyNumericValue() < 4) {
                 $recommendations[] = [
@@ -357,7 +363,7 @@ class EmployeeSkill extends Facade
                 ];
             }
         }
-        
+
         return $recommendations;
     }
 }

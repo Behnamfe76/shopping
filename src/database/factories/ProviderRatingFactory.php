@@ -2,11 +2,11 @@
 
 namespace Database\Factories;
 
-use App\Models\ProviderRating;
-use App\Models\Provider;
-use App\Models\User;
 use App\Enums\RatingCategory;
 use App\Enums\RatingStatus;
+use App\Models\Provider;
+use App\Models\ProviderRating;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

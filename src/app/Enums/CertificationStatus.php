@@ -15,7 +15,7 @@ enum CertificationStatus: string
      */
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::ACTIVE => 'Active',
             self::EXPIRED => 'Expired',
             self::SUSPENDED => 'Suspended',
@@ -29,7 +29,7 @@ enum CertificationStatus: string
      */
     public function description(): string
     {
-        return match($this) {
+        return match ($this) {
             self::ACTIVE => 'Certification is currently valid and active',
             self::EXPIRED => 'Certification has expired and is no longer valid',
             self::SUSPENDED => 'Certification is temporarily suspended',
@@ -43,7 +43,7 @@ enum CertificationStatus: string
      */
     public function color(): string
     {
-        return match($this) {
+        return match ($this) {
             self::ACTIVE => 'success',
             self::EXPIRED => 'danger',
             self::SUSPENDED => 'warning',
@@ -105,7 +105,7 @@ enum CertificationStatus: string
      */
     public static function toArray(): array
     {
-        return array_map(fn($case) => [
+        return array_map(fn ($case) => [
             'value' => $case->value,
             'label' => $case->label(),
             'description' => $case->description(),

@@ -2,13 +2,13 @@
 
 namespace Fereydooni\Shopping\app\Actions\EmployeeBenefits;
 
-use Fereydooni\Shopping\app\DTOs\EmployeeBenefitsDTO;
-use Fereydooni\Shopping\app\Models\EmployeeBenefits;
 use App\Repositories\EmployeeBenefitsRepository;
+use Exception;
+use Fereydooni\Shopping\app\DTOs\EmployeeBenefitsDTO;
 use Fereydooni\Shopping\app\Events\EmployeeBenefits\EmployeeBenefitsCreated;
+use Fereydooni\Shopping\app\Models\EmployeeBenefits;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Exception;
 
 class CreateEmployeeBenefitsAction
 {
@@ -53,7 +53,7 @@ class CreateEmployeeBenefitsAction
             DB::rollBack();
             Log::error('Failed to create employee benefits', [
                 'error' => $e->getMessage(),
-                'data' => $data
+                'data' => $data,
             ]);
             throw $e;
         }
@@ -68,13 +68,13 @@ class CreateEmployeeBenefitsAction
 
         // Validate benefit type
         $validTypes = ['health', 'dental', 'vision', 'life', 'disability', 'retirement', 'other'];
-        if (!in_array($data['benefit_type'], $validTypes)) {
+        if (! in_array($data['benefit_type'], $validTypes)) {
             throw new Exception('Invalid benefit type');
         }
 
         // Validate status
         $validStatuses = ['enrolled', 'pending', 'terminated', 'cancelled'];
-        if (!empty($data['status']) && !in_array($data['status'], $validStatuses)) {
+        if (! empty($data['status']) && ! in_array($data['status'], $validStatuses)) {
             throw new Exception('Invalid status');
         }
     }
@@ -140,7 +140,7 @@ class CreateEmployeeBenefitsAction
     private function handleDocuments(array $data): array
     {
         // Handle document uploads if provided
-        if (!empty($data['documents'])) {
+        if (! empty($data['documents'])) {
             // Process and store documents
             $data['documents'] = json_encode($data['documents']);
         }

@@ -2,16 +2,16 @@
 
 namespace Fereydooni\Shopping\app\Repositories;
 
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Fereydooni\Shopping\app\Repositories\Interfaces\CustomerWishlistRepositoryInterface;
-use Fereydooni\Shopping\app\Models\CustomerWishlist;
 use Fereydooni\Shopping\app\DTOs\CustomerWishlistDTO;
 use Fereydooni\Shopping\app\Enums\WishlistPriority;
+use Fereydooni\Shopping\app\Models\CustomerWishlist;
+use Fereydooni\Shopping\app\Repositories\Interfaces\CustomerWishlistRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class CustomerWishlistRepository implements CustomerWishlistRepositoryInterface
 {
@@ -35,7 +35,7 @@ class CustomerWishlistRepository implements CustomerWishlistRepositoryInterface
         return $this->model->with(['customer', 'product'])->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->model->with(['customer', 'product'])->cursorPaginate($perPage, ['*'], 'cursor', $cursor);
     }
@@ -49,6 +49,7 @@ class CustomerWishlistRepository implements CustomerWishlistRepositoryInterface
     public function findDTO(int $id): ?CustomerWishlistDTO
     {
         $wishlist = $this->find($id);
+
         return $wishlist ? CustomerWishlistDTO::fromModel($wishlist) : null;
     }
 
@@ -93,6 +94,7 @@ class CustomerWishlistRepository implements CustomerWishlistRepositoryInterface
     public function findByCustomerAndProductDTO(int $customerId, int $productId): ?CustomerWishlistDTO
     {
         $wishlist = $this->findByCustomerAndProduct($customerId, $productId);
+
         return $wishlist ? CustomerWishlistDTO::fromModel($wishlist) : null;
     }
 
@@ -231,6 +233,7 @@ class CustomerWishlistRepository implements CustomerWishlistRepositoryInterface
     public function createAndReturnDTO(array $data): CustomerWishlistDTO
     {
         $wishlist = $this->create($data);
+
         return CustomerWishlistDTO::fromModel($wishlist->load(['customer', 'product']));
     }
 
@@ -242,6 +245,7 @@ class CustomerWishlistRepository implements CustomerWishlistRepositoryInterface
     public function updateAndReturnDTO(CustomerWishlist $wishlist, array $data): ?CustomerWishlistDTO
     {
         $updated = $this->update($wishlist, $data);
+
         return $updated ? CustomerWishlistDTO::fromModel($wishlist->fresh()->load(['customer', 'product'])) : null;
     }
 
@@ -286,6 +290,7 @@ class CustomerWishlistRepository implements CustomerWishlistRepositoryInterface
     public function removeFromWishlist(int $customerId, int $productId): bool
     {
         $wishlist = $this->findByCustomerAndProduct($customerId, $productId);
+
         return $wishlist ? $this->delete($wishlist) : false;
     }
 
@@ -310,6 +315,7 @@ class CustomerWishlistRepository implements CustomerWishlistRepositoryInterface
     public function setPriority(CustomerWishlist $wishlist, string $priority): bool
     {
         $priorityEnum = WishlistPriority::tryFrom($priority);
+
         return $priorityEnum ? $wishlist->setPriority($priorityEnum) : false;
     }
 
@@ -396,7 +402,7 @@ class CustomerWishlistRepository implements CustomerWishlistRepositoryInterface
         return $this->model->with(['customer', 'product'])
             ->whereHas('product', function ($q) use ($query) {
                 $q->where('name', 'like', "%{$query}%")
-                  ->orWhere('description', 'like', "%{$query}%");
+                    ->orWhere('description', 'like', "%{$query}%");
             })
             ->orWhere('notes', 'like', "%{$query}%")
             ->orderBy('added_at', 'desc')
@@ -416,7 +422,7 @@ class CustomerWishlistRepository implements CustomerWishlistRepositoryInterface
             ->byCustomer($customerId)
             ->whereHas('product', function ($q) use ($query) {
                 $q->where('name', 'like', "%{$query}%")
-                  ->orWhere('description', 'like', "%{$query}%");
+                    ->orWhere('description', 'like', "%{$query}%");
             })
             ->orWhere('notes', 'like', "%{$query}%")
             ->orderBy('added_at', 'desc')
@@ -447,6 +453,7 @@ class CustomerWishlistRepository implements CustomerWishlistRepositoryInterface
             $wishlist = $this->model->with(['customer', 'product'])
                 ->where('product_id', $item->product_id)
                 ->first();
+
             return $wishlist ? CustomerWishlistDTO::fromModel($wishlist) : null;
         })->filter();
     }
@@ -470,6 +477,7 @@ class CustomerWishlistRepository implements CustomerWishlistRepositoryInterface
             $wishlist = $this->model->with(['customer', 'product'])
                 ->where('product_id', $item->product_id)
                 ->first();
+
             return $wishlist ? CustomerWishlistDTO::fromModel($wishlist) : null;
         })->filter();
     }
@@ -607,9 +615,9 @@ class CustomerWishlistRepository implements CustomerWishlistRepositoryInterface
             DB::raw("DATE_FORMAT(created_at, '%Y-%m') as period"),
             DB::raw('count(*) as count')
         )
-        ->groupBy('period')
-        ->orderBy('period', 'desc')
-        ->limit(12);
+            ->groupBy('period')
+            ->orderBy('period', 'desc')
+            ->limit(12);
 
         return $query->get()->toArray();
     }
@@ -631,7 +639,7 @@ class CustomerWishlistRepository implements CustomerWishlistRepositoryInterface
     public function getPriceDropStats(): array
     {
         $priceDrops = $this->model->withPriceDrops();
-        
+
         return [
             'total_price_drops' => $priceDrops->count(),
             'average_drop_percentage' => $priceDrops->avg(DB::raw('((price_when_added - current_price) / price_when_added) * 100')) ?? 0,
@@ -642,7 +650,7 @@ class CustomerWishlistRepository implements CustomerWishlistRepositoryInterface
     public function getPriceDropStatsByCustomer(int $customerId): array
     {
         $priceDrops = $this->model->byCustomer($customerId)->withPriceDrops();
-        
+
         return [
             'total_price_drops' => $priceDrops->count(),
             'average_drop_percentage' => $priceDrops->avg(DB::raw('((price_when_added - current_price) / price_when_added) * 100')) ?? 0,
@@ -654,10 +662,10 @@ class CustomerWishlistRepository implements CustomerWishlistRepositoryInterface
     public function validateWishlist(array $data): bool
     {
         $rules = CustomerWishlistDTO::rules();
-        
+
         $validator = validator($data, $rules, CustomerWishlistDTO::messages());
-        
-        return !$validator->fails();
+
+        return ! $validator->fails();
     }
 
     // Recommendation operations
@@ -689,6 +697,7 @@ class CustomerWishlistRepository implements CustomerWishlistRepositoryInterface
             $wishlist = $this->model->with(['customer', 'product'])
                 ->where('product_id', $item->product_id)
                 ->first();
+
             return $wishlist ? CustomerWishlistDTO::fromModel($wishlist) : null;
         })->filter();
     }
@@ -697,7 +706,7 @@ class CustomerWishlistRepository implements CustomerWishlistRepositoryInterface
     {
         // Get customers with similar wishlist items
         $customerProducts = $this->model->byCustomer($customerId)->pluck('product_id');
-        
+
         return $this->model->with(['customer', 'product'])
             ->whereNotIn('customer_id', [$customerId])
             ->whereIn('product_id', $customerProducts)
@@ -714,6 +723,7 @@ class CustomerWishlistRepository implements CustomerWishlistRepositoryInterface
             $wishlist = $this->model->with(['customer', 'product'])
                 ->where('customer_id', $item->customer_id)
                 ->first();
+
             return $wishlist ? CustomerWishlistDTO::fromModel($wishlist) : null;
         })->filter();
     }
@@ -722,7 +732,7 @@ class CustomerWishlistRepository implements CustomerWishlistRepositoryInterface
     public function getWishlistAnalytics(int $customerId): array
     {
         $wishlists = $this->model->byCustomer($customerId);
-        
+
         return [
             'total_items' => $wishlists->count(),
             'public_items' => $wishlists->public()->count(),
@@ -740,7 +750,7 @@ class CustomerWishlistRepository implements CustomerWishlistRepositoryInterface
     public function getWishlistAnalyticsByProduct(int $productId): array
     {
         $wishlists = $this->model->byProduct($productId);
-        
+
         return [
             'total_wishlists' => $wishlists->count(),
             'public_wishlists' => $wishlists->public()->count(),
@@ -755,7 +765,7 @@ class CustomerWishlistRepository implements CustomerWishlistRepositoryInterface
         $wishlists = $this->model->whereHas('product', function ($q) use ($categoryId) {
             $q->where('category_id', $categoryId);
         });
-        
+
         return [
             'total_wishlists' => $wishlists->count(),
             'public_wishlists' => $wishlists->public()->count(),
@@ -769,7 +779,7 @@ class CustomerWishlistRepository implements CustomerWishlistRepositoryInterface
     public function exportWishlist(int $customerId): array
     {
         $wishlists = $this->findByCustomerId($customerId);
-        
+
         return $wishlists->map(function ($wishlist) {
             return [
                 'product_id' => $wishlist->product_id,
@@ -788,7 +798,7 @@ class CustomerWishlistRepository implements CustomerWishlistRepositoryInterface
     {
         try {
             DB::beginTransaction();
-            
+
             foreach ($wishlistItems as $item) {
                 $this->addToWishlist($customerId, $item['product_id'], [
                     'notes' => $item['notes'] ?? null,
@@ -798,8 +808,9 @@ class CustomerWishlistRepository implements CustomerWishlistRepositoryInterface
                     'current_price' => $item['current_price'] ?? null,
                 ]);
             }
-            
+
             DB::commit();
+
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
@@ -807,6 +818,7 @@ class CustomerWishlistRepository implements CustomerWishlistRepositoryInterface
                 'customer_id' => $customerId,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -821,6 +833,7 @@ class CustomerWishlistRepository implements CustomerWishlistRepositoryInterface
                 'customer_id' => $customerId,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -836,9 +849,9 @@ class CustomerWishlistRepository implements CustomerWishlistRepositoryInterface
     {
         try {
             DB::beginTransaction();
-            
+
             $sourceWishlists = $this->findByCustomerId($sourceCustomerId);
-            
+
             foreach ($sourceWishlists as $wishlist) {
                 $this->addToWishlist($targetCustomerId, $wishlist->product_id, [
                     'notes' => $wishlist->notes,
@@ -848,8 +861,9 @@ class CustomerWishlistRepository implements CustomerWishlistRepositoryInterface
                     'current_price' => $wishlist->current_price,
                 ]);
             }
-            
+
             DB::commit();
+
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
@@ -858,6 +872,7 @@ class CustomerWishlistRepository implements CustomerWishlistRepositoryInterface
                 'target_customer_id' => $targetCustomerId,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }

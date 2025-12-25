@@ -2,20 +2,21 @@
 
 namespace Fereydooni\Shopping\app\Repositories;
 
-use Illuminate\Support\Collection;
+use Fereydooni\Shopping\app\DTOs\EmployeeEmergencyContactDTO;
+use Fereydooni\Shopping\app\Models\EmployeeEmergencyContact;
+use Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeEmergencyContactRepositoryInterface;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Cache;
-use Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeEmergencyContactRepositoryInterface;
-use Fereydooni\Shopping\app\Models\EmployeeEmergencyContact;
-use Fereydooni\Shopping\app\DTOs\EmployeeEmergencyContactDTO;
 
 class EmployeeEmergencyContactRepository implements EmployeeEmergencyContactRepositoryInterface
 {
     protected $model;
+
     protected $cachePrefix = 'employee_emergency_contact';
 
     public function __construct(EmployeeEmergencyContact $model)
@@ -45,7 +46,7 @@ class EmployeeEmergencyContactRepository implements EmployeeEmergencyContactRepo
             ->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->model->with('employee')
             ->orderBy('created_at', 'desc')
@@ -62,6 +63,7 @@ class EmployeeEmergencyContactRepository implements EmployeeEmergencyContactRepo
     public function findDTO(int $id): ?EmployeeEmergencyContactDTO
     {
         $contact = $this->find($id);
+
         return $contact ? EmployeeEmergencyContactDTO::fromModel($contact) : null;
     }
 
@@ -85,7 +87,7 @@ class EmployeeEmergencyContactRepository implements EmployeeEmergencyContactRepo
             return $contact->load('employee');
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Failed to create emergency contact: ' . $e->getMessage());
+            Log::error('Failed to create emergency contact: '.$e->getMessage());
             throw $e;
         }
     }
@@ -93,6 +95,7 @@ class EmployeeEmergencyContactRepository implements EmployeeEmergencyContactRepo
     public function createAndReturnDTO(array $data): EmployeeEmergencyContactDTO
     {
         $contact = $this->create($data);
+
         return EmployeeEmergencyContactDTO::fromModel($contact);
     }
 
@@ -116,7 +119,7 @@ class EmployeeEmergencyContactRepository implements EmployeeEmergencyContactRepo
             return $result;
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Failed to update emergency contact: ' . $e->getMessage());
+            Log::error('Failed to update emergency contact: '.$e->getMessage());
             throw $e;
         }
     }
@@ -124,6 +127,7 @@ class EmployeeEmergencyContactRepository implements EmployeeEmergencyContactRepo
     public function updateAndReturnDTO(EmployeeEmergencyContact $contact, array $data): ?EmployeeEmergencyContactDTO
     {
         $result = $this->update($contact, $data);
+
         return $result ? EmployeeEmergencyContactDTO::fromModel($contact->fresh()) : null;
     }
 
@@ -132,9 +136,10 @@ class EmployeeEmergencyContactRepository implements EmployeeEmergencyContactRepo
         try {
             $result = $contact->delete();
             $this->clearCache();
+
             return $result;
         } catch (\Exception $e) {
-            Log::error('Failed to delete emergency contact: ' . $e->getMessage());
+            Log::error('Failed to delete emergency contact: '.$e->getMessage());
             throw $e;
         }
     }
@@ -193,7 +198,7 @@ class EmployeeEmergencyContactRepository implements EmployeeEmergencyContactRepo
         return $this->model->with('employee')
             ->where(function ($query) use ($phone) {
                 $query->where('phone_primary', 'like', "%{$phone}%")
-                      ->orWhere('phone_secondary', 'like', "%{$phone}%");
+                    ->orWhere('phone_secondary', 'like', "%{$phone}%");
             })
             ->orderBy('created_at', 'desc')
             ->get();
@@ -334,6 +339,7 @@ class EmployeeEmergencyContactRepository implements EmployeeEmergencyContactRepo
     {
         $result = $contact->activate();
         $this->clearCache();
+
         return $result;
     }
 
@@ -341,6 +347,7 @@ class EmployeeEmergencyContactRepository implements EmployeeEmergencyContactRepo
     {
         $result = $contact->deactivate();
         $this->clearCache();
+
         return $result;
     }
 
@@ -348,6 +355,7 @@ class EmployeeEmergencyContactRepository implements EmployeeEmergencyContactRepo
     {
         $result = $contact->setAsPrimary();
         $this->clearCache();
+
         return $result;
     }
 
@@ -355,6 +363,7 @@ class EmployeeEmergencyContactRepository implements EmployeeEmergencyContactRepo
     {
         $result = $contact->removePrimary();
         $this->clearCache();
+
         return $result;
     }
 
@@ -386,6 +395,7 @@ class EmployeeEmergencyContactRepository implements EmployeeEmergencyContactRepo
     public function getEmployeePrimaryContactDTO(int $employeeId): ?EmployeeEmergencyContactDTO
     {
         $contact = $this->getEmployeePrimaryContact($employeeId);
+
         return $contact ? EmployeeEmergencyContactDTO::fromModel($contact) : null;
     }
 
@@ -440,12 +450,12 @@ class EmployeeEmergencyContactRepository implements EmployeeEmergencyContactRepo
         return $this->model->with('employee')
             ->where(function ($q) use ($query) {
                 $q->where('contact_name', 'like', "%{$query}%")
-                  ->orWhere('phone_primary', 'like', "%{$query}%")
-                  ->orWhere('phone_secondary', 'like', "%{$query}%")
-                  ->orWhere('email', 'like', "%{$query}%")
-                  ->orWhere('address', 'like', "%{$query}%")
-                  ->orWhere('city', 'like', "%{$query}%")
-                  ->orWhere('state', 'like', "%{$query}%");
+                    ->orWhere('phone_primary', 'like', "%{$query}%")
+                    ->orWhere('phone_secondary', 'like', "%{$query}%")
+                    ->orWhere('email', 'like', "%{$query}%")
+                    ->orWhere('address', 'like', "%{$query}%")
+                    ->orWhere('city', 'like', "%{$query}%")
+                    ->orWhere('state', 'like', "%{$query}%");
             })
             ->orderBy('created_at', 'desc')
             ->get();
@@ -464,12 +474,12 @@ class EmployeeEmergencyContactRepository implements EmployeeEmergencyContactRepo
             ->where('employee_id', $employeeId)
             ->where(function ($q) use ($query) {
                 $q->where('contact_name', 'like', "%{$query}%")
-                  ->orWhere('phone_primary', 'like', "%{$query}%")
-                  ->orWhere('phone_secondary', 'like', "%{$query}%")
-                  ->orWhere('email', 'like', "%{$query}%")
-                  ->orWhere('address', 'like', "%{$query}%")
-                  ->orWhere('city', 'like', "%{$query}%")
-                  ->orWhere('state', 'like', "%{$query}%");
+                    ->orWhere('phone_primary', 'like', "%{$query}%")
+                    ->orWhere('phone_secondary', 'like', "%{$query}%")
+                    ->orWhere('email', 'like', "%{$query}%")
+                    ->orWhere('address', 'like', "%{$query}%")
+                    ->orWhere('city', 'like', "%{$query}%")
+                    ->orWhere('state', 'like', "%{$query}%");
             })
             ->orderBy('created_at', 'desc')
             ->get();
@@ -521,7 +531,7 @@ class EmployeeEmergencyContactRepository implements EmployeeEmergencyContactRepo
                 $contact->is_primary ? 'Yes' : 'No',
                 $contact->is_active ? 'Yes' : 'No',
                 $contact->notes,
-                $contact->created_at
+                $contact->created_at,
             ];
         }
 
@@ -545,7 +555,9 @@ class EmployeeEmergencyContactRepository implements EmployeeEmergencyContactRepo
             $headers = str_getcsv(array_shift($lines));
 
             foreach ($lines as $line) {
-                if (empty(trim($line))) continue;
+                if (empty(trim($line))) {
+                    continue;
+                }
 
                 $row = array_combine($headers, str_getcsv($line));
 
@@ -571,10 +583,12 @@ class EmployeeEmergencyContactRepository implements EmployeeEmergencyContactRepo
 
             DB::commit();
             $this->clearCache();
+
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Failed to import contact data: ' . $e->getMessage());
+            Log::error('Failed to import contact data: '.$e->getMessage());
+
             return false;
         }
     }
@@ -632,21 +646,21 @@ class EmployeeEmergencyContactRepository implements EmployeeEmergencyContactRepo
     public function validateContactInformation(int $contactId): array
     {
         $contact = $this->find($contactId);
-        if (!$contact) {
+        if (! $contact) {
             return ['valid' => false, 'errors' => ['Contact not found']];
         }
 
         $errors = [];
 
-        if (!$contact->hasValidPhone()) {
+        if (! $contact->hasValidPhone()) {
             $errors[] = 'No valid phone number provided';
         }
 
-        if (!$contact->hasValidEmail() && !$contact->hasValidAddress()) {
+        if (! $contact->hasValidEmail() && ! $contact->hasValidAddress()) {
             $errors[] = 'Either email or address must be provided';
         }
 
-        if ($contact->is_primary && !$contact->hasValidPhone()) {
+        if ($contact->is_primary && ! $contact->hasValidPhone()) {
             $errors[] = 'Primary contact must have a valid phone number';
         }
 

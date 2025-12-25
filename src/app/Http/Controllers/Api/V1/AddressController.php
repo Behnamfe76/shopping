@@ -2,19 +2,18 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Fereydooni\Shopping\app\Models\Address;
-use Fereydooni\Shopping\app\DTOs\AddressDTO;
 use Fereydooni\Shopping\app\Enums\AddressType;
 use Fereydooni\Shopping\app\Facades\Address as AddressFacade;
+use Fereydooni\Shopping\app\Http\Requests\SearchAddressRequest;
+use Fereydooni\Shopping\app\Http\Requests\SetDefaultAddressRequest;
 use Fereydooni\Shopping\app\Http\Requests\StoreAddressRequest;
 use Fereydooni\Shopping\app\Http\Requests\UpdateAddressRequest;
-use Fereydooni\Shopping\app\Http\Requests\SetDefaultAddressRequest;
-use Fereydooni\Shopping\app\Http\Requests\SearchAddressRequest;
-use Fereydooni\Shopping\app\Http\Resources\AddressResource;
 use Fereydooni\Shopping\app\Http\Resources\AddressCollection;
+use Fereydooni\Shopping\app\Http\Resources\AddressResource;
 use Fereydooni\Shopping\app\Http\Resources\AddressSearchResource;
+use Fereydooni\Shopping\app\Models\Address;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class AddressController extends \App\Http\Controllers\Controller
 {
@@ -30,7 +29,7 @@ class AddressController extends \App\Http\Controllers\Controller
             $paginationType = $request->get('pagination', 'regular');
             $type = $request->get('type');
 
-            $addresses = match($paginationType) {
+            $addresses = match ($paginationType) {
                 'simplePaginate' => AddressFacade::simplePaginateByUser(auth()->id(), $perPage),
                 'cursorPaginate' => AddressFacade::cursorPaginateByUser(auth()->id(), $perPage),
                 default => AddressFacade::paginateByUser(auth()->id(), $perPage),
@@ -76,7 +75,7 @@ class AddressController extends \App\Http\Controllers\Controller
         try {
             $addressDTO = AddressFacade::findDTO($address->id);
 
-            if (!$addressDTO) {
+            if (! $addressDTO) {
                 return response()->json([
                     'error' => 'Address not found',
                 ], 404);
@@ -101,7 +100,7 @@ class AddressController extends \App\Http\Controllers\Controller
         try {
             $addressDTO = AddressFacade::updateDTO($address, $request->validated());
 
-            if (!$addressDTO) {
+            if (! $addressDTO) {
                 return response()->json([
                     'error' => 'Failed to update address',
                 ], 500);
@@ -126,7 +125,7 @@ class AddressController extends \App\Http\Controllers\Controller
         try {
             $deleted = AddressFacade::delete($address);
 
-            if (!$deleted) {
+            if (! $deleted) {
                 return response()->json([
                     'error' => 'Failed to delete address',
                 ], 500);
@@ -153,7 +152,7 @@ class AddressController extends \App\Http\Controllers\Controller
         try {
             $addressDTO = AddressFacade::setDefaultDTO($address);
 
-            if (!$addressDTO) {
+            if (! $addressDTO) {
                 return response()->json([
                     'error' => 'Failed to set address as default',
                 ], 500);
@@ -218,7 +217,7 @@ class AddressController extends \App\Http\Controllers\Controller
     {
         $addressType = AddressType::tryFrom($type);
 
-        if (!$addressType) {
+        if (! $addressType) {
             return response()->json([
                 'error' => 'Invalid address type',
                 'message' => 'Address type must be either "billing" or "shipping"',
@@ -230,7 +229,7 @@ class AddressController extends \App\Http\Controllers\Controller
         try {
             $addressDTO = AddressFacade::getDefaultDTOByUser(auth()->id(), $addressType);
 
-            if (!$addressDTO) {
+            if (! $addressDTO) {
                 return response()->json([
                     'error' => 'No default address found',
                     'message' => "No default {$type} address found for this user",

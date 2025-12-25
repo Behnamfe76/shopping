@@ -2,13 +2,12 @@
 
 namespace App\Traits;
 
-use App\Models\ProviderPerformance;
 use App\DTOs\ProviderPerformanceDTO;
 use App\Enums\PerformanceGrade;
-use App\Enums\PeriodType;
+use App\Models\ProviderPerformance;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Carbon\Carbon;
 
 trait HasProviderPerformanceOperations
 {
@@ -291,7 +290,7 @@ trait HasProviderPerformanceOperations
      */
     public function performancesAsDTOs(): Collection
     {
-        return $this->performances()->map(fn($performance) => ProviderPerformanceDTO::fromModel($performance));
+        return $this->performances()->map(fn ($performance) => ProviderPerformanceDTO::fromModel($performance));
     }
 
     /**
@@ -300,7 +299,7 @@ trait HasProviderPerformanceOperations
     public function performancesByPeriodTypeAsDTOs(string $periodType): Collection
     {
         return $this->performancesByPeriodType($periodType)
-            ->map(fn($performance) => ProviderPerformanceDTO::fromModel($performance));
+            ->map(fn ($performance) => ProviderPerformanceDTO::fromModel($performance));
     }
 
     /**
@@ -309,7 +308,7 @@ trait HasProviderPerformanceOperations
     public function performancesByGradeAsDTOs(string $grade): Collection
     {
         return $this->performancesByGrade($grade)
-            ->map(fn($performance) => ProviderPerformanceDTO::fromModel($performance));
+            ->map(fn ($performance) => ProviderPerformanceDTO::fromModel($performance));
     }
 
     /**
@@ -318,7 +317,7 @@ trait HasProviderPerformanceOperations
     public function performancesByDateRangeAsDTOs(string $startDate, string $endDate): Collection
     {
         return $this->performancesByDateRange($startDate, $endDate)
-            ->map(fn($performance) => ProviderPerformanceDTO::fromModel($performance));
+            ->map(fn ($performance) => ProviderPerformanceDTO::fromModel($performance));
     }
 
     /**
@@ -327,6 +326,7 @@ trait HasProviderPerformanceOperations
     public function latestPerformanceAsDTO(): ?ProviderPerformanceDTO
     {
         $performance = $this->latestPerformance();
+
         return $performance ? ProviderPerformanceDTO::fromModel($performance) : null;
     }
 
@@ -336,7 +336,7 @@ trait HasProviderPerformanceOperations
     public function recentPerformancesAsDTOs(int $count = 5): Collection
     {
         return $this->recentPerformances($count)
-            ->map(fn($performance) => ProviderPerformanceDTO::fromModel($performance));
+            ->map(fn ($performance) => ProviderPerformanceDTO::fromModel($performance));
     }
 
     /**
@@ -345,7 +345,7 @@ trait HasProviderPerformanceOperations
     public function verifiedPerformancesAsDTOs(): Collection
     {
         return $this->verifiedPerformances()
-            ->map(fn($performance) => ProviderPerformanceDTO::fromModel($performance));
+            ->map(fn ($performance) => ProviderPerformanceDTO::fromModel($performance));
     }
 
     /**
@@ -354,6 +354,6 @@ trait HasProviderPerformanceOperations
     public function unverifiedPerformancesAsDTOs(): Collection
     {
         return $this->unverifiedPerformances()
-            ->map(fn($performance) => ProviderPerformanceDTO::fromModel($performance));
+            ->map(fn ($performance) => ProviderPerformanceDTO::fromModel($performance));
     }
 }

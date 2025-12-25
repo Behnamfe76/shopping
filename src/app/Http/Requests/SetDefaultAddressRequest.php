@@ -2,8 +2,8 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Fereydooni\Shopping\app\Models\Address;
+use Illuminate\Foundation\Http\FormRequest;
 
 class SetDefaultAddressRequest extends FormRequest
 {
@@ -13,6 +13,7 @@ class SetDefaultAddressRequest extends FormRequest
     public function authorize(): bool
     {
         $address = $this->route('address');
+
         return $this->user()->can('setDefault', $address);
     }
 

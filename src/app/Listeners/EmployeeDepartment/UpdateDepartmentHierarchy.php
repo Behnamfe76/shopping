@@ -2,21 +2,23 @@
 
 namespace App\Listeners\EmployeeDepartment;
 
-use App\Events\EmployeeDepartment\EmployeeDepartmentCreated;
-use App\Events\EmployeeDepartment\EmployeeDepartmentUpdated;
-use App\Events\EmployeeDepartment\EmployeeDepartmentMoved;
 use App\Events\EmployeeDepartment\EmployeeDepartmentArchived;
+use App\Events\EmployeeDepartment\EmployeeDepartmentCreated;
+use App\Events\EmployeeDepartment\EmployeeDepartmentMoved;
+use App\Events\EmployeeDepartment\EmployeeDepartmentUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class UpdateDepartmentHierarchy implements ShouldQueue
 {
     use InteractsWithQueue;
 
     public $queue = 'hierarchy';
+
     public $tries = 3;
+
     public $timeout = 60;
 
     /**
@@ -45,7 +47,7 @@ class UpdateDepartmentHierarchy implements ShouldQueue
         } catch (\Exception $e) {
             Log::error('Error updating department hierarchy', [
                 'event' => get_class($event),
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -71,12 +73,12 @@ class UpdateDepartmentHierarchy implements ShouldQueue
 
             Log::info('Department hierarchy updated for new department', [
                 'department_id' => $department->id,
-                'parent_id' => $department->parent_id
+                'parent_id' => $department->parent_id,
             ]);
         } catch (\Exception $e) {
             Log::error('Error handling department created hierarchy update', [
                 'department_id' => $event->department->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -97,13 +99,13 @@ class UpdateDepartmentHierarchy implements ShouldQueue
 
                 Log::info('Department hierarchy updated for department changes', [
                     'department_id' => $department->id,
-                    'changes' => $changes
+                    'changes' => $changes,
                 ]);
             }
         } catch (\Exception $e) {
             Log::error('Error handling department updated hierarchy update', [
                 'department_id' => $event->department->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -140,12 +142,12 @@ class UpdateDepartmentHierarchy implements ShouldQueue
             Log::info('Department hierarchy updated for department move', [
                 'department_id' => $department->id,
                 'previous_parent_id' => $previousParentId,
-                'new_parent_id' => $newParentId
+                'new_parent_id' => $newParentId,
             ]);
         } catch (\Exception $e) {
             Log::error('Error handling department moved hierarchy update', [
                 'department_id' => $event->department->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -170,12 +172,12 @@ class UpdateDepartmentHierarchy implements ShouldQueue
             }
 
             Log::info('Department hierarchy updated for department archive', [
-                'department_id' => $department->id
+                'department_id' => $department->id,
             ]);
         } catch (\Exception $e) {
             Log::error('Error handling department archived hierarchy update', [
                 'department_id' => $event->department->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -195,7 +197,7 @@ class UpdateDepartmentHierarchy implements ShouldQueue
             // This would typically be done by a separate job
         } catch (\Exception $e) {
             Log::error('Error updating hierarchy cache', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -213,7 +215,7 @@ class UpdateDepartmentHierarchy implements ShouldQueue
             // This would typically be done by a separate job
         } catch (\Exception $e) {
             Log::error('Error updating department tree', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -229,7 +231,7 @@ class UpdateDepartmentHierarchy implements ShouldQueue
         } catch (\Exception $e) {
             Log::error('Error updating parent children count', [
                 'parent_id' => $parentId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -245,7 +247,7 @@ class UpdateDepartmentHierarchy implements ShouldQueue
         } catch (\Exception $e) {
             Log::error('Error updating descendants depth', [
                 'department_id' => $departmentId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -257,7 +259,7 @@ class UpdateDepartmentHierarchy implements ShouldQueue
     {
         Log::error('Department hierarchy update job failed', [
             'event' => get_class($event),
-            'error' => $exception->getMessage()
+            'error' => $exception->getMessage(),
         ]);
     }
 }

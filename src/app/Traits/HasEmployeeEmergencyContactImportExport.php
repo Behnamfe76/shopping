@@ -2,12 +2,11 @@
 
 namespace App\Traits;
 
-use App\Models\EmployeeEmergencyContact;
 use App\Models\Employee;
+use App\Models\EmployeeEmergencyContact;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Collection;
 
 trait HasEmployeeEmergencyContactImportExport
 {
@@ -19,11 +18,11 @@ trait HasEmployeeEmergencyContactImportExport
         try {
             $contacts = $this->getContactsForExport($filters);
 
-            $filename = 'emergency_contacts_' . date('Y-m-d_H-i-s') . '.csv';
-            $filepath = storage_path('app/exports/' . $filename);
+            $filename = 'emergency_contacts_'.date('Y-m-d_H-i-s').'.csv';
+            $filepath = storage_path('app/exports/'.$filename);
 
             // Ensure directory exists
-            if (!file_exists(dirname($filepath))) {
+            if (! file_exists(dirname($filepath))) {
                 mkdir(dirname($filepath), 0755, true);
             }
 
@@ -48,7 +47,7 @@ trait HasEmployeeEmergencyContactImportExport
                 'Is Active',
                 'Notes',
                 'Created At',
-                'Updated At'
+                'Updated At',
             ];
 
             fputcsv($file, $headers);
@@ -73,7 +72,7 @@ trait HasEmployeeEmergencyContactImportExport
                     $contact->is_active ? 'Yes' : 'No',
                     $contact->notes ?? '',
                     $contact->created_at,
-                    $contact->updated_at
+                    $contact->updated_at,
                 ];
 
                 fputcsv($file, $row);
@@ -84,7 +83,7 @@ trait HasEmployeeEmergencyContactImportExport
             Log::info('Emergency contacts exported to CSV', [
                 'filename' => $filename,
                 'contact_count' => $contacts->count(),
-                'filters' => $filters
+                'filters' => $filters,
             ]);
 
             return $filepath;
@@ -92,7 +91,7 @@ trait HasEmployeeEmergencyContactImportExport
         } catch (\Exception $e) {
             Log::error('Failed to export emergency contacts to CSV', [
                 'error' => $e->getMessage(),
-                'filters' => $filters
+                'filters' => $filters,
             ]);
             throw $e;
         }
@@ -106,11 +105,11 @@ trait HasEmployeeEmergencyContactImportExport
         try {
             $contacts = $this->getContactsForExport($filters);
 
-            $filename = 'emergency_contacts_' . date('Y-m-d_H-i-s') . '.json';
-            $filepath = storage_path('app/exports/' . $filename);
+            $filename = 'emergency_contacts_'.date('Y-m-d_H-i-s').'.json';
+            $filepath = storage_path('app/exports/'.$filename);
 
             // Ensure directory exists
-            if (!file_exists(dirname($filepath))) {
+            if (! file_exists(dirname($filepath))) {
                 mkdir(dirname($filepath), 0755, true);
             }
 
@@ -137,9 +136,9 @@ trait HasEmployeeEmergencyContactImportExport
                         'is_active' => $contact->is_active,
                         'notes' => $contact->notes,
                         'created_at' => $contact->created_at,
-                        'updated_at' => $contact->updated_at
+                        'updated_at' => $contact->updated_at,
                     ];
-                })->toArray()
+                })->toArray(),
             ];
 
             file_put_contents($filepath, json_encode($data, JSON_PRETTY_PRINT));
@@ -147,7 +146,7 @@ trait HasEmployeeEmergencyContactImportExport
             Log::info('Emergency contacts exported to JSON', [
                 'filename' => $filename,
                 'contact_count' => $contacts->count(),
-                'filters' => $filters
+                'filters' => $filters,
             ]);
 
             return $filepath;
@@ -155,7 +154,7 @@ trait HasEmployeeEmergencyContactImportExport
         } catch (\Exception $e) {
             Log::error('Failed to export emergency contacts to JSON', [
                 'error' => $e->getMessage(),
-                'filters' => $filters
+                'filters' => $filters,
             ]);
             throw $e;
         }
@@ -172,10 +171,10 @@ trait HasEmployeeEmergencyContactImportExport
                 'imported' => 0,
                 'updated' => 0,
                 'skipped' => 0,
-                'errors' => []
+                'errors' => [],
             ];
 
-            if (!file_exists($filepath)) {
+            if (! file_exists($filepath)) {
                 throw new \Exception("Import file not found: {$filepath}");
             }
 
@@ -207,7 +206,7 @@ trait HasEmployeeEmergencyContactImportExport
                     $results['errors'][] = [
                         'row' => $results['total_rows'] + 1,
                         'error' => $e->getMessage(),
-                        'data' => $row
+                        'data' => $row,
                     ];
                 }
             }
@@ -228,7 +227,7 @@ trait HasEmployeeEmergencyContactImportExport
             DB::rollBack();
             Log::error('Failed to import emergency contacts from CSV', [
                 'filepath' => $filepath,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -270,7 +269,7 @@ trait HasEmployeeEmergencyContactImportExport
 
         // Find employee
         $employee = Employee::find($data['employee_id']);
-        if (!$employee) {
+        if (! $employee) {
             throw new \Exception("Employee not found with ID: {$data['employee_id']}");
         }
 
@@ -280,14 +279,16 @@ trait HasEmployeeEmergencyContactImportExport
             ->first();
 
         if ($existingContact) {
-            if (!empty($options['update_existing'])) {
+            if (! empty($options['update_existing'])) {
                 $existingContact->update($data);
+
                 return ['action' => 'updated', 'contact_id' => $existingContact->id];
             } else {
                 return ['action' => 'skipped', 'reason' => 'Contact already exists'];
             }
         } else {
             $contact = EmployeeEmergencyContact::create($data);
+
             return ['action' => 'imported', 'contact_id' => $contact->id];
         }
     }
@@ -300,31 +301,31 @@ trait HasEmployeeEmergencyContactImportExport
         $query = EmployeeEmergencyContact::with('employee');
 
         // Apply filters
-        if (!empty($filters['employee_id'])) {
+        if (! empty($filters['employee_id'])) {
             $query->where('employee_id', $filters['employee_id']);
         }
 
-        if (!empty($filters['relationship'])) {
+        if (! empty($filters['relationship'])) {
             $query->where('relationship', $filters['relationship']);
         }
 
-        if (!empty($filters['is_active'])) {
+        if (! empty($filters['is_active'])) {
             $query->where('is_active', $filters['is_active']);
         }
 
-        if (!empty($filters['is_primary'])) {
+        if (! empty($filters['is_primary'])) {
             $query->where('is_primary', $filters['is_primary']);
         }
 
-        if (!empty($filters['city'])) {
+        if (! empty($filters['city'])) {
             $query->where('city', 'like', "%{$filters['city']}%");
         }
 
-        if (!empty($filters['state'])) {
+        if (! empty($filters['state'])) {
             $query->where('state', $filters['state']);
         }
 
-        if (!empty($filters['country'])) {
+        if (! empty($filters['country'])) {
             $query->where('country', $filters['country']);
         }
 
@@ -337,10 +338,10 @@ trait HasEmployeeEmergencyContactImportExport
     public function generateImportTemplate(): string
     {
         $filename = 'emergency_contact_import_template.csv';
-        $filepath = storage_path('app/templates/' . $filename);
+        $filepath = storage_path('app/templates/'.$filename);
 
         // Ensure directory exists
-        if (!file_exists(dirname($filepath))) {
+        if (! file_exists(dirname($filepath))) {
             mkdir(dirname($filepath), 0755, true);
         }
 
@@ -361,7 +362,7 @@ trait HasEmployeeEmergencyContactImportExport
             'Country',
             'Is Primary',
             'Is Active',
-            'Notes'
+            'Notes',
         ];
 
         fputcsv($file, $headers);
@@ -381,7 +382,7 @@ trait HasEmployeeEmergencyContactImportExport
             'United States',
             'Yes',
             'Yes',
-            'Emergency contact for Jane Doe'
+            'Emergency contact for Jane Doe',
         ];
 
         fputcsv($file, $example);

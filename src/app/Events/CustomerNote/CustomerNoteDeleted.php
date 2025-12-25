@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Events\CustomerNote;
 
+use Fereydooni\Shopping\app\Models\CustomerNote;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Fereydooni\Shopping\app\Models\CustomerNote;
 
 class CustomerNoteDeleted
 {

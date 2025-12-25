@@ -24,43 +24,43 @@ class SearchPerformanceRequest extends FormRequest
                 'required',
                 'string',
                 'min:2',
-                'max:255'
+                'max:255',
             ],
             'provider_id' => [
                 'sometimes',
                 'integer',
-                'exists:providers,id'
+                'exists:providers,id',
             ],
             'grade' => [
                 'sometimes',
                 'string',
-                'in:A,B,C,D,F'
+                'in:A,B,C,D,F',
             ],
             'period_type' => [
                 'sometimes',
                 'string',
-                'in:daily,weekly,monthly,quarterly,yearly'
+                'in:daily,weekly,monthly,quarterly,yearly',
             ],
             'verified' => [
                 'sometimes',
-                'boolean'
+                'boolean',
             ],
             'sort_by' => [
                 'sometimes',
                 'string',
-                'in:performance_score,revenue,orders,created_at,updated_at'
+                'in:performance_score,revenue,orders,created_at,updated_at',
             ],
             'sort_direction' => [
                 'sometimes',
                 'string',
-                'in:asc,desc'
+                'in:asc,desc',
             ],
             'per_page' => [
                 'sometimes',
                 'integer',
                 'min:1',
-                'max:100'
-            ]
+                'max:100',
+            ],
         ];
     }
 
@@ -80,7 +80,7 @@ class SearchPerformanceRequest extends FormRequest
             'sort_by.in' => 'Invalid sort field selected.',
             'sort_direction.in' => 'Sort direction must be ascending or descending.',
             'per_page.min' => 'Per page must be at least 1.',
-            'per_page.max' => 'Per page cannot exceed 100.'
+            'per_page.max' => 'Per page cannot exceed 100.',
         ];
     }
 
@@ -97,7 +97,7 @@ class SearchPerformanceRequest extends FormRequest
             'verified' => 'verification status',
             'sort_by' => 'sort field',
             'sort_direction' => 'sort direction',
-            'per_page' => 'results per page'
+            'per_page' => 'results per page',
         ];
     }
 }

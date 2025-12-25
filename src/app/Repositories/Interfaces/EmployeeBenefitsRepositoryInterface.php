@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\app\Repositories\Interfaces;
 
+use Fereydooni\Shopping\app\DTOs\EmployeeBenefitsDTO;
+use Fereydooni\Shopping\app\Models\EmployeeBenefits;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Fereydooni\Shopping\app\Models\EmployeeBenefits;
-use Fereydooni\Shopping\app\DTOs\EmployeeBenefitsDTO;
 
 interface EmployeeBenefitsRepositoryInterface
 {
@@ -29,7 +29,7 @@ interface EmployeeBenefitsRepositoryInterface
     /**
      * Get cursor paginated employee benefits
      */
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator;
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator;
 
     /**
      * Find employee benefit by ID
@@ -209,17 +209,17 @@ interface EmployeeBenefitsRepositoryInterface
     /**
      * Enroll employee in benefits
      */
-    public function enroll(EmployeeBenefits $benefit, string $effectiveDate = null): bool;
+    public function enroll(EmployeeBenefits $benefit, ?string $effectiveDate = null): bool;
 
     /**
      * Terminate employee benefits
      */
-    public function terminate(EmployeeBenefits $benefit, string $endDate = null, string $reason = null): bool;
+    public function terminate(EmployeeBenefits $benefit, ?string $endDate = null, ?string $reason = null): bool;
 
     /**
      * Cancel employee benefits
      */
-    public function cancel(EmployeeBenefits $benefit, string $reason = null): bool;
+    public function cancel(EmployeeBenefits $benefit, ?string $reason = null): bool;
 
     /**
      * Activate employee benefits
@@ -354,7 +354,7 @@ interface EmployeeBenefitsRepositoryInterface
     /**
      * Get benefits statistics
      */
-    public function getBenefitsStatistics(int $employeeId = null): array;
+    public function getBenefitsStatistics(?int $employeeId = null): array;
 
     /**
      * Get department benefits statistics
@@ -369,10 +369,10 @@ interface EmployeeBenefitsRepositoryInterface
     /**
      * Get cost analysis
      */
-    public function getCostAnalysis(int $employeeId = null): array;
+    public function getCostAnalysis(?int $employeeId = null): array;
 
     /**
      * Get enrollment trends
      */
-    public function getEnrollmentTrends(string $startDate = null, string $endDate = null): array;
+    public function getEnrollmentTrends(?string $startDate = null, ?string $endDate = null): array;
 }

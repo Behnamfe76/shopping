@@ -8,18 +8,31 @@ use Illuminate\Support\Str;
 class ProductTagDTO
 {
     public string $name;
+
     public string $slug;
+
     public ?string $description;
+
     public ?string $color;
+
     public ?string $icon;
+
     public bool $is_active;
+
     public bool $is_featured;
+
     public int $sort_order;
+
     public ?int $usage_count;
+
     public ?int $created_by;
+
     public ?int $updated_by;
+
     public ?int $id;
+
     public ?string $created_at;
+
     public ?string $updated_at;
 
     public function __construct(

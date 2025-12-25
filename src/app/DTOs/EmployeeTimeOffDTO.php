@@ -2,36 +2,32 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
+use Carbon\Carbon;
+use Fereydooni\Shopping\app\Enums\TimeOffStatus;
+use Fereydooni\Shopping\app\Enums\TimeOffType;
+use Fereydooni\Shopping\app\Models\EmployeeTimeOff;
+use Spatie\LaravelData\Attributes\Validation\After;
+use Spatie\LaravelData\Attributes\Validation\ArrayType;
+use Spatie\LaravelData\Attributes\Validation\Boolean;
+use Spatie\LaravelData\Attributes\Validation\Date;
+use Spatie\LaravelData\Attributes\Validation\In;
+use Spatie\LaravelData\Attributes\Validation\IntegerType;
+use Spatie\LaravelData\Attributes\Validation\Max;
+use Spatie\LaravelData\Attributes\Validation\Min;
+use Spatie\LaravelData\Attributes\Validation\Nullable;
+use Spatie\LaravelData\Attributes\Validation\Numeric;
 use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
-use Spatie\LaravelData\Attributes\Validation\Date;
 use Spatie\LaravelData\Attributes\Validation\Time;
-use Spatie\LaravelData\Attributes\Validation\Numeric;
-use Spatie\LaravelData\Attributes\Validation\Boolean;
-use Spatie\LaravelData\Attributes\Validation\ArrayType;
-use Spatie\LaravelData\Attributes\Validation\In;
-use Spatie\LaravelData\Attributes\Validation\Nullable;
-use Spatie\LaravelData\Attributes\Validation\Min;
-use Spatie\LaravelData\Attributes\Validation\Max;
-use Spatie\LaravelData\Attributes\Validation\After;
-use Spatie\LaravelData\Attributes\Validation\Before;
 use Spatie\LaravelData\Attributes\WithTransformer;
+use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Transformers\DateTimeTransformer;
-use Fereydooni\Shopping\app\Enums\TimeOffType;
-use Fereydooni\Shopping\app\Enums\TimeOffStatus;
-use Fereydooni\Shopping\app\Models\EmployeeTimeOff;
-use Fereydooni\Shopping\app\Models\Employee;
-use Fereydooni\Shopping\app\Models\User;
-use Carbon\Carbon;
-use Illuminate\Support\Collection;
 
 class EmployeeTimeOffDTO extends Data
 {
     public function __construct(
         #[Nullable]
-        public ?int $id = null,
+        public ?int $id,
 
         #[Required, IntegerType, Min(1)]
         public int $employee_id,
@@ -49,16 +45,16 @@ class EmployeeTimeOffDTO extends Data
         public string $end_date,
 
         #[Nullable, Time]
-        public ?string $start_time = null,
+        public ?string $start_time,
 
         #[Nullable, Time]
-        public ?string $end_time = null,
+        public ?string $end_time,
 
         #[Nullable, Numeric, Min(0)]
-        public ?float $total_hours = null,
+        public ?float $total_hours,
 
         #[Nullable, Numeric, Min(0)]
-        public ?float $total_days = null,
+        public ?float $total_days,
 
         #[Required, StringType, Min(3), Max(500)]
         public string $reason,
@@ -155,7 +151,7 @@ class EmployeeTimeOffDTO extends Data
         return [
             'employee_id' => ['required', 'integer', 'min:1', 'exists:employees,id'],
             'user_id' => ['required', 'integer', 'min:1', 'exists:users,id'],
-            'time_off_type' => ['required', 'string', 'in:' . implode(',', array_column(TimeOffType::cases(), 'value'))],
+            'time_off_type' => ['required', 'string', 'in:'.implode(',', array_column(TimeOffType::cases(), 'value'))],
             'start_date' => ['required', 'date', 'after:today'],
             'end_date' => ['required', 'date', 'after:start_date'],
             'start_time' => ['nullable', 'date_format:H:i:s'],
@@ -164,7 +160,7 @@ class EmployeeTimeOffDTO extends Data
             'total_days' => ['nullable', 'numeric', 'min:0'],
             'reason' => ['required', 'string', 'min:3', 'max:500'],
             'description' => ['nullable', 'string', 'max:1000'],
-            'status' => ['required', 'string', 'in:' . implode(',', array_column(TimeOffStatus::cases(), 'value'))],
+            'status' => ['required', 'string', 'in:'.implode(',', array_column(TimeOffStatus::cases(), 'value'))],
             'approved_by' => ['nullable', 'integer', 'min:1', 'exists:users,id'],
             'approved_at' => ['nullable', 'date'],
             'rejected_by' => ['nullable', 'integer', 'min:1', 'exists:users,id'],
@@ -339,4 +335,3 @@ class EmployeeTimeOffDTO extends Data
         ];
     }
 }
-

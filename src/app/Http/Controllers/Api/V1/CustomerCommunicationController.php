@@ -2,14 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Routing\Controller;
-use Fereydooni\Shopping\app\Services\CustomerCommunicationService;
 use Fereydooni\Shopping\app\Models\CustomerCommunication;
-use Fereydooni\Shopping\app\DTOs\CustomerCommunicationDTO;
-use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Http\Resources\Json\ResourceCollection;
+use Fereydooni\Shopping\app\Services\CustomerCommunicationService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 
 class CustomerCommunicationController extends Controller
 {
@@ -79,8 +76,8 @@ class CustomerCommunicationController extends Controller
     public function show(int $id): JsonResponse
     {
         $communication = $this->service->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return response()->json(['message' => 'Customer communication not found'], 404);
         }
 
@@ -97,8 +94,8 @@ class CustomerCommunicationController extends Controller
     public function update(Request $request, int $id): JsonResponse
     {
         $communication = $this->service->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return response()->json(['message' => 'Customer communication not found'], 404);
         }
 
@@ -123,7 +120,7 @@ class CustomerCommunicationController extends Controller
 
         $updatedCommunication = $this->service->updateCommunication($id, $validated);
 
-        if (!$updatedCommunication) {
+        if (! $updatedCommunication) {
             return response()->json(['message' => 'Failed to update customer communication'], 400);
         }
 
@@ -139,8 +136,8 @@ class CustomerCommunicationController extends Controller
     public function destroy(int $id): JsonResponse
     {
         $communication = $this->service->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return response()->json(['message' => 'Customer communication not found'], 404);
         }
 
@@ -148,7 +145,7 @@ class CustomerCommunicationController extends Controller
 
         $deleted = $this->service->delete($id);
 
-        if (!$deleted) {
+        if (! $deleted) {
             return response()->json(['message' => 'Failed to delete customer communication'], 400);
         }
 
@@ -161,8 +158,8 @@ class CustomerCommunicationController extends Controller
     public function schedule(Request $request, int $id): JsonResponse
     {
         $communication = $this->service->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return response()->json(['message' => 'Customer communication not found'], 404);
         }
 
@@ -174,7 +171,7 @@ class CustomerCommunicationController extends Controller
 
         $scheduled = $this->service->schedule($communication, $validated['scheduled_at']);
 
-        if (!$scheduled) {
+        if (! $scheduled) {
             return response()->json(['message' => 'Failed to schedule customer communication'], 400);
         }
 
@@ -190,8 +187,8 @@ class CustomerCommunicationController extends Controller
     public function send(int $id): JsonResponse
     {
         $communication = $this->service->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return response()->json(['message' => 'Customer communication not found'], 404);
         }
 
@@ -199,7 +196,7 @@ class CustomerCommunicationController extends Controller
 
         $sent = $this->service->send($communication);
 
-        if (!$sent) {
+        if (! $sent) {
             return response()->json(['message' => 'Failed to send customer communication'], 400);
         }
 
@@ -215,8 +212,8 @@ class CustomerCommunicationController extends Controller
     public function cancel(int $id): JsonResponse
     {
         $communication = $this->service->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return response()->json(['message' => 'Customer communication not found'], 404);
         }
 
@@ -224,7 +221,7 @@ class CustomerCommunicationController extends Controller
 
         $cancelled = $this->service->cancel($communication);
 
-        if (!$cancelled) {
+        if (! $cancelled) {
             return response()->json(['message' => 'Failed to cancel customer communication'], 400);
         }
 
@@ -240,8 +237,8 @@ class CustomerCommunicationController extends Controller
     public function reschedule(Request $request, int $id): JsonResponse
     {
         $communication = $this->service->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return response()->json(['message' => 'Customer communication not found'], 404);
         }
 
@@ -253,7 +250,7 @@ class CustomerCommunicationController extends Controller
 
         $rescheduled = $this->service->reschedule($communication, $validated['scheduled_at']);
 
-        if (!$rescheduled) {
+        if (! $rescheduled) {
             return response()->json(['message' => 'Failed to reschedule customer communication'], 400);
         }
 
@@ -269,8 +266,8 @@ class CustomerCommunicationController extends Controller
     public function markAsDelivered(int $id): JsonResponse
     {
         $communication = $this->service->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return response()->json(['message' => 'Customer communication not found'], 404);
         }
 
@@ -278,7 +275,7 @@ class CustomerCommunicationController extends Controller
 
         $marked = $this->service->markAsDelivered($communication);
 
-        if (!$marked) {
+        if (! $marked) {
             return response()->json(['message' => 'Failed to mark customer communication as delivered'], 400);
         }
 
@@ -294,8 +291,8 @@ class CustomerCommunicationController extends Controller
     public function markAsOpened(int $id): JsonResponse
     {
         $communication = $this->service->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return response()->json(['message' => 'Customer communication not found'], 404);
         }
 
@@ -303,7 +300,7 @@ class CustomerCommunicationController extends Controller
 
         $marked = $this->service->markAsOpened($communication);
 
-        if (!$marked) {
+        if (! $marked) {
             return response()->json(['message' => 'Failed to mark customer communication as opened'], 400);
         }
 
@@ -319,8 +316,8 @@ class CustomerCommunicationController extends Controller
     public function markAsClicked(int $id): JsonResponse
     {
         $communication = $this->service->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return response()->json(['message' => 'Customer communication not found'], 404);
         }
 
@@ -328,7 +325,7 @@ class CustomerCommunicationController extends Controller
 
         $marked = $this->service->markAsClicked($communication);
 
-        if (!$marked) {
+        if (! $marked) {
             return response()->json(['message' => 'Failed to mark customer communication as clicked'], 400);
         }
 
@@ -344,8 +341,8 @@ class CustomerCommunicationController extends Controller
     public function markAsBounced(int $id): JsonResponse
     {
         $communication = $this->service->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return response()->json(['message' => 'Customer communication not found'], 404);
         }
 
@@ -353,7 +350,7 @@ class CustomerCommunicationController extends Controller
 
         $marked = $this->service->markAsBounced($communication);
 
-        if (!$marked) {
+        if (! $marked) {
             return response()->json(['message' => 'Failed to mark customer communication as bounced'], 400);
         }
 
@@ -369,8 +366,8 @@ class CustomerCommunicationController extends Controller
     public function markAsUnsubscribed(int $id): JsonResponse
     {
         $communication = $this->service->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return response()->json(['message' => 'Customer communication not found'], 404);
         }
 
@@ -378,7 +375,7 @@ class CustomerCommunicationController extends Controller
 
         $marked = $this->service->markAsUnsubscribed($communication);
 
-        if (!$marked) {
+        if (! $marked) {
             return response()->json(['message' => 'Failed to mark customer communication as unsubscribed'], 400);
         }
 
@@ -394,8 +391,8 @@ class CustomerCommunicationController extends Controller
     public function analytics(int $id): JsonResponse
     {
         $communication = $this->service->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return response()->json(['message' => 'Customer communication not found'], 404);
         }
 
@@ -414,8 +411,8 @@ class CustomerCommunicationController extends Controller
     public function tracking(int $id): JsonResponse
     {
         $communication = $this->service->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return response()->json(['message' => 'Customer communication not found'], 404);
         }
 
@@ -434,8 +431,8 @@ class CustomerCommunicationController extends Controller
     public function addAttachment(Request $request, int $id): JsonResponse
     {
         $communication = $this->service->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return response()->json(['message' => 'Customer communication not found'], 404);
         }
 
@@ -447,7 +444,7 @@ class CustomerCommunicationController extends Controller
 
         $added = $this->service->addAttachment($communication, $request->file('file'));
 
-        if (!$added) {
+        if (! $added) {
             return response()->json(['message' => 'Failed to add attachment'], 400);
         }
 
@@ -463,8 +460,8 @@ class CustomerCommunicationController extends Controller
     public function removeAttachment(int $id, int $mediaId): JsonResponse
     {
         $communication = $this->service->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             return response()->json(['message' => 'Customer communication not found'], 404);
         }
 
@@ -472,7 +469,7 @@ class CustomerCommunicationController extends Controller
 
         $removed = $this->service->removeAttachment($communication, $mediaId);
 
-        if (!$removed) {
+        if (! $removed) {
             return response()->json(['message' => 'Failed to remove attachment'], 400);
         }
 

@@ -2,8 +2,8 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
-use Fereydooni\Shopping\app\Models\CustomerCommunication;
 use Fereydooni\Shopping\app\Enums\CommunicationStatus;
+use Fereydooni\Shopping\app\Models\CustomerCommunication;
 use Illuminate\Support\Facades\Event;
 
 trait HasCustomerCommunicationStatusManagement

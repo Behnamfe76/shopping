@@ -5,15 +5,16 @@ namespace App\Notifications\EmployeePosition;
 use App\Models\EmployeePosition;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\BroadcastMessage;
 
 class PositionSetHiring extends Notification implements ShouldQueue
 {
     use Queueable;
 
     public EmployeePosition $position;
+
     public array $hiringDetails;
 
     /**
@@ -38,33 +39,33 @@ class PositionSetHiring extends Notification implements ShouldQueue
      */
     public function toMail($notifiable): MailMessage
     {
-        $url = url('/positions/' . $this->position->id . '/hiring');
+        $url = url('/positions/'.$this->position->id.'/hiring');
 
         $mailMessage = (new MailMessage)
-            ->subject('New Hiring Position: ' . $this->position->title)
-            ->greeting('Hello ' . $notifiable->name)
+            ->subject('New Hiring Position: '.$this->position->title)
+            ->greeting('Hello '.$notifiable->name)
             ->line('A new position has been set to hiring status and requires your attention.');
 
-        $mailMessage->line('Position: ' . $this->position->title)
-            ->line('Department: ' . $this->position->department?->name)
-            ->line('Level: ' . $this->position->level->label())
-            ->line('Urgency: ' . ($this->hiringDetails['urgency_level'] ?? 'Normal'));
+        $mailMessage->line('Position: '.$this->position->title)
+            ->line('Department: '.$this->position->department?->name)
+            ->line('Level: '.$this->position->level->label())
+            ->line('Urgency: '.($this->hiringDetails['urgency_level'] ?? 'Normal'));
 
         if (isset($this->hiringDetails['expected_fill_date'])) {
-            $mailMessage->line('Expected Fill Date: ' . $this->hiringDetails['expected_fill_date']);
+            $mailMessage->line('Expected Fill Date: '.$this->hiringDetails['expected_fill_date']);
         }
 
         if (isset($this->hiringDetails['hiring_manager'])) {
-            $mailMessage->line('Hiring Manager: ' . $this->hiringDetails['hiring_manager']);
+            $mailMessage->line('Hiring Manager: '.$this->hiringDetails['hiring_manager']);
         }
 
         if (isset($this->hiringDetails['recruitment_budget'])) {
-            $mailMessage->line('Recruitment Budget: $' . number_format($this->hiringDetails['recruitment_budget']));
+            $mailMessage->line('Recruitment Budget: $'.number_format($this->hiringDetails['recruitment_budget']));
         }
 
-        $mailMessage->line('Requirements: ' . ($this->position->requirements ?? 'Not specified'))
-            ->line('Skills Required: ' . implode(', ', $this->position->skills_required ?? []))
-            ->line('Experience Required: ' . ($this->position->experience_required ?? 'Not specified') . ' years')
+        $mailMessage->line('Requirements: '.($this->position->requirements ?? 'Not specified'))
+            ->line('Skills Required: '.implode(', ', $this->position->skills_required ?? []))
+            ->line('Experience Required: '.($this->position->experience_required ?? 'Not specified').' years')
             ->action('View Hiring Details', $url)
             ->line('Please begin the recruitment process for this position.')
             ->salutation('Best regards, HR Team');
@@ -96,7 +97,7 @@ class PositionSetHiring extends Notification implements ShouldQueue
             'is_travel_required' => $this->position->is_travel_required,
             'set_at' => now()->toISOString(),
             'type' => 'position_set_hiring',
-            'message' => 'Position "' . $this->position->title . '" is now hiring',
+            'message' => 'Position "'.$this->position->title.'" is now hiring',
         ];
     }
 
@@ -124,7 +125,7 @@ class PositionSetHiring extends Notification implements ShouldQueue
             'is_travel_required' => $this->position->is_travel_required,
             'set_at' => now()->toISOString(),
             'type' => 'position_set_hiring',
-            'message' => 'Position "' . $this->position->title . '" is now hiring',
+            'message' => 'Position "'.$this->position->title.'" is now hiring',
             'timestamp' => now()->toISOString(),
         ]);
     }

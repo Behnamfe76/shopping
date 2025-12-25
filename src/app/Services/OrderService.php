@@ -2,22 +2,22 @@
 
 namespace Fereydooni\Shopping\app\Services;
 
-use Fereydooni\Shopping\app\Repositories\Interfaces\OrderRepositoryInterface;
-use Fereydooni\Shopping\app\Models\Order;
 use Fereydooni\Shopping\app\DTOs\OrderDTO;
+use Fereydooni\Shopping\app\Models\Order;
+use Fereydooni\Shopping\app\Repositories\Interfaces\OrderRepositoryInterface;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
-use Fereydooni\Shopping\app\Traits\HasStatusManagement;
-use Fereydooni\Shopping\app\Traits\HasSearchOperations;
 use Fereydooni\Shopping\app\Traits\HasFinancialOperations;
 use Fereydooni\Shopping\app\Traits\HasNotesManagement;
+use Fereydooni\Shopping\app\Traits\HasSearchOperations;
+use Fereydooni\Shopping\app\Traits\HasStatusManagement;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
 
 class OrderService
 {
-    use HasCrudOperations, HasStatusManagement, HasSearchOperations, HasFinancialOperations, HasNotesManagement;
+    use HasCrudOperations, HasFinancialOperations, HasNotesManagement, HasSearchOperations, HasStatusManagement;
 
     protected OrderRepositoryInterface $repository;
 
@@ -39,7 +39,7 @@ class OrderService
      */
     public function allDTO(): Collection
     {
-        return $this->all()->map(fn($order) => OrderDTO::fromModel($order));
+        return $this->all()->map(fn ($order) => OrderDTO::fromModel($order));
     }
 
     /**
@@ -61,7 +61,7 @@ class OrderService
     /**
      * Get cursor paginated orders
      */
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->repository->cursorPaginate($perPage, $cursor);
     }
@@ -189,7 +189,7 @@ class OrderService
     /**
      * Cancel order
      */
-    public function cancel(Order $order, string $reason = null): bool
+    public function cancel(Order $order, ?string $reason = null): bool
     {
         return $this->repository->cancel($order, $reason);
     }
@@ -197,7 +197,7 @@ class OrderService
     /**
      * Cancel order and return DTO
      */
-    public function cancelDTO(Order $order, string $reason = null): ?OrderDTO
+    public function cancelDTO(Order $order, ?string $reason = null): ?OrderDTO
     {
         return $this->repository->cancelAndReturnDTO($order, $reason);
     }
@@ -213,7 +213,7 @@ class OrderService
     /**
      * Mark order as shipped
      */
-    public function markAsShipped(Order $order, string $trackingNumber = null): bool
+    public function markAsShipped(Order $order, ?string $trackingNumber = null): bool
     {
         return $this->repository->markAsShipped($order, $trackingNumber);
     }
@@ -421,7 +421,7 @@ class OrderService
     /**
      * Process refund
      */
-    public function processRefund(Order $order, float $amount, string $reason = null): bool
+    public function processRefund(Order $order, float $amount, ?string $reason = null): bool
     {
         return $this->processRefund($order, $amount, $reason);
     }
@@ -461,7 +461,7 @@ class OrderService
     /**
      * Update order note
      */
-    public function updateNote(Order $order, int $noteIndex, string $note, string $type = null): bool
+    public function updateNote(Order $order, int $noteIndex, string $note, ?string $type = null): bool
     {
         return $this->updateNote($order, $noteIndex, $note, $type);
     }

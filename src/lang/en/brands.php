@@ -16,6 +16,6 @@ return [
         'inactive' => 'Inactive',
         'pending' => 'Pending',
         'suspended' => 'Suspanded',
-    ]
+    ],
 
 ];

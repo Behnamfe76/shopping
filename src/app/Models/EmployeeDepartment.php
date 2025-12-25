@@ -2,14 +2,12 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
+use Fereydooni\Shopping\app\Enums\DepartmentStatus;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Carbon;
-use Fereydooni\Shopping\app\Enums\DepartmentStatus;
 
 class EmployeeDepartment extends Model
 {
@@ -107,8 +105,9 @@ class EmployeeDepartment extends Model
     public function getFullNameAttribute(): string
     {
         if ($this->parent) {
-            return $this->parent->full_name . ' > ' . $this->name;
+            return $this->parent->full_name.' > '.$this->name;
         }
+
         return $this->name;
     }
 
@@ -155,15 +154,16 @@ class EmployeeDepartment extends Model
 
     public function hasParent(): bool
     {
-        return !is_null($this->parent_id);
+        return ! is_null($this->parent_id);
     }
 
     public function activate(): bool
     {
         $this->update([
             'is_active' => true,
-            'status' => DepartmentStatus::ACTIVE
+            'status' => DepartmentStatus::ACTIVE,
         ]);
+
         return true;
     }
 
@@ -171,8 +171,9 @@ class EmployeeDepartment extends Model
     {
         $this->update([
             'is_active' => false,
-            'status' => DepartmentStatus::INACTIVE
+            'status' => DepartmentStatus::INACTIVE,
         ]);
+
         return true;
     }
 
@@ -180,26 +181,30 @@ class EmployeeDepartment extends Model
     {
         $this->update([
             'is_active' => false,
-            'status' => DepartmentStatus::ARCHIVED
+            'status' => DepartmentStatus::ARCHIVED,
         ]);
+
         return true;
     }
 
     public function assignManager(int $managerId): bool
     {
         $this->update(['manager_id' => $managerId]);
+
         return true;
     }
 
     public function removeManager(): bool
     {
         $this->update(['manager_id' => null]);
+
         return true;
     }
 
     public function moveToParent(?int $newParentId): bool
     {
         $this->update(['parent_id' => $newParentId]);
+
         return true;
     }
 
@@ -220,6 +225,7 @@ class EmployeeDepartment extends Model
     {
         $descendants = [];
         $this->collectDescendants($descendants);
+
         return $descendants;
     }
 

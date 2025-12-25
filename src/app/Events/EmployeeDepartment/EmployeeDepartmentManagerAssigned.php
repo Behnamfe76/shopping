@@ -5,9 +5,7 @@ namespace App\Events\EmployeeDepartment;
 use App\Models\EmployeeDepartment;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -16,15 +14,19 @@ class EmployeeDepartmentManagerAssigned
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $department;
+
     public $managerId;
+
     public $previousManagerId;
+
     public $assignedBy;
+
     public $timestamp;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(EmployeeDepartment $department, int $managerId, int $previousManagerId = null, $assignedBy = null)
+    public function __construct(EmployeeDepartment $department, int $managerId, ?int $previousManagerId = null, $assignedBy = null)
     {
         $this->department = $department;
         $this->managerId = $managerId;
@@ -43,7 +45,7 @@ class EmployeeDepartmentManagerAssigned
         return [
             new PrivateChannel('departments'),
             new Channel('department-updates'),
-            new PrivateChannel('user.' . $this->managerId)
+            new PrivateChannel('user.'.$this->managerId),
         ];
     }
 
@@ -59,7 +61,7 @@ class EmployeeDepartmentManagerAssigned
             'previous_manager_id' => $this->previousManagerId,
             'assigned_by' => $this->assignedBy,
             'assigned_at' => $this->timestamp->toISOString(),
-            'event_type' => 'manager_assigned'
+            'event_type' => 'manager_assigned',
         ];
     }
 

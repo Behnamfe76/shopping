@@ -42,7 +42,7 @@ class ShipmentItemCollection extends ResourceCollection
                     return $item->is_fully_shipped ?? false;
                 })->count(),
                 'partially_shipped_count' => $this->collection->filter(function ($item) {
-                    return !($item->is_fully_shipped ?? false);
+                    return ! ($item->is_fully_shipped ?? false);
                 })->count(),
             ],
         ];

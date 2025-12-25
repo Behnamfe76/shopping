@@ -2,10 +2,10 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Fereydooni\Shopping\app\Enums\EmployeeStatus;
 use Fereydooni\Shopping\app\Enums\EmploymentType;
 use Fereydooni\Shopping\app\Enums\Gender;
+use Illuminate\Foundation\Http\FormRequest;
 
 class SearchEmployeeRequest extends FormRequest
 {
@@ -24,11 +24,11 @@ class SearchEmployeeRequest extends FormRequest
     {
         return [
             'query' => ['nullable', 'string', 'max:255'],
-            'status' => ['nullable', 'string', 'in:' . implode(',', array_column(EmployeeStatus::cases(), 'value'))],
-            'employment_type' => ['nullable', 'string', 'in:' . implode(',', array_column(EmploymentType::cases(), 'value'))],
+            'status' => ['nullable', 'string', 'in:'.implode(',', array_column(EmployeeStatus::cases(), 'value'))],
+            'employment_type' => ['nullable', 'string', 'in:'.implode(',', array_column(EmploymentType::cases(), 'value'))],
             'department' => ['nullable', 'string', 'max:100'],
             'position' => ['nullable', 'string', 'max:100'],
-            'gender' => ['nullable', 'string', 'in:' . implode(',', array_column(Gender::cases(), 'value'))],
+            'gender' => ['nullable', 'string', 'in:'.implode(',', array_column(Gender::cases(), 'value'))],
             'manager_id' => ['nullable', 'integer', 'exists:employees,id'],
             'min_salary' => ['nullable', 'numeric', 'min:0'],
             'max_salary' => ['nullable', 'numeric', 'min:0', 'gte:min_salary'],
@@ -69,21 +69,20 @@ class SearchEmployeeRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         // Set default values
-        if (!$this->has('sort_by')) {
+        if (! $this->has('sort_by')) {
             $this->merge(['sort_by' => 'first_name']);
         }
 
-        if (!$this->has('sort_direction')) {
+        if (! $this->has('sort_direction')) {
             $this->merge(['sort_direction' => 'asc']);
         }
 
-        if (!$this->has('per_page')) {
+        if (! $this->has('per_page')) {
             $this->merge(['per_page' => 15]);
         }
 
-        if (!$this->has('page')) {
+        if (! $this->has('page')) {
             $this->merge(['page' => 1]);
         }
     }
 }
-

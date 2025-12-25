@@ -3,9 +3,9 @@
 namespace App\Notifications\EmployeeSalaryHistory;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
 class SalaryChangeRejected extends Notification implements ShouldQueue
 {
@@ -28,16 +28,16 @@ class SalaryChangeRejected extends Notification implements ShouldQueue
         $mail = (new MailMessage)
             ->subject('Salary Change Request Rejected')
             ->line('Your salary change request has been reviewed and unfortunately cannot be approved at this time.')
-            ->line('Change Type: ' . $this->salaryHistory->change_type->label())
-            ->line('Requested Amount: $' . number_format($this->salaryHistory->change_amount, 2))
-            ->line('Effective Date: ' . $this->salaryHistory->effective_date->format('M d, Y'));
+            ->line('Change Type: '.$this->salaryHistory->change_type->label())
+            ->line('Requested Amount: $'.number_format($this->salaryHistory->change_amount, 2))
+            ->line('Effective Date: '.$this->salaryHistory->effective_date->format('M d, Y'));
 
         if ($this->salaryHistory->rejection_reason) {
-            $mail->line('Reason: ' . $this->salaryHistory->rejection_reason);
+            $mail->line('Reason: '.$this->salaryHistory->rejection_reason);
         }
 
         $mail->line('If you have questions about this decision, please contact your manager or HR representative.')
-            ->action('View Details', url('/salary-changes/' . $this->salaryHistory->id));
+            ->action('View Details', url('/salary-changes/'.$this->salaryHistory->id));
 
         return $mail;
     }

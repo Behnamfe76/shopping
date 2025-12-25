@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
-use Illuminate\Support\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Fereydooni\Shopping\app\Models\EmployeeEmergencyContact;
 use Fereydooni\Shopping\app\DTOs\EmployeeEmergencyContactDTO;
+use Fereydooni\Shopping\app\Models\EmployeeEmergencyContact;
 use Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeEmergencyContactRepositoryInterface;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 trait HasEmployeeEmergencyContactOperations
 {
@@ -17,9 +17,10 @@ trait HasEmployeeEmergencyContactOperations
      */
     protected function getEmergencyContactRepository(): EmployeeEmergencyContactRepositoryInterface
     {
-        if (!$this->emergencyContactRepository) {
+        if (! $this->emergencyContactRepository) {
             $this->emergencyContactRepository = app(EmployeeEmergencyContactRepositoryInterface::class);
         }
+
         return $this->emergencyContactRepository;
     }
 
@@ -247,6 +248,7 @@ trait HasEmployeeEmergencyContactOperations
     public function hasActiveEmergencyContacts(int $employeeId): bool
     {
         $contacts = $this->findEmergencyContactsByEmployee($employeeId);
+
         return $contacts->where('is_active', true)->isNotEmpty();
     }
 
@@ -256,6 +258,7 @@ trait HasEmployeeEmergencyContactOperations
     public function hasPrimaryEmergencyContact(int $employeeId): bool
     {
         $contacts = $this->findEmergencyContactsByEmployee($employeeId);
+
         return $contacts->where('is_primary', true)->isNotEmpty();
     }
 

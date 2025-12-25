@@ -32,7 +32,7 @@ class SendProductReviewCreatedNotification implements ShouldQueue
             'review_id' => $review->id,
             'product_id' => $review->product_id,
             'user_id' => $review->user_id,
-            'rating' => $review->rating
+            'rating' => $review->rating,
         ]);
 
         // Send notification to product owner/admin
@@ -50,7 +50,7 @@ class SendProductReviewCreatedNotification implements ShouldQueue
     {
         Log::error('Failed to send product review created notification', [
             'review_id' => $event->review->id,
-            'error' => $exception->getMessage()
+            'error' => $exception->getMessage(),
         ]);
     }
 }

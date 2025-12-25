@@ -17,7 +17,7 @@ class ProviderPerformanceSearchResource extends JsonResource
         return [
             'id' => $this->id,
             'provider_id' => $this->provider_id,
-            'provider_name' => $this->whenLoaded('provider', function() {
+            'provider_name' => $this->whenLoaded('provider', function () {
                 return $this->provider->company_name;
             }),
             'period_start' => $this->period_start,
@@ -55,7 +55,7 @@ class ProviderPerformanceSearchResource extends JsonResource
         }
 
         if ($this->total_revenue) {
-            $highlights[] = "Revenue: $" . number_format($this->total_revenue, 2);
+            $highlights[] = 'Revenue: $'.number_format($this->total_revenue, 2);
         }
 
         return $highlights;

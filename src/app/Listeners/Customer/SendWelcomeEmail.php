@@ -30,6 +30,6 @@ class SendWelcomeEmail implements ShouldQueue
         // Mail::to($customer->email)->send(new WelcomeEmail($customer));
 
         // For now, we'll just log the action
-        \Log::info('Welcome email sent to customer: ' . $customer->email);
+        \Log::info('Welcome email sent to customer: '.$customer->email);
     }
 }

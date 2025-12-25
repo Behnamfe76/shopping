@@ -2,27 +2,20 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Email;
+use Fereydooni\Shopping\app\Enums\CustomerNotePriority;
+use Fereydooni\Shopping\app\Enums\CustomerNoteType;
+use Fereydooni\Shopping\app\Models\Customer;
+use Fereydooni\Shopping\app\Models\CustomerNote;
+use Fereydooni\Shopping\app\Models\User;
+use Illuminate\Support\Carbon;
+use Spatie\LaravelData\Attributes\Validation\ArrayType;
+use Spatie\LaravelData\Attributes\Validation\BooleanType;
+use Spatie\LaravelData\Attributes\Validation\IntegerType;
 use Spatie\LaravelData\Attributes\Validation\Max;
-use Spatie\LaravelData\Attributes\Validation\Min;
 use Spatie\LaravelData\Attributes\Validation\Nullable;
 use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
-use Spatie\LaravelData\Attributes\Validation\BooleanType;
-use Spatie\LaravelData\Attributes\Validation\Date;
-use Spatie\LaravelData\Attributes\Validation\Numeric;
-use Spatie\LaravelData\Attributes\Validation\In;
-use Spatie\LaravelData\Attributes\Validation\Unique;
-use Spatie\LaravelData\Attributes\Validation\ArrayType;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Collection;
-use Fereydooni\Shopping\app\Enums\CustomerNoteType;
-use Fereydooni\Shopping\app\Enums\CustomerNotePriority;
-use Fereydooni\Shopping\app\Models\CustomerNote;
-use Fereydooni\Shopping\app\Models\Customer;
-use Fereydooni\Shopping\app\Models\User;
+use Spatie\LaravelData\Data;
 
 class CustomerNoteDTO extends Data
 {
@@ -72,8 +65,7 @@ class CustomerNoteDTO extends Data
 
         #[Nullable]
         public ?User $user,
-    ) {
-    }
+    ) {}
 
     public static function fromModel(CustomerNote $customerNote): self
     {
@@ -103,8 +95,8 @@ class CustomerNoteDTO extends Data
             'user_id' => ['required', 'integer', 'exists:users,id'],
             'title' => ['required', 'string', 'max:255'],
             'content' => ['required', 'string', 'max:10000'],
-            'note_type' => ['required', 'string', 'in:' . implode(',', array_column(CustomerNoteType::cases(), 'value'))],
-            'priority' => ['required', 'string', 'in:' . implode(',', array_column(CustomerNotePriority::cases(), 'value'))],
+            'note_type' => ['required', 'string', 'in:'.implode(',', array_column(CustomerNoteType::cases(), 'value'))],
+            'priority' => ['required', 'string', 'in:'.implode(',', array_column(CustomerNotePriority::cases(), 'value'))],
             'is_private' => ['boolean'],
             'is_pinned' => ['boolean'],
             'tags' => ['nullable', 'array'],
@@ -147,17 +139,17 @@ class CustomerNoteDTO extends Data
 
     public function isPublic(): bool
     {
-        return !$this->is_private;
+        return ! $this->is_private;
     }
 
     public function hasTags(): bool
     {
-        return !empty($this->tags);
+        return ! empty($this->tags);
     }
 
     public function hasAttachments(): bool
     {
-        return !empty($this->attachments);
+        return ! empty($this->attachments);
     }
 
     public function getTagCount(): int

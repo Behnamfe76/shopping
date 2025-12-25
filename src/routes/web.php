@@ -1,22 +1,22 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Fereydooni\Shopping\app\Http\Controllers\Web\ProductController as WebProductController;
-use Fereydooni\Shopping\app\Http\Controllers\Web\CategoryController as WebCategoryController;
-use Fereydooni\Shopping\app\Http\Controllers\Web\OrderController as WebOrderController;
-use Fereydooni\Shopping\app\Http\Controllers\Web\CartController as WebCartController;
-use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerController as WebCustomerController;
-use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerPreferenceController as WebCustomerPreferenceController;
-use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerNoteController as WebCustomerNoteController;
-use Fereydooni\Shopping\app\Http\Controllers\Web\LoyaltyTransactionController as WebLoyaltyTransactionController;
-use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerSegmentController as WebCustomerSegmentController;
-use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerCommunicationController as WebCustomerCommunicationController;
-use Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeController as WebEmployeeController;
-use Fereydooni\Shopping\app\Http\Controllers\Web\ProviderController as WebProviderController;
-use Fereydooni\Shopping\app\Http\Controllers\Web\ProviderLocationController;
-use Fereydooni\Shopping\app\Http\Controllers\Web\ProviderInsuranceController;
-use App\Http\Controllers\ProviderPerformanceController;
 use App\Http\Controllers\ProviderCommunicationController;
+use App\Http\Controllers\ProviderPerformanceController;
+use Fereydooni\Shopping\app\Http\Controllers\Web\CartController as WebCartController;
+use Fereydooni\Shopping\app\Http\Controllers\Web\CategoryController as WebCategoryController;
+use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerCommunicationController as WebCustomerCommunicationController;
+use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerController as WebCustomerController;
+use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerNoteController as WebCustomerNoteController;
+use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerPreferenceController as WebCustomerPreferenceController;
+use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerSegmentController as WebCustomerSegmentController;
+use Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeController as WebEmployeeController;
+use Fereydooni\Shopping\app\Http\Controllers\Web\LoyaltyTransactionController as WebLoyaltyTransactionController;
+use Fereydooni\Shopping\app\Http\Controllers\Web\OrderController as WebOrderController;
+use Fereydooni\Shopping\app\Http\Controllers\Web\ProductController as WebProductController;
+use Fereydooni\Shopping\app\Http\Controllers\Web\ProviderController as WebProviderController;
+use Fereydooni\Shopping\app\Http\Controllers\Web\ProviderInsuranceController;
+use Fereydooni\Shopping\app\Http\Controllers\Web\ProviderLocationController;
+use Illuminate\Support\Facades\Route;
 
 Route::prefix('shopping')->name('shopping.')->middleware(['web'])->group(function () {
     // Product routes
@@ -1245,7 +1245,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/communication-analytics', function () {
             return view('dashboard.communication-analytics');
         })->name('communication-analytics')
-        ->middleware('can:viewAnalytics,App\Models\ProviderCommunication');
+            ->middleware('can:viewAnalytics,App\Models\ProviderCommunication');
     });
 
     // Provider-specific routes
@@ -1255,19 +1255,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/communications', function ($provider) {
             return view('providers.communications', compact('provider'));
         })->name('communications')
-        ->middleware('can:viewByProvider,App\Models\ProviderCommunication,provider->id');
+            ->middleware('can:viewByProvider,App\Models\ProviderCommunication,provider->id');
 
         // Provider communication history
         Route::get('/communications/history', function ($provider) {
             return view('providers.communication-history', compact('provider'));
         })->name('communication-history')
-        ->middleware('can:viewByProvider,App\Models\ProviderCommunication,provider->id');
+            ->middleware('can:viewByProvider,App\Models\ProviderCommunication,provider->id');
 
         // Provider communication analytics
         Route::get('/communications/analytics', function ($provider) {
             return view('providers.communication-analytics', compact('provider'));
         })->name('communication-analytics')
-        ->middleware('can:viewAnalytics,App\Models\ProviderCommunication');
+            ->middleware('can:viewAnalytics,App\Models\ProviderCommunication');
     });
 
     // User-specific routes
@@ -1277,13 +1277,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/communications', function ($user) {
             return view('users.communications', compact('user'));
         })->name('communications')
-        ->middleware('can:viewByUser,App\Models\ProviderCommunication,user->id');
+            ->middleware('can:viewByUser,App\Models\ProviderCommunication,user->id');
 
         // User communication history
         Route::get('/communications/history', function ($user) {
             return view('users.communication-history', compact('user'));
         })->name('communication-history')
-        ->middleware('can:viewByUser,App\Models\ProviderCommunication,user->id');
+            ->middleware('can:viewByUser,App\Models\ProviderCommunication,user->id');
     });
 });
 

@@ -2,16 +2,16 @@
 
 namespace Fereydooni\Shopping\app\Listeners\LoyaltyTransaction;
 
+use Fereydooni\Shopping\app\Events\LoyaltyTransaction\LoyaltyPointsEarned;
+use Fereydooni\Shopping\app\Events\LoyaltyTransaction\LoyaltyPointsExpired;
+use Fereydooni\Shopping\app\Events\LoyaltyTransaction\LoyaltyPointsRedeemed;
+use Fereydooni\Shopping\app\Events\LoyaltyTransaction\LoyaltyTransactionCreated;
+use Fereydooni\Shopping\app\Events\LoyaltyTransaction\LoyaltyTransactionDeleted;
+use Fereydooni\Shopping\app\Events\LoyaltyTransaction\LoyaltyTransactionExpired;
+use Fereydooni\Shopping\app\Events\LoyaltyTransaction\LoyaltyTransactionReversed;
+use Fereydooni\Shopping\app\Events\LoyaltyTransaction\LoyaltyTransactionUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Fereydooni\Shopping\app\Events\LoyaltyTransaction\LoyaltyTransactionCreated;
-use Fereydooni\Shopping\app\Events\LoyaltyTransaction\LoyaltyTransactionUpdated;
-use Fereydooni\Shopping\app\Events\LoyaltyTransaction\LoyaltyTransactionDeleted;
-use Fereydooni\Shopping\app\Events\LoyaltyTransaction\LoyaltyTransactionReversed;
-use Fereydooni\Shopping\app\Events\LoyaltyTransaction\LoyaltyTransactionExpired;
-use Fereydooni\Shopping\app\Events\LoyaltyTransaction\LoyaltyPointsEarned;
-use Fereydooni\Shopping\app\Events\LoyaltyTransaction\LoyaltyPointsRedeemed;
-use Fereydooni\Shopping\app\Events\LoyaltyTransaction\LoyaltyPointsExpired;
 
 class UpdateLoyaltyAnalytics implements ShouldQueue
 {
@@ -27,10 +27,10 @@ class UpdateLoyaltyAnalytics implements ShouldQueue
 
         // Update customer loyalty analytics
         $this->updateCustomerAnalytics($customerId);
-        
+
         // Update global loyalty analytics
         $this->updateGlobalAnalytics();
-        
+
         // Log analytics update
         \Log::info('Loyalty analytics updated', [
             'transaction_id' => $transaction->id,

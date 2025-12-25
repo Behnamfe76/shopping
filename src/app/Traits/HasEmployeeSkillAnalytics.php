@@ -3,11 +3,9 @@
 namespace App\Traits;
 
 use App\Models\EmployeeSkill;
-use App\DTOs\EmployeeSkillDTO;
 use App\Repositories\Interfaces\EmployeeSkillRepositoryInterface;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
-use Carbon\Carbon;
 
 trait HasEmployeeSkillAnalytics
 {
@@ -24,13 +22,13 @@ trait HasEmployeeSkillAnalytics
             $certifiedSkills = $this->employeeSkillRepository->findCertified()->where('employee_id', $employeeId)->count();
             $primarySkills = $this->employeeSkillRepository->findPrimary()->where('employee_id', $employeeId)->count();
             $requiredSkills = $this->employeeSkillRepository->findRequired()->where('employee_id', $employeeId)->count();
-            
+
             $totalExperience = $this->employeeSkillRepository->getEmployeeTotalExperience($employeeId);
             $avgProficiency = $this->employeeSkillRepository->getEmployeeAverageProficiency($employeeId);
-            
+
             $categoryDistribution = $this->getEmployeeSkillsByCategoryDistribution($employeeId);
             $proficiencyDistribution = $this->getEmployeeSkillsByProficiencyDistribution($employeeId);
-            
+
             return [
                 'employee_id' => $employeeId,
                 'total_skills' => $totalSkills,
@@ -61,11 +59,11 @@ trait HasEmployeeSkillAnalytics
             $totalSkills = $this->employeeSkillRepository->getTotalSkillCount();
             $verifiedSkills = $this->employeeSkillRepository->getTotalVerifiedSkillsCount();
             $certifiedSkills = $this->employeeSkillRepository->getTotalCertifiedSkillsCount();
-            
+
             $categoryStats = $this->getAllSkillsByCategoryDistribution();
             $proficiencyStats = $this->getAllSkillsByProficiencyDistribution();
             $experienceStats = $this->getAllSkillsExperienceDistribution();
-            
+
             return [
                 'total_skills' => $totalSkills,
                 'verified_skills' => $verifiedSkills,
@@ -127,10 +125,10 @@ trait HasEmployeeSkillAnalytics
     /**
      * Get skills trends over time
      */
-    public function getSkillsTrends(string $startDate = null, string $endDate = null): array
+    public function getSkillsTrends(?string $startDate = null, ?string $endDate = null): array
     {
-        $cacheKey = "skills_trends_" . ($startDate ?? 'all') . "_" . ($endDate ?? 'all');
-        
+        $cacheKey = 'skills_trends_'.($startDate ?? 'all').'_'.($endDate ?? 'all');
+
         return Cache::remember($cacheKey, 1800, function () use ($startDate, $endDate) {
             return $this->employeeSkillRepository->getSkillsTrends($startDate, $endDate);
         });
@@ -143,11 +141,11 @@ trait HasEmployeeSkillAnalytics
     {
         return Cache::remember("top_skills_{$limit}", 3600, function () use ($limit) {
             $skills = $this->employeeSkillRepository->all();
-            
+
             $skillCounts = [];
             foreach ($skills as $skill) {
                 $skillName = $skill->skill_name;
-                if (!isset($skillCounts[$skillName])) {
+                if (! isset($skillCounts[$skillName])) {
                     $skillCounts[$skillName] = [
                         'name' => $skillName,
                         'count' => 0,
@@ -156,24 +154,24 @@ trait HasEmployeeSkillAnalytics
                         'total_experience' => 0,
                     ];
                 }
-                
+
                 $skillCounts[$skillName]['count']++;
                 $skillCounts[$skillName]['categories'][] = $skill->skill_category->value;
                 $skillCounts[$skillName]['avg_proficiency'] += $skill->getProficiencyNumericValue();
                 $skillCounts[$skillName]['total_experience'] += $skill->years_experience;
             }
-            
+
             // Calculate averages
             foreach ($skillCounts as &$skill) {
                 $skill['avg_proficiency'] = round($skill['avg_proficiency'] / $skill['count'], 2);
                 $skill['categories'] = array_unique($skill['categories']);
             }
-            
+
             // Sort by count and limit
             uasort($skillCounts, function ($a, $b) {
                 return $b['count'] - $a['count'];
             });
-            
+
             return array_slice($skillCounts, 0, $limit);
         });
     }
@@ -184,16 +182,16 @@ trait HasEmployeeSkillAnalytics
     private function getEmployeeSkillsByCategoryDistribution(int $employeeId): array
     {
         $skills = $this->employeeSkillRepository->findByEmployeeId($employeeId);
-        
+
         $distribution = [];
         foreach ($skills as $skill) {
             $category = $skill->skill_category->value;
-            if (!isset($distribution[$category])) {
+            if (! isset($distribution[$category])) {
                 $distribution[$category] = 0;
             }
             $distribution[$category]++;
         }
-        
+
         return $distribution;
     }
 
@@ -203,16 +201,16 @@ trait HasEmployeeSkillAnalytics
     private function getEmployeeSkillsByProficiencyDistribution(int $employeeId): array
     {
         $skills = $this->employeeSkillRepository->findByEmployeeId($employeeId);
-        
+
         $distribution = [];
         foreach ($skills as $skill) {
             $level = $skill->proficiency_level->value;
-            if (!isset($distribution[$level])) {
+            if (! isset($distribution[$level])) {
                 $distribution[$level] = 0;
             }
             $distribution[$level]++;
         }
-        
+
         return $distribution;
     }
 
@@ -222,16 +220,16 @@ trait HasEmployeeSkillAnalytics
     private function getAllSkillsByCategoryDistribution(): array
     {
         $skills = $this->employeeSkillRepository->all();
-        
+
         $distribution = [];
         foreach ($skills as $skill) {
             $category = $skill->skill_category->value;
-            if (!isset($distribution[$category])) {
+            if (! isset($distribution[$category])) {
                 $distribution[$category] = 0;
             }
             $distribution[$category]++;
         }
-        
+
         return $distribution;
     }
 
@@ -241,16 +239,16 @@ trait HasEmployeeSkillAnalytics
     private function getAllSkillsByProficiencyDistribution(): array
     {
         $skills = $this->employeeSkillRepository->all();
-        
+
         $distribution = [];
         foreach ($skills as $skill) {
             $level = $skill->proficiency_level->value;
-            if (!isset($distribution[$level])) {
+            if (! isset($distribution[$level])) {
                 $distribution[$level] = 0;
             }
             $distribution[$level]++;
         }
-        
+
         return $distribution;
     }
 
@@ -260,7 +258,7 @@ trait HasEmployeeSkillAnalytics
     private function getAllSkillsExperienceDistribution(): array
     {
         $skills = $this->employeeSkillRepository->all();
-        
+
         $distribution = [
             '0-1 years' => 0,
             '1-3 years' => 0,
@@ -268,10 +266,10 @@ trait HasEmployeeSkillAnalytics
             '5-10 years' => 0,
             '10+ years' => 0,
         ];
-        
+
         foreach ($skills as $skill) {
             $experience = $skill->years_experience;
-            
+
             if ($experience <= 1) {
                 $distribution['0-1 years']++;
             } elseif ($experience <= 3) {
@@ -284,7 +282,7 @@ trait HasEmployeeSkillAnalytics
                 $distribution['10+ years']++;
             }
         }
-        
+
         return $distribution;
     }
 
@@ -294,22 +292,22 @@ trait HasEmployeeSkillAnalytics
     private function getEmployeeSkillGrowthTrend(int $employeeId): array
     {
         $skills = $this->employeeSkillRepository->findByEmployeeId($employeeId);
-        
+
         $monthlyGrowth = [];
         foreach ($skills as $skill) {
             $month = $skill->created_at->format('Y-m');
-            if (!isset($monthlyGrowth[$month])) {
+            if (! isset($monthlyGrowth[$month])) {
                 $monthlyGrowth[$month] = 0;
             }
             $monthlyGrowth[$month]++;
         }
-        
+
         ksort($monthlyGrowth);
-        
+
         return [
             'monthly_growth' => $monthlyGrowth,
             'total_growth' => array_sum($monthlyGrowth),
-            'growth_rate' => count($monthlyGrowth) > 1 ? 
+            'growth_rate' => count($monthlyGrowth) > 1 ?
                 round((end($monthlyGrowth) - reset($monthlyGrowth)) / reset($monthlyGrowth) * 100, 2) : 0,
         ];
     }
@@ -320,7 +318,7 @@ trait HasEmployeeSkillAnalytics
     private function getEmployeeProficiencyImprovement(int $employeeId): array
     {
         $skills = $this->employeeSkillRepository->findByEmployeeId($employeeId);
-        
+
         $improvements = [];
         foreach ($skills as $skill) {
             $improvements[] = [
@@ -331,10 +329,10 @@ trait HasEmployeeSkillAnalytics
                 'improvement_potential' => $this->calculateImprovementPotential($skill),
             ];
         }
-        
+
         return [
             'skills' => $improvements,
-            'average_improvement_potential' => count($improvements) > 0 ? 
+            'average_improvement_potential' => count($improvements) > 0 ?
                 round(array_sum(array_column($improvements, 'improvement_potential')) / count($improvements), 2) : 0,
         ];
     }
@@ -347,10 +345,10 @@ trait HasEmployeeSkillAnalytics
         $maxLevel = 5; // Assuming 5 is the highest proficiency level
         $currentLevel = $skill->getProficiencyNumericValue();
         $experience = $skill->years_experience;
-        
+
         // Base improvement potential
         $potential = $maxLevel - $currentLevel;
-        
+
         // Adjust based on experience
         if ($experience < 2) {
             $potential *= 1.5; // High potential for new skills
@@ -359,7 +357,7 @@ trait HasEmployeeSkillAnalytics
         } else {
             $potential *= 0.8; // Lower potential for experienced skills
         }
-        
+
         return round($potential, 2);
     }
 
@@ -370,27 +368,27 @@ trait HasEmployeeSkillAnalytics
     {
         $currentSkills = $this->employeeSkillRepository->findByEmployeeId($employeeId);
         $skillNames = $currentSkills->pluck('skill_name')->toArray();
-        
+
         $recommendations = [];
-        
+
         // Recommend complementary skills
         $complementarySkills = $this->getComplementarySkills($skillNames);
-        if (!empty($complementarySkills)) {
+        if (! empty($complementarySkills)) {
             $recommendations['complementary_skills'] = $complementarySkills;
         }
-        
+
         // Recommend skill improvements
         $improvementSkills = $this->getSkillImprovementRecommendations($currentSkills);
-        if (!empty($improvementSkills)) {
+        if (! empty($improvementSkills)) {
             $recommendations['improvement_skills'] = $improvementSkills;
         }
-        
+
         // Recommend new skill categories
         $newCategories = $this->getNewCategoryRecommendations($currentSkills);
-        if (!empty($newCategories)) {
+        if (! empty($newCategories)) {
             $recommendations['new_categories'] = $newCategories;
         }
-        
+
         return $recommendations;
     }
 
@@ -407,14 +405,14 @@ trait HasEmployeeSkillAnalytics
             'Python' => ['Django', 'Flask', 'Pandas', 'NumPy'],
             'Java' => ['Spring', 'Hibernate', 'Maven', 'JUnit'],
         ];
-        
+
         $recommendations = [];
         foreach ($currentSkillNames as $skill) {
             if (isset($complementaryMap[$skill])) {
                 $recommendations = array_merge($recommendations, $complementaryMap[$skill]);
             }
         }
-        
+
         return array_unique($recommendations);
     }
 
@@ -424,7 +422,7 @@ trait HasEmployeeSkillAnalytics
     private function getSkillImprovementRecommendations(Collection $currentSkills): array
     {
         $recommendations = [];
-        
+
         foreach ($currentSkills as $skill) {
             if ($skill->getProficiencyNumericValue() < 4) { // Assuming 4+ is advanced
                 $recommendations[] = [
@@ -435,7 +433,7 @@ trait HasEmployeeSkillAnalytics
                 ];
             }
         }
-        
+
         return $recommendations;
     }
 
@@ -446,9 +444,9 @@ trait HasEmployeeSkillAnalytics
     {
         $currentCategories = $currentSkills->pluck('skill_category')->unique()->pluck('value')->toArray();
         $allCategories = ['technical', 'soft_skills', 'languages', 'tools', 'methodologies', 'certifications', 'other'];
-        
+
         $missingCategories = array_diff($allCategories, $currentCategories);
-        
+
         $recommendations = [];
         foreach ($missingCategories as $category) {
             $recommendations[] = [
@@ -457,20 +455,20 @@ trait HasEmployeeSkillAnalytics
                 'priority' => 'Medium',
             ];
         }
-        
+
         return $recommendations;
     }
 
     /**
      * Clear analytics-related caches
      */
-    private function clearAnalyticsCaches(int $employeeId = null): void
+    private function clearAnalyticsCaches(?int $employeeId = null): void
     {
         if ($employeeId) {
             Cache::forget("employee_skills_analytics_{$employeeId}");
             Cache::forget("employee_skill_gaps_{$employeeId}");
         }
-        
+
         Cache::forget('all_employees_skills_analytics');
         Cache::forget('company_skill_gaps');
         Cache::forget('top_skills_10');

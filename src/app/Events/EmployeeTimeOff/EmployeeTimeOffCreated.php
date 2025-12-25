@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Events\EmployeeTimeOff;
 
+use Fereydooni\Shopping\app\Models\EmployeeTimeOff;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Fereydooni\Shopping\app\Models\EmployeeTimeOff;
 
 class EmployeeTimeOffCreated
 {

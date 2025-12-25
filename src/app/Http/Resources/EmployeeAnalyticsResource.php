@@ -123,4 +123,3 @@ class EmployeeAnalyticsResource extends JsonResource
         return round(($value / $total) * 100, 2);
     }
 }
-

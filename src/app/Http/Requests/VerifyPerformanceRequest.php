@@ -23,13 +23,13 @@ class VerifyPerformanceRequest extends FormRequest
             'notes' => [
                 'nullable',
                 'string',
-                'max:1000'
+                'max:1000',
             ],
             'verification_date' => [
                 'nullable',
                 'date',
-                'before_or_equal:today'
-            ]
+                'before_or_equal:today',
+            ],
         ];
     }
 
@@ -40,7 +40,7 @@ class VerifyPerformanceRequest extends FormRequest
     {
         return [
             'notes.max' => 'Verification notes cannot exceed 1000 characters.',
-            'verification_date.before_or_equal' => 'Verification date cannot be in the future.'
+            'verification_date.before_or_equal' => 'Verification date cannot be in the future.',
         ];
     }
 
@@ -51,7 +51,7 @@ class VerifyPerformanceRequest extends FormRequest
     {
         return [
             'notes' => 'verification notes',
-            'verification_date' => 'verification date'
+            'verification_date' => 'verification date',
         ];
     }
 }

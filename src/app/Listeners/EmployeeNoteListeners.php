@@ -2,21 +2,21 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
-use Fereydooni\Shopping\app\Events\EmployeeNoteCreated;
-use Fereydooni\Shopping\app\Events\EmployeeNoteUpdated;
-use Fereydooni\Shopping\app\Events\EmployeeNoteDeleted;
 use Fereydooni\Shopping\app\Events\EmployeeNoteArchived;
-use Fereydooni\Shopping\app\Events\EmployeeNoteUnarchived;
+use Fereydooni\Shopping\app\Events\EmployeeNoteAttachmentAdded;
+use Fereydooni\Shopping\app\Events\EmployeeNoteAttachmentRemoved;
+use Fereydooni\Shopping\app\Events\EmployeeNoteCreated;
+use Fereydooni\Shopping\app\Events\EmployeeNoteDeleted;
 use Fereydooni\Shopping\app\Events\EmployeeNoteMadePrivate;
 use Fereydooni\Shopping\app\Events\EmployeeNoteMadePublic;
 use Fereydooni\Shopping\app\Events\EmployeeNoteTagged;
+use Fereydooni\Shopping\app\Events\EmployeeNoteUnarchived;
 use Fereydooni\Shopping\app\Events\EmployeeNoteUntagged;
-use Fereydooni\Shopping\app\Events\EmployeeNoteAttachmentAdded;
-use Fereydooni\Shopping\app\Events\EmployeeNoteAttachmentRemoved;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Notification;
+use Fereydooni\Shopping\app\Events\EmployeeNoteUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 
 class LogEmployeeNoteActivity
 {
@@ -262,7 +262,7 @@ class SyncEmployeeNoteToExternalSystem implements ShouldQueue
     {
         // Implementation would depend on your external system integration
         // This is a placeholder for the actual sync logic
-        Log::info("Syncing employee note to external system", [
+        Log::info('Syncing employee note to external system', [
             'note_id' => $employeeNote->id,
             'employee_id' => $employeeNote->employee_id,
             'action' => $action,
@@ -475,7 +475,7 @@ class UpdateEmployeeNoteSearchIndex implements ShouldQueue
     {
         // Implementation would depend on your search system (Elasticsearch, Algolia, etc.)
         // This is a placeholder for the actual search index logic
-        Log::info("Updating search index for employee note", [
+        Log::info('Updating search index for employee note', [
             'note_id' => $employeeNote->id,
             'employee_id' => $employeeNote->employee_id,
             'action' => $action,

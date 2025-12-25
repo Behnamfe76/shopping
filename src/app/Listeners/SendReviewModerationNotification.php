@@ -2,7 +2,6 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
-use Fereydooni\Shopping\app\Events\ProductReviewCreated;
 use Fereydooni\Shopping\app\Events\ProductReviewFlagged;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -32,7 +31,7 @@ class SendReviewModerationNotification implements ShouldQueue
             'review_id' => $review->id,
             'product_id' => $review->product_id,
             'user_id' => $review->user_id,
-            'event_type' => get_class($event)
+            'event_type' => get_class($event),
         ]);
 
         // Send notification to moderators
@@ -48,7 +47,7 @@ class SendReviewModerationNotification implements ShouldQueue
             // Notification::send($review->user, new ReviewFlaggedNotification($review, $event->reason));
             Log::info('Review flagged notification sent to author', [
                 'review_id' => $review->id,
-                'reason' => $event->reason
+                'reason' => $event->reason,
             ]);
         }
     }
@@ -60,7 +59,7 @@ class SendReviewModerationNotification implements ShouldQueue
     {
         Log::error('Failed to send review moderation notification', [
             'review_id' => $event->review->id,
-            'error' => $exception->getMessage()
+            'error' => $exception->getMessage(),
         ]);
     }
 }

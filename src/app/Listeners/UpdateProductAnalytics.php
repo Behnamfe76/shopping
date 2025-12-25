@@ -39,7 +39,7 @@ class UpdateProductAnalytics implements ShouldQueue
 
         Log::info('Product analytics updated', [
             'product_id' => $product->id,
-            'event' => get_class($event)
+            'event' => get_class($event),
         ]);
     }
 
@@ -108,7 +108,7 @@ class UpdateProductAnalytics implements ShouldQueue
     {
         Log::error('Failed to update product analytics', [
             'product_id' => $event->product->id,
-            'error' => $exception->getMessage()
+            'error' => $exception->getMessage(),
         ]);
     }
 }

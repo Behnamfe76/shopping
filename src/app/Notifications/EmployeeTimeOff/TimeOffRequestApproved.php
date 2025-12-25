@@ -33,14 +33,14 @@ class TimeOffRequestApproved extends Notification implements ShouldQueue
 
         return (new MailMessage)
             ->subject('Time-Off Request Approved')
-            ->greeting('Hello ' . $notifiable->name)
+            ->greeting('Hello '.$notifiable->name)
             ->line('Your time-off request has been approved!')
-            ->line('**Type:** ' . ucfirst($this->timeOff->time_off_type))
-            ->line('**Dates:** ' . $startDate . ' to ' . $endDate)
-            ->line('**Total Days:** ' . $this->timeOff->total_days)
-            ->line('**Approved By:** ' . $approver->name)
-            ->line('**Approved At:** ' . $this->timeOff->approved_at->format('M d, Y g:i A'))
-            ->action('View Details', URL::to('/time-off/' . $this->timeOff->id))
+            ->line('**Type:** '.ucfirst($this->timeOff->time_off_type))
+            ->line('**Dates:** '.$startDate.' to '.$endDate)
+            ->line('**Total Days:** '.$this->timeOff->total_days)
+            ->line('**Approved By:** '.$approver->name)
+            ->line('**Approved At:** '.$this->timeOff->approved_at->format('M d, Y g:i A'))
+            ->action('View Details', URL::to('/time-off/'.$this->timeOff->id))
             ->line('Please ensure your team is aware of your absence and that all necessary arrangements are made.')
             ->salutation('Best regards, HR Team');
     }
@@ -56,7 +56,7 @@ class TimeOffRequestApproved extends Notification implements ShouldQueue
             'approved_by' => $this->timeOff->approver->name,
             'approved_at' => $this->timeOff->approved_at->toDateTimeString(),
             'message' => 'Your time-off request has been approved',
-            'action_url' => '/time-off/' . $this->timeOff->id,
+            'action_url' => '/time-off/'.$this->timeOff->id,
         ];
     }
 }

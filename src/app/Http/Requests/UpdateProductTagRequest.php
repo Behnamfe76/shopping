@@ -23,11 +23,11 @@ class UpdateProductTagRequest extends FormRequest
         return [
             'name' => [
                 'sometimes', 'required', 'string', 'max:255',
-                Rule::unique('product_tags', 'name')->ignore($this->tag)
+                Rule::unique('product_tags', 'name')->ignore($this->tag),
             ],
             'slug' => [
                 'sometimes', 'required', 'string', 'max:255',
-                Rule::unique('product_tags', 'slug')->ignore($this->tag)
+                Rule::unique('product_tags', 'slug')->ignore($this->tag),
             ],
             'description' => ['sometimes', 'nullable', 'string', 'max:1000'],
             'color' => ['sometimes', 'nullable', 'string', 'max:7', 'regex:/^#[0-9A-F]{6}$/i'],

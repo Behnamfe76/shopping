@@ -2,8 +2,8 @@
 
 namespace Fereydooni\Shopping\app\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Fereydooni\Shopping\app\Models\ProductMeta;
+use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User;
 
 class ProductMetaPolicy

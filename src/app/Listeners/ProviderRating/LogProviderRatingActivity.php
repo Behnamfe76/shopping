@@ -2,16 +2,16 @@
 
 namespace Fereydooni\Shopping\App\Listeners\ProviderRating;
 
-use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingCreated;
-use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingUpdated;
 use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingApproved;
-use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingRejected;
+use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingCreated;
 use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingFlagged;
+use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingRejected;
+use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingUpdated;
 use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingVerified;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class LogProviderRatingActivity implements ShouldQueue
 {
@@ -54,7 +54,7 @@ class LogProviderRatingActivity implements ShouldQueue
                 'event' => get_class($event),
                 'rating_id' => $event->rating->id ?? null,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
         }
     }
@@ -76,7 +76,7 @@ class LogProviderRatingActivity implements ShouldQueue
             'performed_by_name' => $userName,
             'timestamp' => now(),
             'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent()
+            'user_agent' => request()->userAgent(),
         ];
 
         Log::info('Provider rating created', $logData);
@@ -100,7 +100,7 @@ class LogProviderRatingActivity implements ShouldQueue
             'performed_by_name' => $userName,
             'timestamp' => now(),
             'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent()
+            'user_agent' => request()->userAgent(),
         ];
 
         Log::info('Provider rating updated', $logData);
@@ -124,7 +124,7 @@ class LogProviderRatingActivity implements ShouldQueue
             'performed_by_name' => $userName,
             'timestamp' => now(),
             'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent()
+            'user_agent' => request()->userAgent(),
         ];
 
         Log::info('Provider rating approved', $logData);
@@ -148,7 +148,7 @@ class LogProviderRatingActivity implements ShouldQueue
             'performed_by_name' => $userName,
             'timestamp' => now(),
             'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent()
+            'user_agent' => request()->userAgent(),
         ];
 
         Log::info('Provider rating rejected', $logData);
@@ -172,7 +172,7 @@ class LogProviderRatingActivity implements ShouldQueue
             'performed_by_name' => $userName,
             'timestamp' => now(),
             'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent()
+            'user_agent' => request()->userAgent(),
         ];
 
         Log::info('Provider rating flagged', $logData);
@@ -196,7 +196,7 @@ class LogProviderRatingActivity implements ShouldQueue
             'performed_by_name' => $userName,
             'timestamp' => now(),
             'ip_address' => request()->ip(),
-            'user_agent' => request()->userAgent()
+            'user_agent' => request()->userAgent(),
         ];
 
         Log::info('Provider rating verified', $logData);
@@ -210,7 +210,7 @@ class LogProviderRatingActivity implements ShouldQueue
     {
         try {
             // Check if activity logging is enabled
-            if (!config('logging.enable_activity_logs', false)) {
+            if (! config('logging.enable_activity_logs', false)) {
                 return;
             }
 
@@ -220,13 +220,13 @@ class LogProviderRatingActivity implements ShouldQueue
 
             Log::info('Activity log stored', [
                 'action' => $logData['action'],
-                'rating_id' => $logData['rating_id']
+                'rating_id' => $logData['rating_id'],
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to store activity log', [
                 'error' => $e->getMessage(),
-                'log_data' => $logData
+                'log_data' => $logData,
             ]);
         }
     }

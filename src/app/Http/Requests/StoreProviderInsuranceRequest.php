@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
+use Fereydooni\Shopping\app\Enums\InsuranceStatus;
+use Fereydooni\Shopping\app\Enums\InsuranceType;
+use Fereydooni\Shopping\app\Enums\VerificationStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Fereydooni\Shopping\app\Enums\InsuranceType;
-use Fereydooni\Shopping\app\Enums\InsuranceStatus;
-use Fereydooni\Shopping\app\Enums\VerificationStatus;
 
 class StoreProviderInsuranceRequest extends FormRequest
 {
@@ -27,73 +27,73 @@ class StoreProviderInsuranceRequest extends FormRequest
             'provider_id' => [
                 'required',
                 'integer',
-                'exists:providers,id'
+                'exists:providers,id',
             ],
             'insurance_type' => [
                 'required',
                 'string',
-                Rule::in(InsuranceType::values())
+                Rule::in(InsuranceType::values()),
             ],
             'policy_number' => [
                 'required',
                 'string',
                 'max:100',
-                'unique:provider_insurances,policy_number'
+                'unique:provider_insurances,policy_number',
             ],
             'provider_name' => [
                 'required',
                 'string',
-                'max:255'
+                'max:255',
             ],
             'coverage_amount' => [
                 'required',
                 'numeric',
                 'min:0',
-                'max:999999999.99'
+                'max:999999999.99',
             ],
             'start_date' => [
                 'required',
                 'date',
-                'before_or_equal:end_date'
+                'before_or_equal:end_date',
             ],
             'end_date' => [
                 'required',
                 'date',
-                'after:start_date'
+                'after:start_date',
             ],
             'status' => [
                 'required',
                 'string',
-                Rule::in(InsuranceStatus::values())
+                Rule::in(InsuranceStatus::values()),
             ],
             'verification_status' => [
                 'required',
                 'string',
-                Rule::in(VerificationStatus::values())
+                Rule::in(VerificationStatus::values()),
             ],
             'notes' => [
                 'nullable',
                 'string',
-                'max:1000'
+                'max:1000',
             ],
             'documents' => [
                 'nullable',
-                'array'
+                'array',
             ],
             'documents.*' => [
                 'nullable',
                 'string',
-                'max:500'
+                'max:500',
             ],
             'verified_by' => [
                 'nullable',
                 'integer',
-                'exists:users,id'
+                'exists:users,id',
             ],
             'verified_at' => [
                 'nullable',
-                'date'
-            ]
+                'date',
+            ],
         ];
     }
 
@@ -121,7 +121,7 @@ class StoreProviderInsuranceRequest extends FormRequest
             'status.in' => 'The selected status is invalid.',
             'verification_status.required' => 'Verification status is required.',
             'verification_status.in' => 'The selected verification status is invalid.',
-            'verified_by.exists' => 'The selected verifier does not exist.'
+            'verified_by.exists' => 'The selected verifier does not exist.',
         ];
     }
 
@@ -143,7 +143,7 @@ class StoreProviderInsuranceRequest extends FormRequest
             'notes' => 'notes',
             'documents' => 'documents',
             'verified_by' => 'verifier',
-            'verified_at' => 'verification date'
+            'verified_at' => 'verification date',
         ];
     }
 
@@ -153,21 +153,21 @@ class StoreProviderInsuranceRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         // Set default values if not provided
-        if (!$this->has('status')) {
+        if (! $this->has('status')) {
             $this->merge(['status' => InsuranceStatus::PENDING]);
         }
 
-        if (!$this->has('verification_status')) {
+        if (! $this->has('verification_status')) {
             $this->merge(['verification_status' => VerificationStatus::PENDING]);
         }
 
         // Set verified_by to current user if not provided and user is verifying
-        if (!$this->has('verified_by') && $this->user() && $this->verification_status === VerificationStatus::VERIFIED) {
+        if (! $this->has('verified_by') && $this->user() && $this->verification_status === VerificationStatus::VERIFIED) {
             $this->merge(['verified_by' => $this->user()->id]);
         }
 
         // Set verified_at if verification is being set to verified
-        if ($this->verification_status === VerificationStatus::VERIFIED && !$this->has('verified_at')) {
+        if ($this->verification_status === VerificationStatus::VERIFIED && ! $this->has('verified_at')) {
             $this->merge(['verified_at' => now()]);
         }
     }

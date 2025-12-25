@@ -6,10 +6,10 @@ use App\Enums\ProficiencyLevel;
 use App\Enums\SkillCategory;
 use App\Models\EmployeeSkill;
 use Carbon\Carbon;
-use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Attributes\WithCast;
 use Spatie\LaravelData\Casts\DateTimeInterfaceCast;
 use Spatie\LaravelData\Casts\EnumCast;
+use Spatie\LaravelData\Data;
 
 class EmployeeSkillDTO extends Data
 {
@@ -49,8 +49,7 @@ class EmployeeSkillDTO extends Data
         // Relationships
         public ?EmployeeDTO $employee = null,
         public ?UserDTO $verified_by_user = null,
-    ) {
-    }
+    ) {}
 
     public static function fromModel(EmployeeSkill $skill): self
     {
@@ -89,8 +88,8 @@ class EmployeeSkillDTO extends Data
         return [
             'employee_id' => ['required', 'integer', 'exists:employees,id'],
             'skill_name' => ['required', 'string', 'max:255'],
-            'skill_category' => ['required', 'string', 'in:' . implode(',', SkillCategory::values())],
-            'proficiency_level' => ['required', 'string', 'in:' . implode(',', ProficiencyLevel::values())],
+            'skill_category' => ['required', 'string', 'in:'.implode(',', SkillCategory::values())],
+            'proficiency_level' => ['required', 'string', 'in:'.implode(',', ProficiencyLevel::values())],
             'years_experience' => ['required', 'integer', 'min:0', 'max:50'],
             'certification_required' => ['boolean'],
             'certification_name' => ['nullable', 'string', 'max:255'],
@@ -152,7 +151,7 @@ class EmployeeSkillDTO extends Data
     public function getFullDescription(): string
     {
         $description = "{$this->skill_name} - {$this->proficiency_level->label()}";
-        
+
         if ($this->years_experience > 0) {
             $description .= " ({$this->years_experience} years)";
         }
@@ -169,7 +168,7 @@ class EmployeeSkillDTO extends Data
      */
     public function isCertificationExpiring(int $days = 30): bool
     {
-        if (!$this->certification_expiry) {
+        if (! $this->certification_expiry) {
             return false;
         }
 
@@ -184,7 +183,7 @@ class EmployeeSkillDTO extends Data
      */
     public function isCertificationExpired(): bool
     {
-        if (!$this->certification_expiry) {
+        if (! $this->certification_expiry) {
             return false;
         }
 

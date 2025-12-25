@@ -2,12 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
-use Fereydooni\Shopping\app\Models\Provider;
-use Fereydooni\Shopping\app\Models\User;
 use Fereydooni\Shopping\app\Enums\ProviderStatus;
 use Fereydooni\Shopping\app\Enums\ProviderType;
+use Fereydooni\Shopping\app\Models\Provider;
+use Fereydooni\Shopping\app\Models\User;
+use Illuminate\Database\Seeder;
 
 class ProviderSeeder extends Seeder
 {

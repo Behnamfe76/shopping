@@ -2,22 +2,23 @@
 
 namespace App\Repositories;
 
-use App\Repositories\Interfaces\EmployeeSalaryHistoryRepositoryInterface;
-use App\Models\EmployeeSalaryHistory;
 use App\DTOs\EmployeeSalaryHistoryDTO;
+use App\Models\EmployeeSalaryHistory;
+use App\Repositories\Interfaces\EmployeeSalaryHistoryRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Carbon\Carbon;
 
 class EmployeeSalaryHistoryRepository implements EmployeeSalaryHistoryRepositoryInterface
 {
     protected $model;
+
     protected $cachePrefix = 'salary_history_';
+
     protected $cacheTtl = 3600; // 1 hour
 
     public function __construct(EmployeeSalaryHistory $model)
@@ -27,7 +28,7 @@ class EmployeeSalaryHistoryRepository implements EmployeeSalaryHistoryRepository
 
     public function all(): Collection
     {
-        return Cache::remember($this->cachePrefix . 'all', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'all', $this->cacheTtl, function () {
             return $this->model->with(['employee', 'approver'])->get();
         });
     }
@@ -46,7 +47,7 @@ class EmployeeSalaryHistoryRepository implements EmployeeSalaryHistoryRepository
             ->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->model->with(['employee', 'approver'])
             ->orderBy('effective_date', 'desc')
@@ -55,7 +56,7 @@ class EmployeeSalaryHistoryRepository implements EmployeeSalaryHistoryRepository
 
     public function find(int $id): ?EmployeeSalaryHistory
     {
-        return Cache::remember($this->cachePrefix . 'find_' . $id, $this->cacheTtl, function () use ($id) {
+        return Cache::remember($this->cachePrefix.'find_'.$id, $this->cacheTtl, function () use ($id) {
             return $this->model->with(['employee', 'approver'])->find($id);
         });
     }
@@ -63,12 +64,13 @@ class EmployeeSalaryHistoryRepository implements EmployeeSalaryHistoryRepository
     public function findDTO(int $id): ?EmployeeSalaryHistoryDTO
     {
         $model = $this->find($id);
+
         return $model ? EmployeeSalaryHistoryDTO::fromModel($model) : null;
     }
 
     public function findByEmployeeId(int $employeeId): Collection
     {
-        return Cache::remember($this->cachePrefix . 'employee_' . $employeeId, $this->cacheTtl, function () use ($employeeId) {
+        return Cache::remember($this->cachePrefix.'employee_'.$employeeId, $this->cacheTtl, function () use ($employeeId) {
             return $this->model->with(['employee', 'approver'])
                 ->where('employee_id', $employeeId)
                 ->orderBy('effective_date', 'desc')
@@ -79,12 +81,13 @@ class EmployeeSalaryHistoryRepository implements EmployeeSalaryHistoryRepository
     public function findByEmployeeIdDTO(int $employeeId): Collection
     {
         $records = $this->findByEmployeeId($employeeId);
-        return $records->map(fn($record) => EmployeeSalaryHistoryDTO::fromModel($record));
+
+        return $records->map(fn ($record) => EmployeeSalaryHistoryDTO::fromModel($record));
     }
 
     public function findByChangeType(string $changeType): Collection
     {
-        return Cache::remember($this->cachePrefix . 'type_' . $changeType, $this->cacheTtl, function () use ($changeType) {
+        return Cache::remember($this->cachePrefix.'type_'.$changeType, $this->cacheTtl, function () use ($changeType) {
             return $this->model->with(['employee', 'approver'])
                 ->where('change_type', $changeType)
                 ->orderBy('effective_date', 'desc')
@@ -95,7 +98,8 @@ class EmployeeSalaryHistoryRepository implements EmployeeSalaryHistoryRepository
     public function findByChangeTypeDTO(string $changeType): Collection
     {
         $records = $this->findByChangeType($changeType);
-        return $records->map(fn($record) => EmployeeSalaryHistoryDTO::fromModel($record));
+
+        return $records->map(fn ($record) => EmployeeSalaryHistoryDTO::fromModel($record));
     }
 
     public function findByDateRange(string $startDate, string $endDate): Collection
@@ -109,7 +113,8 @@ class EmployeeSalaryHistoryRepository implements EmployeeSalaryHistoryRepository
     public function findByDateRangeDTO(string $startDate, string $endDate): Collection
     {
         $records = $this->findByDateRange($startDate, $endDate);
-        return $records->map(fn($record) => EmployeeSalaryHistoryDTO::fromModel($record));
+
+        return $records->map(fn ($record) => EmployeeSalaryHistoryDTO::fromModel($record));
     }
 
     public function findByEmployeeAndDateRange(int $employeeId, string $startDate, string $endDate): Collection
@@ -124,7 +129,8 @@ class EmployeeSalaryHistoryRepository implements EmployeeSalaryHistoryRepository
     public function findByEmployeeAndDateRangeDTO(int $employeeId, string $startDate, string $endDate): Collection
     {
         $records = $this->findByEmployeeAndDateRange($employeeId, $startDate, $endDate);
-        return $records->map(fn($record) => EmployeeSalaryHistoryDTO::fromModel($record));
+
+        return $records->map(fn ($record) => EmployeeSalaryHistoryDTO::fromModel($record));
     }
 
     public function findByApproverId(int $approverId): Collection
@@ -138,7 +144,8 @@ class EmployeeSalaryHistoryRepository implements EmployeeSalaryHistoryRepository
     public function findByApproverIdDTO(int $approverId): Collection
     {
         $records = $this->findByApproverId($approverId);
-        return $records->map(fn($record) => EmployeeSalaryHistoryDTO::fromModel($record));
+
+        return $records->map(fn ($record) => EmployeeSalaryHistoryDTO::fromModel($record));
     }
 
     public function findByEffectiveDate(string $effectiveDate): Collection
@@ -152,7 +159,8 @@ class EmployeeSalaryHistoryRepository implements EmployeeSalaryHistoryRepository
     public function findByEffectiveDateDTO(string $effectiveDate): Collection
     {
         $records = $this->findByEffectiveDate($effectiveDate);
-        return $records->map(fn($record) => EmployeeSalaryHistoryDTO::fromModel($record));
+
+        return $records->map(fn ($record) => EmployeeSalaryHistoryDTO::fromModel($record));
     }
 
     public function findRetroactive(): Collection
@@ -166,7 +174,8 @@ class EmployeeSalaryHistoryRepository implements EmployeeSalaryHistoryRepository
     public function findRetroactiveDTO(): Collection
     {
         $records = $this->findRetroactive();
-        return $records->map(fn($record) => EmployeeSalaryHistoryDTO::fromModel($record));
+
+        return $records->map(fn ($record) => EmployeeSalaryHistoryDTO::fromModel($record));
     }
 
     public function findByChangeAmountRange(float $minAmount, float $maxAmount): Collection
@@ -180,7 +189,8 @@ class EmployeeSalaryHistoryRepository implements EmployeeSalaryHistoryRepository
     public function findByChangeAmountRangeDTO(float $minAmount, float $maxAmount): Collection
     {
         $records = $this->findByChangeAmountRange($minAmount, $maxAmount);
-        return $records->map(fn($record) => EmployeeSalaryHistoryDTO::fromModel($record));
+
+        return $records->map(fn ($record) => EmployeeSalaryHistoryDTO::fromModel($record));
     }
 
     public function findByChangePercentageRange(float $minPercentage, float $maxPercentage): Collection
@@ -194,12 +204,13 @@ class EmployeeSalaryHistoryRepository implements EmployeeSalaryHistoryRepository
     public function findByChangePercentageRangeDTO(float $minPercentage, float $maxPercentage): Collection
     {
         $records = $this->findByChangePercentageRange($minPercentage, $maxPercentage);
-        return $records->map(fn($record) => EmployeeSalaryHistoryDTO::fromModel($record));
+
+        return $records->map(fn ($record) => EmployeeSalaryHistoryDTO::fromModel($record));
     }
 
     public function findLatestByEmployee(int $employeeId): ?EmployeeSalaryHistory
     {
-        return Cache::remember($this->cachePrefix . 'latest_employee_' . $employeeId, $this->cacheTtl, function () use ($employeeId) {
+        return Cache::remember($this->cachePrefix.'latest_employee_'.$employeeId, $this->cacheTtl, function () use ($employeeId) {
             return $this->model->with(['employee', 'approver'])
                 ->where('employee_id', $employeeId)
                 ->orderBy('effective_date', 'desc')
@@ -210,6 +221,7 @@ class EmployeeSalaryHistoryRepository implements EmployeeSalaryHistoryRepository
     public function findLatestByEmployeeDTO(int $employeeId): ?EmployeeSalaryHistoryDTO
     {
         $model = $this->findLatestByEmployee($employeeId);
+
         return $model ? EmployeeSalaryHistoryDTO::fromModel($model) : null;
     }
 
@@ -225,7 +237,8 @@ class EmployeeSalaryHistoryRepository implements EmployeeSalaryHistoryRepository
     public function findByEmployeeAndTypeDTO(int $employeeId, string $changeType): Collection
     {
         $records = $this->findByEmployeeAndType($employeeId, $changeType);
-        return $records->map(fn($record) => EmployeeSalaryHistoryDTO::fromModel($record));
+
+        return $records->map(fn ($record) => EmployeeSalaryHistoryDTO::fromModel($record));
     }
 
     public function create(array $data): EmployeeSalaryHistory
@@ -234,12 +247,12 @@ class EmployeeSalaryHistoryRepository implements EmployeeSalaryHistoryRepository
             DB::beginTransaction();
 
             // Auto-calculate change amount if not provided
-            if (!isset($data['change_amount'])) {
+            if (! isset($data['change_amount'])) {
                 $data['change_amount'] = $data['new_salary'] - $data['old_salary'];
             }
 
             // Auto-calculate change percentage if not provided
-            if (!isset($data['change_percentage']) && $data['old_salary'] > 0) {
+            if (! isset($data['change_percentage']) && $data['old_salary'] > 0) {
                 $data['change_percentage'] = (($data['new_salary'] - $data['old_salary']) / $data['old_salary']) * 100;
             }
 
@@ -265,6 +278,7 @@ class EmployeeSalaryHistoryRepository implements EmployeeSalaryHistoryRepository
     public function createAndReturnDTO(array $data): EmployeeSalaryHistoryDTO
     {
         $model = $this->create($data);
+
         return EmployeeSalaryHistoryDTO::fromModel($model);
     }
 
@@ -274,12 +288,12 @@ class EmployeeSalaryHistoryRepository implements EmployeeSalaryHistoryRepository
             DB::beginTransaction();
 
             // Auto-calculate change amount if not provided
-            if (!isset($data['change_amount'])) {
+            if (! isset($data['change_amount'])) {
                 $data['change_amount'] = $data['new_salary'] - $data['old_salary'];
             }
 
             // Auto-calculate change percentage if not provided
-            if (!isset($data['change_percentage']) && $data['old_salary'] > 0) {
+            if (! isset($data['change_percentage']) && $data['old_salary'] > 0) {
                 $data['change_percentage'] = (($data['new_salary'] - $data['old_salary']) / $data['old_salary']) * 100;
             }
 
@@ -294,6 +308,7 @@ class EmployeeSalaryHistoryRepository implements EmployeeSalaryHistoryRepository
             }
 
             DB::commit();
+
             return $updated;
 
         } catch (\Exception $e) {
@@ -306,6 +321,7 @@ class EmployeeSalaryHistoryRepository implements EmployeeSalaryHistoryRepository
     public function updateAndReturnDTO(EmployeeSalaryHistory $salaryHistory, array $data): ?EmployeeSalaryHistoryDTO
     {
         $updated = $this->update($salaryHistory, $data);
+
         return $updated ? EmployeeSalaryHistoryDTO::fromModel($salaryHistory->fresh()) : null;
     }
 
@@ -325,6 +341,7 @@ class EmployeeSalaryHistoryRepository implements EmployeeSalaryHistoryRepository
             }
 
             DB::commit();
+
             return $deleted;
 
         } catch (\Exception $e) {
@@ -353,6 +370,7 @@ class EmployeeSalaryHistoryRepository implements EmployeeSalaryHistoryRepository
             }
 
             DB::commit();
+
             return $updated;
 
         } catch (\Exception $e) {
@@ -362,7 +380,7 @@ class EmployeeSalaryHistoryRepository implements EmployeeSalaryHistoryRepository
         }
     }
 
-    public function reject(EmployeeSalaryHistory $salaryHistory, int $rejectedBy, string $reason = null): bool
+    public function reject(EmployeeSalaryHistory $salaryHistory, int $rejectedBy, ?string $reason = null): bool
     {
         try {
             DB::beginTransaction();
@@ -370,7 +388,7 @@ class EmployeeSalaryHistoryRepository implements EmployeeSalaryHistoryRepository
             $updated = $salaryHistory->update([
                 'approved_by' => null,
                 'approved_at' => null,
-                'notes' => $reason ? ($salaryHistory->notes . "\nRejected by: " . $reason) : $salaryHistory->notes,
+                'notes' => $reason ? ($salaryHistory->notes."\nRejected by: ".$reason) : $salaryHistory->notes,
             ]);
 
             if ($updated) {
@@ -381,6 +399,7 @@ class EmployeeSalaryHistoryRepository implements EmployeeSalaryHistoryRepository
             }
 
             DB::commit();
+
             return $updated;
 
         } catch (\Exception $e) {
@@ -394,19 +413,19 @@ class EmployeeSalaryHistoryRepository implements EmployeeSalaryHistoryRepository
 
     protected function clearEmployeeCache(int $employeeId): void
     {
-        Cache::forget($this->cachePrefix . 'employee_' . $employeeId);
-        Cache::forget($this->cachePrefix . 'latest_employee_' . $employeeId);
-        Cache::forget($this->cachePrefix . 'count_employee_' . $employeeId);
+        Cache::forget($this->cachePrefix.'employee_'.$employeeId);
+        Cache::forget($this->cachePrefix.'latest_employee_'.$employeeId);
+        Cache::forget($this->cachePrefix.'count_employee_'.$employeeId);
     }
 
     protected function clearTypeCache(string $changeType): void
     {
-        Cache::forget($this->cachePrefix . 'type_' . $changeType);
-        Cache::forget($this->cachePrefix . 'total_count_type_' . $changeType);
+        Cache::forget($this->cachePrefix.'type_'.$changeType);
+        Cache::forget($this->cachePrefix.'total_count_type_'.$changeType);
     }
 
     protected function clearApproverCache(int $approverId): void
     {
-        Cache::forget($this->cachePrefix . 'approver_' . $approverId);
+        Cache::forget($this->cachePrefix.'approver_'.$approverId);
     }
 }

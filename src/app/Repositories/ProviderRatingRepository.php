@@ -2,24 +2,25 @@
 
 namespace App\Repositories;
 
-use App\Models\ProviderRating;
 use App\DTOs\ProviderRatingDTO;
-use App\Repositories\Interfaces\ProviderRatingRepositoryInterface;
 use App\Enums\RatingStatus;
-use App\Enums\RatingCategory;
+use App\Models\ProviderRating;
+use App\Repositories\Interfaces\ProviderRatingRepositoryInterface;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Exception;
 
 class ProviderRatingRepository implements ProviderRatingRepositoryInterface
 {
     protected $model;
+
     protected $cachePrefix = 'provider_rating_';
+
     protected $cacheTtl = 3600; // 1 hour
 
     public function __construct(ProviderRating $model)
@@ -30,7 +31,7 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
     // Basic CRUD operations
     public function all(): Collection
     {
-        return Cache::remember($this->cachePrefix . 'all', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'all', $this->cacheTtl, function () {
             return $this->model->with(['provider', 'user'])->get();
         });
     }
@@ -49,7 +50,7 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
             ->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->model->with(['provider', 'user'])
             ->orderBy('created_at', 'desc')
@@ -59,7 +60,7 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
     // Find operations
     public function find(int $id): ?ProviderRating
     {
-        return Cache::remember($this->cachePrefix . 'find_' . $id, $this->cacheTtl, function () use ($id) {
+        return Cache::remember($this->cachePrefix.'find_'.$id, $this->cacheTtl, function () use ($id) {
             return $this->model->with(['provider', 'user'])->find($id);
         });
     }
@@ -67,12 +68,13 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
     public function findDTO(int $id): ?ProviderRatingDTO
     {
         $rating = $this->find($id);
+
         return $rating ? ProviderRatingDTO::fromModel($rating) : null;
     }
 
     public function findByProviderId(int $providerId): Collection
     {
-        return Cache::remember($this->cachePrefix . 'provider_' . $providerId, $this->cacheTtl, function () use ($providerId) {
+        return Cache::remember($this->cachePrefix.'provider_'.$providerId, $this->cacheTtl, function () use ($providerId) {
             return $this->model->with(['provider', 'user'])
                 ->where('provider_id', $providerId)
                 ->orderBy('created_at', 'desc')
@@ -83,12 +85,13 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
     public function findByProviderIdDTO(int $providerId): Collection
     {
         $ratings = $this->findByProviderId($providerId);
-        return $ratings->map(fn($rating) => ProviderRatingDTO::fromModel($rating));
+
+        return $ratings->map(fn ($rating) => ProviderRatingDTO::fromModel($rating));
     }
 
     public function findByUserId(int $userId): Collection
     {
-        return Cache::remember($this->cachePrefix . 'user_' . $userId, $this->cacheTtl, function () use ($userId) {
+        return Cache::remember($this->cachePrefix.'user_'.$userId, $this->cacheTtl, function () use ($userId) {
             return $this->model->with(['provider', 'user'])
                 ->where('user_id', $userId)
                 ->orderBy('created_at', 'desc')
@@ -99,7 +102,8 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
     public function findByUserIdDTO(int $userId): Collection
     {
         $ratings = $this->findByUserId($userId);
-        return $ratings->map(fn($rating) => ProviderRatingDTO::fromModel($rating));
+
+        return $ratings->map(fn ($rating) => ProviderRatingDTO::fromModel($rating));
     }
 
     public function findByCategory(string $category): Collection
@@ -113,7 +117,8 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
     public function findByCategoryDTO(string $category): Collection
     {
         $ratings = $this->findByCategory($category);
-        return $ratings->map(fn($rating) => ProviderRatingDTO::fromModel($rating));
+
+        return $ratings->map(fn ($rating) => ProviderRatingDTO::fromModel($rating));
     }
 
     public function findByStatus(string $status): Collection
@@ -127,7 +132,8 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
     public function findByStatusDTO(string $status): Collection
     {
         $ratings = $this->findByStatus($status);
-        return $ratings->map(fn($rating) => ProviderRatingDTO::fromModel($rating));
+
+        return $ratings->map(fn ($rating) => ProviderRatingDTO::fromModel($rating));
     }
 
     public function findByRatingValue(float $ratingValue): Collection
@@ -141,7 +147,8 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
     public function findByRatingValueDTO(float $ratingValue): Collection
     {
         $ratings = $this->findByRatingValue($ratingValue);
-        return $ratings->map(fn($rating) => ProviderRatingDTO::fromModel($rating));
+
+        return $ratings->map(fn ($rating) => ProviderRatingDTO::fromModel($rating));
     }
 
     public function findByRatingRange(float $minRating, float $maxRating): Collection
@@ -155,7 +162,8 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
     public function findByRatingRangeDTO(float $minRating, float $maxRating): Collection
     {
         $ratings = $this->findByRatingRange($minRating, $maxRating);
-        return $ratings->map(fn($rating) => ProviderRatingDTO::fromModel($rating));
+
+        return $ratings->map(fn ($rating) => ProviderRatingDTO::fromModel($rating));
     }
 
     public function findByProviderAndCategory(int $providerId, string $category): Collection
@@ -170,7 +178,8 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
     public function findByProviderAndCategoryDTO(int $providerId, string $category): Collection
     {
         $ratings = $this->findByProviderAndCategory($providerId, $category);
-        return $ratings->map(fn($rating) => ProviderRatingDTO::fromModel($rating));
+
+        return $ratings->map(fn ($rating) => ProviderRatingDTO::fromModel($rating));
     }
 
     public function findByProviderAndUser(int $providerId, int $userId): Collection
@@ -185,7 +194,8 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
     public function findByProviderAndUserDTO(int $providerId, int $userId): Collection
     {
         $ratings = $this->findByProviderAndUser($providerId, $userId);
-        return $ratings->map(fn($rating) => ProviderRatingDTO::fromModel($rating));
+
+        return $ratings->map(fn ($rating) => ProviderRatingDTO::fromModel($rating));
     }
 
     // Status-based queries
@@ -197,7 +207,8 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
     public function findVerifiedDTO(): Collection
     {
         $ratings = $this->findVerified();
-        return $ratings->map(fn($rating) => ProviderRatingDTO::fromModel($rating));
+
+        return $ratings->map(fn ($rating) => ProviderRatingDTO::fromModel($rating));
     }
 
     public function findUnverified(): Collection
@@ -211,7 +222,8 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
     public function findUnverifiedDTO(): Collection
     {
         $ratings = $this->findUnverified();
-        return $ratings->map(fn($rating) => ProviderRatingDTO::fromModel($rating));
+
+        return $ratings->map(fn ($rating) => ProviderRatingDTO::fromModel($rating));
     }
 
     public function findApproved(): Collection
@@ -222,7 +234,8 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
     public function findApprovedDTO(): Collection
     {
         $ratings = $this->findApproved();
-        return $ratings->map(fn($rating) => ProviderRatingDTO::fromModel($rating));
+
+        return $ratings->map(fn ($rating) => ProviderRatingDTO::fromModel($rating));
     }
 
     public function findPending(): Collection
@@ -233,7 +246,8 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
     public function findPendingDTO(): Collection
     {
         $ratings = $this->findPending();
-        return $ratings->map(fn($rating) => ProviderRatingDTO::fromModel($rating));
+
+        return $ratings->map(fn ($rating) => ProviderRatingDTO::fromModel($rating));
     }
 
     public function findFlagged(): Collection
@@ -244,7 +258,8 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
     public function findFlaggedDTO(): Collection
     {
         $ratings = $this->findFlagged();
-        return $ratings->map(fn($rating) => ProviderRatingDTO::fromModel($rating));
+
+        return $ratings->map(fn ($rating) => ProviderRatingDTO::fromModel($rating));
     }
 
     // Recommendation queries
@@ -259,7 +274,8 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
     public function findRecommendedDTO(): Collection
     {
         $ratings = $this->findRecommended();
-        return $ratings->map(fn($rating) => ProviderRatingDTO::fromModel($rating));
+
+        return $ratings->map(fn ($rating) => ProviderRatingDTO::fromModel($rating));
     }
 
     public function findNotRecommended(): Collection
@@ -273,7 +289,8 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
     public function findNotRecommendedDTO(): Collection
     {
         $ratings = $this->findNotRecommended();
-        return $ratings->map(fn($rating) => ProviderRatingDTO::fromModel($rating));
+
+        return $ratings->map(fn ($rating) => ProviderRatingDTO::fromModel($rating));
     }
 
     // Date-based queries
@@ -288,7 +305,8 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
     public function findByDateRangeDTO(string $startDate, string $endDate): Collection
     {
         $ratings = $this->findByDateRange($startDate, $endDate);
-        return $ratings->map(fn($rating) => ProviderRatingDTO::fromModel($rating));
+
+        return $ratings->map(fn ($rating) => ProviderRatingDTO::fromModel($rating));
     }
 
     // Create, Update, Delete operations
@@ -305,10 +323,11 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
             $this->clearGeneralCache();
 
             DB::commit();
+
             return $rating;
         } catch (Exception $e) {
             DB::rollBack();
-            Log::error('Failed to create provider rating: ' . $e->getMessage());
+            Log::error('Failed to create provider rating: '.$e->getMessage());
             throw $e;
         }
     }
@@ -316,6 +335,7 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
     public function createAndReturnDTO(array $data): ProviderRatingDTO
     {
         $rating = $this->create($data);
+
         return ProviderRatingDTO::fromModel($rating);
     }
 
@@ -334,10 +354,11 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
             }
 
             DB::commit();
+
             return $result;
         } catch (Exception $e) {
             DB::rollBack();
-            Log::error('Failed to update provider rating: ' . $e->getMessage());
+            Log::error('Failed to update provider rating: '.$e->getMessage());
             throw $e;
         }
     }
@@ -345,6 +366,7 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
     public function updateAndReturnDTO(ProviderRating $rating, array $data): ?ProviderRatingDTO
     {
         $result = $this->update($rating, $data);
+
         return $result ? ProviderRatingDTO::fromModel($rating->fresh()) : null;
     }
 
@@ -366,10 +388,11 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
             }
 
             DB::commit();
+
             return $result;
         } catch (Exception $e) {
             DB::rollBack();
-            Log::error('Failed to delete provider rating: ' . $e->getMessage());
+            Log::error('Failed to delete provider rating: '.$e->getMessage());
             throw $e;
         }
     }
@@ -380,21 +403,23 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
         return $this->update($rating, ['status' => RatingStatus::APPROVED->value]);
     }
 
-    public function reject(ProviderRating $rating, string $reason = null): bool
+    public function reject(ProviderRating $rating, ?string $reason = null): bool
     {
         $data = ['status' => RatingStatus::REJECTED->value];
         if ($reason) {
             $data['rejection_reason'] = $reason;
         }
+
         return $this->update($rating, $data);
     }
 
-    public function flag(ProviderRating $rating, string $reason = null): bool
+    public function flag(ProviderRating $rating, ?string $reason = null): bool
     {
         $data = ['status' => RatingStatus::FLAGGED->value];
         if ($reason) {
             $data['flag_reason'] = $reason;
         }
+
         return $this->update($rating, $data);
     }
 
@@ -410,9 +435,11 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
             $rating->increment('helpful_votes');
             $rating->increment('total_votes');
             $this->clearProviderCache($rating->provider_id);
+
             return true;
         } catch (Exception $e) {
-            Log::error('Failed to add helpful vote: ' . $e->getMessage());
+            Log::error('Failed to add helpful vote: '.$e->getMessage());
+
             return false;
         }
     }
@@ -427,17 +454,19 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
                 $rating->decrement('total_votes');
             }
             $this->clearProviderCache($rating->provider_id);
+
             return true;
         } catch (Exception $e) {
-            Log::error('Failed to remove helpful vote: ' . $e->getMessage());
+            Log::error('Failed to remove helpful vote: '.$e->getMessage());
+
             return false;
         }
     }
 
     // Analytics and statistics
-    public function getProviderAverageRating(int $providerId, string $category = null): float
+    public function getProviderAverageRating(int $providerId, ?string $category = null): float
     {
-        $cacheKey = $this->cachePrefix . 'avg_' . $providerId . '_' . ($category ?? 'all');
+        $cacheKey = $this->cachePrefix.'avg_'.$providerId.'_'.($category ?? 'all');
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($providerId, $category) {
             $query = $this->model->where('provider_id', $providerId)
@@ -451,9 +480,9 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
         });
     }
 
-    public function getProviderRatingCount(int $providerId, string $category = null): int
+    public function getProviderRatingCount(int $providerId, ?string $category = null): int
     {
-        $cacheKey = $this->cachePrefix . 'count_' . $providerId . '_' . ($category ?? 'all');
+        $cacheKey = $this->cachePrefix.'count_'.$providerId.'_'.($category ?? 'all');
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($providerId, $category) {
             $query = $this->model->where('provider_id', $providerId)
@@ -469,7 +498,7 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
 
     public function getProviderRatingBreakdown(int $providerId): array
     {
-        $cacheKey = $this->cachePrefix . 'breakdown_' . $providerId;
+        $cacheKey = $this->cachePrefix.'breakdown_'.$providerId;
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($providerId) {
             return $this->model->where('provider_id', $providerId)
@@ -484,7 +513,7 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
 
     public function getProviderRecommendationPercentage(int $providerId): float
     {
-        $cacheKey = $this->cachePrefix . 'recommend_' . $providerId;
+        $cacheKey = $this->cachePrefix.'recommend_'.$providerId;
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($providerId) {
             $total = $this->model->where('provider_id', $providerId)
@@ -506,14 +535,14 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
 
     public function getUserRatingCount(int $userId): int
     {
-        return Cache::remember($this->cachePrefix . 'user_count_' . $userId, $this->cacheTtl, function () use ($userId) {
+        return Cache::remember($this->cachePrefix.'user_count_'.$userId, $this->cacheTtl, function () use ($userId) {
             return $this->model->where('user_id', $userId)->count();
         });
     }
 
     public function getUserAverageRating(int $userId): float
     {
-        return Cache::remember($this->cachePrefix . 'user_avg_' . $userId, $this->cacheTtl, function () use ($userId) {
+        return Cache::remember($this->cachePrefix.'user_avg_'.$userId, $this->cacheTtl, function () use ($userId) {
             return $this->model->where('user_id', $userId)
                 ->where('status', RatingStatus::APPROVED->value)
                 ->avg('rating_value') ?? 0.0;
@@ -522,14 +551,14 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
 
     public function getTotalRatingCount(): int
     {
-        return Cache::remember($this->cachePrefix . 'total_count', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'total_count', $this->cacheTtl, function () {
             return $this->model->count();
         });
     }
 
     public function getAverageRating(): float
     {
-        return Cache::remember($this->cachePrefix . 'total_avg', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'total_avg', $this->cacheTtl, function () {
             return $this->model->where('status', RatingStatus::APPROVED->value)
                 ->avg('rating_value') ?? 0.0;
         });
@@ -551,28 +580,28 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
 
     public function getVerifiedRatingCount(): int
     {
-        return Cache::remember($this->cachePrefix . 'verified_count', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'verified_count', $this->cacheTtl, function () {
             return $this->model->where('is_verified', true)->count();
         });
     }
 
     public function getPendingRatingCount(): int
     {
-        return Cache::remember($this->cachePrefix . 'pending_count', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'pending_count', $this->cacheTtl, function () {
             return $this->model->where('status', RatingStatus::PENDING->value)->count();
         });
     }
 
     public function getFlaggedRatingCount(): int
     {
-        return Cache::remember($this->cachePrefix . 'flagged_count', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'flagged_count', $this->cacheTtl, function () {
             return $this->model->where('status', RatingStatus::FLAGGED->value)->count();
         });
     }
 
     public function getRecommendationPercentage(): float
     {
-        return Cache::remember($this->cachePrefix . 'total_recommend', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'total_recommend', $this->cacheTtl, function () {
             $total = $this->model->where('status', RatingStatus::APPROVED->value)->count();
 
             if ($total === 0) {
@@ -593,9 +622,9 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
         return $this->model->with(['provider', 'user'])
             ->where(function ($q) use ($query) {
                 $q->where('title', 'like', "%{$query}%")
-                  ->orWhere('comment', 'like', "%{$query}%")
-                  ->orWhere('pros', 'like', "%{$query}%")
-                  ->orWhere('cons', 'like', "%{$query}%");
+                    ->orWhere('comment', 'like', "%{$query}%")
+                    ->orWhere('pros', 'like', "%{$query}%")
+                    ->orWhere('cons', 'like', "%{$query}%");
             })
             ->orderBy('created_at', 'desc')
             ->get();
@@ -604,7 +633,8 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
     public function searchRatingsDTO(string $query): Collection
     {
         $ratings = $this->searchRatings($query);
-        return $ratings->map(fn($rating) => ProviderRatingDTO::fromModel($rating));
+
+        return $ratings->map(fn ($rating) => ProviderRatingDTO::fromModel($rating));
     }
 
     public function searchRatingsByProvider(int $providerId, string $query): Collection
@@ -613,9 +643,9 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
             ->where('provider_id', $providerId)
             ->where(function ($q) use ($query) {
                 $q->where('title', 'like', "%{$query}%")
-                  ->orWhere('comment', 'like', "%{$query}%")
-                  ->orWhere('pros', 'like', "%{$query}%")
-                  ->orWhere('cons', 'like', "%{$query}%");
+                    ->orWhere('comment', 'like', "%{$query}%")
+                    ->orWhere('pros', 'like', "%{$query}%")
+                    ->orWhere('cons', 'like', "%{$query}%");
             })
             ->orderBy('created_at', 'desc')
             ->get();
@@ -624,7 +654,8 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
     public function searchRatingsByProviderDTO(int $providerId, string $query): Collection
     {
         $ratings = $this->searchRatingsByProvider($providerId, $query);
-        return $ratings->map(fn($rating) => ProviderRatingDTO::fromModel($rating));
+
+        return $ratings->map(fn ($rating) => ProviderRatingDTO::fromModel($rating));
     }
 
     // Import/Export operations
@@ -653,7 +684,7 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
         foreach ($ratings as $rating) {
             $csv .= "{$rating->id},{$rating->provider_id},{$rating->user_id},{$rating->rating_value},";
             $csv .= "{$rating->category},{$rating->title},";
-            $csv .= "\"" . str_replace('"', '""', $rating->comment) . "\",{$rating->status},{$rating->created_at}\n";
+            $csv .= '"'.str_replace('"', '""', $rating->comment)."\",{$rating->status},{$rating->created_at}\n";
         }
 
         return $csv;
@@ -668,11 +699,13 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
             DB::beginTransaction();
 
             foreach ($lines as $line) {
-                if (empty(trim($line))) continue;
+                if (empty(trim($line))) {
+                    continue;
+                }
 
                 $row = array_combine($headers, str_getcsv($line));
 
-                if (isset($row['ID']) && !empty($row['ID'])) {
+                if (isset($row['ID']) && ! empty($row['ID'])) {
                     // Update existing
                     $rating = $this->model->find($row['ID']);
                     if ($rating) {
@@ -687,10 +720,12 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
 
             DB::commit();
             $this->clearGeneralCache();
+
             return true;
         } catch (Exception $e) {
             DB::rollBack();
-            Log::error('Failed to import rating data: ' . $e->getMessage());
+            Log::error('Failed to import rating data: '.$e->getMessage());
+
             return false;
         }
     }
@@ -698,7 +733,7 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
     // Advanced analytics
     public function getRatingStatistics(): array
     {
-        return Cache::remember($this->cachePrefix . 'statistics', $this->cacheTtl, function () {
+        return Cache::remember($this->cachePrefix.'statistics', $this->cacheTtl, function () {
             return [
                 'total_ratings' => $this->getTotalRatingCount(),
                 'average_rating' => $this->getAverageRating(),
@@ -714,7 +749,7 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
 
     public function getProviderRatingStatistics(int $providerId): array
     {
-        $cacheKey = $this->cachePrefix . 'provider_stats_' . $providerId;
+        $cacheKey = $this->cachePrefix.'provider_stats_'.$providerId;
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($providerId) {
             return [
@@ -727,7 +762,7 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
         });
     }
 
-    public function getRatingTrends(string $startDate = null, string $endDate = null): array
+    public function getRatingTrends(?string $startDate = null, ?string $endDate = null): array
     {
         $query = $this->model->where('status', RatingStatus::APPROVED->value);
 
@@ -748,7 +783,7 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
 
     public function calculateRatingMetrics(int $providerId): array
     {
-        $cacheKey = $this->cachePrefix . 'metrics_' . $providerId;
+        $cacheKey = $this->cachePrefix.'metrics_'.$providerId;
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($providerId) {
             $ratings = $this->model->where('provider_id', $providerId)
@@ -768,11 +803,11 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
 
             $averageRating = $ratings->avg('rating_value');
             $ratingDistribution = $ratings->groupBy('rating_value')
-                ->map(fn($group) => $group->count())
+                ->map(fn ($group) => $group->count())
                 ->toArray();
 
             $categoryPerformance = $ratings->groupBy('category')
-                ->map(fn($group) => [
+                ->map(fn ($group) => [
                     'count' => $group->count(),
                     'average' => $group->avg('rating_value'),
                 ])
@@ -783,7 +818,7 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
             $last30Days = $ratings->where('created_at', '>=', $now->subDays(30));
             $previous30Days = $ratings->whereBetween('created_at', [
                 $now->subDays(60),
-                $now->subDays(30)
+                $now->subDays(30),
             ]);
 
             $trendAnalysis = [
@@ -821,7 +856,8 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
     public function getMostHelpfulRatingsDTO(int $limit = 10): Collection
     {
         $ratings = $this->getMostHelpfulRatings($limit);
-        return $ratings->map(fn($rating) => ProviderRatingDTO::fromModel($rating));
+
+        return $ratings->map(fn ($rating) => ProviderRatingDTO::fromModel($rating));
     }
 
     public function getTopRatedProviders(int $limit = 10): Collection
@@ -876,31 +912,31 @@ class ProviderRatingRepository implements ProviderRatingRepositoryInterface
 
     protected function clearProviderCache(int $providerId): void
     {
-        Cache::forget($this->cachePrefix . 'provider_' . $providerId);
-        Cache::forget($this->cachePrefix . 'avg_' . $providerId . '_all');
-        Cache::forget($this->cachePrefix . 'count_' . $providerId . '_all');
-        Cache::forget($this->cachePrefix . 'breakdown_' . $providerId);
-        Cache::forget($this->cachePrefix . 'recommend_' . $providerId);
-        Cache::forget($this->cachePrefix . 'provider_stats_' . $providerId);
-        Cache::forget($this->cachePrefix . 'metrics_' . $providerId);
+        Cache::forget($this->cachePrefix.'provider_'.$providerId);
+        Cache::forget($this->cachePrefix.'avg_'.$providerId.'_all');
+        Cache::forget($this->cachePrefix.'count_'.$providerId.'_all');
+        Cache::forget($this->cachePrefix.'breakdown_'.$providerId);
+        Cache::forget($this->cachePrefix.'recommend_'.$providerId);
+        Cache::forget($this->cachePrefix.'provider_stats_'.$providerId);
+        Cache::forget($this->cachePrefix.'metrics_'.$providerId);
     }
 
     protected function clearUserCache(int $userId): void
     {
-        Cache::forget($this->cachePrefix . 'user_' . $userId);
-        Cache::forget($this->cachePrefix . 'user_count_' . $userId);
-        Cache::forget($this->cachePrefix . 'user_avg_' . $userId);
+        Cache::forget($this->cachePrefix.'user_'.$userId);
+        Cache::forget($this->cachePrefix.'user_count_'.$userId);
+        Cache::forget($this->cachePrefix.'user_avg_'.$userId);
     }
 
     protected function clearGeneralCache(): void
     {
-        Cache::forget($this->cachePrefix . 'all');
-        Cache::forget($this->cachePrefix . 'total_count');
-        Cache::forget($this->cachePrefix . 'total_avg');
-        Cache::forget($this->cachePrefix . 'verified_count');
-        Cache::forget($this->cachePrefix . 'pending_count');
-        Cache::forget($this->cachePrefix . 'flagged_count');
-        Cache::forget($this->cachePrefix . 'total_recommend');
-        Cache::forget($this->cachePrefix . 'statistics');
+        Cache::forget($this->cachePrefix.'all');
+        Cache::forget($this->cachePrefix.'total_count');
+        Cache::forget($this->cachePrefix.'total_avg');
+        Cache::forget($this->cachePrefix.'verified_count');
+        Cache::forget($this->cachePrefix.'pending_count');
+        Cache::forget($this->cachePrefix.'flagged_count');
+        Cache::forget($this->cachePrefix.'total_recommend');
+        Cache::forget($this->cachePrefix.'statistics');
     }
 }

@@ -2,8 +2,8 @@
 
 namespace Fereydooni\Shopping\app\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Fereydooni\Shopping\app\Models\ProductTag;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ProductTagPolicy
 {

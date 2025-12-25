@@ -2,25 +2,27 @@
 
 namespace Fereydooni\Shopping\app\Events\Provider;
 
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Queue\SerializesModels;
 use Fereydooni\Shopping\app\Models\ProviderLocation;
 use Fereydooni\Shopping\app\Models\User;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class LocationCoordinatesUpdated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public ProviderLocation $providerLocation;
+
     public ?User $user;
+
     public array $oldCoordinates;
+
     public array $newCoordinates;
+
     public array $coordinateData;
+
     public ?string $updateSource;
 
     /**
@@ -48,18 +50,18 @@ class LocationCoordinatesUpdated
                 'latitude' => $oldCoordinates['latitude'] ?? null,
                 'longitude' => $oldCoordinates['longitude'] ?? null,
                 'formatted' => $this->formatCoordinates($oldCoordinates['latitude'] ?? null, $oldCoordinates['longitude'] ?? null),
-                'had_coordinates' => !is_null($oldCoordinates['latitude'] ?? null) && !is_null($oldCoordinates['longitude'] ?? null)
+                'had_coordinates' => ! is_null($oldCoordinates['latitude'] ?? null) && ! is_null($oldCoordinates['longitude'] ?? null),
             ],
             'new_coordinates' => [
                 'latitude' => $newCoordinates['latitude'] ?? null,
                 'longitude' => $newCoordinates['longitude'] ?? null,
                 'formatted' => $this->formatCoordinates($newCoordinates['latitude'] ?? null, $newCoordinates['longitude'] ?? null),
-                'has_coordinates' => !is_null($newCoordinates['latitude'] ?? null) && !is_null($newCoordinates['longitude'] ?? null)
+                'has_coordinates' => ! is_null($newCoordinates['latitude'] ?? null) && ! is_null($newCoordinates['longitude'] ?? null),
             ],
             'update_source' => $updateSource ?? 'manual',
             'coordinates_changed' => $this->coordinatesChanged(),
             'distance_change' => $this->calculateDistanceChange(),
-            'updated_at' => now()->toISOString()
+            'updated_at' => now()->toISOString(),
         ];
     }
 
@@ -90,7 +92,7 @@ class LocationCoordinatesUpdated
         }
 
         if (is_null($oldLat) || is_null($oldLng)) {
-            return !is_null($newLat) && !is_null($newLng); // Was null, now has coordinates
+            return ! is_null($newLat) && ! is_null($newLng); // Was null, now has coordinates
         }
 
         if (is_null($newLat) || is_null($newLng)) {
@@ -124,7 +126,7 @@ class LocationCoordinatesUpdated
         return [
             'distance_km' => round($distance, 2),
             'distance_miles' => round($distance * 0.621371, 2),
-            'distance_meters' => round($distance * 1000, 0)
+            'distance_meters' => round($distance * 1000, 0),
         ];
     }
 
@@ -155,7 +157,7 @@ class LocationCoordinatesUpdated
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('provider.' . $this->providerLocation->provider_id),
+            new PrivateChannel('provider.'.$this->providerLocation->provider_id),
             new PrivateChannel('admin.provider-locations'),
         ];
     }
@@ -173,7 +175,7 @@ class LocationCoordinatesUpdated
             'coordinate_data' => $this->coordinateData,
             'user_id' => $this->user?->id,
             'user_name' => $this->user?->name,
-            'timestamp' => now()->toISOString()
+            'timestamp' => now()->toISOString(),
         ];
     }
 
@@ -195,7 +197,7 @@ class LocationCoordinatesUpdated
         $newLat = $this->newCoordinates['latitude'] ?? null;
         $newLng = $this->newCoordinates['longitude'] ?? null;
 
-        return (is_null($oldLat) || is_null($oldLng)) && !is_null($newLat) && !is_null($newLng);
+        return (is_null($oldLat) || is_null($oldLng)) && ! is_null($newLat) && ! is_null($newLng);
     }
 
     /**
@@ -208,7 +210,7 @@ class LocationCoordinatesUpdated
         $newLat = $this->newCoordinates['latitude'] ?? null;
         $newLng = $this->newCoordinates['longitude'] ?? null;
 
-        return (!is_null($oldLat) && !is_null($oldLng)) && (is_null($newLat) || is_null($newLng));
+        return (! is_null($oldLat) && ! is_null($oldLng)) && (is_null($newLat) || is_null($newLng));
     }
 
     /**
@@ -216,7 +218,7 @@ class LocationCoordinatesUpdated
      */
     public function coordinatesModified(): bool
     {
-        return $this->coordinatesChanged() && !$this->coordinatesAdded() && !$this->coordinatesRemoved();
+        return $this->coordinatesChanged() && ! $this->coordinatesAdded() && ! $this->coordinatesRemoved();
     }
 
     /**

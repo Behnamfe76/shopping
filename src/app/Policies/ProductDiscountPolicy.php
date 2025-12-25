@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Policies;
 
+use Fereydooni\Shopping\app\Models\ProductDiscount;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User;
-use Fereydooni\Shopping\app\Models\ProductDiscount;
 
 class ProductDiscountPolicy
 {

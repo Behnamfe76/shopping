@@ -2,13 +2,13 @@
 
 namespace Fereydooni\Shopping\Tests\Feature;
 
-use Tests\TestCase;
-use Fereydooni\Shopping\app\Models\EmployeeNote;
-use Fereydooni\Shopping\app\Models\Employee;
-use Fereydooni\Shopping\app\Models\User;
-use Fereydooni\Shopping\app\Enums\EmployeeNoteType;
 use Fereydooni\Shopping\app\Enums\EmployeeNotePriority;
+use Fereydooni\Shopping\app\Enums\EmployeeNoteType;
+use Fereydooni\Shopping\app\Models\Employee;
+use Fereydooni\Shopping\app\Models\EmployeeNote;
+use Fereydooni\Shopping\app\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class EmployeeNoteTest extends TestCase
 {
@@ -17,7 +17,7 @@ class EmployeeNoteTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         // Create test data
         $this->user = User::factory()->create();
         $this->employee = Employee::factory()->create();
@@ -39,22 +39,22 @@ class EmployeeNoteTest extends TestCase
         $response = $this->postJson('/api/employee-notes', $noteData);
 
         $response->assertStatus(201)
-                ->assertJsonStructure([
-                    'message',
-                    'data' => [
-                        'id',
-                        'employee_id',
-                        'user_id',
-                        'title',
-                        'content',
-                        'note_type',
-                        'priority',
-                        'is_private',
-                        'tags',
-                        'created_at',
-                        'updated_at',
-                    ]
-                ]);
+            ->assertJsonStructure([
+                'message',
+                'data' => [
+                    'id',
+                    'employee_id',
+                    'user_id',
+                    'title',
+                    'content',
+                    'note_type',
+                    'priority',
+                    'is_private',
+                    'tags',
+                    'created_at',
+                    'updated_at',
+                ],
+            ]);
 
         $this->assertDatabaseHas('employee_notes', [
             'title' => 'Test Note',
@@ -73,21 +73,21 @@ class EmployeeNoteTest extends TestCase
         $response = $this->getJson("/api/employee-notes/{$note->id}");
 
         $response->assertStatus(200)
-                ->assertJsonStructure([
-                    'data' => [
-                        'id',
-                        'employee_id',
-                        'user_id',
-                        'title',
-                        'content',
-                        'note_type',
-                        'priority',
-                        'is_private',
-                        'tags',
-                        'created_at',
-                        'updated_at',
-                    ]
-                ]);
+            ->assertJsonStructure([
+                'data' => [
+                    'id',
+                    'employee_id',
+                    'user_id',
+                    'title',
+                    'content',
+                    'note_type',
+                    'priority',
+                    'is_private',
+                    'tags',
+                    'created_at',
+                    'updated_at',
+                ],
+            ]);
     }
 
     public function test_can_update_employee_note()
@@ -106,14 +106,14 @@ class EmployeeNoteTest extends TestCase
         $response = $this->putJson("/api/employee-notes/{$note->id}", $updateData);
 
         $response->assertStatus(200)
-                ->assertJson([
-                    'message' => 'Employee note updated successfully',
-                    'data' => [
-                        'title' => 'Updated Note Title',
-                        'content' => 'This is the updated content.',
-                        'priority' => EmployeeNotePriority::HIGH->value,
-                    ]
-                ]);
+            ->assertJson([
+                'message' => 'Employee note updated successfully',
+                'data' => [
+                    'title' => 'Updated Note Title',
+                    'content' => 'This is the updated content.',
+                    'priority' => EmployeeNotePriority::HIGH->value,
+                ],
+            ]);
 
         $this->assertDatabaseHas('employee_notes', [
             'id' => $note->id,
@@ -131,9 +131,9 @@ class EmployeeNoteTest extends TestCase
         $response = $this->deleteJson("/api/employee-notes/{$note->id}");
 
         $response->assertStatus(200)
-                ->assertJson([
-                    'message' => 'Employee note deleted successfully'
-                ]);
+            ->assertJson([
+                'message' => 'Employee note deleted successfully',
+            ]);
 
         $this->assertSoftDeleted('employee_notes', [
             'id' => $note->id,
@@ -151,9 +151,9 @@ class EmployeeNoteTest extends TestCase
         $response = $this->postJson("/api/employee-notes/{$note->id}/archive");
 
         $response->assertStatus(200)
-                ->assertJson([
-                    'message' => 'Employee note archived successfully'
-                ]);
+            ->assertJson([
+                'message' => 'Employee note archived successfully',
+            ]);
 
         $this->assertDatabaseHas('employee_notes', [
             'id' => $note->id,
@@ -172,9 +172,9 @@ class EmployeeNoteTest extends TestCase
         $response = $this->postJson("/api/employee-notes/{$note->id}/unarchive");
 
         $response->assertStatus(200)
-                ->assertJson([
-                    'message' => 'Employee note unarchived successfully'
-                ]);
+            ->assertJson([
+                'message' => 'Employee note unarchived successfully',
+            ]);
 
         $this->assertDatabaseHas('employee_notes', [
             'id' => $note->id,
@@ -192,23 +192,23 @@ class EmployeeNoteTest extends TestCase
         $response = $this->getJson("/api/employees/{$this->employee->id}/notes");
 
         $response->assertStatus(200)
-                ->assertJsonStructure([
-                    'data' => [
-                        '*' => [
-                            'id',
-                            'employee_id',
-                            'user_id',
-                            'title',
-                            'content',
-                            'note_type',
-                            'priority',
-                            'is_private',
-                            'tags',
-                            'created_at',
-                            'updated_at',
-                        ]
-                    ]
-                ]);
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => [
+                        'id',
+                        'employee_id',
+                        'user_id',
+                        'title',
+                        'content',
+                        'note_type',
+                        'priority',
+                        'is_private',
+                        'tags',
+                        'created_at',
+                        'updated_at',
+                    ],
+                ],
+            ]);
 
         $response->assertJsonCount(3, 'data');
     }
@@ -232,8 +232,8 @@ class EmployeeNoteTest extends TestCase
         $response = $this->getJson('/api/employee-notes/search?q=performance');
 
         $response->assertStatus(200)
-                ->assertJsonCount(1, 'data')
-                ->assertJsonPath('data.0.title', 'Performance Review Note');
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.title', 'Performance Review Note');
     }
 
     public function test_validation_requires_required_fields()
@@ -241,14 +241,14 @@ class EmployeeNoteTest extends TestCase
         $response = $this->postJson('/api/employee-notes', []);
 
         $response->assertStatus(422)
-                ->assertJsonValidationErrors([
-                    'employee_id',
-                    'user_id',
-                    'title',
-                    'content',
-                    'note_type',
-                    'priority',
-                ]);
+            ->assertJsonValidationErrors([
+                'employee_id',
+                'user_id',
+                'title',
+                'content',
+                'note_type',
+                'priority',
+            ]);
     }
 
     public function test_validation_enforces_field_limits()
@@ -265,7 +265,7 @@ class EmployeeNoteTest extends TestCase
         $response = $this->postJson('/api/employee-notes', $noteData);
 
         $response->assertStatus(422)
-                ->assertJsonValidationErrors(['title']);
+            ->assertJsonValidationErrors(['title']);
     }
 
     public function test_can_list_all_employee_notes()
@@ -278,28 +278,27 @@ class EmployeeNoteTest extends TestCase
         $response = $this->getJson('/api/employee-notes');
 
         $response->assertStatus(200)
-                ->assertJsonStructure([
+            ->assertJsonStructure([
+                'data' => [
+                    'current_page',
                     'data' => [
-                        'current_page',
-                        'data' => [
-                            '*' => [
-                                'id',
-                                'employee_id',
-                                'user_id',
-                                'title',
-                                'content',
-                                'note_type',
-                                'priority',
-                                'is_private',
-                                'tags',
-                                'created_at',
-                                'updated_at',
-                            ]
+                        '*' => [
+                            'id',
+                            'employee_id',
+                            'user_id',
+                            'title',
+                            'content',
+                            'note_type',
+                            'priority',
+                            'is_private',
+                            'tags',
+                            'created_at',
+                            'updated_at',
                         ],
-                        'per_page',
-                        'total',
-                    ]
-                ]);
+                    ],
+                    'per_page',
+                    'total',
+                ],
+            ]);
     }
 }
-

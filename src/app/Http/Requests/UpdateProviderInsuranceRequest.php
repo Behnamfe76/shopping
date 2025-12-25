@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
+use Fereydooni\Shopping\app\Enums\InsuranceStatus;
+use Fereydooni\Shopping\app\Enums\InsuranceType;
+use Fereydooni\Shopping\app\Enums\VerificationStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Fereydooni\Shopping\app\Enums\InsuranceType;
-use Fereydooni\Shopping\app\Enums\InsuranceStatus;
-use Fereydooni\Shopping\app\Enums\VerificationStatus;
 
 class UpdateProviderInsuranceRequest extends FormRequest
 {
@@ -30,73 +30,73 @@ class UpdateProviderInsuranceRequest extends FormRequest
             'provider_id' => [
                 'sometimes',
                 'integer',
-                'exists:providers,id'
+                'exists:providers,id',
             ],
             'insurance_type' => [
                 'sometimes',
                 'string',
-                Rule::in(InsuranceType::values())
+                Rule::in(InsuranceType::values()),
             ],
             'policy_number' => [
                 'sometimes',
                 'string',
                 'max:100',
-                Rule::unique('provider_insurances', 'policy_number')->ignore($providerInsuranceId)
+                Rule::unique('provider_insurances', 'policy_number')->ignore($providerInsuranceId),
             ],
             'provider_name' => [
                 'sometimes',
                 'string',
-                'max:255'
+                'max:255',
             ],
             'coverage_amount' => [
                 'sometimes',
                 'numeric',
                 'min:0',
-                'max:999999999.99'
+                'max:999999999.99',
             ],
             'start_date' => [
                 'sometimes',
                 'date',
-                'before_or_equal:end_date'
+                'before_or_equal:end_date',
             ],
             'end_date' => [
                 'sometimes',
                 'date',
-                'after:start_date'
+                'after:start_date',
             ],
             'status' => [
                 'sometimes',
                 'string',
-                Rule::in(InsuranceStatus::values())
+                Rule::in(InsuranceStatus::values()),
             ],
             'verification_status' => [
                 'sometimes',
                 'string',
-                Rule::in(VerificationStatus::values())
+                Rule::in(VerificationStatus::values()),
             ],
             'notes' => [
                 'nullable',
                 'string',
-                'max:1000'
+                'max:1000',
             ],
             'documents' => [
                 'nullable',
-                'array'
+                'array',
             ],
             'documents.*' => [
                 'nullable',
                 'string',
-                'max:500'
+                'max:500',
             ],
             'verified_by' => [
                 'nullable',
                 'integer',
-                'exists:users,id'
+                'exists:users,id',
             ],
             'verified_at' => [
                 'nullable',
-                'date'
-            ]
+                'date',
+            ],
         ];
     }
 
@@ -115,7 +115,7 @@ class UpdateProviderInsuranceRequest extends FormRequest
             'end_date.after' => 'End date must be after start date.',
             'status.in' => 'The selected status is invalid.',
             'verification_status.in' => 'The selected verification status is invalid.',
-            'verified_by.exists' => 'The selected verifier does not exist.'
+            'verified_by.exists' => 'The selected verifier does not exist.',
         ];
     }
 
@@ -137,7 +137,7 @@ class UpdateProviderInsuranceRequest extends FormRequest
             'notes' => 'notes',
             'documents' => 'documents',
             'verified_by' => 'verifier',
-            'verified_at' => 'verification date'
+            'verified_at' => 'verification date',
         ];
     }
 
@@ -149,14 +149,14 @@ class UpdateProviderInsuranceRequest extends FormRequest
         // Set verified_by to current user if verification status is being set to verified
         if ($this->has('verification_status') &&
             $this->verification_status === VerificationStatus::VERIFIED &&
-            !$this->has('verified_by')) {
+            ! $this->has('verified_by')) {
             $this->merge(['verified_by' => $this->user()->id]);
         }
 
         // Set verified_at if verification is being set to verified
         if ($this->has('verification_status') &&
             $this->verification_status === VerificationStatus::VERIFIED &&
-            !$this->has('verified_at')) {
+            ! $this->has('verified_at')) {
             $this->merge(['verified_at' => now()]);
         }
 
@@ -165,7 +165,7 @@ class UpdateProviderInsuranceRequest extends FormRequest
             in_array($this->verification_status, [VerificationStatus::PENDING, VerificationStatus::REJECTED])) {
             $this->merge([
                 'verified_by' => null,
-                'verified_at' => null
+                'verified_at' => null,
             ]);
         }
     }

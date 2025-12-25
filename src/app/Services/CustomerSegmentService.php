@@ -21,16 +21,15 @@ use App\Traits\HasCustomerSegmentOperations;
 use App\Traits\HasCustomerSegmentStatusManagement;
 use App\Traits\HasSearchOperations;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Log;
 
 class CustomerSegmentService
 {
     use HasCrudOperations,
-        HasSearchOperations,
+        HasCustomerSegmentCalculation,
         HasCustomerSegmentOperations,
         HasCustomerSegmentStatusManagement,
-        HasCustomerSegmentCalculation;
+        HasSearchOperations;
 
     protected CustomerSegmentRepositoryInterface $repository;
 
@@ -64,7 +63,7 @@ class CustomerSegmentService
 
             return CustomerSegmentDTO::fromModel($segment);
         } catch (\Exception $e) {
-            Log::error('Error creating customer segment: ' . $e->getMessage());
+            Log::error('Error creating customer segment: '.$e->getMessage());
             throw $e;
         }
     }
@@ -97,7 +96,7 @@ class CustomerSegmentService
 
             return null;
         } catch (\Exception $e) {
-            Log::error('Error updating customer segment: ' . $e->getMessage());
+            Log::error('Error updating customer segment: '.$e->getMessage());
             throw $e;
         }
     }
@@ -117,7 +116,7 @@ class CustomerSegmentService
 
             return $deleted;
         } catch (\Exception $e) {
-            Log::error('Error deleting customer segment: ' . $e->getMessage());
+            Log::error('Error deleting customer segment: '.$e->getMessage());
             throw $e;
         }
     }
@@ -137,7 +136,7 @@ class CustomerSegmentService
 
             return $activated;
         } catch (\Exception $e) {
-            Log::error('Error activating customer segment: ' . $e->getMessage());
+            Log::error('Error activating customer segment: '.$e->getMessage());
             throw $e;
         }
     }
@@ -157,7 +156,7 @@ class CustomerSegmentService
 
             return $deactivated;
         } catch (\Exception $e) {
-            Log::error('Error deactivating customer segment: ' . $e->getMessage());
+            Log::error('Error deactivating customer segment: '.$e->getMessage());
             throw $e;
         }
     }
@@ -175,7 +174,7 @@ class CustomerSegmentService
 
             return $count;
         } catch (\Exception $e) {
-            Log::error('Error calculating customers for segment: ' . $e->getMessage());
+            Log::error('Error calculating customers for segment: '.$e->getMessage());
             throw $e;
         }
     }
@@ -190,12 +189,12 @@ class CustomerSegmentService
 
             if ($success) {
                 // Dispatch event
-                event(new CustomerSegmentRecalculated());
+                event(new CustomerSegmentRecalculated);
             }
 
             return $success;
         } catch (\Exception $e) {
-            Log::error('Error recalculating all segments: ' . $e->getMessage());
+            Log::error('Error recalculating all segments: '.$e->getMessage());
             throw $e;
         }
     }
@@ -208,7 +207,7 @@ class CustomerSegmentService
         try {
             return $this->repository->addCustomer($segment, $customerId);
         } catch (\Exception $e) {
-            Log::error('Error adding customer to segment: ' . $e->getMessage());
+            Log::error('Error adding customer to segment: '.$e->getMessage());
             throw $e;
         }
     }
@@ -221,7 +220,7 @@ class CustomerSegmentService
         try {
             return $this->repository->removeCustomer($segment, $customerId);
         } catch (\Exception $e) {
-            Log::error('Error removing customer from segment: ' . $e->getMessage());
+            Log::error('Error removing customer from segment: '.$e->getMessage());
             throw $e;
         }
     }
@@ -232,7 +231,7 @@ class CustomerSegmentService
     public function updateSegmentCriteria(CustomerSegment $segment, array $criteria): bool
     {
         try {
-            if (!$this->repository->validateCriteria($criteria)) {
+            if (! $this->repository->validateCriteria($criteria)) {
                 throw new \InvalidArgumentException('Invalid criteria format');
             }
 
@@ -244,7 +243,7 @@ class CustomerSegmentService
 
             return $updated;
         } catch (\Exception $e) {
-            Log::error('Error updating segment criteria: ' . $e->getMessage());
+            Log::error('Error updating segment criteria: '.$e->getMessage());
             throw $e;
         }
     }
@@ -255,7 +254,7 @@ class CustomerSegmentService
     public function updateSegmentConditions(CustomerSegment $segment, array $conditions): bool
     {
         try {
-            if (!$this->repository->validateConditions($conditions)) {
+            if (! $this->repository->validateConditions($conditions)) {
                 throw new \InvalidArgumentException('Invalid conditions format');
             }
 
@@ -267,7 +266,7 @@ class CustomerSegmentService
 
             return $updated;
         } catch (\Exception $e) {
-            Log::error('Error updating segment conditions: ' . $e->getMessage());
+            Log::error('Error updating segment conditions: '.$e->getMessage());
             throw $e;
         }
     }
@@ -279,8 +278,8 @@ class CustomerSegmentService
     {
         try {
             $segment = $this->repository->find($segmentId);
-            
-            if (!$segment) {
+
+            if (! $segment) {
                 return [];
             }
 
@@ -296,7 +295,7 @@ class CustomerSegmentService
                 'growth_trends' => $this->getSegmentGrowthTrends($segment),
             ];
         } catch (\Exception $e) {
-            Log::error('Error getting segment analytics: ' . $e->getMessage());
+            Log::error('Error getting segment analytics: '.$e->getMessage());
             throw $e;
         }
     }
@@ -309,7 +308,7 @@ class CustomerSegmentService
         try {
             return $this->repository->getSegmentComparison($segmentId1, $segmentId2);
         } catch (\Exception $e) {
-            Log::error('Error comparing segments: ' . $e->getMessage());
+            Log::error('Error comparing segments: '.$e->getMessage());
             throw $e;
         }
     }
@@ -322,7 +321,7 @@ class CustomerSegmentService
         try {
             return $this->repository->getSegmentForecast($segmentId);
         } catch (\Exception $e) {
-            Log::error('Error getting segment forecast: ' . $e->getMessage());
+            Log::error('Error getting segment forecast: '.$e->getMessage());
             throw $e;
         }
     }
@@ -335,7 +334,7 @@ class CustomerSegmentService
         try {
             return $this->repository->exportSegment($segment);
         } catch (\Exception $e) {
-            Log::error('Error exporting segment: ' . $e->getMessage());
+            Log::error('Error exporting segment: '.$e->getMessage());
             throw $e;
         }
     }
@@ -347,13 +346,13 @@ class CustomerSegmentService
     {
         try {
             $segment = $this->repository->importSegment($data);
-            
+
             // Dispatch event
             event(new CustomerSegmentCreated($segment));
-            
+
             return $segment;
         } catch (\Exception $e) {
-            Log::error('Error importing segment: ' . $e->getMessage());
+            Log::error('Error importing segment: '.$e->getMessage());
             throw $e;
         }
     }
@@ -365,13 +364,13 @@ class CustomerSegmentService
     {
         try {
             $newSegment = $this->repository->duplicateSegment($segment, $newName);
-            
+
             // Dispatch event
             event(new CustomerSegmentCreated($newSegment));
-            
+
             return $newSegment;
         } catch (\Exception $e) {
-            Log::error('Error duplicating segment: ' . $e->getMessage());
+            Log::error('Error duplicating segment: '.$e->getMessage());
             throw $e;
         }
     }
@@ -383,13 +382,13 @@ class CustomerSegmentService
     {
         try {
             $mergedSegment = $this->repository->mergeSegments($segmentIds, $newName);
-            
+
             // Dispatch event
             event(new CustomerSegmentCreated($mergedSegment));
-            
+
             return $mergedSegment;
         } catch (\Exception $e) {
-            Log::error('Error merging segments: ' . $e->getMessage());
+            Log::error('Error merging segments: '.$e->getMessage());
             throw $e;
         }
     }
@@ -401,15 +400,15 @@ class CustomerSegmentService
     {
         try {
             $newSegments = $this->repository->splitSegment($segment, $criteria);
-            
+
             // Dispatch events for new segments
             foreach ($newSegments as $newSegment) {
                 event(new CustomerSegmentCreated($newSegment));
             }
-            
+
             return $newSegments;
         } catch (\Exception $e) {
-            Log::error('Error splitting segment: ' . $e->getMessage());
+            Log::error('Error splitting segment: '.$e->getMessage());
             throw $e;
         }
     }
@@ -422,7 +421,7 @@ class CustomerSegmentService
         try {
             return $this->repository->generateRecommendations();
         } catch (\Exception $e) {
-            Log::error('Error getting segment recommendations: ' . $e->getMessage());
+            Log::error('Error getting segment recommendations: '.$e->getMessage());
             throw $e;
         }
     }
@@ -435,7 +434,7 @@ class CustomerSegmentService
         try {
             return $this->repository->calculateInsights();
         } catch (\Exception $e) {
-            Log::error('Error getting segment insights: ' . $e->getMessage());
+            Log::error('Error getting segment insights: '.$e->getMessage());
             throw $e;
         }
     }
@@ -448,7 +447,7 @@ class CustomerSegmentService
         try {
             return $this->repository->forecastTrends($period);
         } catch (\Exception $e) {
-            Log::error('Error getting segment trends forecast: ' . $e->getMessage());
+            Log::error('Error getting segment trends forecast: '.$e->getMessage());
             throw $e;
         }
     }
@@ -491,9 +490,9 @@ class CustomerSegmentService
         $rules = [
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'type' => 'required|string|in:' . implode(',', array_column(SegmentType::cases(), 'value')),
-            'status' => 'nullable|string|in:' . implode(',', array_column(SegmentStatus::cases(), 'value')),
-            'priority' => 'nullable|string|in:' . implode(',', array_column(SegmentPriority::cases(), 'value')),
+            'type' => 'required|string|in:'.implode(',', array_column(SegmentType::cases(), 'value')),
+            'status' => 'nullable|string|in:'.implode(',', array_column(SegmentStatus::cases(), 'value')),
+            'priority' => 'nullable|string|in:'.implode(',', array_column(SegmentPriority::cases(), 'value')),
             'criteria' => 'nullable|array',
             'conditions' => 'nullable|array',
             'is_automatic' => 'boolean',
@@ -503,10 +502,10 @@ class CustomerSegmentService
         ];
 
         // Add unique name validation if creating new segment
-        if (!$segment) {
+        if (! $segment) {
             $rules['name'] .= '|unique:customer_segments,name';
         } else {
-            $rules['name'] .= '|unique:customer_segments,name,' . $segment->id;
+            $rules['name'] .= '|unique:customer_segments,name,'.$segment->id;
         }
 
         $validator = validator($data, $rules);
@@ -567,7 +566,10 @@ class CustomerSegmentService
      */
     private function calculatePercentile(float $value, float $average): float
     {
-        if ($average == 0) return 0;
+        if ($average == 0) {
+            return 0;
+        }
+
         return min(100, max(0, ($value / $average) * 100));
     }
 
@@ -576,8 +578,13 @@ class CustomerSegmentService
      */
     private function getPerformanceRating(int $customerCount): string
     {
-        if ($customerCount > 1000) return 'high';
-        if ($customerCount > 100) return 'medium';
+        if ($customerCount > 1000) {
+            return 'high';
+        }
+        if ($customerCount > 100) {
+            return 'medium';
+        }
+
         return 'low';
     }
 
@@ -586,8 +593,13 @@ class CustomerSegmentService
      */
     private function assessGrowthPotential(CustomerSegment $segment): string
     {
-        if ($segment->is_dynamic && $segment->is_automatic) return 'high';
-        if ($segment->is_dynamic || $segment->is_automatic) return 'medium';
+        if ($segment->is_dynamic && $segment->is_automatic) {
+            return 'high';
+        }
+        if ($segment->is_dynamic || $segment->is_automatic) {
+            return 'medium';
+        }
+
         return 'low';
     }
 }

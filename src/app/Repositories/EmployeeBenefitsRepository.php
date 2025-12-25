@@ -2,22 +2,23 @@
 
 namespace App\Repositories;
 
-use App\Models\EmployeeBenefits;
 use App\DTOs\EmployeeBenefitsDTO;
+use App\Models\EmployeeBenefits;
 use App\Repositories\Interfaces\EmployeeBenefitsRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Carbon\Carbon;
 
 class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
 {
     protected $model;
+
     protected $cachePrefix = 'employee_benefits';
+
     protected $cacheTtl = 3600; // 1 hour
 
     public function __construct(EmployeeBenefits $model)
@@ -34,7 +35,7 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
 
     public function paginate(int $perPage = 15): LengthAwarePaginator
     {
-        $cacheKey = "{$this->cachePrefix}:paginate:{$perPage}:" . request()->get('page', 1);
+        $cacheKey = "{$this->cachePrefix}:paginate:{$perPage}:".request()->get('page', 1);
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($perPage) {
             return $this->model->with(['employee'])
@@ -50,7 +51,7 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
             ->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->model->with(['employee'])
             ->orderBy('id', 'desc')
@@ -67,6 +68,7 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
     public function findDTO(int $id): ?EmployeeBenefitsDTO
     {
         $benefit = $this->find($id);
+
         return $benefit ? EmployeeBenefitsDTO::fromModel($benefit) : null;
     }
 
@@ -85,7 +87,8 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
     public function findByEmployeeIdDTO(int $employeeId): Collection
     {
         $benefits = $this->findByEmployeeId($employeeId);
-        return $benefits->map(fn($benefit) => EmployeeBenefitsDTO::fromModel($benefit));
+
+        return $benefits->map(fn ($benefit) => EmployeeBenefitsDTO::fromModel($benefit));
     }
 
     public function findByBenefitType(string $benefitType): Collection
@@ -103,7 +106,8 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
     public function findByBenefitTypeDTO(string $benefitType): Collection
     {
         $benefits = $this->findByBenefitType($benefitType);
-        return $benefits->map(fn($benefit) => EmployeeBenefitsDTO::fromModel($benefit));
+
+        return $benefits->map(fn ($benefit) => EmployeeBenefitsDTO::fromModel($benefit));
     }
 
     public function findByStatus(string $status): Collection
@@ -121,12 +125,13 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
     public function findByStatusDTO(string $status): Collection
     {
         $benefits = $this->findByStatus($status);
-        return $benefits->map(fn($benefit) => EmployeeBenefitsDTO::fromModel($benefit));
+
+        return $benefits->map(fn ($benefit) => EmployeeBenefitsDTO::fromModel($benefit));
     }
 
     public function findByProvider(string $provider): Collection
     {
-        $cacheKey = "{$this->cachePrefix}:provider:" . md5($provider);
+        $cacheKey = "{$this->cachePrefix}:provider:".md5($provider);
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($provider) {
             return $this->model->with(['employee'])
@@ -139,12 +144,13 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
     public function findByProviderDTO(string $provider): Collection
     {
         $benefits = $this->findByProvider($provider);
-        return $benefits->map(fn($benefit) => EmployeeBenefitsDTO::fromModel($benefit));
+
+        return $benefits->map(fn ($benefit) => EmployeeBenefitsDTO::fromModel($benefit));
     }
 
     public function findByDateRange(string $startDate, string $endDate): Collection
     {
-        $cacheKey = "{$this->cachePrefix}:daterange:" . md5($startDate . $endDate);
+        $cacheKey = "{$this->cachePrefix}:daterange:".md5($startDate.$endDate);
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($startDate, $endDate) {
             return $this->model->with(['employee'])
@@ -158,7 +164,8 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
     public function findByDateRangeDTO(string $startDate, string $endDate): Collection
     {
         $benefits = $this->findByDateRange($startDate, $endDate);
-        return $benefits->map(fn($benefit) => EmployeeBenefitsDTO::fromModel($benefit));
+
+        return $benefits->map(fn ($benefit) => EmployeeBenefitsDTO::fromModel($benefit));
     }
 
     public function findByEmployeeAndType(int $employeeId, string $benefitType): Collection
@@ -177,7 +184,8 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
     public function findByEmployeeAndTypeDTO(int $employeeId, string $benefitType): Collection
     {
         $benefits = $this->findByEmployeeAndType($employeeId, $benefitType);
-        return $benefits->map(fn($benefit) => EmployeeBenefitsDTO::fromModel($benefit));
+
+        return $benefits->map(fn ($benefit) => EmployeeBenefitsDTO::fromModel($benefit));
     }
 
     public function findActive(): Collection
@@ -189,7 +197,7 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
                 ->where('effective_date', '<=', now())
                 ->where(function ($query) {
                     $query->whereNull('end_date')
-                          ->orWhere('end_date', '>', now());
+                        ->orWhere('end_date', '>', now());
                 })
                 ->orderBy('effective_date', 'desc')
                 ->get();
@@ -199,7 +207,8 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
     public function findActiveDTO(): Collection
     {
         $benefits = $this->findActive();
-        return $benefits->map(fn($benefit) => EmployeeBenefitsDTO::fromModel($benefit));
+
+        return $benefits->map(fn ($benefit) => EmployeeBenefitsDTO::fromModel($benefit));
     }
 
     public function findPending(): Collection
@@ -215,7 +224,8 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
     public function findPendingDTO(): Collection
     {
         $benefits = $this->findPending();
-        return $benefits->map(fn($benefit) => EmployeeBenefitsDTO::fromModel($benefit));
+
+        return $benefits->map(fn ($benefit) => EmployeeBenefitsDTO::fromModel($benefit));
     }
 
     public function findTerminated(): Collection
@@ -231,12 +241,13 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
     public function findTerminatedDTO(): Collection
     {
         $benefits = $this->findTerminated();
-        return $benefits->map(fn($benefit) => EmployeeBenefitsDTO::fromModel($benefit));
+
+        return $benefits->map(fn ($benefit) => EmployeeBenefitsDTO::fromModel($benefit));
     }
 
     public function findByEffectiveDate(string $effectiveDate): Collection
     {
-        $cacheKey = "{$this->cachePrefix}:effective_date:" . md5($effectiveDate);
+        $cacheKey = "{$this->cachePrefix}:effective_date:".md5($effectiveDate);
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($effectiveDate) {
             return $this->model->with(['employee'])
@@ -249,12 +260,13 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
     public function findByEffectiveDateDTO(string $effectiveDate): Collection
     {
         $benefits = $this->findByEffectiveDate($effectiveDate);
-        return $benefits->map(fn($benefit) => EmployeeBenefitsDTO::fromModel($benefit));
+
+        return $benefits->map(fn ($benefit) => EmployeeBenefitsDTO::fromModel($benefit));
     }
 
     public function findByEnrollmentDate(string $enrollmentDate): Collection
     {
-        $cacheKey = "{$this->cachePrefix}:enrollment_date:" . md5($enrollmentDate);
+        $cacheKey = "{$this->cachePrefix}:enrollment_date:".md5($enrollmentDate);
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($enrollmentDate) {
             return $this->model->with(['employee'])
@@ -267,7 +279,8 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
     public function findByEnrollmentDateDTO(string $enrollmentDate): Collection
     {
         $benefits = $this->findByEnrollmentDate($enrollmentDate);
-        return $benefits->map(fn($benefit) => EmployeeBenefitsDTO::fromModel($benefit));
+
+        return $benefits->map(fn ($benefit) => EmployeeBenefitsDTO::fromModel($benefit));
     }
 
     public function findExpiringSoon(string $days = 30): Collection
@@ -289,7 +302,8 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
     public function findExpiringSoonDTO(string $days = 30): Collection
     {
         $benefits = $this->findExpiringSoon($days);
-        return $benefits->map(fn($benefit) => EmployeeBenefitsDTO::fromModel($benefit));
+
+        return $benefits->map(fn ($benefit) => EmployeeBenefitsDTO::fromModel($benefit));
     }
 
     public function findByCoverageLevel(string $coverageLevel): Collection
@@ -307,7 +321,8 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
     public function findByCoverageLevelDTO(string $coverageLevel): Collection
     {
         $benefits = $this->findByCoverageLevel($coverageLevel);
-        return $benefits->map(fn($benefit) => EmployeeBenefitsDTO::fromModel($benefit));
+
+        return $benefits->map(fn ($benefit) => EmployeeBenefitsDTO::fromModel($benefit));
     }
 
     public function findByNetworkType(string $networkType): Collection
@@ -325,7 +340,8 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
     public function findByNetworkTypeDTO(string $networkType): Collection
     {
         $benefits = $this->findByNetworkType($networkType);
-        return $benefits->map(fn($benefit) => EmployeeBenefitsDTO::fromModel($benefit));
+
+        return $benefits->map(fn ($benefit) => EmployeeBenefitsDTO::fromModel($benefit));
     }
 
     public function create(array $data): EmployeeBenefits
@@ -344,7 +360,7 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
             Log::info('Employee benefit created', [
                 'benefit_id' => $benefit->id,
                 'employee_id' => $benefit->employee_id,
-                'benefit_type' => $benefit->benefit_type
+                'benefit_type' => $benefit->benefit_type,
             ]);
 
             return $benefit->load('employee');
@@ -353,7 +369,7 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
             DB::rollBack();
             Log::error('Failed to create employee benefit', [
                 'data' => $data,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -362,6 +378,7 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
     public function createAndReturnDTO(array $data): EmployeeBenefitsDTO
     {
         $benefit = $this->create($data);
+
         return EmployeeBenefitsDTO::fromModel($benefit);
     }
 
@@ -381,11 +398,12 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
                 Log::info('Employee benefit updated', [
                     'benefit_id' => $benefit->id,
                     'employee_id' => $benefit->employee_id,
-                    'changes' => array_diff_assoc($data, $oldData)
+                    'changes' => array_diff_assoc($data, $oldData),
                 ]);
             }
 
             DB::commit();
+
             return $updated;
 
         } catch (\Exception $e) {
@@ -393,7 +411,7 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
             Log::error('Failed to update employee benefit', [
                 'benefit_id' => $benefit->id,
                 'data' => $data,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -402,6 +420,7 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
     public function updateAndReturnDTO(EmployeeBenefits $benefit, array $data): ?EmployeeBenefitsDTO
     {
         $updated = $this->update($benefit, $data);
+
         return $updated ? EmployeeBenefitsDTO::fromModel($benefit->fresh()) : null;
     }
 
@@ -420,24 +439,25 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
 
                 Log::info('Employee benefit deleted', [
                     'benefit_id' => $benefit->id,
-                    'employee_id' => $employeeId
+                    'employee_id' => $employeeId,
                 ]);
             }
 
             DB::commit();
+
             return $deleted;
 
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Failed to delete employee benefit', [
                 'benefit_id' => $benefit->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
     }
 
-    public function enroll(EmployeeBenefits $benefit, string $effectiveDate = null): bool
+    public function enroll(EmployeeBenefits $benefit, ?string $effectiveDate = null): bool
     {
         try {
             DB::beginTransaction();
@@ -445,7 +465,7 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
             $data = [
                 'status' => 'enrolled',
                 'effective_date' => $effectiveDate ?? now(),
-                'enrollment_date' => now()
+                'enrollment_date' => now(),
             ];
 
             $enrolled = $this->update($benefit, $data);
@@ -454,24 +474,25 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
                 Log::info('Employee benefit enrolled', [
                     'benefit_id' => $benefit->id,
                     'employee_id' => $benefit->employee_id,
-                    'effective_date' => $data['effective_date']
+                    'effective_date' => $data['effective_date'],
                 ]);
             }
 
             DB::commit();
+
             return $enrolled;
 
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Failed to enroll employee benefit', [
                 'benefit_id' => $benefit->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
     }
 
-    public function terminate(EmployeeBenefits $benefit, string $endDate = null, string $reason = null): bool
+    public function terminate(EmployeeBenefits $benefit, ?string $endDate = null, ?string $reason = null): bool
     {
         try {
             DB::beginTransaction();
@@ -479,7 +500,7 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
             $data = [
                 'status' => 'terminated',
                 'end_date' => $endDate ?? now(),
-                'notes' => $benefit->notes . "\nTerminated: " . ($reason ?? 'No reason provided')
+                'notes' => $benefit->notes."\nTerminated: ".($reason ?? 'No reason provided'),
             ];
 
             $terminated = $this->update($benefit, $data);
@@ -489,31 +510,32 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
                     'benefit_id' => $benefit->id,
                     'employee_id' => $benefit->employee_id,
                     'end_date' => $data['end_date'],
-                    'reason' => $reason
+                    'reason' => $reason,
                 ]);
             }
 
             DB::commit();
+
             return $terminated;
 
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Failed to terminate employee benefit', [
                 'benefit_id' => $benefit->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
     }
 
-    public function cancel(EmployeeBenefits $benefit, string $reason = null): bool
+    public function cancel(EmployeeBenefits $benefit, ?string $reason = null): bool
     {
         try {
             DB::beginTransaction();
 
             $data = [
                 'status' => 'cancelled',
-                'notes' => $benefit->notes . "\nCancelled: " . ($reason ?? 'No reason provided')
+                'notes' => $benefit->notes."\nCancelled: ".($reason ?? 'No reason provided'),
             ];
 
             $cancelled = $this->update($benefit, $data);
@@ -522,18 +544,19 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
                 Log::info('Employee benefit cancelled', [
                     'benefit_id' => $benefit->id,
                     'employee_id' => $benefit->employee_id,
-                    'reason' => $reason
+                    'reason' => $reason,
                 ]);
             }
 
             DB::commit();
+
             return $cancelled;
 
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Failed to cancel employee benefit', [
                 'benefit_id' => $benefit->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -553,7 +576,7 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
     {
         $data = array_intersect_key($costData, array_flip([
             'premium_amount', 'employee_contribution', 'employer_contribution',
-            'total_cost', 'deductible', 'co_pay', 'co_insurance', 'max_out_of_pocket'
+            'total_cost', 'deductible', 'co_pay', 'co_insurance', 'max_out_of_pocket',
         ]));
 
         return $this->update($benefit, $data);
@@ -696,7 +719,7 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
                 ->where('effective_date', '<=', now())
                 ->where(function ($query) {
                     $query->whereNull('end_date')
-                          ->orWhere('end_date', '>', now());
+                        ->orWhere('end_date', '>', now());
                 })
                 ->count();
         });
@@ -728,13 +751,13 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
         return $this->model->with(['employee'])
             ->where(function ($q) use ($query) {
                 $q->where('benefit_name', 'like', "%{$query}%")
-                  ->orWhere('provider', 'like', "%{$query}%")
-                  ->orWhere('plan_id', 'like', "%{$query}%")
-                  ->orWhereHas('employee', function ($empQuery) use ($query) {
-                      $empQuery->where('first_name', 'like', "%{$query}%")
-                               ->orWhere('last_name', 'like', "%{$query}%")
-                               ->orWhere('employee_id', 'like', "%{$query}%");
-                  });
+                    ->orWhere('provider', 'like', "%{$query}%")
+                    ->orWhere('plan_id', 'like', "%{$query}%")
+                    ->orWhereHas('employee', function ($empQuery) use ($query) {
+                        $empQuery->where('first_name', 'like', "%{$query}%")
+                            ->orWhere('last_name', 'like', "%{$query}%")
+                            ->orWhere('employee_id', 'like', "%{$query}%");
+                    });
             })
             ->orderBy('created_at', 'desc')
             ->get();
@@ -743,7 +766,8 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
     public function searchBenefitsDTO(string $query): Collection
     {
         $benefits = $this->searchBenefits($query);
-        return $benefits->map(fn($benefit) => EmployeeBenefitsDTO::fromModel($benefit));
+
+        return $benefits->map(fn ($benefit) => EmployeeBenefitsDTO::fromModel($benefit));
     }
 
     public function searchBenefitsByEmployee(int $employeeId, string $query): Collection
@@ -752,8 +776,8 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
             ->where('employee_id', $employeeId)
             ->where(function ($q) use ($query) {
                 $q->where('benefit_name', 'like', "%{$query}%")
-                  ->orWhere('provider', 'like', "%{$query}%")
-                  ->orWhere('plan_id', 'like', "%{$query}%");
+                    ->orWhere('provider', 'like', "%{$query}%")
+                    ->orWhere('plan_id', 'like', "%{$query}%");
             })
             ->orderBy('created_at', 'desc')
             ->get();
@@ -762,7 +786,8 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
     public function searchBenefitsByEmployeeDTO(int $employeeId, string $query): Collection
     {
         $benefits = $this->searchBenefitsByEmployee($employeeId, $query);
-        return $benefits->map(fn($benefit) => EmployeeBenefitsDTO::fromModel($benefit));
+
+        return $benefits->map(fn ($benefit) => EmployeeBenefitsDTO::fromModel($benefit));
     }
 
     public function exportBenefitsData(array $filters = []): string
@@ -824,7 +849,9 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
 
             $imported = 0;
             foreach ($lines as $line) {
-                if (empty(trim($line))) continue;
+                if (empty(trim($line))) {
+                    continue;
+                }
 
                 $row = array_combine($headers, str_getcsv($line));
 
@@ -838,7 +865,7 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
                     [
                         'employee_id' => $row['employee_id'],
                         'benefit_type' => $row['benefit_type'],
-                        'benefit_name' => $row['benefit_name']
+                        'benefit_name' => $row['benefit_name'],
                     ],
                     $row
                 );
@@ -852,6 +879,7 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
             DB::commit();
 
             Log::info('Benefits data imported', ['imported_count' => $imported]);
+
             return true;
 
         } catch (\Exception $e) {
@@ -861,9 +889,9 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
         }
     }
 
-    public function getBenefitsStatistics(int $employeeId = null): array
+    public function getBenefitsStatistics(?int $employeeId = null): array
     {
-        $cacheKey = "{$this->cachePrefix}:statistics" . ($employeeId ? ":employee:{$employeeId}" : '');
+        $cacheKey = "{$this->cachePrefix}:statistics".($employeeId ? ":employee:{$employeeId}" : '');
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($employeeId) {
             $query = $this->model;
@@ -891,7 +919,7 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
                 'terminated_benefits' => $terminated,
                 'monthly_cost' => $monthlyCost,
                 'annual_cost' => $annualCost,
-                'active_percentage' => $total > 0 ? round(($active / $total) * 100, 2) : 0
+                'active_percentage' => $total > 0 ? round(($active / $total) * 100, 2) : 0,
             ];
         });
     }
@@ -914,7 +942,7 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
                 'active_benefits' => $active,
                 'monthly_cost' => $monthlyCost,
                 'annual_cost' => $monthlyCost * 12,
-                'active_percentage' => $total > 0 ? round(($active / $total) * 100, 2) : 0
+                'active_percentage' => $total > 0 ? round(($active / $total) * 100, 2) : 0,
             ];
         });
     }
@@ -945,14 +973,14 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
                 'annual_cost' => $monthlyCost * 12,
                 'active_percentage' => $total > 0 ? round(($active / $total) * 100, 2) : 0,
                 'by_type' => $byType,
-                'by_status' => $byStatus
+                'by_status' => $byStatus,
             ];
         });
     }
 
-    public function getCostAnalysis(int $employeeId = null): array
+    public function getCostAnalysis(?int $employeeId = null): array
     {
-        $cacheKey = "{$this->cachePrefix}:cost_analysis" . ($employeeId ? ":employee:{$employeeId}" : '');
+        $cacheKey = "{$this->cachePrefix}:cost_analysis".($employeeId ? ":employee:{$employeeId}" : '');
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($employeeId) {
             $query = $this->model->where('status', 'enrolled')->where('is_active', true);
@@ -980,17 +1008,17 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
                 'average_premium' => round($avgPremium, 2),
                 'average_employee_contribution' => round($avgEmployeeContribution, 2),
                 'average_employer_contribution' => round($avgEmployerContribution, 2),
-                'benefits_count' => $count
+                'benefits_count' => $count,
             ];
         });
     }
 
-    public function getEnrollmentTrends(string $startDate = null, string $endDate = null): array
+    public function getEnrollmentTrends(?string $startDate = null, ?string $endDate = null): array
     {
         $startDate = $startDate ?? now()->subYear()->format('Y-m-d');
         $endDate = $endDate ?? now()->format('Y-m-d');
 
-        $cacheKey = "{$this->cachePrefix}:enrollment_trends:" . md5($startDate . $endDate);
+        $cacheKey = "{$this->cachePrefix}:enrollment_trends:".md5($startDate.$endDate);
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($startDate, $endDate) {
             $trends = $this->model->selectRaw('DATE(enrollment_date) as date, COUNT(*) as count')

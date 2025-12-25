@@ -3,15 +3,15 @@
 namespace App\Listeners;
 
 use App\Events\ProviderInsuranceCreated;
-use App\Events\ProviderInsuranceUpdated;
 use App\Events\ProviderInsuranceDeleted;
-use App\Events\ProviderInsuranceVerified;
 use App\Events\ProviderInsuranceExpired;
 use App\Events\ProviderInsuranceRenewed;
+use App\Events\ProviderInsuranceUpdated;
+use App\Events\ProviderInsuranceVerified;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class UpdateInsuranceAnalytics implements ShouldQueue
 {
@@ -91,14 +91,14 @@ class UpdateInsuranceAnalytics implements ShouldQueue
             Log::info('Insurance analytics updated successfully', [
                 'action' => $action,
                 'insurance_id' => $providerInsurance->id,
-                'provider_id' => $providerInsurance->provider_id
+                'provider_id' => $providerInsurance->provider_id,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to update insurance analytics', [
                 'action' => $action,
                 'insurance_id' => $providerInsurance->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -112,7 +112,7 @@ class UpdateInsuranceAnalytics implements ShouldQueue
         // This could include counting insurance by type, status, etc.
         Log::info('Metrics calculation updated', [
             'action' => $action,
-            'insurance_id' => $providerInsurance->id
+            'insurance_id' => $providerInsurance->id,
         ]);
     }
 
@@ -129,7 +129,7 @@ class UpdateInsuranceAnalytics implements ShouldQueue
         Log::info('Cache updated', [
             'action' => $action,
             'insurance_id' => $providerInsurance->id,
-            'cache_key' => $cacheKey
+            'cache_key' => $cacheKey,
         ]);
     }
 
@@ -142,7 +142,7 @@ class UpdateInsuranceAnalytics implements ShouldQueue
         // This could include updating summary tables, etc.
         Log::info('Database analytics updated', [
             'action' => $action,
-            'insurance_id' => $providerInsurance->id
+            'insurance_id' => $providerInsurance->id,
         ]);
     }
 }

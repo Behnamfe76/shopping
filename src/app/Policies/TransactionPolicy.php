@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Policies;
 
+use Fereydooni\Shopping\app\Models\Transaction;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User;
-use Fereydooni\Shopping\app\Models\Transaction;
 
 class TransactionPolicy
 {
@@ -83,7 +83,7 @@ class TransactionPolicy
     /**
      * Determine whether the user can process transactions.
      */
-    public function process(User $user, Transaction $transaction = null): bool
+    public function process(User $user, ?Transaction $transaction = null): bool
     {
         // Check if user can process any transactions
         if ($user->can('transaction.process.any')) {
@@ -101,7 +101,7 @@ class TransactionPolicy
     /**
      * Determine whether the user can refund transactions.
      */
-    public function refund(User $user, Transaction $transaction = null): bool
+    public function refund(User $user, ?Transaction $transaction = null): bool
     {
         // Check if user can refund any transactions
         if ($user->can('transaction.refund.any')) {

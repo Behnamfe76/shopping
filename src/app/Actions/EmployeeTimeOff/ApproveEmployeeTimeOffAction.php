@@ -2,12 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Actions\EmployeeTimeOff;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Fereydooni\Shopping\app\DTOs\EmployeeTimeOffDTO;
 use Fereydooni\Shopping\app\Models\EmployeeTimeOff;
 use Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeTimeOffRepositoryInterface;
-use Fereydooni\Shopping\app\Enums\TimeOffStatus;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ApproveEmployeeTimeOffAction
 {
@@ -43,7 +42,7 @@ class ApproveEmployeeTimeOffAction
             Log::info('Time-off request approved successfully', [
                 'id' => $timeOff->id,
                 'employee_id' => $timeOff->employee_id,
-                'approved_by' => $approvedBy
+                'approved_by' => $approvedBy,
             ]);
 
             return EmployeeTimeOffDTO::fromModel($timeOff->fresh());
@@ -53,7 +52,7 @@ class ApproveEmployeeTimeOffAction
             Log::error('Failed to approve time-off request', [
                 'error' => $e->getMessage(),
                 'time_off_id' => $timeOff->id,
-                'approved_by' => $approvedBy
+                'approved_by' => $approvedBy,
             ]);
             throw $e;
         }
@@ -70,7 +69,7 @@ class ApproveEmployeeTimeOffAction
 
     protected function validateApprovalStatus(EmployeeTimeOff $timeOff): void
     {
-        if (!$timeOff->isPending()) {
+        if (! $timeOff->isPending()) {
             throw new \InvalidArgumentException('Only pending time-off requests can be approved.');
         }
     }
@@ -82,7 +81,7 @@ class ApproveEmployeeTimeOffAction
         Log::info('Employee balance updated for approved time-off', [
             'employee_id' => $timeOff->employee_id,
             'days_used' => $timeOff->total_days,
-            'hours_used' => $timeOff->total_hours
+            'hours_used' => $timeOff->total_hours,
         ]);
     }
 
@@ -93,8 +92,7 @@ class ApproveEmployeeTimeOffAction
         Log::info('Approval notification sent', [
             'time_off_id' => $timeOff->id,
             'employee_id' => $timeOff->employee_id,
-            'approved_by' => $approvedBy
+            'approved_by' => $approvedBy,
         ]);
     }
 }
-

@@ -17,18 +17,18 @@ return new class extends Migration
             $table->string('specialization_name', 255);
             $table->enum('category', [
                 'medical', 'legal', 'technical', 'financial',
-                'educational', 'consulting', 'other'
+                'educational', 'consulting', 'other',
             ]);
             $table->text('description')->nullable();
             $table->unsignedTinyInteger('years_experience')->default(0);
             $table->enum('proficiency_level', [
-                'beginner', 'intermediate', 'advanced', 'expert', 'master'
+                'beginner', 'intermediate', 'advanced', 'expert', 'master',
             ]);
             $table->json('certifications')->nullable();
             $table->boolean('is_primary')->default(false);
             $table->boolean('is_active')->default(true);
             $table->enum('verification_status', [
-                'unverified', 'pending', 'verified', 'rejected'
+                'unverified', 'pending', 'verified', 'rejected',
             ])->default('unverified');
             $table->timestamp('verified_at')->nullable();
             $table->foreignId('verified_by')->nullable()->constrained('users')->onDelete('set null');

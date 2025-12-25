@@ -8,6 +8,7 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 class UserSubscriptionSearchResource extends ResourceCollection
 {
     protected string $query;
+
     protected ?int $userId;
 
     public function __construct($resource, string $query = '', ?int $userId = null)

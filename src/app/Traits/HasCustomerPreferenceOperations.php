@@ -2,19 +2,18 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
+use Fereydooni\Shopping\app\DTOs\CustomerPreferenceDTO;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
-use Fereydooni\Shopping\app\Models\CustomerPreference;
-use Fereydooni\Shopping\app\DTOs\CustomerPreferenceDTO;
 
 trait HasCustomerPreferenceOperations
 {
     /**
      * Set a customer preference
      */
-    public function setCustomerPreference(int $customerId, string $key, $value, string $type = 'string', string $description = null): bool
+    public function setCustomerPreference(int $customerId, string $key, $value, string $type = 'string', ?string $description = null): bool
     {
         $this->validatePreferenceData($customerId, $key, $value, $type);
 
@@ -24,7 +23,7 @@ trait HasCustomerPreferenceOperations
     /**
      * Set a customer preference and return DTO
      */
-    public function setCustomerPreferenceDTO(int $customerId, string $key, $value, string $type = 'string', string $description = null): ?CustomerPreferenceDTO
+    public function setCustomerPreferenceDTO(int $customerId, string $key, $value, string $type = 'string', ?string $description = null): ?CustomerPreferenceDTO
     {
         $this->validatePreferenceData($customerId, $key, $value, $type);
 
@@ -132,9 +131,11 @@ trait HasCustomerPreferenceOperations
             }
 
             DB::commit();
+
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
+
             return false;
         }
     }
@@ -226,7 +227,7 @@ trait HasCustomerPreferenceOperations
     {
         $templates = $this->getPreferenceTemplates();
 
-        if (!isset($templates[$templateName])) {
+        if (! isset($templates[$templateName])) {
             return false;
         }
 
@@ -259,9 +260,11 @@ trait HasCustomerPreferenceOperations
             }
 
             DB::commit();
+
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
+
             return false;
         }
     }
@@ -310,9 +313,11 @@ trait HasCustomerPreferenceOperations
             }
 
             DB::commit();
+
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
+
             return false;
         }
     }
@@ -320,11 +325,11 @@ trait HasCustomerPreferenceOperations
     /**
      * Get preference audit trail
      */
-    public function getPreferenceAuditTrail(int $customerId, string $key = null): Collection
+    public function getPreferenceAuditTrail(int $customerId, ?string $key = null): Collection
     {
         // This would typically query an audit table
         // For now, return empty collection as audit trail would need additional implementation
-        return new Collection();
+        return new Collection;
     }
 
     /**
@@ -334,7 +339,7 @@ trait HasCustomerPreferenceOperations
     {
         // This would typically query a version history table
         // For now, return empty collection as versioning would need additional implementation
-        return new Collection();
+        return new Collection;
     }
 
     /**
@@ -369,6 +374,7 @@ trait HasCustomerPreferenceOperations
     protected function getPreferenceCategory(string $key): string
     {
         $parts = explode('.', $key);
+
         return $parts[0] ?? 'general';
     }
 
@@ -377,7 +383,7 @@ trait HasCustomerPreferenceOperations
      */
     protected function convertStringToValue(string $value, string $type): mixed
     {
-        return match($type) {
+        return match ($type) {
             'string' => $value,
             'integer' => (int) $value,
             'float' => (float) $value,
@@ -392,7 +398,7 @@ trait HasCustomerPreferenceOperations
      */
     protected function convertValueToString($value, string $type): string
     {
-        return match($type) {
+        return match ($type) {
             'string' => (string) $value,
             'integer' => (string) (int) $value,
             'float' => (string) (float) $value,
@@ -402,4 +408,3 @@ trait HasCustomerPreferenceOperations
         };
     }
 }
-

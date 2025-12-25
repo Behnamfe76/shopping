@@ -2,15 +2,15 @@
 
 namespace Fereydooni\Shopping\app\Repositories;
 
-use Fereydooni\Shopping\app\Repositories\Interfaces\BrandRepositoryInterface;
-use Fereydooni\Shopping\app\Models\Brand;
 use Fereydooni\Shopping\app\DTOs\BrandDTO;
+use Fereydooni\Shopping\app\Models\Brand;
+use Fereydooni\Shopping\app\Repositories\Interfaces\BrandRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
 class BrandRepository implements BrandRepositoryInterface
@@ -37,7 +37,7 @@ class BrandRepository implements BrandRepositoryInterface
     {
         $select = '*';
         $columns = request()->get('columns', []);
-        if (!empty($columns)) {
+        if (! empty($columns)) {
             $select = $columns;
         }
 
@@ -68,7 +68,7 @@ class BrandRepository implements BrandRepositoryInterface
     /**
      * Get cursor paginated brands
      */
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->model->ordered()->cursorPaginate($perPage, ['*'], 'cursor', $cursor);
     }
@@ -87,6 +87,7 @@ class BrandRepository implements BrandRepositoryInterface
     public function findDTO(int $id): ?BrandDTO
     {
         $brand = $this->find($id);
+
         return $brand ? BrandDTO::fromModel($brand) : null;
     }
 
@@ -104,6 +105,7 @@ class BrandRepository implements BrandRepositoryInterface
     public function findBySlugDTO(string $slug): ?BrandDTO
     {
         $brand = $this->findBySlug($slug);
+
         return $brand ? BrandDTO::fromModel($brand) : null;
     }
 
@@ -120,7 +122,7 @@ class BrandRepository implements BrandRepositoryInterface
      */
     public function findActiveDTO(): Collection
     {
-        return $this->findActive()->map(fn($brand) => BrandDTO::fromModel($brand));
+        return $this->findActive()->map(fn ($brand) => BrandDTO::fromModel($brand));
     }
 
     /**
@@ -136,7 +138,7 @@ class BrandRepository implements BrandRepositoryInterface
      */
     public function findFeaturedDTO(): Collection
     {
-        return $this->findFeatured()->map(fn($brand) => BrandDTO::fromModel($brand));
+        return $this->findFeatured()->map(fn ($brand) => BrandDTO::fromModel($brand));
     }
 
     /**
@@ -145,7 +147,7 @@ class BrandRepository implements BrandRepositoryInterface
     public function create(array $data): Brand
     {
         // Generate slug if not provided
-        if (!isset($data['slug']) || empty($data['slug'])) {
+        if (! isset($data['slug']) || empty($data['slug'])) {
             $data['slug'] = $this->generateSlug($data['name']);
         }
 
@@ -158,6 +160,7 @@ class BrandRepository implements BrandRepositoryInterface
     public function createAndReturnDTO(array $data): BrandDTO
     {
         $brand = $this->create($data);
+
         return BrandDTO::fromModel($brand);
     }
 
@@ -167,7 +170,7 @@ class BrandRepository implements BrandRepositoryInterface
     public function update(Brand $brand, array $data): bool
     {
         // Generate new slug if name changed and slug is not explicitly provided
-        if (isset($data['name']) && $data['name'] !== $brand->name && !isset($data['slug'])) {
+        if (isset($data['name']) && $data['name'] !== $brand->name && ! isset($data['slug'])) {
             $data['slug'] = $this->generateSlug($data['name'], $brand->id);
         }
 
@@ -180,6 +183,7 @@ class BrandRepository implements BrandRepositoryInterface
     public function updateAndReturnDTO(Brand $brand, array $data): ?BrandDTO
     {
         $updated = $this->update($brand, $data);
+
         return $updated ? BrandDTO::fromModel($brand->fresh()) : null;
     }
 
@@ -196,7 +200,7 @@ class BrandRepository implements BrandRepositoryInterface
      */
     public function toggleActive(Brand $brand): bool
     {
-        return $brand->update(['is_active' => !$brand->is_active]);
+        return $brand->update(['is_active' => ! $brand->is_active]);
     }
 
     /**
@@ -204,7 +208,7 @@ class BrandRepository implements BrandRepositoryInterface
      */
     public function toggleFeatured(Brand $brand): bool
     {
-        return $brand->update(['is_featured' => !$brand->is_featured]);
+        return $brand->update(['is_featured' => ! $brand->is_featured]);
     }
 
     /**
@@ -244,7 +248,7 @@ class BrandRepository implements BrandRepositoryInterface
      */
     public function searchDTO(string $query): Collection
     {
-        return $this->search($query)->map(fn($brand) => BrandDTO::fromModel($brand));
+        return $this->search($query)->map(fn ($brand) => BrandDTO::fromModel($brand));
     }
 
     /**
@@ -260,7 +264,7 @@ class BrandRepository implements BrandRepositoryInterface
      */
     public function getByFirstLetterDTO(string $letter): Collection
     {
-        return $this->getByFirstLetter($letter)->map(fn($brand) => BrandDTO::fromModel($brand));
+        return $this->getByFirstLetter($letter)->map(fn ($brand) => BrandDTO::fromModel($brand));
     }
 
     /**
@@ -280,7 +284,7 @@ class BrandRepository implements BrandRepositoryInterface
      */
     public function getPopularBrandsDTO(int $limit = 10): Collection
     {
-        return $this->getPopularBrands($limit)->map(fn($brand) => BrandDTO::fromModel($brand));
+        return $this->getPopularBrands($limit)->map(fn ($brand) => BrandDTO::fromModel($brand));
     }
 
     /**
@@ -299,7 +303,7 @@ class BrandRepository implements BrandRepositoryInterface
      */
     public function getBrandsWithProductsDTO(): Collection
     {
-        return $this->getBrandsWithProducts()->map(fn($brand) => BrandDTO::fromModel($brand));
+        return $this->getBrandsWithProducts()->map(fn ($brand) => BrandDTO::fromModel($brand));
     }
 
     /**
@@ -325,8 +329,8 @@ class BrandRepository implements BrandRepositoryInterface
         $slug = $baseSlug;
         $counter = 1;
 
-        while (!$this->isSlugUnique($slug, $excludeId)) {
-            $slug = $baseSlug . '-' . $counter;
+        while (! $this->isSlugUnique($slug, $excludeId)) {
+            $slug = $baseSlug.'-'.$counter;
             $counter++;
         }
 
@@ -344,7 +348,7 @@ class BrandRepository implements BrandRepositoryInterface
             $query->where('id', '!=', $excludeId);
         }
 
-        return !$query->exists();
+        return ! $query->exists();
     }
 
     /**

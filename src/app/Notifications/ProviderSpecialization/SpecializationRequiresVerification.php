@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\App\Notifications\ProviderSpecialization;
 
+use Fereydooni\Shopping\App\Models\ProviderSpecialization;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Fereydooni\Shopping\App\Models\ProviderSpecialization;
 
 class SpecializationRequiresVerification extends Notification implements ShouldQueue
 {
@@ -40,16 +40,16 @@ class SpecializationRequiresVerification extends Notification implements ShouldQ
 
         return (new MailMessage)
             ->subject('Provider Specialization Requires Verification')
-            ->greeting('Hello ' . $notifiable->name)
+            ->greeting('Hello '.$notifiable->name)
             ->line('A new provider specialization requires your verification.')
-            ->line('Provider: ' . ($provider->name ?? 'Unknown'))
-            ->line('Specialization: ' . $specializationName)
-            ->line('Category: ' . $this->specialization->category)
-            ->line('Proficiency Level: ' . $this->specialization->proficiency_level)
-            ->line('Years of Experience: ' . $this->specialization->years_experience)
-            ->action('Review Specialization', url('/admin/provider-specializations/' . $this->specialization->id . '/review'))
+            ->line('Provider: '.($provider->name ?? 'Unknown'))
+            ->line('Specialization: '.$specializationName)
+            ->line('Category: '.$this->specialization->category)
+            ->line('Proficiency Level: '.$this->specialization->proficiency_level)
+            ->line('Years of Experience: '.$this->specialization->years_experience)
+            ->action('Review Specialization', url('/admin/provider-specializations/'.$this->specialization->id.'/review'))
             ->line('Please review this specialization and take appropriate action.')
-            ->salutation('Best regards, ' . config('app.name'));
+            ->salutation('Best regards, '.config('app.name'));
     }
 
     /**
@@ -67,7 +67,7 @@ class SpecializationRequiresVerification extends Notification implements ShouldQ
             'proficiency_level' => $this->specialization->proficiency_level,
             'years_experience' => $this->specialization->years_experience,
             'message' => 'Provider specialization requires verification',
-            'action_url' => '/admin/provider-specializations/' . $this->specialization->id . '/review',
+            'action_url' => '/admin/provider-specializations/'.$this->specialization->id.'/review',
         ];
     }
 

@@ -2,8 +2,8 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
-use Fereydooni\Shopping\app\Models\Employee;
 use Fereydooni\Shopping\app\DTOs\EmployeeDTO;
+use Fereydooni\Shopping\app\Models\Employee;
 use Illuminate\Database\Eloquent\Collection;
 
 trait HasEmployeeTimeOffManagement
@@ -64,37 +64,37 @@ trait HasEmployeeTimeOffManagement
     public function getEmployeesWithLowSickDays(int $threshold = 2): Collection
     {
         return $this->repository->findActive()
-            ->filter(fn($employee) => $employee->hasLowSickDays($threshold));
+            ->filter(fn ($employee) => $employee->hasLowSickDays($threshold));
     }
 
     public function getEmployeesWithLowSickDaysDTO(int $threshold = 2): Collection
     {
         return $this->getEmployeesWithLowSickDays($threshold)
-            ->map(fn($employee) => EmployeeDTO::fromModel($employee));
+            ->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function getEmployeesWithNoVacationDays(): Collection
     {
         return $this->repository->findActive()
-            ->filter(fn($employee) => !$employee->hasVacationDays());
+            ->filter(fn ($employee) => ! $employee->hasVacationDays());
     }
 
     public function getEmployeesWithNoVacationDaysDTO(): Collection
     {
         return $this->getEmployeesWithNoVacationDays()
-            ->map(fn($employee) => EmployeeDTO::fromModel($employee));
+            ->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function getEmployeesWithNoSickDays(): Collection
     {
         return $this->repository->findActive()
-            ->filter(fn($employee) => !$employee->hasSickDays());
+            ->filter(fn ($employee) => ! $employee->hasSickDays());
     }
 
     public function getEmployeesWithNoSickDaysDTO(): Collection
     {
         return $this->getEmployeesWithNoSickDays()
-            ->map(fn($employee) => EmployeeDTO::fromModel($employee));
+            ->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     // Time-off analytics
@@ -113,7 +113,7 @@ trait HasEmployeeTimeOffManagement
                 'average_days_remaining' => $employees->avg('vacation_days_total') - $employees->avg('vacation_days_used'),
                 'utilization_rate' => $employees->sum('vacation_days_total') > 0
                     ? round(($employees->sum('vacation_days_used') / $employees->sum('vacation_days_total')) * 100, 2)
-                    : 0
+                    : 0,
             ],
             'sick_stats' => [
                 'total_days_allocated' => $employees->sum('sick_days_total'),
@@ -124,8 +124,8 @@ trait HasEmployeeTimeOffManagement
                 'average_days_remaining' => $employees->avg('sick_days_total') - $employees->avg('sick_days_used'),
                 'utilization_rate' => $employees->sum('sick_days_total') > 0
                     ? round(($employees->sum('sick_days_used') / $employees->sum('sick_days_total')) * 100, 2)
-                    : 0
-            ]
+                    : 0,
+            ],
         ];
 
         return $stats;
@@ -151,7 +151,7 @@ trait HasEmployeeTimeOffManagement
                 'average_days_remaining' => $employees->avg('vacation_days_total') - $employees->avg('vacation_days_used'),
                 'utilization_rate' => $employees->sum('vacation_days_total') > 0
                     ? round(($employees->sum('vacation_days_used') / $employees->sum('vacation_days_total')) * 100, 2)
-                    : 0
+                    : 0,
             ],
             'sick_stats' => [
                 'total_days_allocated' => $employees->sum('sick_days_total'),
@@ -162,8 +162,8 @@ trait HasEmployeeTimeOffManagement
                 'average_days_remaining' => $employees->avg('sick_days_total') - $employees->avg('sick_days_used'),
                 'utilization_rate' => $employees->sum('sick_days_total') > 0
                     ? round(($employees->sum('sick_days_used') / $employees->sum('sick_days_total')) * 100, 2)
-                    : 0
-            ]
+                    : 0,
+            ],
         ];
 
         return $stats;
@@ -189,7 +189,7 @@ trait HasEmployeeTimeOffManagement
                 'average_days_remaining' => $employees->avg('vacation_days_total') - $employees->avg('vacation_days_used'),
                 'utilization_rate' => $employees->sum('vacation_days_total') > 0
                     ? round(($employees->sum('vacation_days_used') / $employees->sum('vacation_days_total')) * 100, 2)
-                    : 0
+                    : 0,
             ],
             'sick_stats' => [
                 'total_days_allocated' => $employees->sum('sick_days_total'),
@@ -200,8 +200,8 @@ trait HasEmployeeTimeOffManagement
                 'average_days_remaining' => $employees->avg('sick_days_total') - $employees->avg('sick_days_used'),
                 'utilization_rate' => $employees->sum('sick_days_total') > 0
                     ? round(($employees->sum('sick_days_used') / $employees->sum('sick_days_total')) * 100, 2)
-                    : 0
-            ]
+                    : 0,
+            ],
         ];
 
         return $stats;
@@ -227,7 +227,7 @@ trait HasEmployeeTimeOffManagement
         return [];
     }
 
-    public function getOptimalTimeOffSchedule(string $department = null): array
+    public function getOptimalTimeOffSchedule(?string $department = null): array
     {
         // Implementation for optimal time-off scheduling
         return [];
@@ -242,24 +242,24 @@ trait HasEmployeeTimeOffManagement
                 'used' => $employee->vacation_days_used,
                 'remaining' => $employee->remaining_vacation_days,
                 'carryover_limit' => 5, // Example policy
-                'advance_notice_days' => 14 // Example policy
+                'advance_notice_days' => 14, // Example policy
             ],
             'sick_days' => [
                 'total' => $employee->sick_days_total,
                 'used' => $employee->sick_days_used,
                 'remaining' => $employee->remaining_sick_days,
                 'carryover_limit' => 3, // Example policy
-                'doctor_note_required_after' => 3 // Example policy
+                'doctor_note_required_after' => 3, // Example policy
             ],
             'employment_type' => $employee->employment_type->value,
-            'department' => $employee->department
+            'department' => $employee->department,
         ];
 
         return $policy;
     }
 
     // Time-off requests (placeholder for future implementation)
-    public function submitTimeOffRequest(Employee $employee, string $type, string $startDate, string $endDate, string $reason = null): bool
+    public function submitTimeOffRequest(Employee $employee, string $type, string $startDate, string $endDate, ?string $reason = null): bool
     {
         // Implementation for time-off request submission
         return true;
@@ -271,7 +271,7 @@ trait HasEmployeeTimeOffManagement
         return true;
     }
 
-    public function rejectTimeOffRequest(int $requestId, string $reason = null): bool
+    public function rejectTimeOffRequest(int $requestId, ?string $reason = null): bool
     {
         // Implementation for time-off request rejection
         return true;
@@ -284,7 +284,7 @@ trait HasEmployeeTimeOffManagement
     }
 
     // Time-off reporting
-    public function generateTimeOffReport(string $department = null, string $period = 'current'): array
+    public function generateTimeOffReport(?string $department = null, string $period = 'current'): array
     {
         $employees = $department
             ? $this->repository->findByDepartment($department)
@@ -300,10 +300,9 @@ trait HasEmployeeTimeOffManagement
             'employees_low_sick_days' => $this->getEmployeesWithLowSickDays(2)->count(),
             'employees_no_sick_days' => $this->getEmployeesWithNoSickDays()->count(),
             'top_vacation_users' => $employees->sortByDesc('vacation_days_used')->take(5)->values(),
-            'top_sick_day_users' => $employees->sortByDesc('sick_days_used')->take(5)->values()
+            'top_sick_day_users' => $employees->sortByDesc('sick_days_used')->take(5)->values(),
         ];
 
         return $report;
     }
 }
-

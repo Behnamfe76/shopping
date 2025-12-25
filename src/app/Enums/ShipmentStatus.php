@@ -11,7 +11,7 @@ enum ShipmentStatus: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::PENDING => 'Pending',
             self::IN_TRANSIT => 'In Transit',
             self::DELIVERED => 'Delivered',

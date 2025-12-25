@@ -41,13 +41,13 @@ class SendInsuranceRenewalReminder implements ShouldQueue
             Log::info('Insurance renewal reminder notifications sent successfully', [
                 'insurance_id' => $providerInsurance->id,
                 'expiration_date' => $expirationDate,
-                'notification_data' => $notificationData
+                'notification_data' => $notificationData,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to send insurance renewal reminder notifications', [
                 'insurance_id' => $event->providerInsurance->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -59,7 +59,7 @@ class SendInsuranceRenewalReminder implements ShouldQueue
     {
         // Implementation for renewal reminder email
         Log::info('Renewal reminder email sent', [
-            'insurance_id' => $providerInsurance->id
+            'insurance_id' => $providerInsurance->id,
         ]);
     }
 
@@ -70,7 +70,7 @@ class SendInsuranceRenewalReminder implements ShouldQueue
     {
         // Implementation for renewal reminder SMS
         Log::info('Renewal reminder SMS sent', [
-            'insurance_id' => $providerInsurance->id
+            'insurance_id' => $providerInsurance->id,
         ]);
     }
 
@@ -81,7 +81,7 @@ class SendInsuranceRenewalReminder implements ShouldQueue
     {
         // Implementation for renewal reminder in-app notification
         Log::info('Renewal reminder in-app notification sent', [
-            'insurance_id' => $providerInsurance->id
+            'insurance_id' => $providerInsurance->id,
         ]);
     }
 }

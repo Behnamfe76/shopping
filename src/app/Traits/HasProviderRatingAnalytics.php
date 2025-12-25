@@ -2,12 +2,10 @@
 
 namespace Fereydooni\Shopping\App\Traits;
 
-use App\Models\ProviderRating;
-use App\DTOs\ProviderRatingDTO;
 use App\Repositories\Interfaces\ProviderRatingRepositoryInterface;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
-use Carbon\Carbon;
 
 trait HasProviderRatingAnalytics
 {
@@ -59,7 +57,7 @@ trait HasProviderRatingAnalytics
     /**
      * Get rating trends over time
      */
-    public function getRatingTrends(string $startDate = null, string $endDate = null): array
+    public function getRatingTrends(?string $startDate = null, ?string $endDate = null): array
     {
         $startDate = $startDate ?: now()->subMonths(6)->toDateString();
         $endDate = $endDate ?: now()->toDateString();
@@ -245,7 +243,7 @@ trait HasProviderRatingAnalytics
             $dateKey = $currentDate->toDateString();
             $monthKey = $currentDate->format('Y-m');
 
-            if (!isset($trends[$monthKey])) {
+            if (! isset($trends[$monthKey])) {
                 $trends[$monthKey] = [
                     'month' => $monthKey,
                     'ratings_count' => 0,

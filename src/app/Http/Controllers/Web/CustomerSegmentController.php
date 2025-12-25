@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\DTOs\CustomerSegmentDTO;
 use App\Http\Controllers\Controller;
 use App\Models\CustomerSegment;
 use App\Services\CustomerSegmentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
 
 class CustomerSegmentController extends Controller
 {
@@ -56,7 +54,7 @@ class CustomerSegmentController extends Controller
 
         if ($search) {
             $query->where('name', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+                ->orWhere('description', 'like', "%{$search}%");
         }
 
         if ($type) {
@@ -120,7 +118,7 @@ class CustomerSegmentController extends Controller
                 ->with('success', 'Customer segment created successfully.');
         } catch (\Exception $e) {
             return redirect()->back()
-                ->withErrors(['error' => 'Failed to create customer segment: ' . $e->getMessage()])
+                ->withErrors(['error' => 'Failed to create customer segment: '.$e->getMessage()])
                 ->withInput();
         }
     }
@@ -158,7 +156,7 @@ class CustomerSegmentController extends Controller
         $this->authorize('update', $customerSegment);
 
         $validator = Validator::make($request->all(), [
-            'name' => 'sometimes|required|string|max:255|unique:customer_segments,name,' . $customerSegment->id,
+            'name' => 'sometimes|required|string|max:255|unique:customer_segments,name,'.$customerSegment->id,
             'description' => 'nullable|string',
             'type' => 'sometimes|required|string|in:demographic,behavioral,geographic,psychographic,transactional,engagement,loyalty,custom',
             'status' => 'nullable|string|in:active,inactive,draft,archived',
@@ -184,7 +182,7 @@ class CustomerSegmentController extends Controller
                 ->with('success', 'Customer segment updated successfully.');
         } catch (\Exception $e) {
             return redirect()->back()
-                ->withErrors(['error' => 'Failed to update customer segment: ' . $e->getMessage()])
+                ->withErrors(['error' => 'Failed to update customer segment: '.$e->getMessage()])
                 ->withInput();
         }
     }
@@ -203,7 +201,7 @@ class CustomerSegmentController extends Controller
                 ->with('success', 'Customer segment deleted successfully.');
         } catch (\Exception $e) {
             return redirect()->back()
-                ->withErrors(['error' => 'Failed to delete customer segment: ' . $e->getMessage()]);
+                ->withErrors(['error' => 'Failed to delete customer segment: '.$e->getMessage()]);
         }
     }
 
@@ -241,7 +239,7 @@ class CustomerSegmentController extends Controller
                 ->with('success', 'Segment criteria updated successfully.');
         } catch (\Exception $e) {
             return redirect()->back()
-                ->withErrors(['error' => 'Failed to update criteria: ' . $e->getMessage()])
+                ->withErrors(['error' => 'Failed to update criteria: '.$e->getMessage()])
                 ->withInput();
         }
     }
@@ -260,7 +258,7 @@ class CustomerSegmentController extends Controller
                 ->with('success', "Segment calculated successfully. Found {$count} customers.");
         } catch (\Exception $e) {
             return redirect()->back()
-                ->withErrors(['error' => 'Failed to calculate segment: ' . $e->getMessage()]);
+                ->withErrors(['error' => 'Failed to calculate segment: '.$e->getMessage()]);
         }
     }
 
@@ -330,7 +328,7 @@ class CustomerSegmentController extends Controller
             $file = $request->file('import_file');
             $data = json_decode($file->getContents(), true);
 
-            if (!$data) {
+            if (! $data) {
                 throw new \Exception('Invalid file format');
             }
 
@@ -340,7 +338,7 @@ class CustomerSegmentController extends Controller
                 ->with('success', 'Segment imported successfully.');
         } catch (\Exception $e) {
             return redirect()->back()
-                ->withErrors(['error' => 'Failed to import segment: ' . $e->getMessage()])
+                ->withErrors(['error' => 'Failed to import segment: '.$e->getMessage()])
                 ->withInput();
         }
     }
@@ -356,10 +354,10 @@ class CustomerSegmentController extends Controller
             $exportData = $this->service->exportSegment($customerSegment);
 
             return response()->json($exportData)
-                ->header('Content-Disposition', 'attachment; filename="segment-' . $customerSegment->id . '.json"');
+                ->header('Content-Disposition', 'attachment; filename="segment-'.$customerSegment->id.'.json"');
         } catch (\Exception $e) {
             return redirect()->back()
-                ->withErrors(['error' => 'Failed to export segment: ' . $e->getMessage()]);
+                ->withErrors(['error' => 'Failed to export segment: '.$e->getMessage()]);
         }
     }
 
@@ -390,7 +388,7 @@ class CustomerSegmentController extends Controller
                 ->with('success', 'Segment activated successfully.');
         } catch (\Exception $e) {
             return redirect()->back()
-                ->withErrors(['error' => 'Failed to activate segment: ' . $e->getMessage()]);
+                ->withErrors(['error' => 'Failed to activate segment: '.$e->getMessage()]);
         }
     }
 
@@ -408,7 +406,7 @@ class CustomerSegmentController extends Controller
                 ->with('success', 'Segment deactivated successfully.');
         } catch (\Exception $e) {
             return redirect()->back()
-                ->withErrors(['error' => 'Failed to deactivate segment: ' . $e->getMessage()]);
+                ->withErrors(['error' => 'Failed to deactivate segment: '.$e->getMessage()]);
         }
     }
 
@@ -436,7 +434,7 @@ class CustomerSegmentController extends Controller
                 ->with('success', 'Segment duplicated successfully.');
         } catch (\Exception $e) {
             return redirect()->back()
-                ->withErrors(['error' => 'Failed to duplicate segment: ' . $e->getMessage()])
+                ->withErrors(['error' => 'Failed to duplicate segment: '.$e->getMessage()])
                 ->withInput();
         }
     }
@@ -479,7 +477,7 @@ class CustomerSegmentController extends Controller
                 ->with('success', 'Segments merged successfully.');
         } catch (\Exception $e) {
             return redirect()->back()
-                ->withErrors(['error' => 'Failed to merge segments: ' . $e->getMessage()])
+                ->withErrors(['error' => 'Failed to merge segments: '.$e->getMessage()])
                 ->withInput();
         }
     }
@@ -517,10 +515,10 @@ class CustomerSegmentController extends Controller
             $newSegments = $this->service->splitSegment($customerSegment, $request->criteria);
 
             return redirect()->route('customer-segments.index')
-                ->with('success', 'Segment split successfully into ' . count($newSegments) . ' new segments.');
+                ->with('success', 'Segment split successfully into '.count($newSegments).' new segments.');
         } catch (\Exception $e) {
             return redirect()->back()
-                ->withErrors(['error' => 'Failed to split segment: ' . $e->getMessage()])
+                ->withErrors(['error' => 'Failed to split segment: '.$e->getMessage()])
                 ->withInput();
         }
     }
@@ -539,7 +537,7 @@ class CustomerSegmentController extends Controller
                 ->with('success', 'All automatic segments recalculated successfully.');
         } catch (\Exception $e) {
             return redirect()->back()
-                ->withErrors(['error' => 'Failed to recalculate segments: ' . $e->getMessage()]);
+                ->withErrors(['error' => 'Failed to recalculate segments: '.$e->getMessage()]);
         }
     }
 }

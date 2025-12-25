@@ -28,15 +28,16 @@ trait HasPricingOperations
             Log::info("Price updated for {$model->getTable()} ID: {$model->id}", [
                 'old_price' => $model->getOriginal('price'),
                 'new_price' => $price,
-                'model_type' => get_class($model)
+                'model_type' => get_class($model),
             ]);
 
             return true;
         } catch (\Exception $e) {
             Log::error("Failed to set price for {$model->getTable()} ID: {$model->id}", [
                 'error' => $e->getMessage(),
-                'price' => $price
+                'price' => $price,
             ]);
+
             return false;
         }
     }
@@ -66,15 +67,16 @@ trait HasPricingOperations
             Log::info("Sale price updated for {$model->getTable()} ID: {$model->id}", [
                 'old_sale_price' => $model->getOriginal('sale_price'),
                 'new_sale_price' => $salePrice,
-                'base_price' => $model->price
+                'base_price' => $model->price,
             ]);
 
             return true;
         } catch (\Exception $e) {
             Log::error("Failed to set sale price for {$model->getTable()} ID: {$model->id}", [
                 'error' => $e->getMessage(),
-                'sale_price' => $salePrice
+                'sale_price' => $salePrice,
             ]);
+
             return false;
         }
     }
@@ -99,15 +101,16 @@ trait HasPricingOperations
 
             Log::info("Compare price updated for {$model->getTable()} ID: {$model->id}", [
                 'old_compare_price' => $model->getOriginal('compare_price'),
-                'new_compare_price' => $comparePrice
+                'new_compare_price' => $comparePrice,
             ]);
 
             return true;
         } catch (\Exception $e) {
             Log::error("Failed to set compare price for {$model->getTable()} ID: {$model->id}", [
                 'error' => $e->getMessage(),
-                'compare_price' => $comparePrice
+                'compare_price' => $comparePrice,
             ]);
+
             return false;
         }
     }
@@ -190,8 +193,9 @@ trait HasPricingOperations
         } catch (\Exception $e) {
             Log::error("Failed to apply percentage discount for {$model->getTable()} ID: {$model->id}", [
                 'error' => $e->getMessage(),
-                'percentage' => $percentage
+                'percentage' => $percentage,
             ]);
+
             return false;
         }
     }
@@ -221,8 +225,9 @@ trait HasPricingOperations
         } catch (\Exception $e) {
             Log::error("Failed to apply fixed discount for {$model->getTable()} ID: {$model->id}", [
                 'error' => $e->getMessage(),
-                'discount_amount' => $discountAmount
+                'discount_amount' => $discountAmount,
             ]);
+
             return false;
         }
     }
@@ -246,8 +251,9 @@ trait HasPricingOperations
             return true;
         } catch (\Exception $e) {
             Log::error("Failed to remove sale price for {$model->getTable()} ID: {$model->id}", [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -273,7 +279,7 @@ trait HasPricingOperations
             'discount_percentage' => $discountPercentage,
             'savings_amount' => $savingsAmount,
             'is_on_sale' => $isOnSale,
-            'currency' => config('shopping.currency', 'USD')
+            'currency' => config('shopping.currency', 'USD'),
         ];
     }
 }

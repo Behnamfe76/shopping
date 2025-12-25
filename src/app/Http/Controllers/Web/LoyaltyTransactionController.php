@@ -2,16 +2,15 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers\Web;
 
+use App\Http\Controllers\Controller;
+use Fereydooni\Shopping\app\DTOs\LoyaltyTransactionDTO;
+use Fereydooni\Shopping\app\Enums\LoyaltyReferenceType;
+use Fereydooni\Shopping\app\Enums\LoyaltyTransactionStatus;
+use Fereydooni\Shopping\app\Enums\LoyaltyTransactionType;
+use Fereydooni\Shopping\app\Services\LoyaltyTransactionService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
-use App\Http\Controllers\Controller;
-use Fereydooni\Shopping\app\Services\LoyaltyTransactionService;
-use Fereydooni\Shopping\app\Models\LoyaltyTransaction;
-use Fereydooni\Shopping\app\DTOs\LoyaltyTransactionDTO;
-use Fereydooni\Shopping\app\Enums\LoyaltyTransactionType;
-use Fereydooni\Shopping\app\Enums\LoyaltyTransactionStatus;
-use Fereydooni\Shopping\app\Enums\LoyaltyReferenceType;
 
 class LoyaltyTransactionController extends Controller
 {
@@ -135,7 +134,7 @@ class LoyaltyTransactionController extends Controller
     {
         $transaction = $this->service->find($id);
 
-        if (!$transaction) {
+        if (! $transaction) {
             abort(404, 'Loyalty transaction not found');
         }
 
@@ -152,7 +151,7 @@ class LoyaltyTransactionController extends Controller
     {
         $transaction = $this->service->find($id);
 
-        if (!$transaction) {
+        if (! $transaction) {
             abort(404, 'Loyalty transaction not found');
         }
 
@@ -175,7 +174,7 @@ class LoyaltyTransactionController extends Controller
     {
         $transaction = $this->service->find($id);
 
-        if (!$transaction) {
+        if (! $transaction) {
             abort(404, 'Loyalty transaction not found');
         }
 
@@ -196,7 +195,7 @@ class LoyaltyTransactionController extends Controller
 
         $updated = $this->service->update($transaction, $validated);
 
-        if (!$updated) {
+        if (! $updated) {
             return back()->with('error', 'Failed to update loyalty transaction.');
         }
 
@@ -211,13 +210,13 @@ class LoyaltyTransactionController extends Controller
     {
         $transaction = $this->service->find($id);
 
-        if (!$transaction) {
+        if (! $transaction) {
             abort(404, 'Loyalty transaction not found');
         }
 
         $deleted = $this->service->delete($transaction);
 
-        if (!$deleted) {
+        if (! $deleted) {
             return back()->with('error', 'Failed to delete loyalty transaction.');
         }
 
@@ -290,7 +289,7 @@ class LoyaltyTransactionController extends Controller
     {
         $transaction = $this->service->find($id);
 
-        if (!$transaction) {
+        if (! $transaction) {
             abort(404, 'Loyalty transaction not found');
         }
 
@@ -304,7 +303,7 @@ class LoyaltyTransactionController extends Controller
     {
         $transaction = $this->service->find($id);
 
-        if (!$transaction) {
+        if (! $transaction) {
             abort(404, 'Loyalty transaction not found');
         }
 
@@ -314,7 +313,7 @@ class LoyaltyTransactionController extends Controller
 
         $reversed = $this->service->reverse($transaction, $validated['reason'] ?? null);
 
-        if (!$reversed) {
+        if (! $reversed) {
             return back()->with('error', 'Failed to reverse loyalty transaction.');
         }
 
@@ -395,7 +394,7 @@ class LoyaltyTransactionController extends Controller
 
         $imported = $this->service->importCustomerHistory($validated['customer_id'], $transactions);
 
-        if (!$imported) {
+        if (! $imported) {
             return back()->with('error', 'Failed to import loyalty history.');
         }
 
@@ -431,17 +430,17 @@ class LoyaltyTransactionController extends Controller
             'Content-Disposition' => "attachment; filename=\"{$filename}\"",
         ];
 
-        $callback = function() use ($data) {
+        $callback = function () use ($data) {
             $file = fopen('php://output', 'w');
-            
-            if (!empty($data)) {
+
+            if (! empty($data)) {
                 fputcsv($file, array_keys($data[0]));
-                
+
                 foreach ($data as $row) {
                     fputcsv($file, $row);
                 }
             }
-            
+
             fclose($file);
         };
 
@@ -474,7 +473,7 @@ class LoyaltyTransactionController extends Controller
     protected function parseImportFile($file): array
     {
         $extension = $file->getClientOriginalExtension();
-        
+
         if ($extension === 'json') {
             return json_decode(file_get_contents($file->getPathname()), true);
         } elseif ($extension === 'csv') {
@@ -493,14 +492,15 @@ class LoyaltyTransactionController extends Controller
     {
         $data = [];
         $handle = fopen($file->getPathname(), 'r');
-        
+
         if (($headers = fgetcsv($handle)) !== false) {
             while (($row = fgetcsv($handle)) !== false) {
                 $data[] = array_combine($headers, $row);
             }
         }
-        
+
         fclose($handle);
+
         return $data;
     }
 
@@ -511,7 +511,7 @@ class LoyaltyTransactionController extends Controller
     {
         $xml = simplexml_load_file($file->getPathname());
         $data = [];
-        
+
         foreach ($xml->transaction as $transaction) {
             $row = [];
             foreach ($transaction->children() as $child) {
@@ -519,7 +519,7 @@ class LoyaltyTransactionController extends Controller
             }
             $data[] = $row;
         }
-        
+
         return $data;
     }
 }

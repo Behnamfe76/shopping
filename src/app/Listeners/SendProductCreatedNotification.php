@@ -32,7 +32,7 @@ class SendProductCreatedNotification implements ShouldQueue
             'product_id' => $product->id,
             'product_title' => $product->title,
             'created_by' => auth()->id(),
-            'created_at' => $product->created_at
+            'created_at' => $product->created_at,
         ]);
 
         // Send notification to admin users
@@ -52,7 +52,7 @@ class SendProductCreatedNotification implements ShouldQueue
     {
         Log::error('Failed to send product created notification', [
             'product_id' => $event->product->id,
-            'error' => $exception->getMessage()
+            'error' => $exception->getMessage(),
         ]);
     }
 }

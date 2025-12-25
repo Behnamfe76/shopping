@@ -3,23 +3,22 @@
 namespace Fereydooni\Shopping\app\Services;
 
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Pagination\CursorPaginator;
-use Fereydooni\Shopping\app\Models\Customer;
-use Illuminate\Database\Eloquent\Collection;
 use Fereydooni\Shopping\app\DTOs\CustomerDTO;
-use Fereydooni\Shopping\app\Enums\CustomerType;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Fereydooni\Shopping\app\Enums\CustomerStatus;
+use Fereydooni\Shopping\app\Enums\CustomerType;
+use Fereydooni\Shopping\app\Models\Customer;
+use Fereydooni\Shopping\app\Repositories\Interfaces\CustomerRepositoryInterface;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
-use Fereydooni\Shopping\app\Traits\HasNotesManagement;
-use Fereydooni\Shopping\app\Traits\HasSearchOperations;
+use Fereydooni\Shopping\app\Traits\HasCustomerLoyaltyManagement;
 use Fereydooni\Shopping\app\Traits\HasCustomerOperations;
 use Fereydooni\Shopping\app\Traits\HasCustomerStatusManagement;
-use Fereydooni\Shopping\app\Traits\HasCustomerLoyaltyManagement;
-use Fereydooni\Shopping\app\Repositories\Interfaces\CustomerRepositoryInterface;
+use Fereydooni\Shopping\app\Traits\HasNotesManagement;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
 class CustomerService
@@ -155,7 +154,7 @@ class CustomerService
     /**
      * Get cursor paginated customers
      */
-    public function getCursorPaginatedCustomers(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function getCursorPaginatedCustomers(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->cursorPaginate($perPage, $cursor);
     }
@@ -219,7 +218,7 @@ class CustomerService
             DB::beginTransaction();
             $password = $data['password'] ?? Str::random(12);
             $userData = [
-                'name' => $data['first_name'] . ' ' . $data['last_name'],
+                'name' => $data['first_name'].' '.$data['last_name'],
                 'email' => $data['email'] ?? null,
                 'password' => Hash::make($password),
             ];
@@ -258,6 +257,7 @@ class CustomerService
     public function createDTO(array $data): CustomerDTO
     {
         $customer = $this->create($data);
+
         return CustomerDTO::fromModel($customer);
     }
 
@@ -283,6 +283,7 @@ class CustomerService
     public function updateDTO(Customer $customer, array $data): ?CustomerDTO
     {
         $updated = $this->update($customer, $data);
+
         return $updated ? CustomerDTO::fromModel($customer->fresh()) : null;
     }
 
@@ -321,7 +322,7 @@ class CustomerService
             'email',
             'phone',
             'customer_number',
-            'company_name'
+            'company_name',
         ];
     }
 

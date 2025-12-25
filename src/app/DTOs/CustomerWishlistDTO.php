@@ -2,24 +2,19 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Email;
+use Fereydooni\Shopping\app\Enums\WishlistPriority;
+use Fereydooni\Shopping\app\Models\CustomerWishlist;
+use Illuminate\Support\Carbon;
+use Spatie\LaravelData\Attributes\Validation\BooleanType;
+use Spatie\LaravelData\Attributes\Validation\Date;
+use Spatie\LaravelData\Attributes\Validation\IntegerType;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\Min;
 use Spatie\LaravelData\Attributes\Validation\Nullable;
+use Spatie\LaravelData\Attributes\Validation\Numeric;
 use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
-use Spatie\LaravelData\Attributes\Validation\BooleanType;
-use Spatie\LaravelData\Attributes\Validation\Date;
-use Spatie\LaravelData\Attributes\Validation\Numeric;
-use Spatie\LaravelData\Attributes\Validation\In;
-use Spatie\LaravelData\Attributes\Validation\Unique;
-use Illuminate\Support\Carbon;
-use Fereydooni\Shopping\app\Enums\WishlistPriority;
-use Fereydooni\Shopping\app\Models\CustomerWishlist;
-use Fereydooni\Shopping\app\Models\Customer;
-use Fereydooni\Shopping\app\Models\Product;
+use Spatie\LaravelData\Data;
 
 class CustomerWishlistDTO extends Data
 {
@@ -72,8 +67,7 @@ class CustomerWishlistDTO extends Data
 
         #[Nullable]
         public ?ProductDTO $product,
-    ) {
-    }
+    ) {}
 
     /**
      * Create DTO from CustomerWishlist model
@@ -144,7 +138,7 @@ class CustomerWishlistDTO extends Data
      */
     public function hasPriceDrop(): bool
     {
-        if (!$this->price_when_added || !$this->current_price) {
+        if (! $this->price_when_added || ! $this->current_price) {
             return false;
         }
 
@@ -156,7 +150,7 @@ class CustomerWishlistDTO extends Data
      */
     public function getPriceDropPercentage(): ?float
     {
-        if (!$this->hasPriceDrop()) {
+        if (! $this->hasPriceDrop()) {
             return null;
         }
 
@@ -168,7 +162,7 @@ class CustomerWishlistDTO extends Data
      */
     public function getPriceDropAmount(): ?float
     {
-        if (!$this->hasPriceDrop()) {
+        if (! $this->hasPriceDrop()) {
             return null;
         }
 
@@ -180,9 +174,9 @@ class CustomerWishlistDTO extends Data
      */
     public function shouldSendNotification(): bool
     {
-        return $this->price_drop_notification && 
-               $this->hasPriceDrop() && 
-               !$this->is_notified;
+        return $this->price_drop_notification &&
+               $this->hasPriceDrop() &&
+               ! $this->is_notified;
     }
 
     /**
@@ -198,7 +192,7 @@ class CustomerWishlistDTO extends Data
      */
     public function isPrivate(): bool
     {
-        return !$this->is_public;
+        return ! $this->is_public;
     }
 
     /**
@@ -206,7 +200,7 @@ class CustomerWishlistDTO extends Data
      */
     public function getPriorityLevel(): int
     {
-        return match($this->priority) {
+        return match ($this->priority) {
             WishlistPriority::URGENT => 4,
             WishlistPriority::HIGH => 3,
             WishlistPriority::MEDIUM => 2,

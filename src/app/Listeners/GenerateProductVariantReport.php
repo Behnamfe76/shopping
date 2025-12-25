@@ -2,25 +2,18 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
+use Fereydooni\Shopping\app\Models\ProductVariant;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
-use Fereydooni\Shopping\app\Models\ProductVariant;
-use Fereydooni\Shopping\app\Events\ProductVariantCreated;
-use Fereydooni\Shopping\app\Events\ProductVariantUpdated;
-use Fereydooni\Shopping\app\Events\ProductVariantDeleted;
-use Fereydooni\Shopping\app\Events\ProductVariantStatusChanged;
-use Fereydooni\Shopping\app\Events\ProductVariantStockUpdated;
-use Fereydooni\Shopping\app\Events\ProductVariantPriceUpdated;
 
 class GenerateProductVariantReport implements ShouldQueue
 {
     use InteractsWithQueue;
 
     public $tries = 3;
+
     public $timeout = 300;
 
     /**
@@ -36,7 +29,7 @@ class GenerateProductVariantReport implements ShouldQueue
             Log::error('Failed to generate product variant report', [
                 'event' => get_class($event),
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             throw $e;
@@ -92,12 +85,24 @@ class GenerateProductVariantReport implements ShouldQueue
     {
         $className = class_basename($event);
 
-        if (str_contains($className, 'Created')) return 'created';
-        if (str_contains($className, 'Updated')) return 'updated';
-        if (str_contains($className, 'Deleted')) return 'deleted';
-        if (str_contains($className, 'StatusChanged')) return 'status_changed';
-        if (str_contains($className, 'StockUpdated')) return 'stock_updated';
-        if (str_contains($className, 'PriceUpdated')) return 'price_updated';
+        if (str_contains($className, 'Created')) {
+            return 'created';
+        }
+        if (str_contains($className, 'Updated')) {
+            return 'updated';
+        }
+        if (str_contains($className, 'Deleted')) {
+            return 'deleted';
+        }
+        if (str_contains($className, 'StatusChanged')) {
+            return 'status_changed';
+        }
+        if (str_contains($className, 'StockUpdated')) {
+            return 'stock_updated';
+        }
+        if (str_contains($className, 'PriceUpdated')) {
+            return 'price_updated';
+        }
 
         return 'unknown';
     }
@@ -107,7 +112,9 @@ class GenerateProductVariantReport implements ShouldQueue
      */
     private function getCreationReportData(?ProductVariant $variant): array
     {
-        if (!$variant) return [];
+        if (! $variant) {
+            return [];
+        }
 
         return [
             'action' => 'variant_created',
@@ -130,7 +137,7 @@ class GenerateProductVariantReport implements ShouldQueue
                 'product_variants_count' => $this->getProductVariantsCount($variant->product_id),
                 'active_variants_count' => $this->getActiveVariantsCount($variant->product_id),
                 'in_stock_variants_count' => $this->getInStockVariantsCount($variant->product_id),
-            ]
+            ],
         ];
     }
 
@@ -139,7 +146,9 @@ class GenerateProductVariantReport implements ShouldQueue
      */
     private function getUpdateReportData($event, ?ProductVariant $variant): array
     {
-        if (!$variant) return [];
+        if (! $variant) {
+            return [];
+        }
 
         $changes = $variant->getChanges();
         $original = $variant->getOriginal();
@@ -163,7 +172,7 @@ class GenerateProductVariantReport implements ShouldQueue
                 'product_variants_count' => $this->getProductVariantsCount($variant->product_id),
                 'active_variants_count' => $this->getActiveVariantsCount($variant->product_id),
                 'in_stock_variants_count' => $this->getInStockVariantsCount($variant->product_id),
-            ]
+            ],
         ];
     }
 
@@ -172,7 +181,9 @@ class GenerateProductVariantReport implements ShouldQueue
      */
     private function getDeletionReportData(?ProductVariant $variant): array
     {
-        if (!$variant) return [];
+        if (! $variant) {
+            return [];
+        }
 
         return [
             'action' => 'variant_deleted',
@@ -195,7 +206,7 @@ class GenerateProductVariantReport implements ShouldQueue
                 'product_variants_count' => $this->getProductVariantsCount($variant->product_id),
                 'active_variants_count' => $this->getActiveVariantsCount($variant->product_id),
                 'in_stock_variants_count' => $this->getInStockVariantsCount($variant->product_id),
-            ]
+            ],
         ];
     }
 
@@ -204,7 +215,9 @@ class GenerateProductVariantReport implements ShouldQueue
      */
     private function getStatusChangeReportData($event, ?ProductVariant $variant): array
     {
-        if (!$variant) return [];
+        if (! $variant) {
+            return [];
+        }
 
         $oldStatus = $event->oldStatus ?? null;
         $newStatus = $event->newStatus ?? null;
@@ -223,7 +236,7 @@ class GenerateProductVariantReport implements ShouldQueue
             'analytics' => [
                 'active_variants_count' => $this->getActiveVariantsCount($variant->product_id),
                 'featured_variants_count' => $this->getFeaturedVariantsCount($variant->product_id),
-            ]
+            ],
         ];
     }
 
@@ -232,7 +245,9 @@ class GenerateProductVariantReport implements ShouldQueue
      */
     private function getStockUpdateReportData($event, ?ProductVariant $variant): array
     {
-        if (!$variant) return [];
+        if (! $variant) {
+            return [];
+        }
 
         $oldStock = $event->oldStock ?? null;
         $newStock = $event->newStock ?? null;
@@ -258,7 +273,7 @@ class GenerateProductVariantReport implements ShouldQueue
                 'in_stock_variants_count' => $this->getInStockVariantsCount($variant->product_id),
                 'out_of_stock_variants_count' => $this->getOutOfStockVariantsCount($variant->product_id),
                 'low_stock_variants_count' => $this->getLowStockVariantsCount($variant->product_id),
-            ]
+            ],
         ];
     }
 
@@ -267,7 +282,9 @@ class GenerateProductVariantReport implements ShouldQueue
      */
     private function getPriceUpdateReportData($event, ?ProductVariant $variant): array
     {
-        if (!$variant) return [];
+        if (! $variant) {
+            return [];
+        }
 
         $oldPrice = $event->oldPrice ?? null;
         $newPrice = $event->newPrice ?? null;
@@ -292,7 +309,7 @@ class GenerateProductVariantReport implements ShouldQueue
                 'on_sale_variants_count' => $this->getOnSaleVariantsCount($variant->product_id),
                 'average_price' => $this->getAveragePrice($variant->product_id),
                 'price_range' => $this->getPriceRange($variant->product_id),
-            ]
+            ],
         ];
     }
 
@@ -310,10 +327,10 @@ class GenerateProductVariantReport implements ShouldQueue
 
         Storage::disk('local')->put($filename, json_encode($reportData, JSON_PRETTY_PRINT));
 
-        Log::info("Product variant report saved", [
+        Log::info('Product variant report saved', [
             'filename' => $filename,
             'variant_id' => $variantId,
-            'product_id' => $productId
+            'product_id' => $productId,
         ]);
     }
 
@@ -324,7 +341,7 @@ class GenerateProductVariantReport implements ShouldQueue
     {
         $variant = $event->variant ?? null;
 
-        Log::info("Product variant report generated", [
+        Log::info('Product variant report generated', [
             'event_type' => $reportData['event_type'] ?? 'unknown',
             'variant_id' => $variant?->id,
             'product_id' => $variant?->product_id,

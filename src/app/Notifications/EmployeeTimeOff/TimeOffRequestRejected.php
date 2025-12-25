@@ -33,15 +33,15 @@ class TimeOffRequestRejected extends Notification implements ShouldQueue
 
         return (new MailMessage)
             ->subject('Time-Off Request Rejected')
-            ->greeting('Hello ' . $notifiable->name)
+            ->greeting('Hello '.$notifiable->name)
             ->line('Your time-off request has been rejected.')
-            ->line('**Type:** ' . ucfirst($this->timeOff->time_off_type))
-            ->line('**Dates:** ' . $startDate . ' to ' . $endDate)
-            ->line('**Total Days:** ' . $this->timeOff->total_days)
-            ->line('**Rejected By:** ' . $rejector->name)
-            ->line('**Rejected At:** ' . $this->timeOff->rejected_at->format('M d, Y g:i A'))
-            ->line('**Reason for Rejection:** ' . $this->timeOff->rejection_reason)
-            ->action('View Details', URL::to('/time-off/' . $this->timeOff->id))
+            ->line('**Type:** '.ucfirst($this->timeOff->time_off_type))
+            ->line('**Dates:** '.$startDate.' to '.$endDate)
+            ->line('**Total Days:** '.$this->timeOff->total_days)
+            ->line('**Rejected By:** '.$rejector->name)
+            ->line('**Rejected At:** '.$this->timeOff->rejected_at->format('M d, Y g:i A'))
+            ->line('**Reason for Rejection:** '.$this->timeOff->rejection_reason)
+            ->action('View Details', URL::to('/time-off/'.$this->timeOff->id))
             ->line('If you have any questions about this decision, please contact your manager or HR representative.')
             ->salutation('Best regards, HR Team');
     }
@@ -58,7 +58,7 @@ class TimeOffRequestRejected extends Notification implements ShouldQueue
             'rejected_at' => $this->timeOff->rejected_at->toDateTimeString(),
             'rejection_reason' => $this->timeOff->rejection_reason,
             'message' => 'Your time-off request has been rejected',
-            'action_url' => '/time-off/' . $this->timeOff->id,
+            'action_url' => '/time-off/'.$this->timeOff->id,
         ];
     }
 }

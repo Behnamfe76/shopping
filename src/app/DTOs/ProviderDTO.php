@@ -2,23 +2,21 @@
 
 namespace Fereydooni\Shopping\App\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Email;
-use Spatie\LaravelData\Attributes\Validation\Url;
-use Spatie\LaravelData\Attributes\Validation\Numeric;
-use Spatie\LaravelData\Attributes\Validation\Min;
-use Spatie\LaravelData\Attributes\Validation\Max;
-use Spatie\LaravelData\Attributes\Validation\Date;
-use Spatie\LaravelData\Attributes\Validation\Nullable;
-use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
-use Spatie\LaravelData\Attributes\Validation\FloatType;
-use Spatie\LaravelData\Attributes\Validation\ArrayType;
-use Spatie\LaravelData\Attributes\Validation\In;
 use Fereydooni\Shopping\App\Enums\ProviderStatus;
 use Fereydooni\Shopping\App\Enums\ProviderType;
 use Fereydooni\Shopping\App\Models\Provider;
-use Carbon\Carbon;
+use Spatie\LaravelData\Attributes\Validation\ArrayType;
+use Spatie\LaravelData\Attributes\Validation\Date;
+use Spatie\LaravelData\Attributes\Validation\Email;
+use Spatie\LaravelData\Attributes\Validation\FloatType;
+use Spatie\LaravelData\Attributes\Validation\In;
+use Spatie\LaravelData\Attributes\Validation\IntegerType;
+use Spatie\LaravelData\Attributes\Validation\Max;
+use Spatie\LaravelData\Attributes\Validation\Min;
+use Spatie\LaravelData\Attributes\Validation\Nullable;
+use Spatie\LaravelData\Attributes\Validation\StringType;
+use Spatie\LaravelData\Attributes\Validation\Url;
+use Spatie\LaravelData\Data;
 
 class ProviderDTO extends Data
 {
@@ -42,46 +40,46 @@ class ProviderDTO extends Data
         public string $phone,
 
         #[Url, Nullable]
-        public ?string $website = null,
+        public ?string $website,
 
         #[StringType, Min(5), Max(50), Nullable]
-        public ?string $tax_id = null,
+        public ?string $tax_id,
 
         #[StringType, Min(5), Max(100), Nullable]
-        public ?string $business_license = null,
+        public ?string $business_license,
 
         #[In(ProviderType::class)]
         public string $provider_type,
 
         #[In(ProviderStatus::class)]
-        public string $status = ProviderStatus::PENDING,
+        public string $status,
 
         #[FloatType, Min(0), Max(5), Nullable]
-        public ?float $rating = null,
+        public ?float $rating,
 
         #[IntegerType, Min(0)]
-        public int $total_orders = 0,
+        public int $total_orders,
 
         #[FloatType, Min(0)]
-        public float $total_spent = 0.0,
+        public float $total_spent,
 
         #[FloatType, Min(0)]
-        public float $average_order_value = 0.0,
+        public float $average_order_value,
 
         #[Date, Nullable]
-        public ?string $last_order_date = null,
+        public ?string $last_order_date,
 
         #[Date, Nullable]
-        public ?string $first_order_date = null,
+        public ?string $first_order_date,
 
         #[StringType, Max(255), Nullable]
-        public ?string $payment_terms = null,
+        public ?string $payment_terms,
 
         #[FloatType, Min(0)]
-        public float $credit_limit = 0.0,
+        public float $credit_limit,
 
         #[FloatType]
-        public float $current_balance = 0.0,
+        public float $current_balance,
 
         #[StringType, Max(255)]
         public string $address,
@@ -230,8 +228,8 @@ class ProviderDTO extends Data
             'website' => 'nullable|url|max:255',
             'tax_id' => 'nullable|string|min:5|max:50|unique:providers,tax_id',
             'business_license' => 'nullable|string|min:5|max:100',
-            'provider_type' => 'required|string|in:' . implode(',', ProviderType::values()),
-            'status' => 'required|string|in:' . implode(',', ProviderStatus::values()),
+            'provider_type' => 'required|string|in:'.implode(',', ProviderType::values()),
+            'status' => 'required|string|in:'.implode(',', ProviderStatus::values()),
             'rating' => 'nullable|numeric|min:0|max:5',
             'total_orders' => 'integer|min:0',
             'total_spent' => 'numeric|min:0',

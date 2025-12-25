@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\App\Actions\ProviderInvoice;
 
+use Carbon\Carbon;
 use Fereydooni\Shopping\App\DTOs\ProviderInvoiceDTO;
-use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderInvoiceRepositoryInterface;
 use Fereydooni\Shopping\App\Enums\InvoiceStatus;
 use Fereydooni\Shopping\App\Enums\PaymentTerms;
-use Carbon\Carbon;
+use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderInvoiceRepositoryInterface;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
@@ -38,7 +38,7 @@ class CreateProviderInvoiceAction
             'invoice_id' => $invoice->id,
             'provider_id' => $invoice->provider_id,
             'invoice_number' => $invoice->invoice_number,
-            'total_amount' => $invoice->total_amount
+            'total_amount' => $invoice->total_amount,
         ]);
 
         // Return DTO
@@ -59,7 +59,7 @@ class CreateProviderInvoiceAction
             'discount_amount' => 'required|numeric|min:0',
             'shipping_amount' => 'required|numeric|min:0',
             'currency' => 'required|string|max:3',
-            'payment_terms' => 'required|string|in:' . implode(',', PaymentTerms::all()),
+            'payment_terms' => 'required|string|in:'.implode(',', PaymentTerms::all()),
             'payment_method' => 'nullable|string|max:100',
             'reference_number' => 'nullable|string|max:100',
             'notes' => 'nullable|string|max:1000',
@@ -171,4 +171,3 @@ class CreateProviderInvoiceAction
         }
     }
 }
-

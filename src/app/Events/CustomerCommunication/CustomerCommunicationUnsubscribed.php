@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Events\CustomerCommunication;
 
+use Fereydooni\Shopping\app\Models\CustomerCommunication;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Fereydooni\Shopping\app\Models\CustomerCommunication;
 
 class CustomerCommunicationUnsubscribed
 {

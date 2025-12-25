@@ -1,39 +1,38 @@
 <?php
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Route;
-use Fereydooni\Shopping\app\Models\ProductTag;
-use Illuminate\Routing\Middleware\SubstituteBindings;
 use App\Http\Controllers\Api\V1\ProviderPerformanceController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\EmployeeNoteController;
-use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderLocationController;
-use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderInsuranceController;
-use Fereydooni\Shopping\app\Http\Controllers\Api\V1\BrandController as ApiBrandController;
-use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductController as ApiProductController;
-use Fereydooni\Shopping\app\Http\Controllers\Api\V1\OrderController as ApiOrderController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\AddressController as ApiAddressController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\BrandController as ApiBrandController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CategoryController as ApiCategoryController;
-use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerController as ApiCustomerController;
-use Fereydooni\Shopping\app\Http\Controllers\Api\V1\EmployeeController as ApiEmployeeController;
-use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderController as ApiProviderController;
-use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ShipmentController as ApiShipmentController;
-use Fereydooni\Shopping\app\Http\Controllers\Api\V1\OrderItemController as ApiOrderItemController;
-use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductTagController as ApiProductTagController;
-use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductMetaController as ApiProductMetaController;
-use Fereydooni\Shopping\app\Http\Controllers\Api\V1\TransactionController as ApiTransactionController;
-use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerNoteController as ApiCustomerNoteController;
-use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ShipmentItemController as ApiShipmentItemController;
-use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductReviewController as ApiProductReviewController;
-use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductVariantController as ApiProductVariantController;
-use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerSegmentController as ApiCustomerSegmentController;
-use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductDiscountController as ApiProductDiscountController;
-use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductAttributeController as ApiProductAttributeController;
-use Fereydooni\Shopping\app\Http\Controllers\Api\V1\UserSubscriptionController as ApiUserSubscriptionController;
-use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerPreferenceController as ApiCustomerPreferenceController;
-use Fereydooni\Shopping\app\Http\Controllers\Api\V1\LoyaltyTransactionController as ApiLoyaltyTransactionController;
-use Fereydooni\Shopping\app\Http\Controllers\Api\V1\OrderStatusHistoryController as ApiOrderStatusHistoryController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerCommunicationController as ApiCustomerCommunicationController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerController as ApiCustomerController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerNoteController as ApiCustomerNoteController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerPreferenceController as ApiCustomerPreferenceController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerSegmentController as ApiCustomerSegmentController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\EmployeeController as ApiEmployeeController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\LoyaltyTransactionController as ApiLoyaltyTransactionController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\OrderController as ApiOrderController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\OrderItemController as ApiOrderItemController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\OrderStatusHistoryController as ApiOrderStatusHistoryController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductAttributeController as ApiProductAttributeController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductAttributeValueController as ApiProductAttributeValueController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductController as ApiProductController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductDiscountController as ApiProductDiscountController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductMetaController as ApiProductMetaController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductReviewController as ApiProductReviewController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductTagController as ApiProductTagController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductVariantController as ApiProductVariantController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderController as ApiProviderController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderInsuranceController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderLocationController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ShipmentController as ApiShipmentController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ShipmentItemController as ApiShipmentItemController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\TransactionController as ApiTransactionController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\UserSubscriptionController as ApiUserSubscriptionController;
+use Fereydooni\Shopping\app\Models\ProductTag;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Support\Facades\Route;
 
 Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sanctum', 'throttle:60,1', 'setlocale', SubstituteBindings::class])->group(function () {
     // ProductTag API routes
@@ -228,7 +227,6 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
         //     // Get brands with products
         //     Route::get('/with-products', [ApiBrandController::class, 'getWithProducts'])->name('with-products');
 
-
         // Brand-specific routes
         Route::prefix('{brand}')->group(function () {
             // Show brand
@@ -242,7 +240,6 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
 
             //         // Update brand (partial update)
             //         Route::patch('/', [ApiBrandController::class, 'update'])->name('update.partial');
-
 
             //         // Toggle active status
             //         Route::post('/toggle-active', [ApiBrandController::class, 'toggleActive'])->name('toggle-active');
@@ -303,7 +300,6 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
         //     // Inventory management
         //     Route::get('/inventory/{product}', [ApiProductController::class, 'getInventoryLevel'])->name('inventory');
         //     Route::post('/inventory/update', [ApiProductController::class, 'updateInventory'])->name('update-inventory');
-
 
         // Product-specific routes
         Route::prefix('{product}')->group(function () {
@@ -380,7 +376,6 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
         //     Route::get('/by-group/{group}', [ApiProductAttributeController::class, 'byGroup'])->name('by-group');
         //     Route::get('/by-input-type/{inputType}', [ApiProductAttributeController::class, 'byInputType'])->name('by-input-type');
 
-
         // ProductAttribute-specific routes
         Route::prefix('{productAttribute}')->group(function () {
             // Show product attribute
@@ -417,7 +412,6 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
         });
     });
 
-
     // // Address API routes
     // Route::prefix('addresses')->name('addresses.')->group(function () {
     //     // List addresses
@@ -453,7 +447,6 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
     //         Route::post('/default', [ApiAddressController::class, 'setDefault'])->name('set-default');
     //     });
     // });
-
 
     // // Order API routes
     // Route::prefix('orders')->name('orders.')->group(function () {
@@ -610,8 +603,6 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
     //     });
     // });
 
-
-
     // // ProductAttributeValue API routes
     // Route::prefix('product-attribute-values')->name('product-attribute-values.')->group(function () {
     //     // List product attribute values
@@ -737,7 +728,6 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
     //     // Recommendations
     //     Route::get('/recommendations/{product}', [ApiProductDiscountController::class, 'recommendations'])->name('recommendations');
     // });
-
 
     // // ProductMeta API routes
     // Route::prefix('product-meta')->name('product-meta.')->group(function () {
@@ -1236,53 +1226,53 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
         // Get customer's status list
         Route::get('/statuses/cursor-all', [ApiCustomerController::class, 'statuses'])->name('statuses');
 
-    //     // Search customers
-    //     Route::get('/search', [ApiCustomerController::class, 'search'])->name('search');
+        //     // Search customers
+        //     Route::get('/search', [ApiCustomerController::class, 'search'])->name('search');
 
-    //     // Get customer statistics
-    //     Route::get('/stats', [ApiCustomerController::class, 'stats'])->name('stats');
+        //     // Get customer statistics
+        //     Route::get('/stats', [ApiCustomerController::class, 'stats'])->name('stats');
 
         // Create customer
         Route::post('/', [ApiCustomerController::class, 'store'])->name('store');
 
-         // Customer-specific routes
-         Route::prefix('{customer}')->group(function () {
-    //         // Show customer
-             Route::get('/', [ApiCustomerController::class, 'show'])->name('show');
+        // Customer-specific routes
+        Route::prefix('{customer}')->group(function () {
+            //         // Show customer
+            Route::get('/', [ApiCustomerController::class, 'show'])->name('show');
 
-    //         // Update customer (full update)
-    //         Route::put('/', [ApiCustomerController::class, 'update'])->name('update');
+            //         // Update customer (full update)
+            //         Route::put('/', [ApiCustomerController::class, 'update'])->name('update');
 
-    //         // Update customer (partial update)
-    //         Route::patch('/', [ApiCustomerController::class, 'update'])->name('update.partial');
+            //         // Update customer (partial update)
+            //         Route::patch('/', [ApiCustomerController::class, 'update'])->name('update.partial');
 
-    //         // Delete customer
-    //         Route::delete('/', [ApiCustomerController::class, 'destroy'])->name('destroy');
+            //         // Delete customer
+            //         Route::delete('/', [ApiCustomerController::class, 'destroy'])->name('destroy');
 
-    //         // Customer status management
-    //         Route::post('/activate', [ApiCustomerController::class, 'activate'])->name('activate');
-    //         Route::post('/deactivate', [ApiCustomerController::class, 'deactivate'])->name('deactivate');
-    //         Route::post('/suspend', [ApiCustomerController::class, 'suspend'])->name('suspend');
+            //         // Customer status management
+            //         Route::post('/activate', [ApiCustomerController::class, 'activate'])->name('activate');
+            //         Route::post('/deactivate', [ApiCustomerController::class, 'deactivate'])->name('deactivate');
+            //         Route::post('/suspend', [ApiCustomerController::class, 'suspend'])->name('suspend');
 
-    //         // Loyalty points management
-    //         Route::post('/loyalty-points', [ApiCustomerController::class, 'loyaltyPoints'])->name('loyalty-points');
+            //         // Loyalty points management
+            //         Route::post('/loyalty-points', [ApiCustomerController::class, 'loyaltyPoints'])->name('loyalty-points');
 
-    //         // Customer relationships
-    //         Route::get('/orders', [ApiCustomerController::class, 'orders'])->name('orders');
-    //         Route::get('/addresses', [ApiCustomerController::class, 'addresses'])->name('addresses');
-    //         Route::get('/reviews', [ApiCustomerController::class, 'reviews'])->name('reviews');
-    //         Route::get('/wishlist', [ApiCustomerController::class, 'wishlist'])->name('wishlist');
+            //         // Customer relationships
+            //         Route::get('/orders', [ApiCustomerController::class, 'orders'])->name('orders');
+            //         Route::get('/addresses', [ApiCustomerController::class, 'addresses'])->name('addresses');
+            //         Route::get('/reviews', [ApiCustomerController::class, 'reviews'])->name('reviews');
+            //         Route::get('/wishlist', [ApiCustomerController::class, 'wishlist'])->name('wishlist');
 
-    //         // Customer analytics
-    //         Route::get('/analytics', [ApiCustomerController::class, 'analytics'])->name('analytics');
+            //         // Customer analytics
+            //         Route::get('/analytics', [ApiCustomerController::class, 'analytics'])->name('analytics');
 
-    //         // Customer notes
-    //         Route::get('/notes', [ApiCustomerController::class, 'notes'])->name('notes');
-    //         Route::post('/notes', [ApiCustomerController::class, 'addNote'])->name('add-note');
+            //         // Customer notes
+            //         Route::get('/notes', [ApiCustomerController::class, 'notes'])->name('notes');
+            //         Route::post('/notes', [ApiCustomerController::class, 'addNote'])->name('add-note');
 
-    //         // Customer preferences
-    //         Route::put('/preferences', [ApiCustomerController::class, 'updatePreferences'])->name('update-preferences');
-         });
+            //         // Customer preferences
+            //         Route::put('/preferences', [ApiCustomerController::class, 'updatePreferences'])->name('update-preferences');
+        });
     });
 
     // // Customer Segment API routes

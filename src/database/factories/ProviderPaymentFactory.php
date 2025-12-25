@@ -2,13 +2,13 @@
 
 namespace Fereydooni\Shopping\Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Fereydooni\Shopping\App\Models\ProviderPayment;
+use Fereydooni\Shopping\App\Enums\ProviderPaymentMethod;
+use Fereydooni\Shopping\App\Enums\ProviderPaymentStatus;
 use Fereydooni\Shopping\App\Models\Provider;
 use Fereydooni\Shopping\App\Models\ProviderInvoice;
+use Fereydooni\Shopping\App\Models\ProviderPayment;
 use Fereydooni\Shopping\App\Models\User;
-use Fereydooni\Shopping\App\Enums\ProviderPaymentStatus;
-use Fereydooni\Shopping\App\Enums\ProviderPaymentMethod;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Fereydooni\Shopping\App\Models\ProviderPayment>
@@ -44,7 +44,7 @@ class ProviderPaymentFactory extends Factory
                 'receipt.pdf',
                 'invoice.pdf',
                 'proof_of_payment.pdf',
-                'bank_statement.pdf'
+                'bank_statement.pdf',
             ], $this->faker->numberBetween(1, 3)),
             'processed_by' => $status->value !== 'pending' ? User::factory() : null,
             'processed_at' => $status->value !== 'pending' ? $this->faker->dateTimeBetween($paymentDate, 'now') : null,
@@ -102,7 +102,7 @@ class ProviderPaymentFactory extends Factory
             'processed_by' => null,
             'processed_at' => null,
             'reconciled_at' => null,
-            'notes' => $this->faker->sentence() . ' - Payment processing failed.',
+            'notes' => $this->faker->sentence().' - Payment processing failed.',
         ]);
     }
 
@@ -116,7 +116,7 @@ class ProviderPaymentFactory extends Factory
             'processed_by' => null,
             'processed_at' => null,
             'reconciled_at' => null,
-            'notes' => $this->faker->sentence() . ' - Payment was cancelled.',
+            'notes' => $this->faker->sentence().' - Payment was cancelled.',
         ]);
     }
 
@@ -130,7 +130,7 @@ class ProviderPaymentFactory extends Factory
             'processed_by' => User::factory(),
             'processed_at' => $this->faker->dateTimeBetween($attributes['payment_date'], 'now'),
             'reconciled_at' => $this->faker->dateTimeBetween($attributes['payment_date'], 'now'),
-            'notes' => $this->faker->sentence() . ' - Payment was refunded.',
+            'notes' => $this->faker->sentence().' - Payment was refunded.',
         ]);
     }
 
@@ -273,6 +273,6 @@ class ProviderPaymentFactory extends Factory
         $date = now()->format('Ymd');
         $random = strtoupper(substr(md5(uniqid()), 0, 6));
 
-        return $prefix . $date . $random;
+        return $prefix.$date.$random;
     }
 }

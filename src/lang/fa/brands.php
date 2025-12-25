@@ -16,6 +16,6 @@ return [
         'inactive' => 'غیرفعال',
         'pending' => 'در انتظار',
         'suspended' => 'معلق',
-    ]
+    ],
 
 ];

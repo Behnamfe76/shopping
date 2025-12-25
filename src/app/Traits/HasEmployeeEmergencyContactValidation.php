@@ -4,7 +4,6 @@ namespace App\Traits;
 
 use App\Models\EmployeeEmergencyContact;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Log;
 
 trait HasEmployeeEmergencyContactValidation
 {
@@ -58,7 +57,7 @@ trait HasEmployeeEmergencyContactValidation
 
         // Additional business logic validation
         $businessValidation = $this->validateBusinessRules($data);
-        if (!$businessValidation['is_valid']) {
+        if (! $businessValidation['is_valid']) {
             return $businessValidation;
         }
 
@@ -76,22 +75,22 @@ trait HasEmployeeEmergencyContactValidation
         $errors = [];
 
         // Validate phone number format
-        if (!empty($data['phone_primary']) && !$this->isValidPhoneNumber($data['phone_primary'])) {
+        if (! empty($data['phone_primary']) && ! $this->isValidPhoneNumber($data['phone_primary'])) {
             $errors['phone_primary'] = ['Invalid phone number format. Please use a valid phone number.'];
         }
 
-        if (!empty($data['phone_secondary']) && !$this->isValidPhoneNumber($data['phone_secondary'])) {
+        if (! empty($data['phone_secondary']) && ! $this->isValidPhoneNumber($data['phone_secondary'])) {
             $errors['phone_secondary'] = ['Invalid secondary phone number format. Please use a valid phone number.'];
         }
 
         // Validate email domain if provided
-        if (!empty($data['email']) && !$this->isValidEmailDomain($data['email'])) {
+        if (! empty($data['email']) && ! $this->isValidEmailDomain($data['email'])) {
             $errors['email'] = ['Email domain appears to be invalid. Please check the email address.'];
         }
 
         // Validate postal code format if country is US
-        if (!empty($data['country']) && strtolower($data['country']) === 'united states' && !empty($data['postal_code'])) {
-            if (!$this->isValidUSPostalCode($data['postal_code'])) {
+        if (! empty($data['country']) && strtolower($data['country']) === 'united states' && ! empty($data['postal_code'])) {
+            if (! $this->isValidUSPostalCode($data['postal_code'])) {
                 $errors['postal_code'] = ['Invalid US postal code format. Please use format: 12345 or 12345-6789.'];
             }
         }
@@ -172,7 +171,7 @@ trait HasEmployeeEmergencyContactValidation
         }
 
         // Check for duplicate phone numbers
-        if (!empty($data['phone_primary'])) {
+        if (! empty($data['phone_primary'])) {
             $phoneQuery = EmployeeEmergencyContact::where('employee_id', $employeeId)
                 ->where('phone_primary', $data['phone_primary']);
 
@@ -186,7 +185,7 @@ trait HasEmployeeEmergencyContactValidation
         }
 
         // Check for duplicate email addresses
-        if (!empty($data['email'])) {
+        if (! empty($data['email'])) {
             $emailQuery = EmployeeEmergencyContact::where('employee_id', $employeeId)
                 ->where('email', $data['email']);
 
@@ -212,7 +211,7 @@ trait HasEmployeeEmergencyContactValidation
     {
         $errors = [];
 
-        if (!empty($data['is_primary']) && $data['is_primary']) {
+        if (! empty($data['is_primary']) && $data['is_primary']) {
             // Check if another primary contact already exists
             $existingPrimaryQuery = EmployeeEmergencyContact::where('employee_id', $employeeId)
                 ->where('is_primary', true);
@@ -226,7 +225,7 @@ trait HasEmployeeEmergencyContactValidation
             }
 
             // Ensure the contact is active if setting as primary
-            if (!empty($data['is_active']) && !$data['is_active']) {
+            if (! empty($data['is_active']) && ! $data['is_active']) {
                 $errors['is_primary'] = ['Primary emergency contact must be active.'];
             }
         }
@@ -244,19 +243,19 @@ trait HasEmployeeEmergencyContactValidation
     {
         // Basic data validation
         $dataValidation = $this->validateEmergencyContactData($data);
-        if (!$dataValidation['is_valid']) {
+        if (! $dataValidation['is_valid']) {
             return $dataValidation;
         }
 
         // Uniqueness validation
         $uniquenessValidation = $this->validateEmergencyContactUniqueness($employeeId, $data, $excludeId);
-        if (!$uniquenessValidation['is_valid']) {
+        if (! $uniquenessValidation['is_valid']) {
             return $uniquenessValidation;
         }
 
         // Primary contact constraints validation
         $primaryValidation = $this->validatePrimaryContactConstraints($employeeId, $data, $excludeId);
-        if (!$primaryValidation['is_valid']) {
+        if (! $primaryValidation['is_valid']) {
             return $primaryValidation;
         }
 

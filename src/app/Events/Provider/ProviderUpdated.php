@@ -11,6 +11,7 @@ class ProviderUpdated
     use Dispatchable, SerializesModels;
 
     public Provider $provider;
+
     public array $changes;
 
     public function __construct(Provider $provider, array $changes = [])

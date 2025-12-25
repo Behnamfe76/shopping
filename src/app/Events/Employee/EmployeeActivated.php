@@ -3,11 +3,8 @@
 namespace Fereydooni\Shopping\app\Events\Employee;
 
 use Fereydooni\Shopping\app\Models\Employee;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -44,7 +41,7 @@ class EmployeeActivated
     {
         return [
             'employee_id' => $this->employee->id,
-            'employee_name' => $this->employee->first_name . ' ' . $this->employee->last_name,
+            'employee_name' => $this->employee->first_name.' '.$this->employee->last_name,
             'status' => 'active',
             'activated_at' => now(),
         ];

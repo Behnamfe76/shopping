@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\app\Listeners\Customer;
 
-use Fereydooni\Shopping\app\Events\Customer\CustomerCreated;
-use Fereydooni\Shopping\app\Events\Customer\CustomerUpdated;
-use Fereydooni\Shopping\app\Events\Customer\CustomerDeleted;
 use Fereydooni\Shopping\app\Events\Customer\CustomerActivated;
+use Fereydooni\Shopping\app\Events\Customer\CustomerCreated;
 use Fereydooni\Shopping\app\Events\Customer\CustomerDeactivated;
+use Fereydooni\Shopping\app\Events\Customer\CustomerDeleted;
 use Fereydooni\Shopping\app\Events\Customer\CustomerSuspended;
+use Fereydooni\Shopping\app\Events\Customer\CustomerUpdated;
 use Fereydooni\Shopping\app\Events\Customer\LoyaltyPointsAdded;
 use Fereydooni\Shopping\app\Events\Customer\LoyaltyPointsDeducted;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -41,7 +41,7 @@ class LogCustomerActivity implements ShouldQueue
     {
         $customer = $event->customer;
         $changes = $event->changes;
-        \Log::info("Customer updated: {$customer->id} - Changes: " . json_encode($changes));
+        \Log::info("Customer updated: {$customer->id} - Changes: ".json_encode($changes));
     }
 
     /**

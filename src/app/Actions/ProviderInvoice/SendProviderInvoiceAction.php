@@ -2,13 +2,13 @@
 
 namespace Fereydooni\Shopping\App\Actions\ProviderInvoice;
 
+use Exception;
 use Fereydooni\Shopping\App\DTOs\ProviderInvoiceDTO;
+use Fereydooni\Shopping\App\Enums\InvoiceStatus;
 use Fereydooni\Shopping\App\Models\ProviderInvoice;
 use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderInvoiceRepositoryInterface;
-use Fereydooni\Shopping\App\Enums\InvoiceStatus;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Exception;
 
 class SendProviderInvoiceAction
 {
@@ -25,7 +25,7 @@ class SendProviderInvoiceAction
             DB::beginTransaction();
 
             // Validate sending permissions
-            if (!$this->canInvoiceBeSent($invoice)) {
+            if (! $this->canInvoiceBeSent($invoice)) {
                 throw new Exception('Invoice cannot be sent in its current status.');
             }
 
@@ -35,7 +35,7 @@ class SendProviderInvoiceAction
             // Update invoice status to sent
             $result = $this->repository->send($invoice);
 
-            if (!$result) {
+            if (! $result) {
                 throw new Exception('Failed to send invoice.');
             }
 
@@ -56,7 +56,7 @@ class SendProviderInvoiceAction
             DB::rollBack();
             Log::error('Failed to send provider invoice', [
                 'invoice_id' => $invoice->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -98,13 +98,13 @@ class SendProviderInvoiceAction
         Log::info('Invoice sent notification sent to provider', [
             'invoice_id' => $invoice->id,
             'provider_id' => $invoice->provider_id,
-            'invoice_number' => $invoice->invoice_number
+            'invoice_number' => $invoice->invoice_number,
         ]);
 
         // Send notification to internal team
         Log::info('Invoice sent notification sent to internal team', [
             'invoice_id' => $invoice->id,
-            'provider_id' => $invoice->provider_id
+            'provider_id' => $invoice->provider_id,
         ]);
     }
 
@@ -113,11 +113,10 @@ class SendProviderInvoiceAction
         // Update provider's invoice count
         Log::info('Provider invoice records updated', [
             'invoice_id' => $invoice->id,
-            'provider_id' => $invoice->provider_id
+            'provider_id' => $invoice->provider_id,
         ]);
 
         // Could add more provider record updates here
         // such as updating last invoice date, total outstanding amount, etc.
     }
 }
-

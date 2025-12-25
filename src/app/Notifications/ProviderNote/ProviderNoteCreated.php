@@ -2,8 +2,8 @@
 
 namespace Fereydooni\Shopping\app\Notifications\ProviderNote;
 
-use Fereydooni\Shopping\app\Models\ProviderNote;
 use Fereydooni\Shopping\app\DTOs\ProviderNoteDTO;
+use Fereydooni\Shopping\app\Models\ProviderNote;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -14,6 +14,7 @@ class ProviderNoteCreated extends Notification implements ShouldQueue
     use Queueable;
 
     public ProviderNote $providerNote;
+
     public ProviderNoteDTO $providerNoteDTO;
 
     /**
@@ -47,15 +48,15 @@ class ProviderNoteCreated extends Notification implements ShouldQueue
         $mailMessage = (new MailMessage)
             ->subject("New {$noteType} Note: {$title}")
             ->greeting("Hello {$notifiable->name},")
-            ->line("A new provider note has been created.")
+            ->line('A new provider note has been created.')
             ->line("**Title:** {$title}")
-            ->line("**Type:** " . ucfirst($noteType))
-            ->line("**Priority:** " . ucfirst($priority))
+            ->line('**Type:** '.ucfirst($noteType))
+            ->line('**Priority:** '.ucfirst($priority))
             ->line("**Provider ID:** {$this->providerNote->provider_id}");
 
         if ($this->providerNote->content || $this->providerNote->note) {
             $content = $this->providerNote->content ?? $this->providerNote->note;
-            $mailMessage->line("**Content:** " . substr($content, 0, 200) . (strlen($content) > 200 ? '...' : ''));
+            $mailMessage->line('**Content:** '.substr($content, 0, 200).(strlen($content) > 200 ? '...' : ''));
         }
 
         $mailMessage->action('View Note', url("/provider-notes/{$this->providerNote->id}"))
@@ -79,9 +80,9 @@ class ProviderNoteCreated extends Notification implements ShouldQueue
             'user_id' => $this->providerNote->user_id,
             'note_type' => $this->providerNote->note_type ?? $this->providerNote->type ?? 'general',
             'priority' => $this->providerNote->priority ?? 'medium',
-            'is_private' => $this->providerNote->is_private ?? !($this->providerNote->is_public ?? true),
+            'is_private' => $this->providerNote->is_private ?? ! ($this->providerNote->is_public ?? true),
             'created_at' => $this->providerNote->created_at?->toISOString(),
-            'message' => "A new " . ($this->providerNote->note_type ?? $this->providerNote->type ?? 'general') . " note has been created for provider {$this->providerNote->provider_id}",
+            'message' => 'A new '.($this->providerNote->note_type ?? $this->providerNote->type ?? 'general')." note has been created for provider {$this->providerNote->provider_id}",
         ];
     }
 

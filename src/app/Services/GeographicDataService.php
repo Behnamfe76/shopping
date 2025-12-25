@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Config;
 class GeographicDataService
 {
     protected array $config;
+
     protected array $defaultValues;
 
     public function __construct()
@@ -32,8 +33,9 @@ class GeographicDataService
 
     public function getModel(string $type): string
     {
-        $key = $type . '_model';
-        return $this->config[$key] ?? "App\\Models\\" . ucfirst($type);
+        $key = $type.'_model';
+
+        return $this->config[$key] ?? 'App\\Models\\'.ucfirst($type);
     }
 
     public function getDefaultValue(string $type): mixed
@@ -45,13 +47,14 @@ class GeographicDataService
     {
         return Cache::remember('geographic_countries', 3600, function () {
             $model = $this->getModel('country');
+
             return app($model)->orderBy('name')->get();
         });
     }
 
     public function getProvinces(?int $countryId = null): Collection
     {
-        $cacheKey = 'geographic_provinces_' . ($countryId ?? 'all');
+        $cacheKey = 'geographic_provinces_'.($countryId ?? 'all');
 
         return Cache::remember($cacheKey, 3600, function () use ($countryId) {
             $model = $this->getModel('province');
@@ -67,7 +70,7 @@ class GeographicDataService
 
     public function getCounties(?int $provinceId = null): Collection
     {
-        $cacheKey = 'geographic_counties_' . ($provinceId ?? 'all');
+        $cacheKey = 'geographic_counties_'.($provinceId ?? 'all');
 
         return Cache::remember($cacheKey, 3600, function () use ($provinceId) {
             $model = $this->getModel('county');
@@ -83,7 +86,7 @@ class GeographicDataService
 
     public function getCities(?int $countyId = null): Collection
     {
-        $cacheKey = 'geographic_cities_' . ($countyId ?? 'all');
+        $cacheKey = 'geographic_cities_'.($countyId ?? 'all');
 
         return Cache::remember($cacheKey, 3600, function () use ($countyId) {
             $model = $this->getModel('city');
@@ -99,7 +102,7 @@ class GeographicDataService
 
     public function getVillages(?int $cityId = null): Collection
     {
-        $cacheKey = 'geographic_villages_' . ($cityId ?? 'all');
+        $cacheKey = 'geographic_villages_'.($cityId ?? 'all');
 
         return Cache::remember($cacheKey, 3600, function () use ($cityId) {
             $model = $this->getModel('village');
@@ -130,7 +133,7 @@ class GeographicDataService
         // Validate country
         if (isset($data['country_id']) && $data['country_id']) {
             $countryModel = $this->getModel('country');
-            if (!app($countryModel)->find($data['country_id'])) {
+            if (! app($countryModel)->find($data['country_id'])) {
                 $errors['country_id'] = 'Selected country does not exist';
             }
         }
@@ -139,7 +142,7 @@ class GeographicDataService
         if (isset($data['province_id']) && $data['province_id']) {
             $provinceModel = $this->getModel('province');
             $province = app($provinceModel)->find($data['province_id']);
-            if (!$province) {
+            if (! $province) {
                 $errors['province_id'] = 'Selected province does not exist';
             } elseif (isset($data['country_id']) && $data['country_id'] && $province->country_id != $data['country_id']) {
                 $errors['province_id'] = 'Selected province does not belong to the selected country';
@@ -150,7 +153,7 @@ class GeographicDataService
         if (isset($data['county_id']) && $data['county_id']) {
             $countyModel = $this->getModel('county');
             $county = app($countyModel)->find($data['county_id']);
-            if (!$county) {
+            if (! $county) {
                 $errors['county_id'] = 'Selected county does not exist';
             } elseif (isset($data['province_id']) && $data['province_id'] && $county->province_id != $data['province_id']) {
                 $errors['county_id'] = 'Selected county does not belong to the selected province';
@@ -161,7 +164,7 @@ class GeographicDataService
         if (isset($data['city_id']) && $data['city_id']) {
             $cityModel = $this->getModel('city');
             $city = app($cityModel)->find($data['city_id']);
-            if (!$city) {
+            if (! $city) {
                 $errors['city_id'] = 'Selected city does not exist';
             } elseif (isset($data['county_id']) && $data['county_id'] && $city->county_id != $data['county_id']) {
                 $errors['city_id'] = 'Selected city does not belong to the selected county';
@@ -172,7 +175,7 @@ class GeographicDataService
         if (isset($data['village_id']) && $data['village_id']) {
             $villageModel = $this->getModel('village');
             $village = app($villageModel)->find($data['village_id']);
-            if (!$village) {
+            if (! $village) {
                 $errors['village_id'] = 'Selected village does not exist';
             } elseif (isset($data['city_id']) && $data['city_id'] && $village->city_id != $data['city_id']) {
                 $errors['village_id'] = 'Selected village does not belong to the selected city';
@@ -230,25 +233,25 @@ class GeographicDataService
         // Clear province caches
         Cache::forget('geographic_provinces_all');
         $this->getCountries()->each(function ($country) {
-            Cache::forget('geographic_provinces_' . $country->id);
+            Cache::forget('geographic_provinces_'.$country->id);
         });
 
         // Clear county caches
         Cache::forget('geographic_counties_all');
         $this->getProvinces()->each(function ($province) {
-            Cache::forget('geographic_counties_' . $province->id);
+            Cache::forget('geographic_counties_'.$province->id);
         });
 
         // Clear city caches
         Cache::forget('geographic_cities_all');
         $this->getCounties()->each(function ($county) {
-            Cache::forget('geographic_cities_' . $county->id);
+            Cache::forget('geographic_cities_'.$county->id);
         });
 
         // Clear village caches
         Cache::forget('geographic_villages_all');
         $this->getCities()->each(function ($city) {
-            Cache::forget('geographic_villages_' . $city->id);
+            Cache::forget('geographic_villages_'.$city->id);
         });
     }
 }

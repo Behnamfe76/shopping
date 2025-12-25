@@ -46,7 +46,7 @@ class ProviderLocationResource extends JsonResource
                     'id' => $this->provider->id,
                     'name' => $this->provider->name,
                     'company_name' => $this->provider->company_name,
-                    'status' => $this->provider->status
+                    'status' => $this->provider->status,
                 ];
             }),
 
@@ -57,8 +57,9 @@ class ProviderLocationResource extends JsonResource
                     $this->city,
                     $this->state,
                     $this->postal_code,
-                    $this->country
+                    $this->country,
                 ]);
+
                 return implode(', ', $parts);
             }),
 
@@ -66,7 +67,7 @@ class ProviderLocationResource extends JsonResource
                 return [
                     'lat' => round($this->latitude, 6),
                     'lng' => round($this->longitude, 6),
-                    'formatted' => "{$this->latitude}, {$this->longitude}"
+                    'formatted' => "{$this->latitude}, {$this->longitude}",
                 ];
             }),
 
@@ -78,7 +79,7 @@ class ProviderLocationResource extends JsonResource
                 'is_active' => $this->is_active,
                 'is_primary' => $this->is_primary,
                 'status_label' => $this->getStatusLabel(),
-                'status_color' => $this->getStatusColor()
+                'status_color' => $this->getStatusColor(),
             ],
 
             // Geospatial data
@@ -86,15 +87,15 @@ class ProviderLocationResource extends JsonResource
                 return [
                     'coordinates' => [
                         'latitude' => $this->latitude,
-                        'longitude' => $this->longitude
+                        'longitude' => $this->longitude,
                     ],
                     'formatted_coordinates' => "{$this->latitude}, {$this->longitude}",
-                    'has_coordinates' => true
+                    'has_coordinates' => true,
                 ];
             }, [
                 'coordinates' => null,
                 'formatted_coordinates' => null,
-                'has_coordinates' => false
+                'has_coordinates' => false,
             ]),
 
             // Location type info
@@ -102,7 +103,7 @@ class ProviderLocationResource extends JsonResource
                 'type' => $this->location_type,
                 'label' => $this->getLocationTypeLabel(),
                 'icon' => $this->getLocationTypeIcon(),
-                'category' => $this->getLocationTypeCategory()
+                'category' => $this->getLocationTypeCategory(),
             ],
 
             // Contact info
@@ -112,7 +113,7 @@ class ProviderLocationResource extends JsonResource
                 'website' => $this->website,
                 'contact_person' => $this->contact_person,
                 'contact_phone' => $this->contact_phone,
-                'contact_email' => $this->contact_email
+                'contact_email' => $this->contact_email,
             ],
 
             // Metadata
@@ -120,8 +121,8 @@ class ProviderLocationResource extends JsonResource
                 'created_at_formatted' => $this->created_at?->format('M j, Y g:i A'),
                 'updated_at_formatted' => $this->updated_at?->format('M j, Y g:i A'),
                 'age_days' => $this->created_at?->diffInDays(now()),
-                'last_updated_days' => $this->updated_at?->diffInDays(now())
-            ]
+                'last_updated_days' => $this->updated_at?->diffInDays(now()),
+            ],
         ];
     }
 
@@ -130,7 +131,7 @@ class ProviderLocationResource extends JsonResource
      */
     protected function formatOperatingHours($operatingHours): array
     {
-        if (!$operatingHours || !is_array($operatingHours)) {
+        if (! $operatingHours || ! is_array($operatingHours)) {
             return [];
         }
 
@@ -163,7 +164,7 @@ class ProviderLocationResource extends JsonResource
      */
     protected function getStatusLabel(): string
     {
-        if (!$this->is_active) {
+        if (! $this->is_active) {
             return 'Inactive';
         }
 
@@ -179,7 +180,7 @@ class ProviderLocationResource extends JsonResource
      */
     protected function getStatusColor(): string
     {
-        if (!$this->is_active) {
+        if (! $this->is_active) {
             return 'red';
         }
 
@@ -204,7 +205,7 @@ class ProviderLocationResource extends JsonResource
             'distribution_center' => 'Distribution Center',
             'retail_outlet' => 'Retail Outlet',
             'service_center' => 'Service Center',
-            'other' => 'Other'
+            'other' => 'Other',
         ];
 
         return $labels[$this->location_type] ?? 'Unknown';
@@ -224,7 +225,7 @@ class ProviderLocationResource extends JsonResource
             'distribution_center' => 'truck',
             'retail_outlet' => 'shopping-cart',
             'service_center' => 'tools',
-            'other' => 'map-marker'
+            'other' => 'map-marker',
         ];
 
         return $icons[$this->location_type] ?? 'map-marker';
@@ -244,7 +245,7 @@ class ProviderLocationResource extends JsonResource
             'distribution_center' => 'logistics',
             'retail_outlet' => 'retail',
             'service_center' => 'service',
-            'other' => 'miscellaneous'
+            'other' => 'miscellaneous',
         ];
 
         return $categories[$this->location_type] ?? 'miscellaneous';

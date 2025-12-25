@@ -2,19 +2,19 @@
 
 namespace Fereydooni\Shopping\app\Repositories;
 
+use Fereydooni\Shopping\app\DTOs\ProductAttributeDTO;
+use Fereydooni\Shopping\app\DTOs\ProductAttributeValueDTO;
+use Fereydooni\Shopping\app\Enums\ProductAttributeInputType;
+use Fereydooni\Shopping\app\Enums\ProductAttributeType;
+use Fereydooni\Shopping\app\Models\ProductAttribute;
+use Fereydooni\Shopping\app\Models\ProductAttributeValue;
+use Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
-use Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeRepositoryInterface;
-use Fereydooni\Shopping\app\Models\ProductAttribute;
-use Fereydooni\Shopping\app\DTOs\ProductAttributeDTO;
-use Fereydooni\Shopping\app\Models\ProductAttributeValue;
-use Fereydooni\Shopping\app\DTOs\ProductAttributeValueDTO;
-use Fereydooni\Shopping\app\Enums\ProductAttributeType;
-use Fereydooni\Shopping\app\Enums\ProductAttributeInputType;
+use Illuminate\Support\Str;
 
 class ProductAttributeRepository implements ProductAttributeRepositoryInterface
 {
@@ -33,7 +33,7 @@ class ProductAttributeRepository implements ProductAttributeRepositoryInterface
         return ProductAttribute::ordered()->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return ProductAttribute::ordered()->cursorPaginate($perPage, ['*'], 'cursor', $cursor);
     }
@@ -46,6 +46,7 @@ class ProductAttributeRepository implements ProductAttributeRepositoryInterface
     public function findDTO(int $id): ?ProductAttributeDTO
     {
         $attribute = $this->find($id);
+
         return $attribute ? ProductAttributeDTO::fromModel($attribute) : null;
     }
 
@@ -58,7 +59,7 @@ class ProductAttributeRepository implements ProductAttributeRepositoryInterface
             $productAttribute = ProductAttribute::create($data);
 
             $productAttribute->values()->createMany(
-                collect($data['values'])->map(fn($value) => [
+                collect($data['values'])->map(fn ($value) => [
                     'value' => $value,
                     'created_by' => auth()->id(),
                 ])->toArray()
@@ -75,6 +76,7 @@ class ProductAttributeRepository implements ProductAttributeRepositoryInterface
     public function createAndReturnDTO(array $data): ProductAttributeDTO
     {
         $attribute = $this->create($data);
+
         return ProductAttributeDTO::fromModel($attribute);
     }
 
@@ -94,7 +96,7 @@ class ProductAttributeRepository implements ProductAttributeRepositoryInterface
 
             // Delete removed values
             $toDelete = array_diff($existingValues, $newValues);
-            if (!empty($toDelete)) {
+            if (! empty($toDelete)) {
                 $productAttribute->values()->whereIn('id', $toDelete)->delete();
             }
 
@@ -117,6 +119,7 @@ class ProductAttributeRepository implements ProductAttributeRepositoryInterface
     public function updateAndReturnDTO(ProductAttribute $attribute, array $data): ?ProductAttributeDTO
     {
         $updated = $this->update($attribute, $data);
+
         return $updated ? ProductAttributeDTO::fromModel($attribute->fresh()) : null;
     }
 
@@ -133,6 +136,7 @@ class ProductAttributeRepository implements ProductAttributeRepositoryInterface
     public function findBySlugDTO(string $slug): ?ProductAttributeDTO
     {
         $attribute = $this->findBySlug($slug);
+
         return $attribute ? ProductAttributeDTO::fromModel($attribute) : null;
     }
 
@@ -144,6 +148,7 @@ class ProductAttributeRepository implements ProductAttributeRepositoryInterface
     public function findByNameDTO(string $name): ?ProductAttributeDTO
     {
         $attribute = $this->findByName($name);
+
         return $attribute ? ProductAttributeDTO::fromModel($attribute) : null;
     }
 
@@ -154,7 +159,7 @@ class ProductAttributeRepository implements ProductAttributeRepositoryInterface
 
     public function findByTypeDTO(string $type): Collection
     {
-        return $this->findByType($type)->map(fn($attribute) => ProductAttributeDTO::fromModel($attribute));
+        return $this->findByType($type)->map(fn ($attribute) => ProductAttributeDTO::fromModel($attribute));
     }
 
     public function findByInputType(string $inputType): Collection
@@ -164,7 +169,7 @@ class ProductAttributeRepository implements ProductAttributeRepositoryInterface
 
     public function findByInputTypeDTO(string $inputType): Collection
     {
-        return $this->findByInputType($inputType)->map(fn($attribute) => ProductAttributeDTO::fromModel($attribute));
+        return $this->findByInputType($inputType)->map(fn ($attribute) => ProductAttributeDTO::fromModel($attribute));
     }
 
     public function findByGroup(string $group): Collection
@@ -174,7 +179,7 @@ class ProductAttributeRepository implements ProductAttributeRepositoryInterface
 
     public function findByGroupDTO(string $group): Collection
     {
-        return $this->findByGroup($group)->map(fn($attribute) => ProductAttributeDTO::fromModel($attribute));
+        return $this->findByGroup($group)->map(fn ($attribute) => ProductAttributeDTO::fromModel($attribute));
     }
 
     public function findRequired(): Collection
@@ -184,7 +189,7 @@ class ProductAttributeRepository implements ProductAttributeRepositoryInterface
 
     public function findRequiredDTO(): Collection
     {
-        return $this->findRequired()->map(fn($attribute) => ProductAttributeDTO::fromModel($attribute));
+        return $this->findRequired()->map(fn ($attribute) => ProductAttributeDTO::fromModel($attribute));
     }
 
     public function findSearchable(): Collection
@@ -194,7 +199,7 @@ class ProductAttributeRepository implements ProductAttributeRepositoryInterface
 
     public function findSearchableDTO(): Collection
     {
-        return $this->findSearchable()->map(fn($attribute) => ProductAttributeDTO::fromModel($attribute));
+        return $this->findSearchable()->map(fn ($attribute) => ProductAttributeDTO::fromModel($attribute));
     }
 
     public function findFilterable(): Collection
@@ -204,7 +209,7 @@ class ProductAttributeRepository implements ProductAttributeRepositoryInterface
 
     public function findFilterableDTO(): Collection
     {
-        return $this->findFilterable()->map(fn($attribute) => ProductAttributeDTO::fromModel($attribute));
+        return $this->findFilterable()->map(fn ($attribute) => ProductAttributeDTO::fromModel($attribute));
     }
 
     public function findComparable(): Collection
@@ -214,7 +219,7 @@ class ProductAttributeRepository implements ProductAttributeRepositoryInterface
 
     public function findComparableDTO(): Collection
     {
-        return $this->findComparable()->map(fn($attribute) => ProductAttributeDTO::fromModel($attribute));
+        return $this->findComparable()->map(fn ($attribute) => ProductAttributeDTO::fromModel($attribute));
     }
 
     public function findVisible(): Collection
@@ -224,7 +229,7 @@ class ProductAttributeRepository implements ProductAttributeRepositoryInterface
 
     public function findVisibleDTO(): Collection
     {
-        return $this->findVisible()->map(fn($attribute) => ProductAttributeDTO::fromModel($attribute));
+        return $this->findVisible()->map(fn ($attribute) => ProductAttributeDTO::fromModel($attribute));
     }
 
     public function findSystem(): Collection
@@ -234,7 +239,7 @@ class ProductAttributeRepository implements ProductAttributeRepositoryInterface
 
     public function findSystemDTO(): Collection
     {
-        return $this->findSystem()->map(fn($attribute) => ProductAttributeDTO::fromModel($attribute));
+        return $this->findSystem()->map(fn ($attribute) => ProductAttributeDTO::fromModel($attribute));
     }
 
     public function findCustom(): Collection
@@ -244,7 +249,7 @@ class ProductAttributeRepository implements ProductAttributeRepositoryInterface
 
     public function findCustomDTO(): Collection
     {
-        return $this->findCustom()->map(fn($attribute) => ProductAttributeDTO::fromModel($attribute));
+        return $this->findCustom()->map(fn ($attribute) => ProductAttributeDTO::fromModel($attribute));
     }
 
     public function findActive(): Collection
@@ -254,37 +259,37 @@ class ProductAttributeRepository implements ProductAttributeRepositoryInterface
 
     public function findActiveDTO(): Collection
     {
-        return $this->findActive()->map(fn($attribute) => ProductAttributeDTO::fromModel($attribute));
+        return $this->findActive()->map(fn ($attribute) => ProductAttributeDTO::fromModel($attribute));
     }
 
     public function toggleActive(ProductAttribute $attribute): bool
     {
-        return $attribute->update(['is_active' => !$attribute->is_active]);
+        return $attribute->update(['is_active' => ! $attribute->is_active]);
     }
 
     public function toggleRequired(ProductAttribute $attribute): bool
     {
-        return $attribute->update(['is_required' => !$attribute->is_required]);
+        return $attribute->update(['is_required' => ! $attribute->is_required]);
     }
 
     public function toggleSearchable(ProductAttribute $attribute): bool
     {
-        return $attribute->update(['is_searchable' => !$attribute->is_searchable]);
+        return $attribute->update(['is_searchable' => ! $attribute->is_searchable]);
     }
 
     public function toggleFilterable(ProductAttribute $attribute): bool
     {
-        return $attribute->update(['is_filterable' => !$attribute->is_filterable]);
+        return $attribute->update(['is_filterable' => ! $attribute->is_filterable]);
     }
 
     public function toggleComparable(ProductAttribute $attribute): bool
     {
-        return $attribute->update(['is_comparable' => !$attribute->is_comparable]);
+        return $attribute->update(['is_comparable' => ! $attribute->is_comparable]);
     }
 
     public function toggleVisible(ProductAttribute $attribute): bool
     {
-        return $attribute->update(['is_visible' => !$attribute->is_visible]);
+        return $attribute->update(['is_visible' => ! $attribute->is_visible]);
     }
 
     public function getAttributeCount(): int
@@ -354,7 +359,7 @@ class ProductAttributeRepository implements ProductAttributeRepositoryInterface
 
     public function searchDTO(string $query): Collection
     {
-        return $this->search($query)->map(fn($attribute) => ProductAttributeDTO::fromModel($attribute));
+        return $this->search($query)->map(fn ($attribute) => ProductAttributeDTO::fromModel($attribute));
     }
 
     public function getAttributeGroups(): Collection
@@ -367,7 +372,7 @@ class ProductAttributeRepository implements ProductAttributeRepositoryInterface
 
     public function getAttributeTypes(): Collection
     {
-        return collect(ProductAttributeType::cases())->map(fn($type) => [
+        return collect(ProductAttributeType::cases())->map(fn ($type) => [
             'value' => $type->value,
             'label' => $type->label(),
             'description' => $type->description(),
@@ -376,7 +381,7 @@ class ProductAttributeRepository implements ProductAttributeRepositoryInterface
 
     public function getInputTypes(): Collection
     {
-        return collect(ProductAttributeInputType::cases())->map(fn($type) => [
+        return collect(ProductAttributeInputType::cases())->map(fn ($type) => [
             'value' => $type->value,
             'label' => $type->label(),
             'description' => $type->description(),
@@ -387,7 +392,8 @@ class ProductAttributeRepository implements ProductAttributeRepositoryInterface
     {
         $rules = ProductAttributeDTO::rules();
         $validator = validator($data, $rules);
-        return !$validator->fails();
+
+        return ! $validator->fails();
     }
 
     public function generateSlug(string $name): string
@@ -396,8 +402,8 @@ class ProductAttributeRepository implements ProductAttributeRepositoryInterface
         $originalSlug = $slug;
         $counter = 1;
 
-        while (!$this->isSlugUnique($slug)) {
-            $slug = $originalSlug . '-' . $counter;
+        while (! $this->isSlugUnique($slug)) {
+            $slug = $originalSlug.'-'.$counter;
             $counter++;
         }
 
@@ -412,7 +418,7 @@ class ProductAttributeRepository implements ProductAttributeRepositoryInterface
             $query->where('id', '!=', $excludeId);
         }
 
-        return !$query->exists();
+        return ! $query->exists();
     }
 
     public function isNameUnique(string $name, ?int $excludeId = null): bool
@@ -423,7 +429,7 @@ class ProductAttributeRepository implements ProductAttributeRepositoryInterface
             $query->where('id', '!=', $excludeId);
         }
 
-        return !$query->exists();
+        return ! $query->exists();
     }
 
     public function getAttributeUsage(int $attributeId): int
@@ -454,7 +460,7 @@ class ProductAttributeRepository implements ProductAttributeRepositoryInterface
     public function getAttributeAnalytics(int $attributeId): array
     {
         $attribute = $this->find($attributeId);
-        if (!$attribute) {
+        if (! $attribute) {
             return [];
         }
 
@@ -481,7 +487,7 @@ class ProductAttributeRepository implements ProductAttributeRepositoryInterface
 
     public function getAttributeValuesDTO(int $attributeId): Collection
     {
-        return $this->getAttributeValues($attributeId)->map(fn($value) => ProductAttributeValueDTO::fromModel($value));
+        return $this->getAttributeValues($attributeId)->map(fn ($value) => ProductAttributeValueDTO::fromModel($value));
     }
 
     public function addAttributeValue(int $attributeId, string $value, array $metadata = []): ProductAttributeValue
@@ -496,6 +502,7 @@ class ProductAttributeRepository implements ProductAttributeRepositoryInterface
     public function addAttributeValueDTO(int $attributeId, string $value, array $metadata = []): ProductAttributeValueDTO
     {
         $attributeValue = $this->addAttributeValue($attributeId, $value, $metadata);
+
         return ProductAttributeValueDTO::fromModel($attributeValue);
     }
 

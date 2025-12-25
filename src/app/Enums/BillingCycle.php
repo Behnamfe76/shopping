@@ -11,7 +11,7 @@ enum BillingCycle: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::DAILY => 'Daily',
             self::WEEKLY => 'Weekly',
             self::MONTHLY => 'Monthly',

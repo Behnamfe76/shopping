@@ -2,19 +2,17 @@
 
 namespace App\Traits;
 
-use App\Models\EmployeeSalaryHistory;
-use App\DTOs\EmployeeSalaryHistoryDTO;
 use App\Repositories\Interfaces\EmployeeSalaryHistoryRepositoryInterface;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
-use Carbon\Carbon;
 
 trait HasEmployeeSalaryHistoryAnalytics
 {
     /**
      * Get comprehensive salary analytics for employee
      */
-    public function getEmployeeSalaryAnalytics(int $employeeId, string $startDate = null, string $endDate = null): array
+    public function getEmployeeSalaryAnalytics(int $employeeId, ?string $startDate = null, ?string $endDate = null): array
     {
         try {
             $repository = app(EmployeeSalaryHistoryRepositoryInterface::class);
@@ -39,7 +37,7 @@ trait HasEmployeeSalaryHistoryAnalytics
         } catch (\Exception $e) {
             Log::error('Failed to get employee salary analytics via trait', [
                 'error' => $e->getMessage(),
-                'employee_id' => $employeeId
+                'employee_id' => $employeeId,
             ]);
             throw $e;
         }
@@ -48,7 +46,7 @@ trait HasEmployeeSalaryHistoryAnalytics
     /**
      * Get company-wide salary analytics
      */
-    public function getCompanySalaryAnalytics(string $startDate = null, string $endDate = null): array
+    public function getCompanySalaryAnalytics(?string $startDate = null, ?string $endDate = null): array
     {
         try {
             $repository = app(EmployeeSalaryHistoryRepositoryInterface::class);
@@ -70,7 +68,7 @@ trait HasEmployeeSalaryHistoryAnalytics
 
         } catch (\Exception $e) {
             Log::error('Failed to get company salary analytics via trait', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -79,7 +77,7 @@ trait HasEmployeeSalaryHistoryAnalytics
     /**
      * Get department salary analytics
      */
-    public function getDepartmentSalaryAnalytics(int $departmentId, string $startDate = null, string $endDate = null): array
+    public function getDepartmentSalaryAnalytics(int $departmentId, ?string $startDate = null, ?string $endDate = null): array
     {
         try {
             $repository = app(EmployeeSalaryHistoryRepositoryInterface::class);
@@ -101,7 +99,7 @@ trait HasEmployeeSalaryHistoryAnalytics
         } catch (\Exception $e) {
             Log::error('Failed to get department salary analytics via trait', [
                 'error' => $e->getMessage(),
-                'department_id' => $departmentId
+                'department_id' => $departmentId,
             ]);
             throw $e;
         }
@@ -110,7 +108,7 @@ trait HasEmployeeSalaryHistoryAnalytics
     /**
      * Get salary growth analysis
      */
-    public function getSalaryGrowthAnalysis(string $startDate = null, string $endDate = null): array
+    public function getSalaryGrowthAnalysis(?string $startDate = null, ?string $endDate = null): array
     {
         try {
             $repository = app(EmployeeSalaryHistoryRepositoryInterface::class);
@@ -137,7 +135,7 @@ trait HasEmployeeSalaryHistoryAnalytics
 
         } catch (\Exception $e) {
             Log::error('Failed to get salary growth analysis via trait', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -167,7 +165,7 @@ trait HasEmployeeSalaryHistoryAnalytics
             Log::error('Failed to get salary comparison via trait', [
                 'error' => $e->getMessage(),
                 'employee1' => $employeeId1,
-                'employee2' => $employeeId2
+                'employee2' => $employeeId2,
             ]);
             throw $e;
         }
@@ -211,7 +209,7 @@ trait HasEmployeeSalaryHistoryAnalytics
         } catch (\Exception $e) {
             Log::error('Failed to get salary forecasting data via trait', [
                 'error' => $e->getMessage(),
-                'employee_id' => $employeeId
+                'employee_id' => $employeeId,
             ]);
             throw $e;
         }
@@ -249,7 +247,7 @@ trait HasEmployeeSalaryHistoryAnalytics
         } catch (\Exception $e) {
             Log::error('Failed to get salary benchmarking data via trait', [
                 'error' => $e->getMessage(),
-                'employee_id' => $employeeId
+                'employee_id' => $employeeId,
             ]);
             throw $e;
         }
@@ -258,7 +256,7 @@ trait HasEmployeeSalaryHistoryAnalytics
     /**
      * Get salary equity analysis
      */
-    public function getSalaryEquityAnalysis(string $startDate = null, string $endDate = null): array
+    public function getSalaryEquityAnalysis(?string $startDate = null, ?string $endDate = null): array
     {
         try {
             $repository = app(EmployeeSalaryHistoryRepositoryInterface::class);
@@ -283,7 +281,7 @@ trait HasEmployeeSalaryHistoryAnalytics
 
         } catch (\Exception $e) {
             Log::error('Failed to get salary equity analysis via trait', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -317,7 +315,7 @@ trait HasEmployeeSalaryHistoryAnalytics
         } catch (\Exception $e) {
             Log::error('Failed to export analytics data via trait', [
                 'error' => $e->getMessage(),
-                'filters' => $filters
+                'filters' => $filters,
             ]);
             throw $e;
         }
@@ -325,7 +323,7 @@ trait HasEmployeeSalaryHistoryAnalytics
 
     // Helper methods for analytics calculations
 
-    protected function getEmployeeSalaryAnalyticsByChangeType(int $employeeId, string $startDate = null, string $endDate = null): array
+    protected function getEmployeeSalaryAnalyticsByChangeType(int $employeeId, ?string $startDate = null, ?string $endDate = null): array
     {
         $repository = app(EmployeeSalaryHistoryRepositoryInterface::class);
         $changes = $repository->findByEmployeeId($employeeId);
@@ -346,7 +344,7 @@ trait HasEmployeeSalaryHistoryAnalytics
         })->toArray();
     }
 
-    protected function getEmployeeSalaryAnalyticsByYear(int $employeeId, string $startDate = null, string $endDate = null): array
+    protected function getEmployeeSalaryAnalyticsByYear(int $employeeId, ?string $startDate = null, ?string $endDate = null): array
     {
         $repository = app(EmployeeSalaryHistoryRepositoryInterface::class);
         $changes = $repository->findByEmployeeId($employeeId);
@@ -369,7 +367,7 @@ trait HasEmployeeSalaryHistoryAnalytics
         })->toArray();
     }
 
-    protected function getEmployeeSalaryTrends(int $employeeId, string $startDate = null, string $endDate = null): array
+    protected function getEmployeeSalaryTrends(int $employeeId, ?string $startDate = null, ?string $endDate = null): array
     {
         $repository = app(EmployeeSalaryHistoryRepositoryInterface::class);
         $changes = $repository->findByEmployeeId($employeeId);
@@ -391,7 +389,7 @@ trait HasEmployeeSalaryHistoryAnalytics
         })->toArray();
     }
 
-    protected function getEmployeeSalaryComparison(int $employeeId, string $startDate = null, string $endDate = null): array
+    protected function getEmployeeSalaryComparison(int $employeeId, ?string $startDate = null, ?string $endDate = null): array
     {
         $repository = app(EmployeeSalaryHistoryRepositoryInterface::class);
         $employeeChanges = $repository->findByEmployeeId($employeeId);
@@ -430,7 +428,7 @@ trait HasEmployeeSalaryHistoryAnalytics
         return 0;
     }
 
-    protected function getCompanySalaryAnalyticsByChangeType(string $startDate = null, string $endDate = null): array
+    protected function getCompanySalaryAnalyticsByChangeType(?string $startDate = null, ?string $endDate = null): array
     {
         $repository = app(EmployeeSalaryHistoryRepositoryInterface::class);
         $changes = $repository->all();
@@ -451,13 +449,13 @@ trait HasEmployeeSalaryHistoryAnalytics
         })->toArray();
     }
 
-    protected function getCompanySalaryAnalyticsByDepartment(string $startDate = null, string $endDate = null): array
+    protected function getCompanySalaryAnalyticsByDepartment(?string $startDate = null, ?string $endDate = null): array
     {
         // This would need to be implemented based on your department structure
         return [];
     }
 
-    protected function getCompanySalaryAnalyticsByYear(string $startDate = null, string $endDate = null): array
+    protected function getCompanySalaryAnalyticsByYear(?string $startDate = null, ?string $endDate = null): array
     {
         $repository = app(EmployeeSalaryHistoryRepositoryInterface::class);
         $changes = $repository->all();
@@ -480,7 +478,7 @@ trait HasEmployeeSalaryHistoryAnalytics
         })->toArray();
     }
 
-    protected function getCompanySalaryTrends(string $startDate = null, string $endDate = null): array
+    protected function getCompanySalaryTrends(?string $startDate = null, ?string $endDate = null): array
     {
         $repository = app(EmployeeSalaryHistoryRepositoryInterface::class);
         $changes = $repository->all();
@@ -501,7 +499,7 @@ trait HasEmployeeSalaryHistoryAnalytics
         })->toArray();
     }
 
-    protected function getCompanySalaryPercentiles(string $startDate = null, string $endDate = null): array
+    protected function getCompanySalaryPercentiles(?string $startDate = null, ?string $endDate = null): array
     {
         $repository = app(EmployeeSalaryHistoryRepositoryInterface::class);
         $allChanges = $repository->all();
@@ -547,6 +545,7 @@ trait HasEmployeeSalaryHistoryAnalytics
 
         sort($values);
         $index = ceil(count($values) * $percentile / 100) - 1;
+
         return $values[$index] ?? 0;
     }
 
@@ -591,18 +590,19 @@ trait HasEmployeeSalaryHistoryAnalytics
         // Simple CSV conversion - in production, use a proper CSV library
         $csv = '';
         $this->arrayToCsv($data, $csv);
+
         return $csv;
     }
 
     protected function arrayToCsv(array $data, string &$csv, string $prefix = ''): void
     {
         foreach ($data as $key => $value) {
-            $currentKey = $prefix ? $prefix . '.' . $key : $key;
+            $currentKey = $prefix ? $prefix.'.'.$key : $key;
 
             if (is_array($value)) {
                 $this->arrayToCsv($value, $csv, $currentKey);
             } else {
-                $csv .= $currentKey . ',' . $value . "\n";
+                $csv .= $currentKey.','.$value."\n";
             }
         }
     }
@@ -662,19 +662,19 @@ trait HasEmployeeSalaryHistoryAnalytics
         return [];
     }
 
-    protected function getDepartmentSalaryAnalyticsByChangeType(int $departmentId, string $startDate = null, string $endDate = null): array
+    protected function getDepartmentSalaryAnalyticsByChangeType(int $departmentId, ?string $startDate = null, ?string $endDate = null): array
     {
         // Implementation for department analytics by change type
         return [];
     }
 
-    protected function getDepartmentSalaryAnalyticsByEmployee(int $departmentId, string $startDate = null, string $endDate = null): array
+    protected function getDepartmentSalaryAnalyticsByEmployee(int $departmentId, ?string $startDate = null, ?string $endDate = null): array
     {
         // Implementation for department analytics by employee
         return [];
     }
 
-    protected function getDepartmentSalaryTrends(int $departmentId, string $startDate = null, string $endDate = null): array
+    protected function getDepartmentSalaryTrends(int $departmentId, ?string $startDate = null, ?string $endDate = null): array
     {
         // Implementation for department salary trends
         return [];

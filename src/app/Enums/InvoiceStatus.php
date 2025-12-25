@@ -25,7 +25,7 @@ enum InvoiceStatus: string
      */
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::DRAFT => 'Draft',
             self::SENT => 'Sent',
             self::PAID => 'Paid',
@@ -65,7 +65,7 @@ enum InvoiceStatus: string
      */
     public function color(): string
     {
-        return match($this) {
+        return match ($this) {
             self::DRAFT => 'gray',
             self::SENT => 'blue',
             self::PAID => 'green',
@@ -76,4 +76,3 @@ enum InvoiceStatus: string
         };
     }
 }
-

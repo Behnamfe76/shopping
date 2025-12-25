@@ -2,14 +2,14 @@
 
 namespace Fereydooni\Shopping\app\Drivers;
 
-use Illuminate\Pagination\Paginator;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Pagination\CursorPaginator;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Fereydooni\Shopping\app\Traits\AppliesQueryParameters;
 use Fereydooni\Shopping\app\Contracts\QueryDriverInterface;
+use Fereydooni\Shopping\app\Traits\AppliesQueryParameters;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
 
 class DatabaseQueryDriver implements QueryDriverInterface
 {
@@ -20,18 +20,21 @@ class DatabaseQueryDriver implements QueryDriverInterface
     public function paginate(string $model, array $filters = [], array $searchOptions = [], int $perPage = 15): LengthAwarePaginator
     {
         $query = $this->buildQuery($model, $filters, $searchOptions);
+
         return $query->paginate($perPage);
     }
 
     public function simplePaginate(string $model, array $filters = [], array $searchOptions = [], int $perPage = 15): Paginator
     {
         $query = $this->buildQuery($model, $filters, $searchOptions);
+
         return $query->simplePaginate($perPage);
     }
 
     public function cursorPaginate(string $model, array $filters = [], array $searchOptions = [], int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         $query = $this->buildQuery($model, $filters, $searchOptions);
+
         return $query->cursorPaginate($perPage, ['*'], 'id', $cursor);
     }
 
@@ -53,6 +56,7 @@ class DatabaseQueryDriver implements QueryDriverInterface
     {
         $query = $model::query();
         $query = $this->applyFilters($query, $filters);
+
         return $query->get();
     }
 
@@ -105,7 +109,7 @@ class DatabaseQueryDriver implements QueryDriverInterface
         $wordMatching = $searchOptions['word_matching'] ?? false;
         $multipleTermsLogic = $searchOptions['multiple_terms_logic'] ?? 'or';
 
-        $dbDriver = config('database.connections.' . config('database.default') . '.driver');
+        $dbDriver = config('database.connections.'.config('database.default').'.driver');
         $searchTerms = preg_split('/\\s+\//', $searchTerm, -1, PREG_SPLIT_NO_EMPTY);
 
         $query->where(function ($q) use ($searchTerms, $searchableFields, $matchType, $dbDriver, $caseSensitive, $wordMatching, $multipleTermsLogic) {
@@ -136,7 +140,7 @@ class DatabaseQueryDriver implements QueryDriverInterface
 
                     $whereMethod = $multipleTermsLogic === 'and' ? 'where' : 'orWhere';
 
-                    if ($dbDriver === 'sqlite' && !$caseSensitive) {
+                    if ($dbDriver === 'sqlite' && ! $caseSensitive) {
                         $q->{$whereMethod}->Raw("LOWER({$field}) {$currentOperator} LOWER(?)", [$currentTerm]);
                     } else {
                         $q->{$whereMethod}($field, $currentOperator, $currentTerm);
@@ -148,7 +152,7 @@ class DatabaseQueryDriver implements QueryDriverInterface
         return $query;
     }
 
-    public function applySorting($query, array $sortOptions = [], string $model)
+    public function applySorting($query, array $sortOptions, string $model)
     {
         if (empty($sortOptions)) {
             return $query;
@@ -157,15 +161,14 @@ class DatabaseQueryDriver implements QueryDriverInterface
         $sortField = $sortOptions['sort_field'] ?? 'id';
         $sortDirection = $sortOptions['sort_direction'] ?? 'asc';
 
-        if(class_exists($model)) {
-            $modelInstance = new $model();
-            if(method_exists($modelInstance, 'getTimestampEquivalentColumns')) {
-                if(in_array($sortField, $modelInstance->getTimestampEquivalentColumns())) {
-                    $sortField = $sortField . $modelInstance->getTimestampColumnSuffix();
+        if (class_exists($model)) {
+            $modelInstance = new $model;
+            if (method_exists($modelInstance, 'getTimestampEquivalentColumns')) {
+                if (in_array($sortField, $modelInstance->getTimestampEquivalentColumns())) {
+                    $sortField = $sortField.$modelInstance->getTimestampColumnSuffix();
                 }
             }
         }
-
 
         return $query->orderBy($sortField, $sortDirection);
     }
@@ -186,7 +189,7 @@ class DatabaseQueryDriver implements QueryDriverInterface
 
         $query = $this->applyFilters($query, $filters);
 
-        if (!empty($searchOptions['search'])) {
+        if (! empty($searchOptions['search'])) {
             $searchableFields = $searchOptions['search_fields'] ?: $model::searchableFields();
             $query = $this->applySearch($query, $searchOptions['search'], $searchOptions, $searchableFields);
         }

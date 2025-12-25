@@ -2,18 +2,18 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Fereydooni\Shopping\app\Models\OrderStatusHistory;
-use Fereydooni\Shopping\app\Services\OrderStatusHistoryService;
+use Fereydooni\Shopping\app\Http\Requests\OrderStatusHistoryAnalyticsRequest;
+use Fereydooni\Shopping\app\Http\Requests\SearchOrderStatusHistoryRequest;
 use Fereydooni\Shopping\app\Http\Requests\StoreOrderStatusHistoryRequest;
 use Fereydooni\Shopping\app\Http\Requests\UpdateOrderStatusHistoryRequest;
-use Fereydooni\Shopping\app\Http\Requests\SearchOrderStatusHistoryRequest;
-use Fereydooni\Shopping\app\Http\Requests\OrderStatusHistoryAnalyticsRequest;
-use Fereydooni\Shopping\app\Http\Resources\OrderStatusHistoryResource;
-use Fereydooni\Shopping\app\Http\Resources\OrderStatusHistoryCollection;
-use Fereydooni\Shopping\app\Http\Resources\OrderTimelineResource;
 use Fereydooni\Shopping\app\Http\Resources\OrderStatusHistoryAnalyticsResource;
+use Fereydooni\Shopping\app\Http\Resources\OrderStatusHistoryCollection;
+use Fereydooni\Shopping\app\Http\Resources\OrderStatusHistoryResource;
+use Fereydooni\Shopping\app\Http\Resources\OrderTimelineResource;
+use Fereydooni\Shopping\app\Models\OrderStatusHistory;
+use Fereydooni\Shopping\app\Services\OrderStatusHistoryService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class OrderStatusHistoryController extends Controller
 {
@@ -34,7 +34,7 @@ class OrderStatusHistoryController extends Controller
         $history = $this->orderStatusHistoryService->paginate($perPage);
 
         return response()->json([
-            'data' => new OrderStatusHistoryCollection($history)
+            'data' => new OrderStatusHistoryCollection($history),
         ]);
     }
 
@@ -46,7 +46,7 @@ class OrderStatusHistoryController extends Controller
         $this->authorize('view', $history);
 
         return response()->json([
-            'data' => new OrderStatusHistoryResource($history)
+            'data' => new OrderStatusHistoryResource($history),
         ]);
     }
 
@@ -62,7 +62,7 @@ class OrderStatusHistoryController extends Controller
 
         return response()->json([
             'message' => 'Status history created successfully',
-            'data' => new OrderStatusHistoryResource($history)
+            'data' => new OrderStatusHistoryResource($history),
         ], 201);
     }
 
@@ -76,13 +76,13 @@ class OrderStatusHistoryController extends Controller
         $data = $request->validated();
         $updated = $this->orderStatusHistoryService->update($history, $data);
 
-        if (!$updated) {
+        if (! $updated) {
             return response()->json(['message' => 'Failed to update status history'], 500);
         }
 
         return response()->json([
             'message' => 'Status history updated successfully',
-            'data' => new OrderStatusHistoryResource($history->fresh())
+            'data' => new OrderStatusHistoryResource($history->fresh()),
         ]);
     }
 
@@ -95,7 +95,7 @@ class OrderStatusHistoryController extends Controller
 
         $deleted = $this->orderStatusHistoryService->delete($history);
 
-        if (!$deleted) {
+        if (! $deleted) {
             return response()->json(['message' => 'Failed to delete status history'], 500);
         }
 
@@ -113,7 +113,7 @@ class OrderStatusHistoryController extends Controller
         $results = $this->orderStatusHistoryService->search($query);
 
         return response()->json([
-            'data' => new OrderStatusHistoryCollection($results)
+            'data' => new OrderStatusHistoryCollection($results),
         ]);
     }
 
@@ -127,7 +127,7 @@ class OrderStatusHistoryController extends Controller
         $history = $this->orderStatusHistoryService->findByOrderId($orderId);
 
         return response()->json([
-            'data' => new OrderStatusHistoryCollection($history)
+            'data' => new OrderStatusHistoryCollection($history),
         ]);
     }
 
@@ -141,7 +141,7 @@ class OrderStatusHistoryController extends Controller
         $history = $this->orderStatusHistoryService->findByUserId($userId);
 
         return response()->json([
-            'data' => new OrderStatusHistoryCollection($history)
+            'data' => new OrderStatusHistoryCollection($history),
         ]);
     }
 
@@ -155,7 +155,7 @@ class OrderStatusHistoryController extends Controller
         $history = $this->orderStatusHistoryService->findByStatus($status);
 
         return response()->json([
-            'data' => new OrderStatusHistoryCollection($history)
+            'data' => new OrderStatusHistoryCollection($history),
         ]);
     }
 
@@ -169,7 +169,7 @@ class OrderStatusHistoryController extends Controller
         $timeline = $this->orderStatusHistoryService->getOrderTimeline($orderId);
 
         return response()->json([
-            'data' => new OrderTimelineResource($timeline)
+            'data' => new OrderTimelineResource($timeline),
         ]);
     }
 
@@ -186,7 +186,7 @@ class OrderStatusHistoryController extends Controller
         $analytics = $this->orderStatusHistoryService->getStatusChangeAnalytics($startDate, $endDate);
 
         return response()->json([
-            'data' => new OrderStatusHistoryAnalyticsResource($analytics)
+            'data' => new OrderStatusHistoryAnalyticsResource($analytics),
         ]);
     }
 
@@ -206,7 +206,7 @@ class OrderStatusHistoryController extends Controller
         ];
 
         return response()->json([
-            'data' => $reports
+            'data' => $reports,
         ]);
     }
 
@@ -224,7 +224,7 @@ class OrderStatusHistoryController extends Controller
                 'total_count' => $count,
                 'system_changes_count' => $this->orderStatusHistoryService->getSystemChanges()->count(),
                 'user_changes_count' => $this->orderStatusHistoryService->getUserChanges()->count(),
-            ]
+            ],
         ]);
     }
 
@@ -238,7 +238,7 @@ class OrderStatusHistoryController extends Controller
         $frequencies = $this->orderStatusHistoryService->getMostFrequentStatusChanges(10);
 
         return response()->json([
-            'data' => $frequencies
+            'data' => $frequencies,
         ]);
     }
 }

@@ -2,15 +2,12 @@
 
 namespace Fereydooni\Shopping\app\Services;
 
+use Fereydooni\Shopping\app\DTOs\UserSubscriptionDTO;
+use Fereydooni\Shopping\app\Models\UserSubscription;
 use Fereydooni\Shopping\app\Repositories\Interfaces\UserSubscriptionRepositoryInterface;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
 use Fereydooni\Shopping\app\Traits\HasSearchOperations;
-use Fereydooni\Shopping\app\Models\UserSubscription;
-use Fereydooni\Shopping\app\DTOs\UserSubscriptionDTO;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
 
 class UserSubscriptionService
 {
@@ -18,12 +15,13 @@ class UserSubscriptionService
         HasSearchOperations;
 
     protected UserSubscriptionRepositoryInterface $repository;
+
     protected string $dtoClass = UserSubscriptionDTO::class;
 
     public function __construct(UserSubscriptionRepositoryInterface $repository)
     {
         $this->repository = $repository;
-        $this->model = new UserSubscription();
+        $this->model = new UserSubscription;
     }
 
     // Repository method delegation
@@ -137,12 +135,12 @@ class UserSubscriptionService
         return $this->repository->activateAndReturnDTO($userSubscription);
     }
 
-    public function cancel(UserSubscription $userSubscription, string $reason = null): bool
+    public function cancel(UserSubscription $userSubscription, ?string $reason = null): bool
     {
         return $this->repository->cancel($userSubscription, $reason);
     }
 
-    public function cancelAndReturnDTO(UserSubscription $userSubscription, string $reason = null): ?UserSubscriptionDTO
+    public function cancelAndReturnDTO(UserSubscription $userSubscription, ?string $reason = null): ?UserSubscriptionDTO
     {
         return $this->repository->cancelAndReturnDTO($userSubscription, $reason);
     }
@@ -167,12 +165,12 @@ class UserSubscriptionService
         return $this->repository->renewAndReturnDTO($userSubscription);
     }
 
-    public function pause(UserSubscription $userSubscription, string $reason = null): bool
+    public function pause(UserSubscription $userSubscription, ?string $reason = null): bool
     {
         return $this->repository->pause($userSubscription, $reason);
     }
 
-    public function pauseAndReturnDTO(UserSubscription $userSubscription, string $reason = null): ?UserSubscriptionDTO
+    public function pauseAndReturnDTO(UserSubscription $userSubscription, ?string $reason = null): ?UserSubscriptionDTO
     {
         return $this->repository->pauseAndReturnDTO($userSubscription, $reason);
     }
@@ -325,7 +323,7 @@ class UserSubscriptionService
     // Business logic methods
     public function createUserSubscription(array $data): UserSubscriptionDTO
     {
-        if (!$this->validateUserSubscription($data)) {
+        if (! $this->validateUserSubscription($data)) {
             throw new \InvalidArgumentException('Invalid user subscription data');
         }
 
@@ -336,11 +334,11 @@ class UserSubscriptionService
     {
         $userSubscription = $this->repository->find($id);
 
-        if (!$userSubscription) {
+        if (! $userSubscription) {
             throw new \InvalidArgumentException('User subscription not found');
         }
 
-        if (!$this->validateUserSubscription($data)) {
+        if (! $this->validateUserSubscription($data)) {
             throw new \InvalidArgumentException('Invalid user subscription data');
         }
 
@@ -351,7 +349,7 @@ class UserSubscriptionService
     {
         $userSubscription = $this->repository->find($id);
 
-        if (!$userSubscription) {
+        if (! $userSubscription) {
             throw new \InvalidArgumentException('User subscription not found');
         }
 
@@ -392,18 +390,18 @@ class UserSubscriptionService
     {
         $userSubscription = $this->repository->find($id);
 
-        if (!$userSubscription) {
+        if (! $userSubscription) {
             throw new \InvalidArgumentException('User subscription not found');
         }
 
         return $this->repository->activateAndReturnDTO($userSubscription);
     }
 
-    public function cancelUserSubscription(int $id, string $reason = null): ?UserSubscriptionDTO
+    public function cancelUserSubscription(int $id, ?string $reason = null): ?UserSubscriptionDTO
     {
         $userSubscription = $this->repository->find($id);
 
-        if (!$userSubscription) {
+        if (! $userSubscription) {
             throw new \InvalidArgumentException('User subscription not found');
         }
 
@@ -414,18 +412,18 @@ class UserSubscriptionService
     {
         $userSubscription = $this->repository->find($id);
 
-        if (!$userSubscription) {
+        if (! $userSubscription) {
             throw new \InvalidArgumentException('User subscription not found');
         }
 
         return $this->repository->renewAndReturnDTO($userSubscription);
     }
 
-    public function pauseUserSubscription(int $id, string $reason = null): ?UserSubscriptionDTO
+    public function pauseUserSubscription(int $id, ?string $reason = null): ?UserSubscriptionDTO
     {
         $userSubscription = $this->repository->find($id);
 
-        if (!$userSubscription) {
+        if (! $userSubscription) {
             throw new \InvalidArgumentException('User subscription not found');
         }
 
@@ -436,7 +434,7 @@ class UserSubscriptionService
     {
         $userSubscription = $this->repository->find($id);
 
-        if (!$userSubscription) {
+        if (! $userSubscription) {
             throw new \InvalidArgumentException('User subscription not found');
         }
 

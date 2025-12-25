@@ -14,7 +14,7 @@ enum TrainingType: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::TECHNICAL => 'Technical Training',
             self::SOFT_SKILLS => 'Soft Skills Training',
             self::COMPLIANCE => 'Compliance Training',
@@ -27,7 +27,7 @@ enum TrainingType: string
 
     public function description(): string
     {
-        return match($this) {
+        return match ($this) {
             self::TECHNICAL => 'Technical skills and knowledge development',
             self::SOFT_SKILLS => 'Communication, teamwork, and interpersonal skills',
             self::COMPLIANCE => 'Regulatory and policy compliance training',
@@ -47,7 +47,7 @@ enum TrainingType: string
     {
         return array_combine(
             self::values(),
-            array_map(fn($case) => $case->label(), self::cases())
+            array_map(fn ($case) => $case->label(), self::cases())
         );
     }
 }

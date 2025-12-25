@@ -25,7 +25,7 @@ enum CustomerPreferenceType: string
      */
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::STRING => 'String',
             self::INTEGER => 'Integer',
             self::FLOAT => 'Float',
@@ -41,7 +41,7 @@ enum CustomerPreferenceType: string
      */
     public function description(): string
     {
-        return match($this) {
+        return match ($this) {
             self::STRING => 'Text-based preference value',
             self::INTEGER => 'Whole number preference value',
             self::FLOAT => 'Decimal number preference value',
@@ -81,7 +81,7 @@ enum CustomerPreferenceType: string
      */
     public function validationRules(): array
     {
-        return match($this) {
+        return match ($this) {
             self::STRING => ['string', 'max:65535'],
             self::INTEGER => ['integer'],
             self::FLOAT => ['numeric'],
@@ -97,7 +97,7 @@ enum CustomerPreferenceType: string
      */
     public function castValue(mixed $value): mixed
     {
-        return match($this) {
+        return match ($this) {
             self::STRING => (string) $value,
             self::INTEGER => (int) $value,
             self::FLOAT => (float) $value,

@@ -2,14 +2,14 @@
 
 namespace Fereydooni\Shopping\App\Actions\ProviderPayment;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Event;
 use Fereydooni\Shopping\App\DTOs\ProviderPaymentDTO;
-use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderPaymentRepositoryInterface;
-use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentCreated;
-use Fereydooni\Shopping\App\Enums\ProviderPaymentStatus;
 use Fereydooni\Shopping\App\Enums\ProviderPaymentMethod;
+use Fereydooni\Shopping\App\Enums\ProviderPaymentStatus;
+use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentCreated;
+use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderPaymentRepositoryInterface;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
 
 class CreateProviderPaymentAction
 {
@@ -32,7 +32,7 @@ class CreateProviderPaymentAction
             $payment = $this->repository->create($paymentData);
 
             // Handle attachments if provided
-            if (!empty($data['attachments'])) {
+            if (! empty($data['attachments'])) {
                 $this->handleAttachments($payment, $data['attachments']);
             }
 
@@ -48,7 +48,7 @@ class CreateProviderPaymentAction
                 'payment_id' => $payment->id,
                 'provider_id' => $payment->provider_id,
                 'amount' => $payment->amount,
-                'currency' => $payment->currency
+                'currency' => $payment->currency,
             ]);
 
             return ProviderPaymentDTO::fromModel($payment);
@@ -58,7 +58,7 @@ class CreateProviderPaymentAction
 
             Log::error('Failed to create provider payment', [
                 'error' => $e->getMessage(),
-                'data' => $data
+                'data' => $data,
             ]);
 
             throw $e;
@@ -86,7 +86,7 @@ class CreateProviderPaymentAction
         }
 
         // Validate payment method
-        if (!empty($data['payment_method'])) {
+        if (! empty($data['payment_method'])) {
             $this->validatePaymentMethod($data['payment_method']);
         }
 
@@ -99,7 +99,7 @@ class CreateProviderPaymentAction
         $this->validateProvider($data['provider_id']);
 
         // Validate invoice if provided
-        if (!empty($data['invoice_id'])) {
+        if (! empty($data['invoice_id'])) {
             $this->validateInvoice($data['invoice_id']);
         }
 
@@ -119,7 +119,7 @@ class CreateProviderPaymentAction
 
         Log::info('Handling attachments for payment', [
             'payment_id' => $payment->id,
-            'attachment_count' => count($attachments)
+            'attachment_count' => count($attachments),
         ]);
     }
 
@@ -136,7 +136,7 @@ class CreateProviderPaymentAction
 
         Log::info('Sending notifications for new payment', [
             'payment_id' => $payment->id,
-            'provider_id' => $payment->provider_id
+            'provider_id' => $payment->provider_id,
         ]);
     }
 
@@ -145,7 +145,7 @@ class CreateProviderPaymentAction
      */
     protected function validatePaymentMethod(string $method): void
     {
-        if (!in_array($method, array_column(ProviderPaymentMethod::cases(), 'value'))) {
+        if (! in_array($method, array_column(ProviderPaymentMethod::cases(), 'value'))) {
             throw new \InvalidArgumentException("Invalid payment method: {$method}");
         }
     }
@@ -156,7 +156,7 @@ class CreateProviderPaymentAction
     protected function validateAmount(float $amount): void
     {
         if ($amount <= 0) {
-            throw new \InvalidArgumentException("Payment amount must be greater than 0");
+            throw new \InvalidArgumentException('Payment amount must be greater than 0');
         }
     }
 

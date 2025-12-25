@@ -43,22 +43,22 @@ class CertificationRenewed extends Notification implements ShouldQueue
 
         $url = URL::route('provider.certifications.show', [
             'provider' => $provider->id,
-            'certification' => $certification->id
+            'certification' => $certification->id,
         ]);
 
         return (new MailMessage)
-            ->subject('Certification Renewed - ' . $certification->certification_name)
-            ->greeting('Congratulations ' . $provider->name . '!')
+            ->subject('Certification Renewed - '.$certification->certification_name)
+            ->greeting('Congratulations '.$provider->name.'!')
             ->line('Your certification has been successfully renewed.')
             ->line('**Certification Details:**')
-            ->line('• **Name:** ' . $certification->certification_name)
-            ->line('• **Number:** ' . $certification->certification_number)
-            ->line('• **Issuing Organization:** ' . $certification->issuing_organization)
-            ->line('• **Category:** ' . ucfirst(str_replace('_', ' ', $certification->category)))
-            ->line('• **Renewal Date:** ' . $certification->renewal_date->format('M d, Y'))
-            ->line('• **New Expiry Date:** ' . $certification->expiry_date->format('M d, Y'))
-            ->line('• **Status:** ' . ucfirst($certification->status))
-            ->line('• **Verification Status:** ' . ucfirst(str_replace('_', ' ', $certification->verification_status)))
+            ->line('• **Name:** '.$certification->certification_name)
+            ->line('• **Number:** '.$certification->certification_number)
+            ->line('• **Issuing Organization:** '.$certification->issuing_organization)
+            ->line('• **Category:** '.ucfirst(str_replace('_', ' ', $certification->category)))
+            ->line('• **Renewal Date:** '.$certification->renewal_date->format('M d, Y'))
+            ->line('• **New Expiry Date:** '.$certification->expiry_date->format('M d, Y'))
+            ->line('• **Status:** '.ucfirst($certification->status))
+            ->line('• **Verification Status:** '.ucfirst(str_replace('_', ' ', $certification->verification_status)))
             ->action('View Certification', $url)
             ->line('**What This Means:**')
             ->line('• Your certification is now active and valid')
@@ -70,7 +70,7 @@ class CertificationRenewed extends Notification implements ShouldQueue
             ->line('• Set reminders for the next renewal period')
             ->line('• Keep your certification documentation updated')
             ->line('Thank you for maintaining your professional credentials with us!')
-            ->salutation('Best regards,<br>' . config('app.name') . ' Team');
+            ->salutation('Best regards,<br>'.config('app.name').' Team');
     }
 
     /**
@@ -91,10 +91,10 @@ class CertificationRenewed extends Notification implements ShouldQueue
             'verification_status' => $this->certification->verification_status,
             'renewal_date' => $this->certification->renewal_date->toISOString(),
             'new_expiry_date' => $this->certification->expiry_date->toISOString(),
-            'message' => 'Your certification "' . $this->certification->certification_name . '" has been renewed.',
+            'message' => 'Your certification "'.$this->certification->certification_name.'" has been renewed.',
             'action_url' => URL::route('provider.certifications.show', [
                 'provider' => $notifiable->id,
-                'certification' => $this->certification->id
+                'certification' => $this->certification->id,
             ]),
             'created_at' => now()->toISOString(),
         ];
@@ -127,8 +127,8 @@ class CertificationRenewed extends Notification implements ShouldQueue
         return [
             'provider_certification',
             'certification_renewed',
-            'provider_' . $this->certification->provider_id,
-            'certification_' . $this->certification->id
+            'provider_'.$this->certification->provider_id,
+            'certification_'.$this->certification->id,
         ];
     }
 }

@@ -17,9 +17,9 @@ return new class extends Migration
             // Provider relationship
             $table->unsignedBigInteger('provider_id');
             $table->foreign('provider_id')
-                  ->references('id')
-                  ->on('providers')
-                  ->onDelete('cascade');
+                ->references('id')
+                ->on('providers')
+                ->onDelete('cascade');
 
             // Certification details
             $table->string('certification_name', 255);
@@ -32,7 +32,7 @@ return new class extends Migration
                 'compliance',
                 'educational',
                 'industry_specific',
-                'other'
+                'other',
             ]);
             $table->text('description')->nullable();
 
@@ -47,7 +47,7 @@ return new class extends Migration
                 'expired',
                 'suspended',
                 'revoked',
-                'pending_renewal'
+                'pending_renewal',
             ])->default('active');
 
             $table->enum('verification_status', [
@@ -55,7 +55,7 @@ return new class extends Migration
                 'pending',
                 'verified',
                 'rejected',
-                'requires_update'
+                'requires_update',
             ])->default('unverified');
 
             // Verification details
@@ -75,9 +75,9 @@ return new class extends Migration
             $table->timestamp('verified_at')->nullable();
             $table->unsignedBigInteger('verified_by')->nullable();
             $table->foreign('verified_by')
-                  ->references('id')
-                  ->on('users')
-                  ->onDelete('set null');
+                ->references('id')
+                ->on('users')
+                ->onDelete('set null');
 
             // Timestamps
             $table->timestamps();

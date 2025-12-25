@@ -2,15 +2,15 @@
 
 namespace Fereydooni\Shopping\App\Actions\ProviderContract;
 
-use Fereydooni\Shopping\App\Models\ProviderContract;
-use Fereydooni\Shopping\App\DTOs\ProviderContractDTO;
-use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderContractRepositoryInterface;
-use Fereydooni\Shopping\App\Events\ProviderContract\ProviderContractUpdated;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Validator;
 use Exception;
+use Fereydooni\Shopping\App\DTOs\ProviderContractDTO;
+use Fereydooni\Shopping\App\Events\ProviderContract\ProviderContractUpdated;
+use Fereydooni\Shopping\App\Models\ProviderContract;
+use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderContractRepositoryInterface;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class UpdateProviderContractAction
 {
@@ -24,12 +24,12 @@ class UpdateProviderContractAction
             DB::beginTransaction();
 
             $contract = $this->repository->find($id);
-            if (!$contract) {
+            if (! $contract) {
                 throw new Exception('Provider contract not found');
             }
 
             // Check if contract can be modified
-            if (!$contract->canBeModified()) {
+            if (! $contract->canBeModified()) {
                 throw new Exception('Contract cannot be modified in its current status');
             }
 
@@ -53,7 +53,7 @@ class UpdateProviderContractAction
 
             // Update the contract
             $updated = $this->repository->update($contract, $data);
-            if (!$updated) {
+            if (! $updated) {
                 throw new Exception('Failed to update provider contract');
             }
 
@@ -69,16 +69,16 @@ class UpdateProviderContractAction
 
             Log::info('Provider contract updated successfully', [
                 'contract_id' => $contract->id,
-                'provider_id' => $contract->provider_id
+                'provider_id' => $contract->provider_id,
             ]);
 
             return $dto;
         } catch (Exception $e) {
             DB::rollBack();
-            Log::error('Failed to update provider contract: ' . $e->getMessage(), [
+            Log::error('Failed to update provider contract: '.$e->getMessage(), [
                 'contract_id' => $id,
                 'data' => $data,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -118,11 +118,11 @@ class UpdateProviderContractAction
             $rules['currency'] = 'string|size:3';
         }
 
-        if (!empty($rules)) {
+        if (! empty($rules)) {
             $validator = Validator::make($data, $rules, $messages);
 
             if ($validator->fails()) {
-                throw new Exception('Validation failed: ' . $validator->errors()->first());
+                throw new Exception('Validation failed: '.$validator->errors()->first());
             }
         }
     }
@@ -132,7 +132,7 @@ class UpdateProviderContractAction
         // Validate status transition
         $allowedTransitions = $this->getAllowedStatusTransitions($contract->status);
 
-        if (!in_array($newStatus, $allowedTransitions)) {
+        if (! in_array($newStatus, $allowedTransitions)) {
             throw new Exception("Invalid status transition from {$contract->status} to {$newStatus}");
         }
     }
@@ -159,7 +159,7 @@ class UpdateProviderContractAction
                 $processedTerms[] = [
                     'title' => $term['title'],
                     'description' => $term['description'],
-                    'effective_date' => $term['effective_date'] ?? now()->toISOString()
+                    'effective_date' => $term['effective_date'] ?? now()->toISOString(),
                 ];
             }
         }
@@ -179,7 +179,7 @@ class UpdateProviderContractAction
                     'path' => $attachment['path'],
                     'size' => $attachment['size'] ?? 0,
                     'type' => $attachment['type'] ?? 'unknown',
-                    'uploaded_at' => now()->toISOString()
+                    'uploaded_at' => now()->toISOString(),
                 ];
             }
         }
@@ -195,7 +195,7 @@ class UpdateProviderContractAction
         Log::info('Update notifications would be sent for contract', [
             'contract_id' => $contract->id,
             'provider_id' => $contract->provider_id,
-            'updated_fields' => array_keys($updatedData)
+            'updated_fields' => array_keys($updatedData),
         ]);
     }
 }

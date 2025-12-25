@@ -3,13 +3,13 @@
 namespace App\Listeners\ProviderCertification;
 
 use App\Events\ProviderCertification\ProviderCertificationCreated;
+use App\Events\ProviderCertification\ProviderCertificationExpired;
+use App\Events\ProviderCertification\ProviderCertificationRejected;
+use App\Events\ProviderCertification\ProviderCertificationRenewed;
+use App\Events\ProviderCertification\ProviderCertificationRevoked;
+use App\Events\ProviderCertification\ProviderCertificationSuspended;
 use App\Events\ProviderCertification\ProviderCertificationUpdated;
 use App\Events\ProviderCertification\ProviderCertificationVerified;
-use App\Events\ProviderCertification\ProviderCertificationRejected;
-use App\Events\ProviderCertification\ProviderCertificationExpired;
-use App\Events\ProviderCertification\ProviderCertificationRenewed;
-use App\Events\ProviderCertification\ProviderCertificationSuspended;
-use App\Events\ProviderCertification\ProviderCertificationRevoked;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
@@ -29,10 +29,11 @@ class UpdateProviderProfile implements ShouldQueue
             $certification = $event->certification;
             $provider = $certification->provider;
 
-            if (!$provider) {
+            if (! $provider) {
                 Log::warning('Provider not found for profile update', [
-                    'certification_id' => $certification->id
+                    'certification_id' => $certification->id,
                 ]);
+
                 return;
             }
 
@@ -76,14 +77,14 @@ class UpdateProviderProfile implements ShouldQueue
             Log::info('Provider profile updated successfully', [
                 'event' => get_class($event),
                 'certification_id' => $certification->id,
-                'provider_id' => $provider->id
+                'provider_id' => $provider->id,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to update provider profile', [
                 'event' => get_class($event),
                 'certification_id' => $event->certification->id ?? null,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
 
             throw $e;
@@ -308,7 +309,7 @@ class UpdateProviderProfile implements ShouldQueue
         Log::error('Provider profile update job failed', [
             'event' => get_class($event),
             'certification_id' => $event->certification->id ?? null,
-            'error' => $exception->getMessage()
+            'error' => $exception->getMessage(),
         ]);
     }
 }

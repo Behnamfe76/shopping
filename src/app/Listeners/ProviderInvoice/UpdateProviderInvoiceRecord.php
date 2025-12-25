@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\App\Listeners\ProviderInvoice;
 
-use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoiceCreated;
-use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoiceUpdated;
-use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoiceSent;
-use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoicePaid;
-use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoiceOverdue;
 use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoiceCancelled;
+use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoiceCreated;
+use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoiceOverdue;
+use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoicePaid;
+use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoiceSent;
+use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoiceUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
@@ -49,7 +49,7 @@ class UpdateProviderInvoiceRecord implements ShouldQueue
             Log::error('Failed to update provider invoice record', [
                 'event' => get_class($event),
                 'invoice_id' => $event->invoice->id ?? 'unknown',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -59,7 +59,7 @@ class UpdateProviderInvoiceRecord implements ShouldQueue
         // Update provider's invoice count and total
         Log::info('Provider invoice record updated for created invoice', [
             'invoice_id' => $invoice->id,
-            'provider_id' => $invoice->provider_id
+            'provider_id' => $invoice->provider_id,
         ]);
     }
 
@@ -69,7 +69,7 @@ class UpdateProviderInvoiceRecord implements ShouldQueue
         Log::info('Provider invoice record updated for modified invoice', [
             'invoice_id' => $invoice->id,
             'provider_id' => $invoice->provider_id,
-            'changes' => $changes
+            'changes' => $changes,
         ]);
     }
 
@@ -78,7 +78,7 @@ class UpdateProviderInvoiceRecord implements ShouldQueue
         // Update provider's sent invoice count
         Log::info('Provider invoice record updated for sent invoice', [
             'invoice_id' => $invoice->id,
-            'provider_id' => $invoice->provider_id
+            'provider_id' => $invoice->provider_id,
         ]);
     }
 
@@ -87,7 +87,7 @@ class UpdateProviderInvoiceRecord implements ShouldQueue
         // Update provider's paid invoice count and total
         Log::info('Provider invoice record updated for paid invoice', [
             'invoice_id' => $invoice->id,
-            'provider_id' => $invoice->provider_id
+            'provider_id' => $invoice->provider_id,
         ]);
     }
 
@@ -96,7 +96,7 @@ class UpdateProviderInvoiceRecord implements ShouldQueue
         // Update provider's overdue invoice count and total
         Log::info('Provider invoice record updated for overdue invoice', [
             'invoice_id' => $invoice->id,
-            'provider_id' => $invoice->provider_id
+            'provider_id' => $invoice->provider_id,
         ]);
     }
 
@@ -105,8 +105,7 @@ class UpdateProviderInvoiceRecord implements ShouldQueue
         // Update provider's cancelled invoice count
         Log::info('Provider invoice record updated for cancelled invoice', [
             'invoice_id' => $invoice->id,
-            'provider_id' => $invoice->provider_id
+            'provider_id' => $invoice->provider_id,
         ]);
     }
 }
-

@@ -2,20 +2,15 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
-use Fereydooni\Shopping\app\Models\Transaction;
-use Fereydooni\Shopping\app\DTOs\TransactionDTO;
-use Fereydooni\Shopping\app\Http\Requests\StoreTransactionRequest;
-use Fereydooni\Shopping\app\Http\Requests\UpdateTransactionRequest;
 use Fereydooni\Shopping\app\Http\Requests\ProcessTransactionRequest;
 use Fereydooni\Shopping\app\Http\Requests\SearchTransactionRequest;
-use Fereydooni\Shopping\app\Http\Resources\TransactionResource;
-use Fereydooni\Shopping\app\Http\Resources\TransactionCollection;
-use Fereydooni\Shopping\app\Http\Resources\TransactionSearchResource;
-use Fereydooni\Shopping\app\Http\Resources\TransactionStatisticsResource;
+use Fereydooni\Shopping\app\Http\Requests\StoreTransactionRequest;
+use Fereydooni\Shopping\app\Http\Requests\UpdateTransactionRequest;
+use Fereydooni\Shopping\app\Models\Transaction;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class TransactionController extends Controller
 {

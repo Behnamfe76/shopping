@@ -2,31 +2,30 @@
 
 namespace Fereydooni\Shopping\app\Services;
 
-use Fereydooni\Shopping\app\Repositories\Interfaces\ProductMetaRepositoryInterface;
-use Fereydooni\Shopping\app\Traits\HasCrudOperations;
-use Fereydooni\Shopping\app\Traits\HasStatusToggle;
-use Fereydooni\Shopping\app\Traits\HasSearchOperations;
-use Fereydooni\Shopping\app\Traits\HasBulkOperations;
-use Fereydooni\Shopping\app\Traits\HasImportExport;
-use Fereydooni\Shopping\app\Traits\HasAnalyticsOperations;
-use Fereydooni\Shopping\app\Models\ProductMeta;
 use Fereydooni\Shopping\app\DTOs\ProductMetaDTO;
+use Fereydooni\Shopping\app\Models\ProductMeta;
+use Fereydooni\Shopping\app\Repositories\Interfaces\ProductMetaRepositoryInterface;
+use Fereydooni\Shopping\app\Traits\HasAnalyticsOperations;
+use Fereydooni\Shopping\app\Traits\HasBulkOperations;
+use Fereydooni\Shopping\app\Traits\HasCrudOperations;
+use Fereydooni\Shopping\app\Traits\HasImportExport;
+use Fereydooni\Shopping\app\Traits\HasSearchOperations;
+use Fereydooni\Shopping\app\Traits\HasStatusToggle;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProductMetaService
 {
-    use HasCrudOperations;
-    use HasStatusToggle;
-    use HasSearchOperations;
-    use HasBulkOperations;
-    use HasImportExport;
     use HasAnalyticsOperations;
+    use HasBulkOperations;
+    use HasCrudOperations;
+    use HasImportExport;
+    use HasSearchOperations;
+    use HasStatusToggle;
 
     public function __construct(
         private ProductMetaRepositoryInterface $repository
-    ) {
-    }
+    ) {}
 
     // Basic CRUD operations
     public function all(): Collection
@@ -249,6 +248,7 @@ class ProductMetaService
 
         if ($existing) {
             $this->update($existing, $data);
+
             return $existing->fresh();
         }
 
@@ -258,6 +258,7 @@ class ProductMetaService
     public function getProductMeta(int $productId, string $key, $default = null)
     {
         $meta = $this->findByProductIdAndKey($productId, $key);
+
         return $meta ? $meta->meta_value : $default;
     }
 

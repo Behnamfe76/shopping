@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\database\seeders;
 
-use Illuminate\Database\Seeder;
-use Fereydooni\Shopping\app\Models\EmployeeNote;
-use Fereydooni\Shopping\app\Models\Employee;
-use Fereydooni\Shopping\app\Models\User;
-use Fereydooni\Shopping\app\Enums\EmployeeNoteType;
 use Fereydooni\Shopping\app\Enums\EmployeeNotePriority;
+use Fereydooni\Shopping\app\Enums\EmployeeNoteType;
+use Fereydooni\Shopping\app\Models\Employee;
+use Fereydooni\Shopping\app\Models\EmployeeNote;
+use Fereydooni\Shopping\app\Models\User;
+use Illuminate\Database\Seeder;
 
 class EmployeeNoteSeeder extends Seeder
 {
@@ -19,6 +19,7 @@ class EmployeeNoteSeeder extends Seeder
 
         if ($employees->isEmpty() || $users->isEmpty()) {
             $this->command->warn('No employees or users found. Skipping EmployeeNote seeding.');
+
             return;
         }
 
@@ -113,4 +114,3 @@ class EmployeeNoteSeeder extends Seeder
         $this->command->info('EmployeeNote seeding completed successfully.');
     }
 }
-

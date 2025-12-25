@@ -11,8 +11,11 @@ class LoyaltyPointsAdded
     use Dispatchable, SerializesModels;
 
     public Customer $customer;
+
     public int $points;
+
     public ?string $reason;
+
     public int $newBalance;
 
     /**

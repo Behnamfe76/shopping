@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Events;
 
+use Fereydooni\Shopping\app\Models\ProductMeta;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Fereydooni\Shopping\app\Models\ProductMeta;
 
 class ProductMetaCreated
 {
@@ -12,6 +12,5 @@ class ProductMetaCreated
 
     public function __construct(
         public ProductMeta $productMeta
-    ) {
-    }
+    ) {}
 }

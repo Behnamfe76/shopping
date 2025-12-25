@@ -2,13 +2,12 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers\Web;
 
+use Fereydooni\Shopping\app\Models\CustomerCommunication;
+use Fereydooni\Shopping\app\Services\CustomerCommunicationService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
-use Fereydooni\Shopping\app\Services\CustomerCommunicationService;
-use Fereydooni\Shopping\app\Models\CustomerCommunication;
-use Fereydooni\Shopping\app\DTOs\CustomerCommunicationDTO;
 
 class CustomerCommunicationController extends Controller
 {
@@ -98,8 +97,8 @@ class CustomerCommunicationController extends Controller
     public function show(int $id): View
     {
         $communication = $this->service->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             abort(404, 'Customer communication not found');
         }
 
@@ -123,8 +122,8 @@ class CustomerCommunicationController extends Controller
     public function edit(int $id): View
     {
         $communication = $this->service->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             abort(404, 'Customer communication not found');
         }
 
@@ -139,8 +138,8 @@ class CustomerCommunicationController extends Controller
     public function update(Request $request, int $id): RedirectResponse
     {
         $communication = $this->service->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             abort(404, 'Customer communication not found');
         }
 
@@ -165,7 +164,7 @@ class CustomerCommunicationController extends Controller
 
         $updatedCommunication = $this->service->updateCommunication($id, $validated);
 
-        if (!$updatedCommunication) {
+        if (! $updatedCommunication) {
             return back()->withErrors(['error' => 'Failed to update customer communication']);
         }
 
@@ -179,8 +178,8 @@ class CustomerCommunicationController extends Controller
     public function destroy(int $id): RedirectResponse
     {
         $communication = $this->service->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             abort(404, 'Customer communication not found');
         }
 
@@ -188,7 +187,7 @@ class CustomerCommunicationController extends Controller
 
         $deleted = $this->service->delete($id);
 
-        if (!$deleted) {
+        if (! $deleted) {
             return back()->withErrors(['error' => 'Failed to delete customer communication']);
         }
 
@@ -202,8 +201,8 @@ class CustomerCommunicationController extends Controller
     public function schedule(int $id): View
     {
         $communication = $this->service->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             abort(404, 'Customer communication not found');
         }
 
@@ -218,8 +217,8 @@ class CustomerCommunicationController extends Controller
     public function scheduleCommunication(Request $request, int $id): RedirectResponse
     {
         $communication = $this->service->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             abort(404, 'Customer communication not found');
         }
 
@@ -231,7 +230,7 @@ class CustomerCommunicationController extends Controller
 
         $scheduled = $this->service->schedule($communication, $validated['scheduled_at']);
 
-        if (!$scheduled) {
+        if (! $scheduled) {
             return back()->withErrors(['error' => 'Failed to schedule customer communication']);
         }
 
@@ -245,8 +244,8 @@ class CustomerCommunicationController extends Controller
     public function send(int $id): RedirectResponse
     {
         $communication = $this->service->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             abort(404, 'Customer communication not found');
         }
 
@@ -254,7 +253,7 @@ class CustomerCommunicationController extends Controller
 
         $sent = $this->service->send($communication);
 
-        if (!$sent) {
+        if (! $sent) {
             return back()->withErrors(['error' => 'Failed to send customer communication']);
         }
 
@@ -268,8 +267,8 @@ class CustomerCommunicationController extends Controller
     public function cancel(int $id): RedirectResponse
     {
         $communication = $this->service->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             abort(404, 'Customer communication not found');
         }
 
@@ -277,7 +276,7 @@ class CustomerCommunicationController extends Controller
 
         $cancelled = $this->service->cancel($communication);
 
-        if (!$cancelled) {
+        if (! $cancelled) {
             return back()->withErrors(['error' => 'Failed to cancel customer communication']);
         }
 
@@ -291,8 +290,8 @@ class CustomerCommunicationController extends Controller
     public function tracking(int $id): View
     {
         $communication = $this->service->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             abort(404, 'Customer communication not found');
         }
 
@@ -362,8 +361,8 @@ class CustomerCommunicationController extends Controller
     public function addAttachment(Request $request, int $id): RedirectResponse
     {
         $communication = $this->service->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             abort(404, 'Customer communication not found');
         }
 
@@ -375,7 +374,7 @@ class CustomerCommunicationController extends Controller
 
         $added = $this->service->addAttachment($communication, $request->file('file'));
 
-        if (!$added) {
+        if (! $added) {
             return back()->withErrors(['error' => 'Failed to add attachment']);
         }
 
@@ -388,8 +387,8 @@ class CustomerCommunicationController extends Controller
     public function removeAttachment(int $id, int $mediaId): RedirectResponse
     {
         $communication = $this->service->find($id);
-        
-        if (!$communication) {
+
+        if (! $communication) {
             abort(404, 'Customer communication not found');
         }
 
@@ -397,7 +396,7 @@ class CustomerCommunicationController extends Controller
 
         $removed = $this->service->removeAttachment($communication, $mediaId);
 
-        if (!$removed) {
+        if (! $removed) {
             return back()->withErrors(['error' => 'Failed to remove attachment']);
         }
 

@@ -2,16 +2,16 @@
 
 namespace Fereydooni\Shopping\App\Listeners\ProviderRating;
 
-use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingCreated;
-use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingUpdated;
 use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingApproved;
-use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingRejected;
+use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingCreated;
 use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingFlagged;
+use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingRejected;
+use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingUpdated;
 use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingVerified;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class ProcessRatingModeration implements ShouldQueue
 {
@@ -51,7 +51,7 @@ class ProcessRatingModeration implements ShouldQueue
                 'event' => get_class($event),
                 'rating_id' => $event->rating->id ?? null,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
         }
     }
@@ -67,21 +67,21 @@ class ProcessRatingModeration implements ShouldQueue
                 $this->flagForModeration($rating, 'New rating requires moderation');
                 Log::info('New rating flagged for moderation', [
                     'rating_id' => $rating->id,
-                    'provider_id' => $rating->rating->provider_id
+                    'provider_id' => $rating->rating->provider_id,
                 ]);
             } else {
                 // Auto-approve if no moderation needed
                 $this->autoApproveRating($rating);
                 Log::info('New rating auto-approved', [
                     'rating_id' => $rating->id,
-                    'provider_id' => $rating->rating->provider_id
+                    'provider_id' => $rating->rating->provider_id,
                 ]);
             }
 
         } catch (\Exception $e) {
             Log::error('Failed to process new rating moderation', [
                 'rating_id' => $rating->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -97,14 +97,14 @@ class ProcessRatingModeration implements ShouldQueue
                 $this->flagForModeration($rating, 'Updated rating requires re-moderation');
                 Log::info('Updated rating flagged for re-moderation', [
                     'rating_id' => $rating->id,
-                    'provider_id' => $rating->rating->provider_id
+                    'provider_id' => $rating->rating->provider_id,
                 ]);
             }
 
         } catch (\Exception $e) {
             Log::error('Failed to process updated rating moderation', [
                 'rating_id' => $rating->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -123,13 +123,13 @@ class ProcessRatingModeration implements ShouldQueue
 
             Log::info('Rating moderation processed - approved', [
                 'rating_id' => $rating->id,
-                'provider_id' => $rating->rating->provider_id
+                'provider_id' => $rating->rating->provider_id,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to process approved rating moderation', [
                 'rating_id' => $rating->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -148,13 +148,13 @@ class ProcessRatingModeration implements ShouldQueue
 
             Log::info('Rating moderation processed - rejected', [
                 'rating_id' => $rating->id,
-                'provider_id' => $rating->rating->provider_id
+                'provider_id' => $rating->rating->provider_id,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to process rejected rating moderation', [
                 'rating_id' => $rating->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -176,13 +176,13 @@ class ProcessRatingModeration implements ShouldQueue
 
             Log::info('Rating moderation processed - flagged', [
                 'rating_id' => $rating->id,
-                'provider_id' => $rating->rating->provider_id
+                'provider_id' => $rating->rating->provider_id,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to process flagged rating moderation', [
                 'rating_id' => $rating->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -201,13 +201,13 @@ class ProcessRatingModeration implements ShouldQueue
 
             Log::info('Rating moderation processed - verified', [
                 'rating_id' => $rating->id,
-                'provider_id' => $rating->rating->provider_id
+                'provider_id' => $rating->rating->provider_id,
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to process verified rating moderation', [
                 'rating_id' => $rating->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -243,8 +243,9 @@ class ProcessRatingModeration implements ShouldQueue
         } catch (\Exception $e) {
             Log::error('Failed to check if rating requires moderation', [
                 'rating_id' => $rating->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return true; // Default to requiring moderation on error
         }
     }
@@ -254,7 +255,9 @@ class ProcessRatingModeration implements ShouldQueue
      */
     protected function containsProfanity(?string $text): bool
     {
-        if (!$text) return false;
+        if (! $text) {
+            return false;
+        }
 
         // Simple profanity check (in production, use a proper profanity filter)
         $profanityWords = ['bad_word', 'inappropriate', 'spam'];
@@ -297,7 +300,9 @@ class ProcessRatingModeration implements ShouldQueue
     protected function hasRepetitiveCharacters(string $text): bool
     {
         $length = strlen($text);
-        if ($length < 10) return false;
+        if ($length < 10) {
+            return false;
+        }
 
         // Check for patterns like "aaaaa" or "!!!!!"
         for ($i = 0; $i < $length - 4; $i++) {
@@ -341,8 +346,9 @@ class ProcessRatingModeration implements ShouldQueue
         } catch (\Exception $e) {
             Log::error('Failed to check user reputation', [
                 'user_id' => $userId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return true; // Default to requiring moderation on error
         }
     }
@@ -391,8 +397,9 @@ class ProcessRatingModeration implements ShouldQueue
         } catch (\Exception $e) {
             Log::error('Failed to check rapid posting', [
                 'user_id' => $userId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -406,13 +413,13 @@ class ProcessRatingModeration implements ShouldQueue
             $rating->update([
                 'status' => 'flagged',
                 'moderation_reason' => $reason,
-                'flagged_at' => now()
+                'flagged_at' => now(),
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to flag rating for moderation', [
                 'rating_id' => $rating->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -426,13 +433,13 @@ class ProcessRatingModeration implements ShouldQueue
             $rating->update([
                 'status' => 'approved',
                 'approved_at' => now(),
-                'moderation_status' => 'auto_approved'
+                'moderation_status' => 'auto_approved',
             ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to auto-approve rating', [
                 'rating_id' => $rating->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -452,14 +459,14 @@ class ProcessRatingModeration implements ShouldQueue
 
                 Log::info('Moderator notified of flagged rating', [
                     'moderator_id' => $moderator->id,
-                    'rating_id' => $rating->id
+                    'rating_id' => $rating->id,
                 ]);
             }
 
         } catch (\Exception $e) {
             Log::error('Failed to notify moderators', [
                 'rating_id' => $rating->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -477,7 +484,7 @@ class ProcessRatingModeration implements ShouldQueue
         } catch (\Exception $e) {
             Log::error('Failed to clear provider moderation cache', [
                 'provider_id' => $providerId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }

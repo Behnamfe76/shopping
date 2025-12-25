@@ -11,6 +11,7 @@ class EmployeeSkillCertified
     use Dispatchable, SerializesModels;
 
     public EmployeeSkill $employeeSkill;
+
     public array $certificationData;
 
     /**

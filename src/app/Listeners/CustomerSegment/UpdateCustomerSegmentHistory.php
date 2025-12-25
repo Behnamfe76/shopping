@@ -33,7 +33,7 @@ class UpdateCustomerSegmentHistory implements ShouldQueue
                 $this->handleCustomerRemoved($event);
             }
         } catch (\Exception $e) {
-            Log::error('Error updating customer segment history: ' . $e->getMessage());
+            Log::error('Error updating customer segment history: '.$e->getMessage());
         }
     }
 
@@ -44,7 +44,7 @@ class UpdateCustomerSegmentHistory implements ShouldQueue
     {
         $segment = $event->segment;
         $customerId = $event->customerId;
-        
+
         // Create history record
         CustomerSegmentHistory::create([
             'customer_segment_id' => $segment->id,
@@ -56,7 +56,7 @@ class UpdateCustomerSegmentHistory implements ShouldQueue
                 'segment_type' => $segment->type,
             ],
         ]);
-        
+
         Log::info("Customer {$customerId} added to segment {$segment->name}");
     }
 
@@ -67,7 +67,7 @@ class UpdateCustomerSegmentHistory implements ShouldQueue
     {
         $segment = $event->segment;
         $customerId = $event->customerId;
-        
+
         // Create history record
         CustomerSegmentHistory::create([
             'customer_segment_id' => $segment->id,
@@ -79,7 +79,7 @@ class UpdateCustomerSegmentHistory implements ShouldQueue
                 'segment_type' => $segment->type,
             ],
         ]);
-        
+
         Log::info("Customer {$customerId} removed from segment {$segment->name}");
     }
 }

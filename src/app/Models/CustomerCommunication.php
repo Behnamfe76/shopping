@@ -2,20 +2,20 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
+use Fereydooni\Shopping\app\Enums\CommunicationChannel;
+use Fereydooni\Shopping\app\Enums\CommunicationPriority;
+use Fereydooni\Shopping\app\Enums\CommunicationStatus;
+use Fereydooni\Shopping\app\Enums\CommunicationType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Fereydooni\Shopping\app\Enums\CommunicationType;
-use Fereydooni\Shopping\app\Enums\CommunicationStatus;
-use Fereydooni\Shopping\app\Enums\CommunicationPriority;
-use Fereydooni\Shopping\app\Enums\CommunicationChannel;
 
 class CustomerCommunication extends Model implements HasMedia
 {
-    use HasFactory, SoftDeletes, InteractsWithMedia;
+    use HasFactory, InteractsWithMedia, SoftDeletes;
 
     protected $fillable = [
         'customer_id',
@@ -281,7 +281,7 @@ class CustomerCommunication extends Model implements HasMedia
      */
     public function getDeliveryRate(): float
     {
-        if (!$this->sent_at) {
+        if (! $this->sent_at) {
             return 0.0;
         }
 
@@ -293,7 +293,7 @@ class CustomerCommunication extends Model implements HasMedia
      */
     public function getOpenRate(): float
     {
-        if (!$this->delivered_at) {
+        if (! $this->delivered_at) {
             return 0.0;
         }
 
@@ -305,7 +305,7 @@ class CustomerCommunication extends Model implements HasMedia
      */
     public function getClickRate(): float
     {
-        if (!$this->opened_at) {
+        if (! $this->opened_at) {
             return 0.0;
         }
 
@@ -317,7 +317,7 @@ class CustomerCommunication extends Model implements HasMedia
      */
     public function getBounceRate(): float
     {
-        if (!$this->sent_at) {
+        if (! $this->sent_at) {
             return 0.0;
         }
 
@@ -329,7 +329,7 @@ class CustomerCommunication extends Model implements HasMedia
      */
     public function getUnsubscribeRate(): float
     {
-        if (!$this->sent_at) {
+        if (! $this->sent_at) {
             return 0.0;
         }
 

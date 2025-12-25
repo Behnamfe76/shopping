@@ -68,7 +68,7 @@ enum EmployeeNotePriority: string
     {
         return array_combine(
             array_column(self::cases(), 'value'),
-            array_map(fn($case) => $case->label(), self::cases())
+            array_map(fn ($case) => $case->label(), self::cases())
         );
     }
 
@@ -79,6 +79,7 @@ enum EmployeeNotePriority: string
                 return $case;
             }
         }
+
         return null;
     }
 
@@ -89,7 +90,7 @@ enum EmployeeNotePriority: string
                 return $case;
             }
         }
+
         return null;
     }
 }
-

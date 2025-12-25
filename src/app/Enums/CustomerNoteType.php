@@ -15,7 +15,7 @@ enum CustomerNoteType: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::GENERAL => 'General',
             self::SUPPORT => 'Support',
             self::SALES => 'Sales',
@@ -29,7 +29,7 @@ enum CustomerNoteType: string
 
     public function color(): string
     {
-        return match($this) {
+        return match ($this) {
             self::GENERAL => 'gray',
             self::SUPPORT => 'blue',
             self::SALES => 'green',
@@ -43,7 +43,7 @@ enum CustomerNoteType: string
 
     public function icon(): string
     {
-        return match($this) {
+        return match ($this) {
             self::GENERAL => 'document-text',
             self::SUPPORT => 'support',
             self::SALES => 'shopping-cart',

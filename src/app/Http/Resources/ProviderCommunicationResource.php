@@ -62,8 +62,8 @@ class ProviderCommunicationResource extends JsonResource
             'is_closed' => $this->status === 'closed',
             'is_archived' => $this->is_archived,
             'is_urgent' => $this->is_urgent,
-            'has_attachments' => !empty($this->attachments),
-            'has_tags' => !empty($this->tags),
+            'has_attachments' => ! empty($this->attachments),
+            'has_tags' => ! empty($this->tags),
             'response_time_formatted' => $this->response_time ? $this->formatResponseTime($this->response_time) : null,
         ];
     }
@@ -74,9 +74,11 @@ class ProviderCommunicationResource extends JsonResource
             return "{$minutes} minutes";
         } elseif ($minutes < 1440) {
             $hours = floor($minutes / 60);
+
             return "{$hours} hours";
         } else {
             $days = floor($minutes / 1440);
+
             return "{$days} days";
         }
     }

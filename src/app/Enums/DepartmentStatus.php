@@ -12,7 +12,7 @@ enum DepartmentStatus: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::ACTIVE => 'Active',
             self::INACTIVE => 'Inactive',
             self::ARCHIVED => 'Archived',
@@ -23,7 +23,7 @@ enum DepartmentStatus: string
 
     public function shortLabel(): string
     {
-        return match($this) {
+        return match ($this) {
             self::ACTIVE => 'Active',
             self::INACTIVE => 'Inactive',
             self::ARCHIVED => 'Archived',
@@ -34,7 +34,7 @@ enum DepartmentStatus: string
 
     public function color(): string
     {
-        return match($this) {
+        return match ($this) {
             self::ACTIVE => 'green',
             self::INACTIVE => 'yellow',
             self::ARCHIVED => 'gray',

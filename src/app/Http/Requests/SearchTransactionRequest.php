@@ -4,7 +4,6 @@ namespace Fereydooni\Shopping\app\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Fereydooni\Shopping\app\Models\Transaction;
 
 class SearchTransactionRequest extends FormRequest
 {
@@ -29,7 +28,7 @@ class SearchTransactionRequest extends FormRequest
             'status' => [
                 'nullable',
                 'string',
-                Rule::in(['initiated', 'success', 'failed', 'refunded'])
+                Rule::in(['initiated', 'success', 'failed', 'refunded']),
             ],
             'currency' => 'nullable|string|size:3',
             'min_amount' => 'nullable|numeric|min:0',
@@ -41,19 +40,19 @@ class SearchTransactionRequest extends FormRequest
             'sort_by' => [
                 'nullable',
                 'string',
-                Rule::in(['id', 'order_id', 'user_id', 'amount', 'status', 'payment_date', 'created_at', 'updated_at'])
+                Rule::in(['id', 'order_id', 'user_id', 'amount', 'status', 'payment_date', 'created_at', 'updated_at']),
             ],
             'sort_direction' => [
                 'nullable',
                 'string',
-                Rule::in(['asc', 'desc'])
+                Rule::in(['asc', 'desc']),
             ],
             'include_relationships' => 'nullable|array',
             'include_relationships.*' => [
                 'nullable',
                 'string',
-                Rule::in(['order', 'user', 'order.items', 'order.statusHistory'])
-            ]
+                Rule::in(['order', 'user', 'order.items', 'order.statusHistory']),
+            ],
         ];
     }
 
@@ -85,7 +84,7 @@ class SearchTransactionRequest extends FormRequest
             'sort_by.in' => 'Invalid sort field.',
             'sort_direction.in' => 'Sort direction must be either asc or desc.',
             'include_relationships.array' => 'Include relationships must be an array.',
-            'include_relationships.*.in' => 'Invalid relationship to include.'
+            'include_relationships.*.in' => 'Invalid relationship to include.',
         ];
     }
 
@@ -109,7 +108,7 @@ class SearchTransactionRequest extends FormRequest
             'per_page' => 'per page',
             'sort_by' => 'sort field',
             'sort_direction' => 'sort direction',
-            'include_relationships' => 'include relationships'
+            'include_relationships' => 'include relationships',
         ];
     }
 
@@ -124,7 +123,7 @@ class SearchTransactionRequest extends FormRequest
             'currency' => $this->currency ? strtoupper(trim($this->currency)) : null,
             'transaction_id' => $this->transaction_id ? trim($this->transaction_id) : null,
             'sort_direction' => $this->sort_direction ? strtolower($this->sort_direction) : 'desc',
-            'per_page' => $this->per_page ? (int) $this->per_page : 15
+            'per_page' => $this->per_page ? (int) $this->per_page : 15,
         ]);
     }
 

@@ -27,7 +27,7 @@ trait HasDeliveryManagement
     /**
      * Confirm delivery
      */
-    public function confirmDelivery(object $item, string $deliveryDate = null): bool
+    public function confirmDelivery(object $item, ?string $deliveryDate = null): bool
     {
         $data = ['status' => 'delivered'];
 
@@ -49,7 +49,7 @@ trait HasDeliveryManagement
     /**
      * Get delivery performance
      */
-    public function getDeliveryPerformance(string $carrier = null): array
+    public function getDeliveryPerformance(?string $carrier = null): array
     {
         return $this->repository->getDeliveryPerformance($carrier);
     }
@@ -57,7 +57,7 @@ trait HasDeliveryManagement
     /**
      * Get delivery times
      */
-    public function getDeliveryTimes(string $carrier = null): array
+    public function getDeliveryTimes(?string $carrier = null): array
     {
         return $this->repository->getDeliveryTimes($carrier);
     }
@@ -91,7 +91,7 @@ trait HasDeliveryManagement
      */
     public function calculateDeliveryTime(object $item): ?int
     {
-        if (!$item->shipped_at || !$item->actual_delivery) {
+        if (! $item->shipped_at || ! $item->actual_delivery) {
             return null;
         }
 
@@ -103,7 +103,7 @@ trait HasDeliveryManagement
      */
     public function calculateEstimatedDeliveryTime(object $item): ?int
     {
-        if (!$item->shipped_at || !$item->estimated_delivery) {
+        if (! $item->shipped_at || ! $item->estimated_delivery) {
             return null;
         }
 
@@ -115,7 +115,7 @@ trait HasDeliveryManagement
      */
     public function isDeliveryOverdue(object $item): bool
     {
-        if (!$item->estimated_delivery || $item->status === 'delivered') {
+        if (! $item->estimated_delivery || $item->status === 'delivered') {
             return false;
         }
 
@@ -127,7 +127,7 @@ trait HasDeliveryManagement
      */
     public function isDeliveryDelayed(object $item): bool
     {
-        if (!$item->estimated_delivery || $item->status === 'delivered') {
+        if (! $item->estimated_delivery || $item->status === 'delivered') {
             return false;
         }
 
@@ -139,7 +139,7 @@ trait HasDeliveryManagement
      */
     public function isDeliveryOnTime(object $item): bool
     {
-        if (!$item->estimated_delivery || $item->status === 'delivered') {
+        if (! $item->estimated_delivery || $item->status === 'delivered') {
             return false;
         }
 

@@ -22,9 +22,11 @@ trait HasImportExport
             }
 
             DB::commit();
+
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
+
             return false;
         }
     }
@@ -44,7 +46,7 @@ trait HasImportExport
      */
     public function importFromFile(string $filePath): bool
     {
-        if (!Storage::exists($filePath)) {
+        if (! Storage::exists($filePath)) {
             return false;
         }
 
@@ -77,7 +79,8 @@ trait HasImportExport
         if (method_exists($this, 'getValidationRules')) {
             $rules = $this->getValidationRules();
             $validator = validator($data, $rules);
-            return !$validator->fails();
+
+            return ! $validator->fails();
         }
 
         return true;
@@ -106,9 +109,11 @@ trait HasImportExport
             $this->importData($data);
 
             DB::commit();
+
             return true;
         } catch (\Exception $e) {
             DB::rollBack();
+
             return false;
         }
     }

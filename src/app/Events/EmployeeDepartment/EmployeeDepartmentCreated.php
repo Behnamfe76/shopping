@@ -5,9 +5,7 @@ namespace App\Events\EmployeeDepartment;
 use App\Models\EmployeeDepartment;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -16,7 +14,9 @@ class EmployeeDepartmentCreated
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $department;
+
     public $createdBy;
+
     public $timestamp;
 
     /**
@@ -38,7 +38,7 @@ class EmployeeDepartmentCreated
     {
         return [
             new PrivateChannel('departments'),
-            new Channel('department-updates')
+            new Channel('department-updates'),
         ];
     }
 
@@ -55,7 +55,7 @@ class EmployeeDepartmentCreated
             'manager_id' => $this->department->manager_id,
             'created_by' => $this->createdBy,
             'created_at' => $this->timestamp->toISOString(),
-            'event_type' => 'department_created'
+            'event_type' => 'department_created',
         ];
     }
 

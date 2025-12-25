@@ -2,14 +2,14 @@
 
 namespace Fereydooni\Shopping\App\Actions\ProviderPayment;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Event;
 use Fereydooni\Shopping\App\DTOs\ProviderPaymentDTO;
+use Fereydooni\Shopping\App\Enums\ProviderPaymentStatus;
+use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentProcessed;
 use Fereydooni\Shopping\App\Models\ProviderPayment;
 use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderPaymentRepositoryInterface;
-use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentProcessed;
-use Fereydooni\Shopping\App\Enums\ProviderPaymentStatus;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
 
 class ProcessProviderPaymentAction
 {
@@ -34,7 +34,7 @@ class ProcessProviderPaymentAction
             // Update payment status to processed
             $updated = $this->repository->process($payment, $processedBy);
 
-            if (!$updated) {
+            if (! $updated) {
                 throw new \Exception('Failed to process provider payment');
             }
 
@@ -56,7 +56,7 @@ class ProcessProviderPaymentAction
                 'payment_id' => $payment->id,
                 'provider_id' => $payment->provider_id,
                 'processed_by' => $processedBy,
-                'processed_at' => $payment->processed_at
+                'processed_at' => $payment->processed_at,
             ]);
 
             return ProviderPaymentDTO::fromModel($payment);
@@ -67,7 +67,7 @@ class ProcessProviderPaymentAction
             Log::error('Failed to process provider payment', [
                 'error' => $e->getMessage(),
                 'payment_id' => $payment->id,
-                'processed_by' => $processedBy
+                'processed_by' => $processedBy,
             ]);
 
             throw $e;
@@ -83,7 +83,7 @@ class ProcessProviderPaymentAction
         // For now, we'll just log the validation
         Log::info('Validating processing permissions', [
             'payment_id' => $payment->id,
-            'processed_by' => $processedBy
+            'processed_by' => $processedBy,
         ]);
     }
 
@@ -116,7 +116,7 @@ class ProcessProviderPaymentAction
 
         Log::info('Updating provider records for processed payment', [
             'payment_id' => $payment->id,
-            'provider_id' => $payment->provider_id
+            'provider_id' => $payment->provider_id,
         ]);
     }
 
@@ -133,7 +133,7 @@ class ProcessProviderPaymentAction
 
         Log::info('Sending processing notifications', [
             'payment_id' => $payment->id,
-            'provider_id' => $payment->provider_id
+            'provider_id' => $payment->provider_id,
         ]);
     }
 }

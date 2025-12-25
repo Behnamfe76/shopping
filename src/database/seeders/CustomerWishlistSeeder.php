@@ -2,10 +2,9 @@
 
 namespace Fereydooni\Shopping\database\seeders;
 
-use Fereydooni\Shopping\app\Models\CustomerWishlist;
+use Fereydooni\Shopping\app\Enums\WishlistPriority;
 use Fereydooni\Shopping\app\Models\Customer;
 use Fereydooni\Shopping\app\Models\Product;
-use Fereydooni\Shopping\app\Enums\WishlistPriority;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -22,6 +21,7 @@ class CustomerWishlistSeeder extends Seeder
 
         if ($customers->isEmpty() || $products->isEmpty()) {
             $this->command->warn('No customers or products found. Skipping wishlist seeding.');
+
             return;
         }
 
@@ -31,7 +31,7 @@ class CustomerWishlistSeeder extends Seeder
         foreach ($customers as $customer) {
             // Each customer gets 1-5 random products in their wishlist
             $customerProducts = $products->random(rand(1, 5));
-            
+
             foreach ($customerProducts as $product) {
                 $wishlistData[] = [
                     'customer_id' => $customer->id,

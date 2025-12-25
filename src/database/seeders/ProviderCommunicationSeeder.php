@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Carbon\Carbon;
 
 class ProviderCommunicationSeeder extends Seeder
 {
@@ -19,7 +19,7 @@ class ProviderCommunicationSeeder extends Seeder
             'email', 'phone', 'chat', 'sms', 'video_call', 'in_person',
             'support_ticket', 'complaint', 'inquiry', 'order_update',
             'payment_notification', 'quality_issue', 'delivery_update',
-            'contract_discussion', 'general'
+            'contract_discussion', 'general',
         ];
 
         // Sample statuses
@@ -45,7 +45,7 @@ class ProviderCommunicationSeeder extends Seeder
             'quality_issue' => 'Quality Issue #{id} - {description}',
             'delivery_update' => 'Delivery Update #{id} - {status}',
             'contract_discussion' => 'Contract Discussion #{id}',
-            'general' => 'General Communication #{id}'
+            'general' => 'General Communication #{id}',
         ];
 
         // Sample messages
@@ -62,20 +62,20 @@ class ProviderCommunicationSeeder extends Seeder
             'quality_issue' => 'Quality issue details and corrective actions.',
             'delivery_update' => 'Delivery status and tracking information.',
             'contract_discussion' => 'Contract terms discussion and negotiation points.',
-            'general' => 'General business communication and updates.'
+            'general' => 'General business communication and updates.',
         ];
 
         // Sample tags
         $sampleTags = [
             'urgent', 'follow-up', 'resolved', 'pending', 'high-priority',
-            'customer-service', 'billing', 'technical', 'logistics', 'quality'
+            'customer-service', 'billing', 'technical', 'logistics', 'quality',
         ];
 
         // Sample attachments
         $sampleAttachments = [
             ['name' => 'document.pdf', 'size' => '2.5MB', 'type' => 'pdf'],
             ['name' => 'image.jpg', 'size' => '1.2MB', 'type' => 'image'],
-            ['name' => 'spreadsheet.xlsx', 'size' => '500KB', 'type' => 'excel']
+            ['name' => 'spreadsheet.xlsx', 'size' => '500KB', 'type' => 'excel'],
         ];
 
         // Create sample communications
@@ -102,7 +102,7 @@ class ProviderCommunicationSeeder extends Seeder
             $threadId = null;
             $parentId = null;
             if (rand(1, 3) === 1) {
-                $threadId = 'thread_' . Str::random(10);
+                $threadId = 'thread_'.Str::random(10);
                 // Create a parent communication for this thread
                 if (rand(1, 2) === 1) {
                     $parentId = $i - 1;
@@ -150,7 +150,7 @@ class ProviderCommunicationSeeder extends Seeder
             // Generate notes for some communications
             $notes = null;
             if (rand(1, 3) === 1) {
-                $notes = 'Additional notes for communication #' . $i . '. This is a sample note for demonstration purposes.';
+                $notes = 'Additional notes for communication #'.$i.'. This is a sample note for demonstration purposes.';
             }
 
             DB::table('provider_communications')->insert([
@@ -171,8 +171,8 @@ class ProviderCommunicationSeeder extends Seeder
                 'parent_id' => $parentId,
                 'response_time' => $responseTime,
                 'satisfaction_rating' => $satisfactionRating,
-                'attachments' => !empty($attachments) ? json_encode($attachments) : null,
-                'tags' => !empty($tags) ? json_encode($tags) : null,
+                'attachments' => ! empty($attachments) ? json_encode($attachments) : null,
+                'tags' => ! empty($tags) ? json_encode($tags) : null,
                 'notes' => $notes,
                 'created_at' => $createdAt,
                 'updated_at' => $createdAt,

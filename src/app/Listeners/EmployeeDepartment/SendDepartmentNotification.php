@@ -2,15 +2,15 @@
 
 namespace App\Listeners\EmployeeDepartment;
 
+use App\Events\EmployeeDepartment\EmployeeDepartmentArchived;
 use App\Events\EmployeeDepartment\EmployeeDepartmentCreated;
-use App\Events\EmployeeDepartment\EmployeeDepartmentUpdated;
 use App\Events\EmployeeDepartment\EmployeeDepartmentManagerAssigned;
 use App\Events\EmployeeDepartment\EmployeeDepartmentMoved;
-use App\Events\EmployeeDepartment\EmployeeDepartmentArchived;
-use App\Notifications\EmployeeDepartment\DepartmentCreated;
-use App\Notifications\EmployeeDepartment\ManagerAssigned;
-use App\Notifications\EmployeeDepartment\DepartmentMoved;
+use App\Events\EmployeeDepartment\EmployeeDepartmentUpdated;
 use App\Notifications\EmployeeDepartment\DepartmentArchived;
+use App\Notifications\EmployeeDepartment\DepartmentCreated;
+use App\Notifications\EmployeeDepartment\DepartmentMoved;
+use App\Notifications\EmployeeDepartment\ManagerAssigned;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
@@ -20,7 +20,9 @@ class SendDepartmentNotification implements ShouldQueue
     use InteractsWithQueue;
 
     public $queue = 'notifications';
+
     public $tries = 3;
+
     public $timeout = 30;
 
     /**
@@ -51,7 +53,7 @@ class SendDepartmentNotification implements ShouldQueue
         } catch (\Exception $e) {
             Log::error('Error sending department notification', [
                 'event' => get_class($event),
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -67,12 +69,12 @@ class SendDepartmentNotification implements ShouldQueue
 
             Log::info('Department creation notification sent', [
                 'department_id' => $event->department->id,
-                'department_name' => $event->department->name
+                'department_name' => $event->department->name,
             ]);
         } catch (\Exception $e) {
             Log::error('Error handling department created notification', [
                 'department_id' => $event->department->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -86,19 +88,19 @@ class SendDepartmentNotification implements ShouldQueue
             // Check if important fields were changed
             $importantChanges = $this->getImportantChanges($event->changes);
 
-            if (!empty($importantChanges)) {
+            if (! empty($importantChanges)) {
                 // Notify relevant stakeholders about important changes
                 $this->notifyStakeholders($event->department, new DepartmentCreated($event->department));
 
                 Log::info('Department update notification sent', [
                     'department_id' => $event->department->id,
-                    'changes' => $importantChanges
+                    'changes' => $importantChanges,
                 ]);
             }
         } catch (\Exception $e) {
             Log::error('Error handling department updated notification', [
                 'department_id' => $event->department->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -120,12 +122,12 @@ class SendDepartmentNotification implements ShouldQueue
             Log::info('Manager assignment notification sent', [
                 'department_id' => $event->department->id,
                 'manager_id' => $event->managerId,
-                'previous_manager_id' => $event->previousManagerId
+                'previous_manager_id' => $event->previousManagerId,
             ]);
         } catch (\Exception $e) {
             Log::error('Error handling manager assigned notification', [
                 'department_id' => $event->department->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -142,12 +144,12 @@ class SendDepartmentNotification implements ShouldQueue
             Log::info('Department moved notification sent', [
                 'department_id' => $event->department->id,
                 'previous_parent_id' => $event->previousParentId,
-                'new_parent_id' => $event->newParentId
+                'new_parent_id' => $event->newParentId,
             ]);
         } catch (\Exception $e) {
             Log::error('Error handling department moved notification', [
                 'department_id' => $event->department->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -163,12 +165,12 @@ class SendDepartmentNotification implements ShouldQueue
 
             Log::info('Department archived notification sent', [
                 'department_id' => $event->department->id,
-                'reason' => $event->reason
+                'reason' => $event->reason,
             ]);
         } catch (\Exception $e) {
             Log::error('Error handling department archived notification', [
                 'department_id' => $event->department->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -188,7 +190,7 @@ class SendDepartmentNotification implements ShouldQueue
         } catch (\Exception $e) {
             Log::error('Error notifying stakeholders', [
                 'department_id' => $department->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -208,7 +210,7 @@ class SendDepartmentNotification implements ShouldQueue
         } catch (\Exception $e) {
             Log::error('Error notifying manager', [
                 'manager_id' => $managerId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -225,8 +227,9 @@ class SendDepartmentNotification implements ShouldQueue
         } catch (\Exception $e) {
             Log::error('Error getting stakeholders', [
                 'department_id' => $department->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return [];
         }
     }
@@ -243,8 +246,9 @@ class SendDepartmentNotification implements ShouldQueue
         } catch (\Exception $e) {
             Log::error('Error getting manager user', [
                 'manager_id' => $managerId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return null;
         }
     }
@@ -266,7 +270,7 @@ class SendDepartmentNotification implements ShouldQueue
     {
         Log::error('Department notification job failed', [
             'event' => get_class($event),
-            'error' => $exception->getMessage()
+            'error' => $exception->getMessage(),
         ]);
     }
 }

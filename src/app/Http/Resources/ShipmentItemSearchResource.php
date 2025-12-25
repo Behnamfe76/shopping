@@ -86,7 +86,7 @@ class ShipmentItemSearchResource extends JsonResource
         }
 
         $highlighted = preg_replace(
-            '/(' . preg_quote($query, '/') . ')/i',
+            '/('.preg_quote($query, '/').')/i',
             '<mark>$1</mark>',
             $text
         );

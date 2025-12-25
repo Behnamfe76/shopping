@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\Notifications\EmployeeTraining;
 
+use Fereydooni\Shopping\Models\EmployeeTraining;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Fereydooni\Shopping\Models\EmployeeTraining;
 
 class TrainingCertificateGenerated extends Notification implements ShouldQueue
 {
@@ -38,21 +38,21 @@ class TrainingCertificateGenerated extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Training Certificate Generated: ' . $this->training->training_name)
-            ->greeting('Hello ' . $notifiable->name . ',')
+            ->subject('Training Certificate Generated: '.$this->training->training_name)
+            ->greeting('Hello '.$notifiable->name.',')
             ->line('Congratulations! Your training certificate has been generated.')
-            ->line('Training: ' . $this->training->training_name)
-            ->line('Certificate Number: ' . $this->training->certificate_number)
-            ->line('Completion Date: ' . $this->training->completion_date->format('M d, Y'))
-            ->line('Score: ' . ($this->training->score ?? 'N/A') . '%')
-            ->line('Grade: ' . ($this->training->grade ?? 'N/A'))
+            ->line('Training: '.$this->training->training_name)
+            ->line('Certificate Number: '.$this->training->certificate_number)
+            ->line('Completion Date: '.$this->training->completion_date->format('M d, Y'))
+            ->line('Score: '.($this->training->score ?? 'N/A').'%')
+            ->line('Grade: '.($this->training->grade ?? 'N/A'))
             ->when($this->training->expiry_date, function ($message) {
-                return $message->line('Expiry Date: ' . $this->training->expiry_date->format('M d, Y'));
+                return $message->line('Expiry Date: '.$this->training->expiry_date->format('M d, Y'));
             })
             ->when($this->training->certificate_url, function ($message) {
                 return $message->action('Download Certificate', $this->training->certificate_url);
             })
-            ->action('View Training Details', url('/training/' . $this->training->id))
+            ->action('View Training Details', url('/training/'.$this->training->id))
             ->line('Your certificate is now available for download.')
             ->line('Keep this certificate for your records and future reference.')
             ->line('Thank you for completing your training!');
@@ -74,9 +74,9 @@ class TrainingCertificateGenerated extends Notification implements ShouldQueue
             'grade' => $this->training->grade,
             'expiry_date' => $this->training->expiry_date ? $this->training->expiry_date->format('Y-m-d') : null,
             'certificate_url' => $this->training->certificate_url,
-            'message' => 'Training certificate generated: ' . $this->training->training_name,
-            'action_url' => '/training/' . $this->training->id,
-            'type' => 'training_certificate_generated'
+            'message' => 'Training certificate generated: '.$this->training->training_name,
+            'action_url' => '/training/'.$this->training->id,
+            'type' => 'training_certificate_generated',
         ];
     }
 }

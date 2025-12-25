@@ -13,6 +13,7 @@ class EmergencyContactSetPrimary extends Notification implements ShouldQueue
     use Queueable;
 
     public $contact;
+
     public $previousPrimary;
 
     /**
@@ -46,16 +47,16 @@ class EmergencyContactSetPrimary extends Notification implements ShouldQueue
         $message = (new MailMessage)
             ->subject('Primary Emergency Contact Updated')
             ->greeting("Hello {$employee->first_name},")
-            ->line("Your primary emergency contact has been updated.");
+            ->line('Your primary emergency contact has been updated.');
 
         if ($previousPrimary) {
-            $message->line("**Previous Primary Contact:**")
+            $message->line('**Previous Primary Contact:**')
                 ->line("Name: {$previousPrimary->contact_name}")
                 ->line("Relationship: {$previousPrimary->relationship}")
                 ->line("Phone: {$previousPrimary->phone_primary}");
         }
 
-        $message->line("**New Primary Emergency Contact:**")
+        $message->line('**New Primary Emergency Contact:**')
             ->line("Name: {$contact->contact_name}")
             ->line("Relationship: {$contact->relationship}")
             ->line("Primary Phone: {$contact->phone_primary}");
@@ -68,8 +69,8 @@ class EmergencyContactSetPrimary extends Notification implements ShouldQueue
             $message->line("Email: {$contact->email}");
         }
 
-        $message->line("**Important:** This contact will now be the first person contacted in case of an emergency.")
-            ->line("If you did not request this change or if any information is incorrect, please contact HR immediately.")
+        $message->line('**Important:** This contact will now be the first person contacted in case of an emergency.')
+            ->line('If you did not request this change or if any information is incorrect, please contact HR immediately.')
             ->action('View Your Profile', url('/employee/profile'))
             ->line('Thank you for keeping your emergency contact information up to date.');
 
@@ -122,8 +123,8 @@ class EmergencyContactSetPrimary extends Notification implements ShouldQueue
         return [
             'emergency_contact',
             'primary_contact',
-            'employee_' . $this->contact->employee_id,
-            'contact_' . $this->contact->id,
+            'employee_'.$this->contact->employee_id,
+            'contact_'.$this->contact->id,
         ];
     }
 }

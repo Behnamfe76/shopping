@@ -2,8 +2,6 @@
 
 namespace App\Traits;
 
-use App\DTOs\ProviderInsuranceDTO;
-use App\Models\ProviderInsurance;
 use App\Services\ProviderInsuranceService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\App;
@@ -19,7 +17,7 @@ trait HasProviderInsuranceVerification
     /**
      * Verify provider insurance
      */
-    public function verifyProviderInsurance(int $insuranceId, int $verifiedBy, string $notes = null): bool
+    public function verifyProviderInsurance(int $insuranceId, int $verifiedBy, ?string $notes = null): bool
     {
         return App::make(ProviderInsuranceService::class)->verify(
             $this->findProviderInsurance($insuranceId),
@@ -94,6 +92,7 @@ trait HasProviderInsuranceVerification
     public function isInsuranceVerified(int $insuranceId): bool
     {
         $insurance = $this->findProviderInsurance($insuranceId);
+
         return $insurance && $insurance->verification_status === 'verified';
     }
 
@@ -103,6 +102,7 @@ trait HasProviderInsuranceVerification
     public function isInsuranceVerificationPending(int $insuranceId): bool
     {
         $insurance = $this->findProviderInsurance($insuranceId);
+
         return $insurance && $insurance->verification_status === 'pending';
     }
 
@@ -112,6 +112,7 @@ trait HasProviderInsuranceVerification
     public function isInsuranceVerificationRejected(int $insuranceId): bool
     {
         $insurance = $this->findProviderInsurance($insuranceId);
+
         return $insurance && $insurance->verification_status === 'rejected';
     }
 
@@ -121,6 +122,7 @@ trait HasProviderInsuranceVerification
     public function isInsuranceVerificationExpired(int $insuranceId): bool
     {
         $insurance = $this->findProviderInsurance($insuranceId);
+
         return $insurance && $insurance->verification_status === 'expired';
     }
 

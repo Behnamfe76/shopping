@@ -2,18 +2,14 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
-use Fereydooni\Shopping\app\Models\Customer;
 use Fereydooni\Shopping\app\DTOs\CustomerDTO;
-use Fereydooni\Shopping\app\Enums\CustomerStatus;
-use Fereydooni\Shopping\app\Enums\CustomerType;
+use Fereydooni\Shopping\app\Models\Customer;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
 
 trait HasCustomerOperations
 {
     protected Customer $model;
+
     protected string $dtoClass = CustomerDTO::class;
 
     // Customer-specific CRUD operations
@@ -278,7 +274,7 @@ trait HasCustomerOperations
             'email',
             'phone',
             'customer_number',
-            'company_name'
+            'company_name',
         ];
     }
 

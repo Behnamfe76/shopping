@@ -2,17 +2,20 @@
 
 namespace App\Events\EmployeeSalaryHistory;
 
+use App\Models\EmployeeSalaryHistory;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use App\Models\EmployeeSalaryHistory;
 
 class EmployeeSalaryHistoryRejected
 {
     use Dispatchable, SerializesModels;
 
     public $salaryHistory;
+
     public $rejectedBy;
+
     public $rejectedAt;
+
     public $reason;
 
     public function __construct(EmployeeSalaryHistory $salaryHistory, int $rejectedBy, string $rejectedAt, ?string $reason = null)

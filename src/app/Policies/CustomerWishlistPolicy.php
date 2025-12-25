@@ -2,10 +2,10 @@
 
 namespace Fereydooni\Shopping\app\Policies;
 
+use Fereydooni\Shopping\app\Models\Customer;
+use Fereydooni\Shopping\app\Models\CustomerWishlist;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User;
-use Fereydooni\Shopping\app\Models\CustomerWishlist;
-use Fereydooni\Shopping\app\Models\Customer;
 
 class CustomerWishlistPolicy
 {

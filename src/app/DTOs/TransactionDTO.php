@@ -2,12 +2,9 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\MapName;
-use Spatie\LaravelData\Attributes\WithTransformer;
-use Spatie\LaravelData\Transformers\DateTimeTransformer;
-use Illuminate\Support\Carbon;
 use Fereydooni\Shopping\app\Enums\TransactionStatus;
+use Illuminate\Support\Carbon;
+use Spatie\LaravelData\Data;
 
 class TransactionDTO extends Data
 {
@@ -29,8 +26,7 @@ class TransactionDTO extends Data
         public ?string $formatted_amount = null,
         public ?string $status_label = null,
         public ?string $gateway_name = null,
-    ) {
-    }
+    ) {}
 
     public static function fromModel($transaction): static
     {
@@ -49,7 +45,7 @@ class TransactionDTO extends Data
             updated_at: $transaction->updated_at,
             order: $transaction->relationLoaded('order') ? $transaction->order->toArray() : null,
             user: $transaction->relationLoaded('user') ? $transaction->user->toArray() : null,
-            formatted_amount: $transaction->amount ? number_format($transaction->amount, 2) . ' ' . strtoupper($transaction->currency) : null,
+            formatted_amount: $transaction->amount ? number_format($transaction->amount, 2).' '.strtoupper($transaction->currency) : null,
             status_label: $transaction->status?->label(),
             gateway_name: ucfirst(str_replace('_', ' ', $transaction->gateway)),
         );
@@ -64,7 +60,7 @@ class TransactionDTO extends Data
             'transaction_id' => 'required|string|max:255|unique:transactions,transaction_id',
             'amount' => 'required|numeric|min:0.01',
             'currency' => 'required|string|size:3',
-            'status' => 'required|in:' . implode(',', array_column(TransactionStatus::cases(), 'value')),
+            'status' => 'required|in:'.implode(',', array_column(TransactionStatus::cases(), 'value')),
             'payment_date' => 'nullable|date',
             'response_data' => 'nullable|array',
         ];
@@ -95,7 +91,7 @@ class TransactionDTO extends Data
 
     public function getFormattedAmount(): string
     {
-        return number_format($this->amount, 2) . ' ' . strtoupper($this->currency);
+        return number_format($this->amount, 2).' '.strtoupper($this->currency);
     }
 
     public function getStatusLabel(): string

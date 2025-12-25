@@ -2,14 +2,14 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
-use Fereydooni\Shopping\app\Models\Employee;
 use Fereydooni\Shopping\app\DTOs\EmployeeDTO;
+use Fereydooni\Shopping\app\Models\Employee;
 use Illuminate\Database\Eloquent\Collection;
 
 trait HasEmployeePerformanceManagement
 {
     // Performance rating management
-    public function updateEmployeePerformanceRating(Employee $employee, float $rating, string $reviewDate = null): bool
+    public function updateEmployeePerformanceRating(Employee $employee, float $rating, ?string $reviewDate = null): bool
     {
         return $this->repository->updatePerformanceRating($employee, $rating, $reviewDate);
     }
@@ -17,12 +17,14 @@ trait HasEmployeePerformanceManagement
     public function getEmployeePerformanceRating(int $employeeId): ?float
     {
         $employee = $this->repository->find($employeeId);
+
         return $employee ? $employee->performance_rating : null;
     }
 
     public function hasEmployeePerformanceRating(int $employeeId): bool
     {
         $employee = $this->repository->find($employeeId);
+
         return $employee ? $employee->hasPerformanceRating() : false;
     }
 
@@ -50,7 +52,7 @@ trait HasEmployeePerformanceManagement
     public function getTopPerformersByDepartment(string $department, int $limit = 10): Collection
     {
         return $this->repository->findByDepartment($department)
-            ->filter(fn($employee) => $employee->hasPerformanceRating())
+            ->filter(fn ($employee) => $employee->hasPerformanceRating())
             ->sortByDesc('performance_rating')
             ->take($limit);
     }
@@ -58,7 +60,7 @@ trait HasEmployeePerformanceManagement
     public function getTopPerformersByDepartmentDTO(string $department, int $limit = 10): Collection
     {
         return $this->getTopPerformersByDepartment($department, $limit)
-            ->map(fn($employee) => EmployeeDTO::fromModel($employee));
+            ->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     // Performance review management
@@ -80,25 +82,25 @@ trait HasEmployeePerformanceManagement
     public function getEmployeesNeedingReviews(): Collection
     {
         return $this->repository->findActive()
-            ->filter(fn($employee) => $employee->needsPerformanceReview());
+            ->filter(fn ($employee) => $employee->needsPerformanceReview());
     }
 
     public function getEmployeesNeedingReviewsDTO(): Collection
     {
         return $this->getEmployeesNeedingReviews()
-            ->map(fn($employee) => EmployeeDTO::fromModel($employee));
+            ->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function getEmployeesOverdueForReview(): Collection
     {
         return $this->repository->findActive()
-            ->filter(fn($employee) => $employee->next_review_date && $employee->next_review_date->isPast());
+            ->filter(fn ($employee) => $employee->next_review_date && $employee->next_review_date->isPast());
     }
 
     public function getEmployeesOverdueForReviewDTO(): Collection
     {
         return $this->getEmployeesOverdueForReview()
-            ->map(fn($employee) => EmployeeDTO::fromModel($employee));
+            ->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     // Performance analytics
@@ -115,14 +117,14 @@ trait HasEmployeePerformanceManagement
     public function getPerformanceRatingDistribution(): array
     {
         $employees = $this->repository->findActive()
-            ->filter(fn($employee) => $employee->hasPerformanceRating());
+            ->filter(fn ($employee) => $employee->hasPerformanceRating());
 
         $distribution = [
             'excellent' => 0, // 4.5-5.0
             'good' => 0,      // 3.5-4.4
             'average' => 0,   // 2.5-3.4
             'below_average' => 0, // 1.5-2.4
-            'poor' => 0       // 1.0-1.4
+            'poor' => 0,       // 1.0-1.4
         ];
 
         foreach ($employees as $employee) {
@@ -146,7 +148,7 @@ trait HasEmployeePerformanceManagement
         foreach ($distribution as $category => $count) {
             $distribution[$category] = [
                 'count' => $count,
-                'percentage' => $total > 0 ? round(($count / $total) * 100, 2) : 0
+                'percentage' => $total > 0 ? round(($count / $total) * 100, 2) : 0,
             ];
         }
 
@@ -167,19 +169,37 @@ trait HasEmployeePerformanceManagement
 
     public function getPerformanceRatingLabel(float $rating): string
     {
-        if ($rating >= 4.5) return 'Excellent';
-        if ($rating >= 3.5) return 'Good';
-        if ($rating >= 2.5) return 'Average';
-        if ($rating >= 1.5) return 'Below Average';
+        if ($rating >= 4.5) {
+            return 'Excellent';
+        }
+        if ($rating >= 3.5) {
+            return 'Good';
+        }
+        if ($rating >= 2.5) {
+            return 'Average';
+        }
+        if ($rating >= 1.5) {
+            return 'Below Average';
+        }
+
         return 'Poor';
     }
 
     public function getPerformanceRatingColor(float $rating): string
     {
-        if ($rating >= 4.5) return 'green';
-        if ($rating >= 3.5) return 'blue';
-        if ($rating >= 2.5) return 'yellow';
-        if ($rating >= 1.5) return 'orange';
+        if ($rating >= 4.5) {
+            return 'green';
+        }
+        if ($rating >= 3.5) {
+            return 'blue';
+        }
+        if ($rating >= 2.5) {
+            return 'yellow';
+        }
+        if ($rating >= 1.5) {
+            return 'orange';
+        }
+
         return 'red';
     }
 
@@ -228,7 +248,7 @@ trait HasEmployeePerformanceManagement
         $employee1 = $this->repository->find($employeeId1);
         $employee2 = $this->repository->find($employeeId2);
 
-        if (!$employee1 || !$employee2) {
+        if (! $employee1 || ! $employee2) {
             return [];
         }
 
@@ -237,15 +257,15 @@ trait HasEmployeePerformanceManagement
                 'id' => $employee1->id,
                 'name' => $employee1->full_name,
                 'rating' => $employee1->performance_rating,
-                'label' => $employee1->performance_rating ? $this->getPerformanceRatingLabel($employee1->performance_rating) : 'No Rating'
+                'label' => $employee1->performance_rating ? $this->getPerformanceRatingLabel($employee1->performance_rating) : 'No Rating',
             ],
             'employee2' => [
                 'id' => $employee2->id,
                 'name' => $employee2->full_name,
                 'rating' => $employee2->performance_rating,
-                'label' => $employee2->performance_rating ? $this->getPerformanceRatingLabel($employee2->performance_rating) : 'No Rating'
+                'label' => $employee2->performance_rating ? $this->getPerformanceRatingLabel($employee2->performance_rating) : 'No Rating',
             ],
-            'difference' => ($employee1->performance_rating ?? 0) - ($employee2->performance_rating ?? 0)
+            'difference' => ($employee1->performance_rating ?? 0) - ($employee2->performance_rating ?? 0),
         ];
     }
 
@@ -266,18 +286,18 @@ trait HasEmployeePerformanceManagement
                 'average_rating' => $avgRating,
                 'employee_count' => $employeeCount,
                 'label' => $this->getPerformanceRatingLabel($avgRating),
-                'color' => $this->getPerformanceRatingColor($avgRating)
+                'color' => $this->getPerformanceRatingColor($avgRating),
             ];
         }
 
         // Sort by average rating descending
-        uasort($comparison, fn($a, $b) => $b['average_rating'] <=> $a['average_rating']);
+        uasort($comparison, fn ($a, $b) => $b['average_rating'] <=> $a['average_rating']);
 
         return $comparison;
     }
 
     // Performance reporting
-    public function generatePerformanceReport(string $department = null, string $period = 'current'): array
+    public function generatePerformanceReport(?string $department = null, string $period = 'current'): array
     {
         $employees = $department
             ? $this->repository->findByDepartment($department)
@@ -285,15 +305,14 @@ trait HasEmployeePerformanceManagement
 
         $report = [
             'total_employees' => $employees->count(),
-            'employees_with_rating' => $employees->filter(fn($e) => $e->hasPerformanceRating())->count(),
-            'average_rating' => $employees->filter(fn($e) => $e->hasPerformanceRating())->avg('performance_rating') ?? 0,
+            'employees_with_rating' => $employees->filter(fn ($e) => $e->hasPerformanceRating())->count(),
+            'average_rating' => $employees->filter(fn ($e) => $e->hasPerformanceRating())->avg('performance_rating') ?? 0,
             'rating_distribution' => $this->getPerformanceRatingDistribution(),
-            'top_performers' => $employees->filter(fn($e) => $e->isTopPerformer())->take(5)->values(),
-            'needs_review' => $employees->filter(fn($e) => $e->needsPerformanceReview())->count(),
-            'overdue_reviews' => $employees->filter(fn($e) => $e->next_review_date && $e->next_review_date->isPast())->count()
+            'top_performers' => $employees->filter(fn ($e) => $e->isTopPerformer())->take(5)->values(),
+            'needs_review' => $employees->filter(fn ($e) => $e->needsPerformanceReview())->count(),
+            'overdue_reviews' => $employees->filter(fn ($e) => $e->next_review_date && $e->next_review_date->isPast())->count(),
         ];
 
         return $report;
     }
 }
-

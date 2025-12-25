@@ -23,35 +23,35 @@ class GenerateReportRequest extends FormRequest
             'report_type' => [
                 'required',
                 'string',
-                'in:summary,detailed,trend,comparison,analytics,export'
+                'in:summary,detailed,trend,comparison,analytics,export',
             ],
             'provider_id' => [
                 'sometimes',
                 'integer',
-                'exists:providers,id'
+                'exists:providers,id',
             ],
             'period_start' => [
                 'sometimes',
-                'date'
+                'date',
             ],
             'period_end' => [
                 'sometimes',
                 'date',
-                'after_or_equal:period_start'
+                'after_or_equal:period_start',
             ],
             'format' => [
                 'sometimes',
                 'string',
-                'in:json,pdf,csv,excel'
+                'in:json,pdf,csv,excel',
             ],
             'include_charts' => [
                 'sometimes',
-                'boolean'
+                'boolean',
             ],
             'include_benchmarks' => [
                 'sometimes',
-                'boolean'
-            ]
+                'boolean',
+            ],
         ];
     }
 
@@ -67,7 +67,7 @@ class GenerateReportRequest extends FormRequest
             'period_end.after_or_equal' => 'Period end date must be after or equal to period start date.',
             'format.in' => 'Invalid format selected.',
             'include_charts.boolean' => 'Include charts must be true or false.',
-            'include_benchmarks.boolean' => 'Include benchmarks must be true or false.'
+            'include_benchmarks.boolean' => 'Include benchmarks must be true or false.',
         ];
     }
 
@@ -83,7 +83,7 @@ class GenerateReportRequest extends FormRequest
             'period_end' => 'period end date',
             'format' => 'format',
             'include_charts' => 'include charts',
-            'include_benchmarks' => 'include benchmarks'
+            'include_benchmarks' => 'include benchmarks',
         ];
     }
 }

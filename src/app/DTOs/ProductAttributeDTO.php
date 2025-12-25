@@ -2,19 +2,18 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
-
-use Illuminate\Support\Carbon;
-use Fereydooni\Shopping\app\Models\ProductAttribute;
-use Fereydooni\Shopping\app\Enums\ProductAttributeType;
 use Fereydooni\Shopping\app\Enums\ProductAttributeInputType;
+use Fereydooni\Shopping\app\Enums\ProductAttributeType;
+use Fereydooni\Shopping\app\Models\ProductAttribute;
+use Illuminate\Support\Carbon;
+use Spatie\LaravelData\Data;
 
 class ProductAttributeDTO extends Data
 {
     public function __construct(
         public string $name,
         public string $slug,
-        public ?string $description = null,
+        public ?string $description,
         public ProductAttributeType $type,
         public ProductAttributeInputType $input_type,
         public bool $is_required = false,
@@ -37,8 +36,7 @@ class ProductAttributeDTO extends Data
         public ?Carbon $created_at = null,
         public ?Carbon $updated_at = null,
         public ?int $id = null,
-    ) {
-    }
+    ) {}
 
     public static function fromModel(ProductAttribute $attribute): self
     {
@@ -77,8 +75,8 @@ class ProductAttributeDTO extends Data
             'name' => ['required', 'string', 'max:255'],
             'slug' => ['required', 'string', 'max:255', 'regex:/^[a-z0-9-]+$/'],
             'description' => ['nullable', 'string', 'max:1000'],
-            'type' => ['required', 'string', 'in:' . implode(',', array_column(ProductAttributeType::cases(), 'value'))],
-            'input_type' => ['required', 'string', 'in:' . implode(',', array_column(ProductAttributeInputType::cases(), 'value'))],
+            'type' => ['required', 'string', 'in:'.implode(',', array_column(ProductAttributeType::cases(), 'value'))],
+            'input_type' => ['required', 'string', 'in:'.implode(',', array_column(ProductAttributeInputType::cases(), 'value'))],
             'is_required' => ['boolean'],
             'is_searchable' => ['boolean'],
             'is_filterable' => ['boolean'],

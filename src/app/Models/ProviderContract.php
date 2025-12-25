@@ -2,14 +2,12 @@
 
 namespace Fereydooni\Shopping\App\Models;
 
+use Fereydooni\Shopping\App\Enums\ContractStatus;
+use Fereydooni\Shopping\App\Enums\ContractType;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Fereydooni\Shopping\App\Enums\ContractType;
-use Fereydooni\Shopping\App\Enums\ContractStatus;
-use Carbon\Carbon;
 
 class ProviderContract extends Model
 {
@@ -117,7 +115,7 @@ class ProviderContract extends Model
      */
     public function isExpiringSoon(int $days = 30): bool
     {
-        return $this->end_date->diffInDays(now()) <= $days && !$this->isExpired();
+        return $this->end_date->diffInDays(now()) <= $days && ! $this->isExpired();
     }
 
     /**
@@ -125,7 +123,7 @@ class ProviderContract extends Model
      */
     public function canBeRenewed(): bool
     {
-        return $this->status->canBeRenewed() && !$this->isExpired();
+        return $this->status->canBeRenewed() && ! $this->isExpired();
     }
 
     /**
@@ -149,7 +147,7 @@ class ProviderContract extends Model
      */
     public function isSigned(): bool
     {
-        return !is_null($this->signed_at) && !is_null($this->signed_by);
+        return ! is_null($this->signed_at) && ! is_null($this->signed_by);
     }
 
     /**
@@ -179,7 +177,7 @@ class ProviderContract extends Model
     /**
      * Get the contract value in the specified currency.
      */
-    public function getContractValueInCurrency(string $currency = null): float
+    public function getContractValueInCurrency(?string $currency = null): float
     {
         if ($currency === null || $currency === $this->currency) {
             return $this->contract_value;

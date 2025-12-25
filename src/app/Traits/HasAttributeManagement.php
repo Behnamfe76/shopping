@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
-use Illuminate\Database\Eloquent\Collection;
-use Fereydooni\Shopping\app\Enums\ProductAttributeType;
 use Fereydooni\Shopping\app\Enums\ProductAttributeInputType;
+use Fereydooni\Shopping\app\Enums\ProductAttributeType;
+use Illuminate\Database\Eloquent\Collection;
 
 trait HasAttributeManagement
 {
@@ -68,23 +68,23 @@ trait HasAttributeManagement
         $inputTypeEnum = ProductAttributeInputType::from($inputType);
 
         // Check compatibility based on type
-        if ($attributeType->isNumeric() && !$inputTypeEnum->isNumericInput()) {
+        if ($attributeType->isNumeric() && ! $inputTypeEnum->isNumericInput()) {
             return false;
         }
 
-        if ($attributeType->isDate() && !$inputTypeEnum->isDateInput()) {
+        if ($attributeType->isDate() && ! $inputTypeEnum->isDateInput()) {
             return false;
         }
 
-        if ($attributeType->isText() && !$inputTypeEnum->isTextInput()) {
+        if ($attributeType->isText() && ! $inputTypeEnum->isTextInput()) {
             return false;
         }
 
-        if ($attributeType->isSelection() && !$inputTypeEnum->isSelectionInput()) {
+        if ($attributeType->isSelection() && ! $inputTypeEnum->isSelectionInput()) {
             return false;
         }
 
-        if ($attributeType->isBoolean() && !in_array($inputType, ['checkbox', 'radio', 'select'])) {
+        if ($attributeType->isBoolean() && ! in_array($inputType, ['checkbox', 'radio', 'select'])) {
             return false;
         }
 
@@ -99,7 +99,7 @@ trait HasAttributeManagement
         $attributeType = ProductAttributeType::from($type);
         $inputTypes = $this->getInputTypes();
 
-        return $inputTypes->filter(function ($inputType) use ($attributeType) {
+        return $inputTypes->filter(function ($inputType) {
             return $this->validateAttributeTypeCompatibility($type, $inputType['value']);
         });
     }
@@ -196,4 +196,3 @@ trait HasAttributeManagement
         return array_merge($typeRules, $inputTypeRules);
     }
 }
-

@@ -2,8 +2,8 @@
 
 namespace App\Listeners\EmployeeSalaryHistory;
 
-use App\Events\EmployeeSalaryHistory\EmployeeSalaryHistoryCreated;
 use App\Events\EmployeeSalaryHistory\EmployeeSalaryHistoryApproved;
+use App\Events\EmployeeSalaryHistory\EmployeeSalaryHistoryCreated;
 use App\Events\EmployeeSalaryHistory\EmployeeSalaryHistoryRejected;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;

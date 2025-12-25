@@ -9,11 +9,11 @@ trait HasStatusToggle
 {
     public function toggleActive(Model $model): bool
     {
-        if (!$this->canToggleStatus($model, 'active')) {
+        if (! $this->canToggleStatus($model, 'active')) {
             return false;
         }
 
-        $model->is_active = !$model->is_active;
+        $model->is_active = ! $model->is_active;
         $saved = $model->save();
 
         if ($saved) {
@@ -25,11 +25,11 @@ trait HasStatusToggle
 
     public function toggleFeatured(Model $model): bool
     {
-        if (!$this->canToggleStatus($model, 'featured')) {
+        if (! $this->canToggleStatus($model, 'featured')) {
             return false;
         }
 
-        $model->is_featured = !$model->is_featured;
+        $model->is_featured = ! $model->is_featured;
         $saved = $model->save();
 
         if ($saved) {
@@ -41,7 +41,7 @@ trait HasStatusToggle
 
     public function publish(Model $model): bool
     {
-        if (!$this->canChangeStatus($model, 'published')) {
+        if (! $this->canChangeStatus($model, 'published')) {
             return false;
         }
 
@@ -57,7 +57,7 @@ trait HasStatusToggle
 
     public function unpublish(Model $model): bool
     {
-        if (!$this->canChangeStatus($model, 'draft')) {
+        if (! $this->canChangeStatus($model, 'draft')) {
             return false;
         }
 
@@ -73,7 +73,7 @@ trait HasStatusToggle
 
     public function archive(Model $model): bool
     {
-        if (!$this->canChangeStatus($model, 'archived')) {
+        if (! $this->canChangeStatus($model, 'archived')) {
             return false;
         }
 
@@ -90,34 +90,38 @@ trait HasStatusToggle
     protected function canToggleStatus(Model $model, string $statusType): bool
     {
         $user = Auth::user();
-        if (!$user) {
+        if (! $user) {
             return false;
         }
 
         $permission = $this->getStatusPermission($statusType);
+
         return $user->can($permission, $model);
     }
 
     protected function canChangeStatus(Model $model, string $newStatus): bool
     {
         $user = Auth::user();
-        if (!$user) {
+        if (! $user) {
             return false;
         }
 
         $permission = $this->getStatusChangePermission($newStatus);
+
         return $user->can($permission, $model);
     }
 
     protected function getStatusPermission(string $statusType): string
     {
         $modelName = strtolower(class_basename($model));
+
         return "{$modelName}.toggle.{$statusType}";
     }
 
     protected function getStatusChangePermission(string $status): string
     {
         $modelName = strtolower(class_basename($model));
+
         return "{$modelName}.{$status}";
     }
 
@@ -125,7 +129,7 @@ trait HasStatusToggle
     {
         // Log status change for audit trail
         // This can be implemented based on your logging requirements
-        logger()->info("Status changed", [
+        logger()->info('Status changed', [
             'model' => get_class($model),
             'model_id' => $model->id,
             'field' => $field,

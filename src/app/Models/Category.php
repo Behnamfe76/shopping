@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia;
-use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Category extends Model implements HasMedia
 {
@@ -39,9 +39,9 @@ class Category extends Model implements HasMedia
             self::class => [
                 'collection-schema' => self::getTypesenseCollectionSchema(),
                 'search-parameters' => [
-                    'query_by' => implode(',', self::searchableFields())
-                ]
-            ]
+                    'query_by' => implode(',', self::searchableFields()),
+                ],
+            ],
         ];
     }
 
@@ -66,7 +66,7 @@ class Category extends Model implements HasMedia
             'is_default' => (bool) $this->is_default,
             'sort_order' => (int) $this->sort_order,
             'created_at' => $this->created_at?->timestamp,
-            'parent' => $this->parent ? (object) array(
+            'parent' => $this->parent ? (object) [
                 'id' => (string) $this->parent->id,
                 'id_numeric' => $this->parent->id,
                 'parent_id' => (int) $this->parent->parent_id,
@@ -76,7 +76,7 @@ class Category extends Model implements HasMedia
                 'is_default' => (bool) $this->parent->is_default,
                 'sort_order' => (int) $this->parent->sort_order,
                 'created_at' => $this->parent->created_at?->timestamp,
-            ) : (object) [],
+            ] : (object) [],
         ];
     }
 
@@ -133,14 +133,14 @@ class Category extends Model implements HasMedia
                     'facet' => false,
                 ],
                 [
-                    "name" => "embedding",
-                    "type" => "float[]",
-                    "embed" => [
-                        "from" => self::searchableFields(),
-                        "model_config" => [
-                            "model_name" => "ts/all-MiniLM-L12-v2"
-                        ]
-                    ]
+                    'name' => 'embedding',
+                    'type' => 'float[]',
+                    'embed' => [
+                        'from' => self::searchableFields(),
+                        'model_config' => [
+                            'model_name' => 'ts/all-MiniLM-L12-v2',
+                        ],
+                    ],
                 ],
                 // Parent object fields (nested)
                 [
@@ -196,7 +196,7 @@ class Category extends Model implements HasMedia
                 ],
             ],
             'default_sorting_field' => 'created_at',
-            'enable_nested_fields' => true
+            'enable_nested_fields' => true,
         ];
     }
 

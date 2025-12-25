@@ -23,14 +23,14 @@ return new class extends Migration
                 'email', 'phone', 'chat', 'sms', 'video_call', 'in_person',
                 'support_ticket', 'complaint', 'inquiry', 'order_update',
                 'payment_notification', 'quality_issue', 'delivery_update',
-                'contract_discussion', 'general'
+                'contract_discussion', 'general',
             ]);
             $table->string('subject', 255);
             $table->text('message');
             $table->enum('direction', ['inbound', 'outbound']);
             $table->enum('status', [
                 'draft', 'sent', 'delivered', 'read', 'replied',
-                'closed', 'archived', 'failed'
+                'closed', 'archived', 'failed',
             ])->default('draft');
 
             // Timestamps
@@ -92,19 +92,19 @@ return new class extends Migration
 
             // Foreign key constraints
             $table->foreign('provider_id')
-                  ->references('id')
-                  ->on('providers')
-                  ->onDelete('cascade');
+                ->references('id')
+                ->on('providers')
+                ->onDelete('cascade');
 
             $table->foreign('user_id')
-                  ->references('id')
-                  ->on('users')
-                  ->onDelete('cascade');
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade');
 
             $table->foreign('parent_id')
-                  ->references('id')
-                  ->on('provider_communications')
-                  ->onDelete('cascade');
+                ->references('id')
+                ->on('provider_communications')
+                ->onDelete('cascade');
         });
     }
 

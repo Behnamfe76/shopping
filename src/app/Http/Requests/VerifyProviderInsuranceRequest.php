@@ -23,13 +23,13 @@ class VerifyProviderInsuranceRequest extends FormRequest
             'verified_by' => [
                 'required',
                 'integer',
-                'exists:users,id'
+                'exists:users,id',
             ],
             'notes' => [
                 'nullable',
                 'string',
-                'max:1000'
-            ]
+                'max:1000',
+            ],
         ];
     }
 
@@ -41,7 +41,7 @@ class VerifyProviderInsuranceRequest extends FormRequest
         return [
             'verified_by.required' => 'Verifier ID is required.',
             'verified_by.exists' => 'The selected verifier does not exist.',
-            'notes.max' => 'Notes cannot exceed 1000 characters.'
+            'notes.max' => 'Notes cannot exceed 1000 characters.',
         ];
     }
 
@@ -52,7 +52,7 @@ class VerifyProviderInsuranceRequest extends FormRequest
     {
         return [
             'verified_by' => 'verifier',
-            'notes' => 'notes'
+            'notes' => 'notes',
         ];
     }
 
@@ -62,7 +62,7 @@ class VerifyProviderInsuranceRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         // Set verified_by to current user if not provided
-        if (!$this->has('verified_by')) {
+        if (! $this->has('verified_by')) {
             $this->merge(['verified_by' => $this->user()->id]);
         }
     }

@@ -3,7 +3,6 @@
 namespace Fereydooni\Shopping\app\Traits;
 
 use Fereydooni\Shopping\app\Models\Employee;
-use Fereydooni\Shopping\app\DTOs\EmployeeDTO;
 use Illuminate\Database\Eloquent\Collection;
 
 trait HasEmployeeAnalytics
@@ -41,7 +40,7 @@ trait HasEmployeeAnalytics
             'terminations' => $this->getTerminationsCount($period),
             'growth_rate' => $this->calculateGrowthRate($period),
             'turnover_rate' => $this->calculateTurnoverRate($period),
-            'retention_rate' => $this->calculateRetentionRate($period)
+            'retention_rate' => $this->calculateRetentionRate($period),
         ];
 
         return $stats;
@@ -56,7 +55,7 @@ trait HasEmployeeAnalytics
             'involuntary_turnover_rate' => $this->calculateInvoluntaryTurnoverRate('annual'),
             'turnover_by_department' => $this->getTurnoverByDepartment(),
             'turnover_by_employment_type' => $this->getTurnoverByEmploymentType(),
-            'turnover_trends' => $this->getTurnoverTrends()
+            'turnover_trends' => $this->getTurnoverTrends(),
         ];
 
         return $stats;
@@ -70,7 +69,7 @@ trait HasEmployeeAnalytics
             'retention_by_department' => $this->getRetentionByDepartment(),
             'retention_by_employment_type' => $this->getRetentionByEmploymentType(),
             'retention_by_tenure' => $this->getRetentionByTenure(),
-            'retention_trends' => $this->getRetentionTrends()
+            'retention_trends' => $this->getRetentionTrends(),
         ];
 
         return $stats;
@@ -84,7 +83,7 @@ trait HasEmployeeAnalytics
             'performance_distribution' => $this->getPerformanceDistribution(),
             'top_performers_count' => $this->getTopPerformersCount(),
             'performance_by_department' => $this->getPerformanceByDepartment(),
-            'performance_trends' => $this->getPerformanceTrends()
+            'performance_trends' => $this->getPerformanceTrends(),
         ];
 
         return $stats;
@@ -99,7 +98,7 @@ trait HasEmployeeAnalytics
             'salary_by_department' => $this->getSalaryByDepartment(),
             'salary_by_employment_type' => $this->getSalaryByEmploymentType(),
             'salary_distribution' => $this->getSalaryDistribution(),
-            'salary_trends' => $this->getSalaryTrends()
+            'salary_trends' => $this->getSalaryTrends(),
         ];
 
         return $stats;
@@ -112,7 +111,7 @@ trait HasEmployeeAnalytics
             'vacation_utilization_rate' => $this->getVacationUtilizationRate(),
             'sick_leave_utilization_rate' => $this->getSickLeaveUtilizationRate(),
             'time_off_by_department' => $this->getTimeOffByDepartment(),
-            'time_off_trends' => $this->getTimeOffTrends()
+            'time_off_trends' => $this->getTimeOffTrends(),
         ];
 
         return $stats;
@@ -129,13 +128,13 @@ trait HasEmployeeAnalytics
             'age_distribution' => $this->getAgeDistribution($employees),
             'tenure_distribution' => $this->getTenureDistribution($employees),
             'department_distribution' => $this->getDepartmentDistribution($employees),
-            'employment_type_distribution' => $this->getEmploymentTypeDistribution($employees)
+            'employment_type_distribution' => $this->getEmploymentTypeDistribution($employees),
         ];
 
         return $demographics;
     }
 
-    public function getGenderDistribution(Collection $employees = null): array
+    public function getGenderDistribution(?Collection $employees = null): array
     {
         $employees = $employees ?: $this->repository->findActive();
         $total = $employees->count();
@@ -148,14 +147,14 @@ trait HasEmployeeAnalytics
         foreach ($employees->pluck('gender')->countBy() as $gender => $count) {
             $distribution[$gender] = [
                 'count' => $count,
-                'percentage' => round(($count / $total) * 100, 2)
+                'percentage' => round(($count / $total) * 100, 2),
             ];
         }
 
         return $distribution;
     }
 
-    public function getAgeDistribution(Collection $employees = null): array
+    public function getAgeDistribution(?Collection $employees = null): array
     {
         $employees = $employees ?: $this->repository->findActive();
         $total = $employees->count();
@@ -170,19 +169,26 @@ trait HasEmployeeAnalytics
             '36-45' => 0,
             '46-55' => 0,
             '56-65' => 0,
-            '65+' => 0
+            '65+' => 0,
         ];
 
         foreach ($employees as $employee) {
             if ($employee->date_of_birth) {
                 $age = $employee->date_of_birth->age;
 
-                if ($age >= 18 && $age <= 25) $ageGroups['18-25']++;
-                elseif ($age >= 26 && $age <= 35) $ageGroups['26-35']++;
-                elseif ($age >= 36 && $age <= 45) $ageGroups['36-45']++;
-                elseif ($age >= 46 && $age <= 55) $ageGroups['46-55']++;
-                elseif ($age >= 56 && $age <= 65) $ageGroups['56-65']++;
-                else $ageGroups['65+']++;
+                if ($age >= 18 && $age <= 25) {
+                    $ageGroups['18-25']++;
+                } elseif ($age >= 26 && $age <= 35) {
+                    $ageGroups['26-35']++;
+                } elseif ($age >= 36 && $age <= 45) {
+                    $ageGroups['36-45']++;
+                } elseif ($age >= 46 && $age <= 55) {
+                    $ageGroups['46-55']++;
+                } elseif ($age >= 56 && $age <= 65) {
+                    $ageGroups['56-65']++;
+                } else {
+                    $ageGroups['65+']++;
+                }
             }
         }
 
@@ -190,14 +196,14 @@ trait HasEmployeeAnalytics
         foreach ($ageGroups as $group => $count) {
             $distribution[$group] = [
                 'count' => $count,
-                'percentage' => $total > 0 ? round(($count / $total) * 100, 2) : 0
+                'percentage' => $total > 0 ? round(($count / $total) * 100, 2) : 0,
             ];
         }
 
         return $distribution;
     }
 
-    public function getTenureDistribution(Collection $employees = null): array
+    public function getTenureDistribution(?Collection $employees = null): array
     {
         $employees = $employees ?: $this->repository->findActive();
         $total = $employees->count();
@@ -211,31 +217,37 @@ trait HasEmployeeAnalytics
             '1-3 years' => 0,
             '3-5 years' => 0,
             '5-10 years' => 0,
-            '10+ years' => 0
+            '10+ years' => 0,
         ];
 
         foreach ($employees as $employee) {
             $yearsOfService = $employee->years_of_service;
 
-            if ($yearsOfService < 1) $tenureGroups['0-1 years']++;
-            elseif ($yearsOfService < 3) $tenureGroups['1-3 years']++;
-            elseif ($yearsOfService < 5) $tenureGroups['3-5 years']++;
-            elseif ($yearsOfService < 10) $tenureGroups['5-10 years']++;
-            else $tenureGroups['10+ years']++;
+            if ($yearsOfService < 1) {
+                $tenureGroups['0-1 years']++;
+            } elseif ($yearsOfService < 3) {
+                $tenureGroups['1-3 years']++;
+            } elseif ($yearsOfService < 5) {
+                $tenureGroups['3-5 years']++;
+            } elseif ($yearsOfService < 10) {
+                $tenureGroups['5-10 years']++;
+            } else {
+                $tenureGroups['10+ years']++;
+            }
         }
 
         $distribution = [];
         foreach ($tenureGroups as $group => $count) {
             $distribution[$group] = [
                 'count' => $count,
-                'percentage' => $total > 0 ? round(($count / $total) * 100, 2) : 0
+                'percentage' => $total > 0 ? round(($count / $total) * 100, 2) : 0,
             ];
         }
 
         return $distribution;
     }
 
-    public function getDepartmentDistribution(Collection $employees = null): array
+    public function getDepartmentDistribution(?Collection $employees = null): array
     {
         $employees = $employees ?: $this->repository->findActive();
         $total = $employees->count();
@@ -248,14 +260,14 @@ trait HasEmployeeAnalytics
         foreach ($employees->pluck('department')->countBy() as $department => $count) {
             $distribution[$department] = [
                 'count' => $count,
-                'percentage' => round(($count / $total) * 100, 2)
+                'percentage' => round(($count / $total) * 100, 2),
             ];
         }
 
         return $distribution;
     }
 
-    public function getEmploymentTypeDistribution(Collection $employees = null): array
+    public function getEmploymentTypeDistribution(?Collection $employees = null): array
     {
         $employees = $employees ?: $this->repository->findActive();
         $total = $employees->count();
@@ -268,7 +280,7 @@ trait HasEmployeeAnalytics
         foreach ($employees->pluck('employment_type')->countBy() as $type => $count) {
             $distribution[$type] = [
                 'count' => $count,
-                'percentage' => round(($count / $total) * 100, 2)
+                'percentage' => round(($count / $total) * 100, 2),
             ];
         }
 
@@ -279,24 +291,30 @@ trait HasEmployeeAnalytics
     public function getPerformanceDistribution(): array
     {
         $employees = $this->repository->findActive()
-            ->filter(fn($employee) => $employee->hasPerformanceRating());
+            ->filter(fn ($employee) => $employee->hasPerformanceRating());
 
         $distribution = [
             'excellent' => 0, // 4.5-5.0
             'good' => 0,      // 3.5-4.4
             'average' => 0,   // 2.5-3.4
             'below_average' => 0, // 1.5-2.4
-            'poor' => 0       // 1.0-1.4
+            'poor' => 0,       // 1.0-1.4
         ];
 
         foreach ($employees as $employee) {
             $rating = $employee->performance_rating;
 
-            if ($rating >= 4.5) $distribution['excellent']++;
-            elseif ($rating >= 3.5) $distribution['good']++;
-            elseif ($rating >= 2.5) $distribution['average']++;
-            elseif ($rating >= 1.5) $distribution['below_average']++;
-            else $distribution['poor']++;
+            if ($rating >= 4.5) {
+                $distribution['excellent']++;
+            } elseif ($rating >= 3.5) {
+                $distribution['good']++;
+            } elseif ($rating >= 2.5) {
+                $distribution['average']++;
+            } elseif ($rating >= 1.5) {
+                $distribution['below_average']++;
+            } else {
+                $distribution['poor']++;
+            }
         }
 
         $total = array_sum($distribution);
@@ -304,7 +322,7 @@ trait HasEmployeeAnalytics
         foreach ($distribution as $category => $count) {
             $distribution[$category] = [
                 'count' => $count,
-                'percentage' => $total > 0 ? round(($count / $total) * 100, 2) : 0
+                'percentage' => $total > 0 ? round(($count / $total) * 100, 2) : 0,
             ];
         }
 
@@ -314,7 +332,7 @@ trait HasEmployeeAnalytics
     public function getTopPerformersCount(): int
     {
         return $this->repository->findActive()
-            ->filter(fn($employee) => $employee->isTopPerformer())
+            ->filter(fn ($employee) => $employee->isTopPerformer())
             ->count();
     }
 
@@ -335,8 +353,8 @@ trait HasEmployeeAnalytics
                 'average_rating' => $avgRating,
                 'employee_count' => $employeeCount,
                 'top_performers_count' => $this->repository->findByDepartment($department)
-                    ->filter(fn($e) => $e->isTopPerformer())
-                    ->count()
+                    ->filter(fn ($e) => $e->isTopPerformer())
+                    ->count(),
             ];
         }
 
@@ -362,7 +380,7 @@ trait HasEmployeeAnalytics
                 'total_salary' => $totalSalary,
                 'average_salary' => $avgSalary,
                 'employee_count' => $employeeCount,
-                'salary_per_employee' => $employeeCount > 0 ? $totalSalary / $employeeCount : 0
+                'salary_per_employee' => $employeeCount > 0 ? $totalSalary / $employeeCount : 0,
             ];
         }
 
@@ -389,7 +407,7 @@ trait HasEmployeeAnalytics
                 'total_salary' => $totalSalary,
                 'average_salary' => $avgSalary,
                 'employee_count' => $employeeCount,
-                'salary_per_employee' => $employeeCount > 0 ? $totalSalary / $employeeCount : 0
+                'salary_per_employee' => $employeeCount > 0 ? $totalSalary / $employeeCount : 0,
             ];
         }
 
@@ -399,7 +417,7 @@ trait HasEmployeeAnalytics
     public function getSalaryDistribution(): array
     {
         $employees = $this->repository->findActive()
-            ->filter(fn($employee) => $employee->salary > 0);
+            ->filter(fn ($employee) => $employee->salary > 0);
 
         $salaryRanges = [
             '0-50k' => 0,
@@ -407,18 +425,25 @@ trait HasEmployeeAnalytics
             '75k-100k' => 0,
             '100k-150k' => 0,
             '150k-200k' => 0,
-            '200k+' => 0
+            '200k+' => 0,
         ];
 
         foreach ($employees as $employee) {
             $salary = $employee->salary;
 
-            if ($salary < 50000) $salaryRanges['0-50k']++;
-            elseif ($salary < 75000) $salaryRanges['50k-75k']++;
-            elseif ($salary < 100000) $salaryRanges['75k-100k']++;
-            elseif ($salary < 150000) $salaryRanges['100k-150k']++;
-            elseif ($salary < 200000) $salaryRanges['150k-200k']++;
-            else $salaryRanges['200k+']++;
+            if ($salary < 50000) {
+                $salaryRanges['0-50k']++;
+            } elseif ($salary < 75000) {
+                $salaryRanges['50k-75k']++;
+            } elseif ($salary < 100000) {
+                $salaryRanges['75k-100k']++;
+            } elseif ($salary < 150000) {
+                $salaryRanges['100k-150k']++;
+            } elseif ($salary < 200000) {
+                $salaryRanges['150k-200k']++;
+            } else {
+                $salaryRanges['200k+']++;
+            }
         }
 
         $total = array_sum($salaryRanges);
@@ -427,7 +452,7 @@ trait HasEmployeeAnalytics
         foreach ($salaryRanges as $range => $count) {
             $distribution[$range] = [
                 'count' => $count,
-                'percentage' => $total > 0 ? round(($count / $total) * 100, 2) : 0
+                'percentage' => $total > 0 ? round(($count / $total) * 100, 2) : 0,
             ];
         }
 
@@ -556,7 +581,7 @@ trait HasEmployeeAnalytics
     }
 
     // Comprehensive analytics report
-    public function generateComprehensiveAnalyticsReport(string $department = null, string $period = 'current'): array
+    public function generateComprehensiveAnalyticsReport(?string $department = null, string $period = 'current'): array
     {
         $report = [
             'period' => $period,
@@ -570,10 +595,9 @@ trait HasEmployeeAnalytics
             'salary_stats' => $this->getEmployeeSalaryStats(),
             'time_off_stats' => $this->getEmployeeTimeOffStats(),
             'hierarchy_stats' => $this->getHierarchyStats(),
-            'benefits_stats' => $this->getBenefitsEnrollmentStats()
+            'benefits_stats' => $this->getBenefitsEnrollmentStats(),
         ];
 
         return $report;
     }
 }
-

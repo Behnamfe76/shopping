@@ -2,27 +2,27 @@
 
 namespace Fereydooni\Shopping\app\Services;
 
-use Illuminate\Database\Eloquent\Collection;
-use Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeRepositoryInterface;
-use Fereydooni\Shopping\app\Models\ProductAttribute;
 use Fereydooni\Shopping\app\DTOs\ProductAttributeDTO;
-use Fereydooni\Shopping\app\Models\ProductAttributeValue;
 use Fereydooni\Shopping\app\DTOs\ProductAttributeValueDTO;
+use Fereydooni\Shopping\app\Models\ProductAttribute;
+use Fereydooni\Shopping\app\Models\ProductAttributeValue;
+use Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeRepositoryInterface;
+use Fereydooni\Shopping\app\Traits\HasAnalyticsOperations;
+use Fereydooni\Shopping\app\Traits\HasAttributeManagement;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
-use Fereydooni\Shopping\app\Traits\HasStatusToggle;
 use Fereydooni\Shopping\app\Traits\HasSearchOperations;
 use Fereydooni\Shopping\app\Traits\HasSlugGeneration;
-use Fereydooni\Shopping\app\Traits\HasAttributeManagement;
-use Fereydooni\Shopping\app\Traits\HasAnalyticsOperations;
+use Fereydooni\Shopping\app\Traits\HasStatusToggle;
+use Illuminate\Database\Eloquent\Collection;
 
 class ProductAttributeService
 {
+    use HasAnalyticsOperations;
+    use HasAttributeManagement;
     use HasCrudOperations;
-    use HasStatusToggle;
     use HasSearchOperations;
     use HasSlugGeneration;
-    use HasAttributeManagement;
-    use HasAnalyticsOperations;
+    use HasStatusToggle;
 
     public function __construct(
         private ProductAttributeRepositoryInterface $repository

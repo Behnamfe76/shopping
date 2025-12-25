@@ -2,14 +2,14 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
+use Exception;
 use Fereydooni\Shopping\app\Events\Provider\ProviderLocationCreated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderLocationUpdated;
 use Fereydooni\Shopping\app\Events\Provider\ProviderLocationDeleted;
+use Fereydooni\Shopping\app\Events\Provider\ProviderLocationUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
-use Exception;
+use Illuminate\Support\Facades\Log;
 
 class ValidateLocationData implements ShouldQueue
 {
@@ -48,13 +48,13 @@ class ValidateLocationData implements ShouldQueue
 
             Log::info('Location data validation completed for location creation', [
                 'location_id' => $location->id,
-                'provider_id' => $location->provider_id
+                'provider_id' => $location->provider_id,
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to validate location data for location creation', [
                 'location_id' => $event->providerLocation->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -85,13 +85,13 @@ class ValidateLocationData implements ShouldQueue
 
             Log::info('Location data validation completed for location update', [
                 'location_id' => $location->id,
-                'provider_id' => $location->provider_id
+                'provider_id' => $location->provider_id,
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to validate location data for location update', [
                 'location_id' => $event->providerLocation->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -109,13 +109,13 @@ class ValidateLocationData implements ShouldQueue
 
             Log::info('Location data validation completed for location deletion', [
                 'location_id' => $location->id,
-                'provider_id' => $location->provider_id
+                'provider_id' => $location->provider_id,
             ]);
 
         } catch (Exception $e) {
             Log::error('Failed to validate location data for location deletion', [
                 'location_id' => $event->providerLocation->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -155,17 +155,17 @@ class ValidateLocationData implements ShouldQueue
             }
 
             // Log validation errors if any
-            if (!empty($errors)) {
+            if (! empty($errors)) {
                 Log::warning('Location data validation errors found', [
                     'location_id' => $location->id,
-                    'errors' => $errors
+                    'errors' => $errors,
                 ]);
             }
 
         } catch (Exception $e) {
             Log::error('Failed to validate location integrity', [
                 'location_id' => $location->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -179,26 +179,27 @@ class ValidateLocationData implements ShouldQueue
             // Check if provider exists
             $provider = DB::table('providers')->where('id', $location->provider_id)->first();
 
-            if (!$provider) {
+            if (! $provider) {
                 Log::error('Provider not found for location', [
                     'location_id' => $location->id,
-                    'provider_id' => $location->provider_id
+                    'provider_id' => $location->provider_id,
                 ]);
+
                 return;
             }
 
             // Check if provider is active
-            if (!$provider->is_active) {
+            if (! $provider->is_active) {
                 Log::warning('Location created for inactive provider', [
                     'location_id' => $location->id,
-                    'provider_id' => $location->provider_id
+                    'provider_id' => $location->provider_id,
                 ]);
             }
 
         } catch (Exception $e) {
             Log::error('Failed to validate provider constraints', [
                 'location_id' => $location->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -221,7 +222,7 @@ class ValidateLocationData implements ShouldQueue
                     Log::error('Multiple primary locations found for provider', [
                         'location_id' => $location->id,
                         'provider_id' => $location->provider_id,
-                        'existing_primary_id' => $existingPrimary->id
+                        'existing_primary_id' => $existingPrimary->id,
                     ]);
                 }
             }
@@ -229,7 +230,7 @@ class ValidateLocationData implements ShouldQueue
         } catch (Exception $e) {
             Log::error('Failed to validate primary location constraints', [
                 'location_id' => $location->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -243,34 +244,34 @@ class ValidateLocationData implements ShouldQueue
             $errors = [];
 
             // Check if coordinates are provided when address is complete
-            $hasCompleteAddress = !empty($location->address) && !empty($location->city) && !empty($location->country);
+            $hasCompleteAddress = ! empty($location->address) && ! empty($location->city) && ! empty($location->country);
             $hasCoordinates = $location->latitude !== null && $location->longitude !== null;
 
-            if ($hasCompleteAddress && !$hasCoordinates) {
+            if ($hasCompleteAddress && ! $hasCoordinates) {
                 Log::info('Location has complete address but no coordinates - geocoding may be needed', [
-                    'location_id' => $location->id
+                    'location_id' => $location->id,
                 ]);
             }
 
             // Validate postal code format if provided
-            if (!empty($location->postal_code)) {
-                if (!$this->isValidPostalCode($location->postal_code, $location->country)) {
+            if (! empty($location->postal_code)) {
+                if (! $this->isValidPostalCode($location->postal_code, $location->country)) {
                     $errors[] = 'Invalid postal code format for country';
                 }
             }
 
             // Log validation errors if any
-            if (!empty($errors)) {
+            if (! empty($errors)) {
                 Log::warning('Geographic data validation errors found', [
                     'location_id' => $location->id,
-                    'errors' => $errors
+                    'errors' => $errors,
                 ]);
             }
 
         } catch (Exception $e) {
             Log::error('Failed to validate geographic data', [
                 'location_id' => $location->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -284,32 +285,32 @@ class ValidateLocationData implements ShouldQueue
             $errors = [];
 
             // Validate phone number if provided
-            if (!empty($location->phone) && !$this->isValidPhoneNumber($location->phone)) {
+            if (! empty($location->phone) && ! $this->isValidPhoneNumber($location->phone)) {
                 $errors[] = 'Invalid phone number format';
             }
 
             // Validate email if provided
-            if (!empty($location->email) && !filter_var($location->email, FILTER_VALIDATE_EMAIL)) {
+            if (! empty($location->email) && ! filter_var($location->email, FILTER_VALIDATE_EMAIL)) {
                 $errors[] = 'Invalid email format';
             }
 
             // Validate website if provided
-            if (!empty($location->website) && !filter_var($location->website, FILTER_VALIDATE_URL)) {
+            if (! empty($location->website) && ! filter_var($location->website, FILTER_VALIDATE_URL)) {
                 $errors[] = 'Invalid website URL format';
             }
 
             // Log validation errors if any
-            if (!empty($errors)) {
+            if (! empty($errors)) {
                 Log::warning('Contact information validation errors found', [
                     'location_id' => $location->id,
-                    'errors' => $errors
+                    'errors' => $errors,
                 ]);
             }
 
         } catch (Exception $e) {
             Log::error('Failed to validate contact information', [
                 'location_id' => $location->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -328,14 +329,14 @@ class ValidateLocationData implements ShouldQueue
             if ($remainingLocations === 0) {
                 Log::info('Provider has no remaining locations after deletion', [
                     'provider_id' => $location->provider_id,
-                    'deleted_location_id' => $location->id
+                    'deleted_location_id' => $location->id,
                 ]);
             }
 
         } catch (Exception $e) {
             Log::error('Failed to validate provider constraints after deletion', [
                 'location_id' => $location->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -353,10 +354,10 @@ class ValidateLocationData implements ShouldQueue
                     ->where('is_primary', 1)
                     ->first();
 
-                if (!$remainingPrimary) {
+                if (! $remainingPrimary) {
                     Log::warning('No primary location remaining after deletion', [
                         'provider_id' => $location->provider_id,
-                        'deleted_location_id' => $location->id
+                        'deleted_location_id' => $location->id,
                     ]);
                 }
             }
@@ -364,7 +365,7 @@ class ValidateLocationData implements ShouldQueue
         } catch (Exception $e) {
             Log::error('Failed to validate primary location after deletion', [
                 'location_id' => $location->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -399,7 +400,7 @@ class ValidateLocationData implements ShouldQueue
             'location_id' => $locationId,
             'provider_id' => $providerId,
             'error' => $exception->getMessage(),
-            'trace' => $exception->getTraceAsString()
+            'trace' => $exception->getTraceAsString(),
         ]);
     }
 }

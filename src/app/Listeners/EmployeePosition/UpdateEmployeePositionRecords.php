@@ -2,13 +2,13 @@
 
 namespace App\Listeners\EmployeePosition;
 
-use App\Events\EmployeePosition\EmployeePositionUpdated;
 use App\Events\EmployeePosition\EmployeePositionArchived;
+use App\Events\EmployeePosition\EmployeePositionUpdated;
 use App\Models\Employee;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class UpdateEmployeePositionRecords implements ShouldQueue
 {
@@ -29,7 +29,7 @@ class UpdateEmployeePositionRecords implements ShouldQueue
             Log::error('Failed to update employee position records', [
                 'event' => get_class($event),
                 'position_id' => $event->position->id ?? null,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -58,7 +58,7 @@ class UpdateEmployeePositionRecords implements ShouldQueue
             'position_id' => $position->id,
             'title' => $position->title,
             'affected_employees' => $employees->count(),
-            'changes' => $changes
+            'changes' => $changes,
         ]);
     }
 
@@ -81,7 +81,7 @@ class UpdateEmployeePositionRecords implements ShouldQueue
             'position_id' => $position->id,
             'title' => $position->title,
             'affected_employees' => $employees->count(),
-            'archive_details' => $archiveDetails
+            'archive_details' => $archiveDetails,
         ]);
     }
 
@@ -122,7 +122,7 @@ class UpdateEmployeePositionRecords implements ShouldQueue
             Log::error('Failed to update employee position record', [
                 'employee_id' => $employee->id,
                 'position_id' => $position->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -154,13 +154,13 @@ class UpdateEmployeePositionRecords implements ShouldQueue
                     $this->createPositionHistoryRecord($employee, $replacementPosition, 'transferred_from_archived', [
                         'archived_position_id' => $position->id,
                         'archived_position_title' => $position->title,
-                        'archive_reason' => $archiveDetails['reason'] ?? 'No reason specified'
+                        'archive_reason' => $archiveDetails['reason'] ?? 'No reason specified',
                     ]);
 
                     Log::info('Employee transferred to replacement position', [
                         'employee_id' => $employee->id,
                         'old_position_id' => $position->id,
-                        'new_position_id' => $replacementPosition->id
+                        'new_position_id' => $replacementPosition->id,
                     ]);
                 }
             } else {
@@ -176,12 +176,12 @@ class UpdateEmployeePositionRecords implements ShouldQueue
                 // Create position history record for the archive
                 $this->createPositionHistoryRecord($employee, $position, 'archived', [
                     'archive_reason' => $archiveDetails['reason'] ?? 'No reason specified',
-                    'no_replacement' => true
+                    'no_replacement' => true,
                 ]);
 
                 Log::info('Employee marked as positionless due to position archive', [
                     'employee_id' => $employee->id,
-                    'position_id' => $position->id
+                    'position_id' => $position->id,
                 ]);
             }
 
@@ -189,7 +189,7 @@ class UpdateEmployeePositionRecords implements ShouldQueue
             Log::error('Failed to handle employee position archived', [
                 'employee_id' => $employee->id,
                 'position_id' => $position->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -231,11 +231,11 @@ class UpdateEmployeePositionRecords implements ShouldQueue
                     ]);
                 } else {
                     // If no history tables exist, just log the action
-                    Log::info('Position history record created (no history table): ' . $action, [
+                    Log::info('Position history record created (no history table): '.$action, [
                         'employee_id' => $employee->id,
                         'position_id' => $position->id,
                         'action' => $action,
-                        'details' => $details
+                        'details' => $details,
                     ]);
                 }
             }
@@ -244,15 +244,15 @@ class UpdateEmployeePositionRecords implements ShouldQueue
                 'error' => $e->getMessage(),
                 'employee_id' => $employee->id,
                 'position_id' => $position->id,
-                'action' => $action
+                'action' => $action,
             ]);
 
             // Log the action to Laravel log as fallback
-            Log::info('Position history (fallback): ' . $action, [
+            Log::info('Position history (fallback): '.$action, [
                 'employee_id' => $employee->id,
                 'position_id' => $position->id,
                 'action' => $action,
-                'details' => $details
+                'details' => $details,
             ]);
         }
     }
@@ -273,7 +273,7 @@ class UpdateEmployeePositionRecords implements ShouldQueue
             Log::info('Employee department records updated for position department change', [
                 'position_id' => $positionId,
                 'old_department_id' => $oldDepartmentId,
-                'new_department_id' => $newDepartmentId
+                'new_department_id' => $newDepartmentId,
             ]);
 
         } catch (\Exception $e) {
@@ -281,7 +281,7 @@ class UpdateEmployeePositionRecords implements ShouldQueue
                 'position_id' => $positionId,
                 'old_department_id' => $oldDepartmentId,
                 'new_department_id' => $newDepartmentId,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -305,7 +305,7 @@ class UpdateEmployeePositionRecords implements ShouldQueue
             Log::error('Failed to update employee salary info', [
                 'employee_id' => $employee->id,
                 'position_id' => $position->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -325,7 +325,7 @@ class UpdateEmployeePositionRecords implements ShouldQueue
             Log::error('Failed to update employee remote status', [
                 'employee_id' => $employee->id,
                 'position_id' => $position->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -346,7 +346,7 @@ class UpdateEmployeePositionRecords implements ShouldQueue
             Log::error('Failed to update employee travel status', [
                 'employee_id' => $employee->id,
                 'position_id' => $position->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }

@@ -2,13 +2,13 @@
 
 namespace Fereydooni\Shopping\app\Repositories;
 
+use Fereydooni\Shopping\app\DTOs\EmployeeNoteDTO;
+use Fereydooni\Shopping\app\Models\EmployeeNote;
+use Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeNoteRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeNoteRepositoryInterface;
-use Fereydooni\Shopping\app\Models\EmployeeNote;
-use Fereydooni\Shopping\app\DTOs\EmployeeNoteDTO;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -37,7 +37,7 @@ class EmployeeNoteRepository implements EmployeeNoteRepositoryInterface
             ->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->model->with(['employee', 'user'])
             ->orderBy('created_at', 'desc')
@@ -52,6 +52,7 @@ class EmployeeNoteRepository implements EmployeeNoteRepositoryInterface
     public function findDTO(int $id): ?EmployeeNoteDTO
     {
         $note = $this->find($id);
+
         return $note ? EmployeeNoteDTO::fromModel($note) : null;
     }
 
@@ -59,14 +60,15 @@ class EmployeeNoteRepository implements EmployeeNoteRepositoryInterface
     {
         try {
             DB::beginTransaction();
-            
+
             $note = $this->model->create($data);
-            
+
             DB::commit();
+
             return $note->load(['employee', 'user']);
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Failed to create employee note: ' . $e->getMessage());
+            Log::error('Failed to create employee note: '.$e->getMessage());
             throw $e;
         }
     }
@@ -74,6 +76,7 @@ class EmployeeNoteRepository implements EmployeeNoteRepositoryInterface
     public function createAndReturnDTO(array $data): EmployeeNoteDTO
     {
         $note = $this->create($data);
+
         return EmployeeNoteDTO::fromModel($note);
     }
 
@@ -81,14 +84,15 @@ class EmployeeNoteRepository implements EmployeeNoteRepositoryInterface
     {
         try {
             DB::beginTransaction();
-            
+
             $result = $employeeNote->update($data);
-            
+
             DB::commit();
+
             return $result;
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Failed to update employee note: ' . $e->getMessage());
+            Log::error('Failed to update employee note: '.$e->getMessage());
             throw $e;
         }
     }
@@ -96,6 +100,7 @@ class EmployeeNoteRepository implements EmployeeNoteRepositoryInterface
     public function updateAndReturnDTO(EmployeeNote $employeeNote, array $data): ?EmployeeNoteDTO
     {
         $updated = $this->update($employeeNote, $data);
+
         return $updated ? EmployeeNoteDTO::fromModel($employeeNote->fresh()) : null;
     }
 
@@ -103,14 +108,15 @@ class EmployeeNoteRepository implements EmployeeNoteRepositoryInterface
     {
         try {
             DB::beginTransaction();
-            
+
             $result = $employeeNote->delete();
-            
+
             DB::commit();
+
             return $result;
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Failed to delete employee note: ' . $e->getMessage());
+            Log::error('Failed to delete employee note: '.$e->getMessage());
             throw $e;
         }
     }
@@ -126,7 +132,7 @@ class EmployeeNoteRepository implements EmployeeNoteRepositoryInterface
     public function findByEmployeeIdDTO(int $employeeId): Collection
     {
         return $this->findByEmployeeId($employeeId)
-            ->map(fn($note) => EmployeeNoteDTO::fromModel($note));
+            ->map(fn ($note) => EmployeeNoteDTO::fromModel($note));
     }
 
     public function findByUserId(int $userId): Collection
@@ -140,7 +146,7 @@ class EmployeeNoteRepository implements EmployeeNoteRepositoryInterface
     public function findByUserIdDTO(int $userId): Collection
     {
         return $this->findByUserId($userId)
-            ->map(fn($note) => EmployeeNoteDTO::fromModel($note));
+            ->map(fn ($note) => EmployeeNoteDTO::fromModel($note));
     }
 
     public function findByNoteType(string $noteType): Collection
@@ -154,7 +160,7 @@ class EmployeeNoteRepository implements EmployeeNoteRepositoryInterface
     public function findByNoteTypeDTO(string $noteType): Collection
     {
         return $this->findByNoteType($noteType)
-            ->map(fn($note) => EmployeeNoteDTO::fromModel($note));
+            ->map(fn ($note) => EmployeeNoteDTO::fromModel($note));
     }
 
     public function findByPriority(string $priority): Collection
@@ -168,7 +174,7 @@ class EmployeeNoteRepository implements EmployeeNoteRepositoryInterface
     public function findByPriorityDTO(string $priority): Collection
     {
         return $this->findByPriority($priority)
-            ->map(fn($note) => EmployeeNoteDTO::fromModel($note));
+            ->map(fn ($note) => EmployeeNoteDTO::fromModel($note));
     }
 
     public function findPrivate(): Collection
@@ -182,7 +188,7 @@ class EmployeeNoteRepository implements EmployeeNoteRepositoryInterface
     public function findPrivateDTO(): Collection
     {
         return $this->findPrivate()
-            ->map(fn($note) => EmployeeNoteDTO::fromModel($note));
+            ->map(fn ($note) => EmployeeNoteDTO::fromModel($note));
     }
 
     public function findPublic(): Collection
@@ -196,7 +202,7 @@ class EmployeeNoteRepository implements EmployeeNoteRepositoryInterface
     public function findPublicDTO(): Collection
     {
         return $this->findPublic()
-            ->map(fn($note) => EmployeeNoteDTO::fromModel($note));
+            ->map(fn ($note) => EmployeeNoteDTO::fromModel($note));
     }
 
     public function findArchived(): Collection
@@ -210,7 +216,7 @@ class EmployeeNoteRepository implements EmployeeNoteRepositoryInterface
     public function findArchivedDTO(): Collection
     {
         return $this->findArchived()
-            ->map(fn($note) => EmployeeNoteDTO::fromModel($note));
+            ->map(fn ($note) => EmployeeNoteDTO::fromModel($note));
     }
 
     public function findActive(): Collection
@@ -224,7 +230,7 @@ class EmployeeNoteRepository implements EmployeeNoteRepositoryInterface
     public function findActiveDTO(): Collection
     {
         return $this->findActive()
-            ->map(fn($note) => EmployeeNoteDTO::fromModel($note));
+            ->map(fn ($note) => EmployeeNoteDTO::fromModel($note));
     }
 
     public function findByTags(array $tags): Collection
@@ -238,7 +244,7 @@ class EmployeeNoteRepository implements EmployeeNoteRepositoryInterface
     public function findByTagsDTO(array $tags): Collection
     {
         return $this->findByTags($tags)
-            ->map(fn($note) => EmployeeNoteDTO::fromModel($note));
+            ->map(fn ($note) => EmployeeNoteDTO::fromModel($note));
     }
 
     public function findByDateRange(string $startDate, string $endDate): Collection
@@ -252,7 +258,7 @@ class EmployeeNoteRepository implements EmployeeNoteRepositoryInterface
     public function findByDateRangeDTO(string $startDate, string $endDate): Collection
     {
         return $this->findByDateRange($startDate, $endDate)
-            ->map(fn($note) => EmployeeNoteDTO::fromModel($note));
+            ->map(fn ($note) => EmployeeNoteDTO::fromModel($note));
     }
 
     public function findByEmployeeAndType(int $employeeId, string $noteType): Collection
@@ -267,7 +273,7 @@ class EmployeeNoteRepository implements EmployeeNoteRepositoryInterface
     public function findByEmployeeAndTypeDTO(int $employeeId, string $noteType): Collection
     {
         return $this->findByEmployeeAndType($employeeId, $noteType)
-            ->map(fn($note) => EmployeeNoteDTO::fromModel($note));
+            ->map(fn ($note) => EmployeeNoteDTO::fromModel($note));
     }
 
     public function findByEmployeeAndPriority(int $employeeId, string $priority): Collection
@@ -282,7 +288,7 @@ class EmployeeNoteRepository implements EmployeeNoteRepositoryInterface
     public function findByEmployeeAndPriorityDTO(int $employeeId, string $priority): Collection
     {
         return $this->findByEmployeeAndPriority($employeeId, $priority)
-            ->map(fn($note) => EmployeeNoteDTO::fromModel($note));
+            ->map(fn ($note) => EmployeeNoteDTO::fromModel($note));
     }
 
     public function archive(EmployeeNote $employeeNote): bool
@@ -309,6 +315,7 @@ class EmployeeNoteRepository implements EmployeeNoteRepositoryInterface
     {
         $currentTags = $employeeNote->tags ?? [];
         $newTags = array_unique(array_merge($currentTags, $tags));
+
         return $this->update($employeeNote, ['tags' => $newTags]);
     }
 
@@ -316,6 +323,7 @@ class EmployeeNoteRepository implements EmployeeNoteRepositoryInterface
     {
         $currentTags = $employeeNote->tags ?? [];
         $newTags = array_diff($currentTags, $tags);
+
         return $this->update($employeeNote, ['tags' => array_values($newTags)]);
     }
 
@@ -328,13 +336,15 @@ class EmployeeNoteRepository implements EmployeeNoteRepositoryInterface
     {
         $currentAttachments = $employeeNote->attachments ?? [];
         $currentAttachments[] = $attachmentPath;
+
         return $this->update($employeeNote, ['attachments' => $currentAttachments]);
     }
 
     public function removeAttachment(EmployeeNote $employeeNote, string $attachmentPath): bool
     {
         $currentAttachments = $employeeNote->attachments ?? [];
-        $newAttachments = array_filter($currentAttachments, fn($path) => $path !== $attachmentPath);
+        $newAttachments = array_filter($currentAttachments, fn ($path) => $path !== $attachmentPath);
+
         return $this->update($employeeNote, ['attachments' => array_values($newAttachments)]);
     }
 
@@ -399,7 +409,7 @@ class EmployeeNoteRepository implements EmployeeNoteRepositoryInterface
     public function getRecentNotesDTO(int $limit = 10): Collection
     {
         return $this->getRecentNotes($limit)
-            ->map(fn($note) => EmployeeNoteDTO::fromModel($note));
+            ->map(fn ($note) => EmployeeNoteDTO::fromModel($note));
     }
 
     public function getRecentNotesByEmployee(int $employeeId, int $limit = 10): Collection
@@ -414,7 +424,7 @@ class EmployeeNoteRepository implements EmployeeNoteRepositoryInterface
     public function getRecentNotesByEmployeeDTO(int $employeeId, int $limit = 10): Collection
     {
         return $this->getRecentNotesByEmployee($employeeId, $limit)
-            ->map(fn($note) => EmployeeNoteDTO::fromModel($note));
+            ->map(fn ($note) => EmployeeNoteDTO::fromModel($note));
     }
 
     public function searchNotes(string $query): Collection
@@ -428,7 +438,7 @@ class EmployeeNoteRepository implements EmployeeNoteRepositoryInterface
     public function searchNotesDTO(string $query): Collection
     {
         return $this->searchNotes($query)
-            ->map(fn($note) => EmployeeNoteDTO::fromModel($note));
+            ->map(fn ($note) => EmployeeNoteDTO::fromModel($note));
     }
 
     public function searchNotesByEmployee(int $employeeId, string $query): Collection
@@ -443,7 +453,6 @@ class EmployeeNoteRepository implements EmployeeNoteRepositoryInterface
     public function searchNotesByEmployeeDTO(int $employeeId, string $query): Collection
     {
         return $this->searchNotesByEmployee($employeeId, $query)
-            ->map(fn($note) => EmployeeNoteDTO::fromModel($note));
+            ->map(fn ($note) => EmployeeNoteDTO::fromModel($note));
     }
 }
-

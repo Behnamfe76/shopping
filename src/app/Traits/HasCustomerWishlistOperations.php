@@ -2,11 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
+use Fereydooni\Shopping\app\DTOs\CustomerWishlistDTO;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
-use Fereydooni\Shopping\app\DTOs\CustomerWishlistDTO;
-use Fereydooni\Shopping\app\Models\CustomerWishlist;
-use Fereydooni\Shopping\app\Enums\WishlistPriority;
 
 trait HasCustomerWishlistOperations
 {
@@ -23,6 +21,7 @@ trait HasCustomerWishlistOperations
                 'product_id' => $productId,
                 'error' => $e->getMessage(),
             ]);
+
             return null;
         }
     }
@@ -40,6 +39,7 @@ trait HasCustomerWishlistOperations
                 'product_id' => $productId,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -99,12 +99,14 @@ trait HasCustomerWishlistOperations
     {
         try {
             $wishlist = $this->repository->find($wishlistId);
+
             return $wishlist ? $this->repository->makePublic($wishlist) : false;
         } catch (\Exception $e) {
             Log::error('Failed to make wishlist public', [
                 'wishlist_id' => $wishlistId,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -116,12 +118,14 @@ trait HasCustomerWishlistOperations
     {
         try {
             $wishlist = $this->repository->find($wishlistId);
+
             return $wishlist ? $this->repository->makePrivate($wishlist) : false;
         } catch (\Exception $e) {
             Log::error('Failed to make wishlist private', [
                 'wishlist_id' => $wishlistId,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -133,6 +137,7 @@ trait HasCustomerWishlistOperations
     {
         try {
             $wishlist = $this->repository->find($wishlistId);
+
             return $wishlist ? $this->repository->setPriority($wishlist, $priority) : false;
         } catch (\Exception $e) {
             Log::error('Failed to set wishlist priority', [
@@ -140,6 +145,7 @@ trait HasCustomerWishlistOperations
                 'priority' => $priority,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -151,12 +157,14 @@ trait HasCustomerWishlistOperations
     {
         try {
             $wishlist = $this->repository->find($wishlistId);
+
             return $wishlist ? $this->repository->updateAndReturnDTO($wishlist, ['notes' => $notes]) : null;
         } catch (\Exception $e) {
             Log::error('Failed to update wishlist notes', [
                 'wishlist_id' => $wishlistId,
                 'error' => $e->getMessage(),
             ]);
+
             return null;
         }
     }
@@ -168,6 +176,7 @@ trait HasCustomerWishlistOperations
     {
         try {
             $wishlist = $this->repository->find($wishlistId);
+
             return $wishlist ? $this->repository->updateCurrentPrice($wishlist, $currentPrice) : false;
         } catch (\Exception $e) {
             Log::error('Failed to update wishlist current price', [
@@ -175,6 +184,7 @@ trait HasCustomerWishlistOperations
                 'current_price' => $currentPrice,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -197,12 +207,14 @@ trait HasCustomerWishlistOperations
     {
         try {
             $wishlist = $this->repository->find($wishlistId);
+
             return $wishlist ? $this->repository->markAsNotified($wishlist) : false;
         } catch (\Exception $e) {
             Log::error('Failed to mark wishlist as notified', [
                 'wishlist_id' => $wishlistId,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -214,12 +226,14 @@ trait HasCustomerWishlistOperations
     {
         try {
             $wishlist = $this->repository->find($wishlistId);
+
             return $wishlist ? $this->repository->markAsNotNotified($wishlist) : false;
         } catch (\Exception $e) {
             Log::error('Failed to mark wishlist as not notified', [
                 'wishlist_id' => $wishlistId,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -236,6 +250,7 @@ trait HasCustomerWishlistOperations
                 'customer_id' => $customerId,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -252,6 +267,7 @@ trait HasCustomerWishlistOperations
                 'customer_id' => $customerId,
                 'error' => $e->getMessage(),
             ]);
+
             return [];
         }
     }
@@ -268,6 +284,7 @@ trait HasCustomerWishlistOperations
                 'customer_id' => $customerId,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -285,6 +302,7 @@ trait HasCustomerWishlistOperations
                 'target_customer_id' => $targetCustomerId,
                 'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }

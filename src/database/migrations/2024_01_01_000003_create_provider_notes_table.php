@@ -24,13 +24,13 @@ return new class extends Migration
                 'quality',
                 'performance',
                 'communication',
-                'other'
+                'other',
             ])->default('general');
             $table->enum('priority', [
                 'low',
                 'medium',
                 'high',
-                'urgent'
+                'urgent',
             ])->default('medium');
             $table->boolean('is_private')->default(false);
             $table->boolean('is_archived')->default(false);

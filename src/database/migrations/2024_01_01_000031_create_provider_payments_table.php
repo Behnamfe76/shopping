@@ -25,7 +25,7 @@ return new class extends Migration
                 'credit_card',
                 'wire_transfer',
                 'cash',
-                'other'
+                'other',
             ]);
             $table->string('reference_number', 255)->nullable();
             $table->string('transaction_id', 255)->nullable();
@@ -35,7 +35,7 @@ return new class extends Migration
                 'completed',
                 'failed',
                 'cancelled',
-                'refunded'
+                'refunded',
             ])->default('pending');
             $table->text('notes')->nullable();
             $table->json('attachments')->nullable();

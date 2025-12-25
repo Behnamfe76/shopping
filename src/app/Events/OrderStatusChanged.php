@@ -2,18 +2,21 @@
 
 namespace Fereydooni\Shopping\app\Events;
 
-use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Queue\SerializesModels;
 use Fereydooni\Shopping\app\Models\Order;
 use Fereydooni\Shopping\app\Models\OrderStatusHistory;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 
 class OrderStatusChanged
 {
     use Dispatchable, SerializesModels;
 
     public Order $order;
+
     public OrderStatusHistory $history;
+
     public string $oldStatus;
+
     public string $newStatus;
 
     /**

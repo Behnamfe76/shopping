@@ -2,19 +2,19 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Required;
-use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
+use Fereydooni\Shopping\app\Enums\EmployeeNotePriority;
+use Fereydooni\Shopping\app\Enums\EmployeeNoteType;
+use Fereydooni\Shopping\app\Models\EmployeeNote;
+use Illuminate\Support\Carbon;
+use Spatie\LaravelData\Attributes\Validation\ArrayType;
 use Spatie\LaravelData\Attributes\Validation\BooleanType;
+use Spatie\LaravelData\Attributes\Validation\In;
+use Spatie\LaravelData\Attributes\Validation\IntegerType;
 use Spatie\LaravelData\Attributes\Validation\Max;
 use Spatie\LaravelData\Attributes\Validation\Nullable;
-use Spatie\LaravelData\Attributes\Validation\In;
-use Spatie\LaravelData\Attributes\Validation\ArrayType;
-use Illuminate\Support\Carbon;
-use Fereydooni\Shopping\app\Enums\EmployeeNoteType;
-use Fereydooni\Shopping\app\Enums\EmployeeNotePriority;
-use Fereydooni\Shopping\app\Models\EmployeeNote;
+use Spatie\LaravelData\Attributes\Validation\Required;
+use Spatie\LaravelData\Attributes\Validation\StringType;
+use Spatie\LaravelData\Data;
 
 class EmployeeNoteDTO extends Data
 {
@@ -57,8 +57,7 @@ class EmployeeNoteDTO extends Data
 
         #[Nullable]
         public ?Carbon $updated_at = null,
-    ) {
-    }
+    ) {}
 
     public static function fromModel(EmployeeNote $employeeNote): self
     {
@@ -86,8 +85,8 @@ class EmployeeNoteDTO extends Data
             'user_id' => ['required', 'integer', 'exists:users,id'],
             'title' => ['required', 'string', 'max:255'],
             'content' => ['required', 'string', 'max:10000'],
-            'note_type' => ['required', 'string', 'in:' . implode(',', EmployeeNoteType::values())],
-            'priority' => ['required', 'string', 'in:' . implode(',', EmployeeNotePriority::values())],
+            'note_type' => ['required', 'string', 'in:'.implode(',', EmployeeNoteType::values())],
+            'priority' => ['required', 'string', 'in:'.implode(',', EmployeeNotePriority::values())],
             'is_private' => ['boolean'],
             'is_archived' => ['boolean'],
             'tags' => ['nullable', 'array'],

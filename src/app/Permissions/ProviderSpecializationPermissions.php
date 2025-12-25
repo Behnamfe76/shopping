@@ -2,11 +2,10 @@
 
 namespace Fereydooni\Shopping\App\Permissions;
 
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Auth;
-use Fereydooni\Shopping\App\Models\ProviderSpecialization;
 use Fereydooni\Shopping\App\Models\Provider;
+use Fereydooni\Shopping\App\Models\ProviderSpecialization;
 use Fereydooni\Shopping\App\Models\User;
+use Illuminate\Support\Facades\Gate;
 
 class ProviderSpecializationPermissions
 {

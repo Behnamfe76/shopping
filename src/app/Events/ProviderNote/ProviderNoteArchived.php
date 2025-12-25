@@ -2,8 +2,8 @@
 
 namespace Fereydooni\Shopping\app\Events\ProviderNote;
 
-use Fereydooni\Shopping\app\Models\ProviderNote;
 use Fereydooni\Shopping\app\DTOs\ProviderNoteDTO;
+use Fereydooni\Shopping\app\Models\ProviderNote;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -12,6 +12,7 @@ class ProviderNoteArchived
     use Dispatchable, SerializesModels;
 
     public ProviderNote $providerNote;
+
     public ProviderNoteDTO $providerNoteDTO;
 
     /**

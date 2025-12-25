@@ -23,27 +23,27 @@ class UpdateCoordinatesRequest extends FormRequest
             'latitude' => [
                 'required',
                 'numeric',
-                'between:-90,90'
+                'between:-90,90',
             ],
             'longitude' => [
                 'required',
                 'numeric',
-                'between:-180,180'
+                'between:-180,180',
             ],
             'source' => [
                 'nullable',
                 'string',
-                'in:manual,gps,geocoding,map'
+                'in:manual,gps,geocoding,map',
             ],
             'accuracy' => [
                 'nullable',
                 'numeric',
                 'min:0',
-                'max:100'
+                'max:100',
             ],
             'address_verified' => [
-                'boolean'
-            ]
+                'boolean',
+            ],
         ];
     }
 
@@ -61,7 +61,7 @@ class UpdateCoordinatesRequest extends FormRequest
             'longitude.between' => 'Longitude must be between -180 and 180 degrees.',
             'source.in' => 'Invalid coordinate source.',
             'accuracy.min' => 'Accuracy must be at least 0.',
-            'accuracy.max' => 'Accuracy cannot exceed 100.'
+            'accuracy.max' => 'Accuracy cannot exceed 100.',
         ];
     }
 
@@ -75,7 +75,7 @@ class UpdateCoordinatesRequest extends FormRequest
             'longitude' => 'longitude',
             'source' => 'coordinate source',
             'accuracy' => 'accuracy',
-            'address_verified' => 'address verification'
+            'address_verified' => 'address verification',
         ];
     }
 
@@ -87,26 +87,26 @@ class UpdateCoordinatesRequest extends FormRequest
         // Round coordinates to 6 decimal places for consistency
         if ($this->has('latitude')) {
             $this->merge([
-                'latitude' => round((float) $this->latitude, 6)
+                'latitude' => round((float) $this->latitude, 6),
             ]);
         }
 
         if ($this->has('longitude')) {
             $this->merge([
-                'longitude' => round((float) $this->longitude, 6)
+                'longitude' => round((float) $this->longitude, 6),
             ]);
         }
 
         // Set default values
-        if (!$this->has('source')) {
+        if (! $this->has('source')) {
             $this->merge(['source' => 'manual']);
         }
 
-        if (!$this->has('accuracy')) {
+        if (! $this->has('accuracy')) {
             $this->merge(['accuracy' => 100]);
         }
 
-        if (!$this->has('address_verified')) {
+        if (! $this->has('address_verified')) {
             $this->merge(['address_verified' => false]);
         }
     }

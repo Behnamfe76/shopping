@@ -11,6 +11,7 @@ class EmployeeBenefitsExpiring
     use Dispatchable, SerializesModels;
 
     public $benefit;
+
     public $renewalData;
 
     public function __construct(EmployeeBenefits $benefit, array $renewalData)

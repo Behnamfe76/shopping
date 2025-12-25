@@ -2,8 +2,8 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
-use Fereydooni\Shopping\app\Models\Employee;
 use Fereydooni\Shopping\app\DTOs\EmployeeDTO;
+use Fereydooni\Shopping\app\Models\Employee;
 use Illuminate\Database\Eloquent\Collection;
 
 trait HasEmployeeHierarchyManagement
@@ -63,12 +63,14 @@ trait HasEmployeeHierarchyManagement
     public function getDirectManager(int $employeeId): ?Employee
     {
         $employee = $this->repository->find($employeeId);
+
         return $employee ? $employee->manager : null;
     }
 
     public function getDirectManagerDTO(int $employeeId): ?EmployeeDTO
     {
         $manager = $this->getDirectManager($employeeId);
+
         return $manager ? EmployeeDTO::fromModel($manager) : null;
     }
 
@@ -76,74 +78,74 @@ trait HasEmployeeHierarchyManagement
     public function getAllManagers(): Collection
     {
         return $this->repository->findActive()
-            ->filter(fn($employee) => $employee->isManager());
+            ->filter(fn ($employee) => $employee->isManager());
     }
 
     public function getAllManagersDTO(): Collection
     {
         return $this->getAllManagers()
-            ->map(fn($employee) => EmployeeDTO::fromModel($employee));
+            ->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function getManagersByDepartment(string $department): Collection
     {
         return $this->repository->findByDepartment($department)
-            ->filter(fn($employee) => $employee->isManager());
+            ->filter(fn ($employee) => $employee->isManager());
     }
 
     public function getManagersByDepartmentDTO(string $department): Collection
     {
         return $this->getManagersByDepartment($department)
-            ->map(fn($employee) => EmployeeDTO::fromModel($employee));
+            ->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function getManagersWithSubordinates(int $minSubordinates = 1): Collection
     {
         return $this->repository->findActive()
-            ->filter(fn($employee) => $employee->subordinates()->count() >= $minSubordinates);
+            ->filter(fn ($employee) => $employee->subordinates()->count() >= $minSubordinates);
     }
 
     public function getManagersWithSubordinatesDTO(int $minSubordinates = 1): Collection
     {
         return $this->getManagersWithSubordinates($minSubordinates)
-            ->map(fn($employee) => EmployeeDTO::fromModel($employee));
+            ->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     // Subordinate queries
     public function getAllSubordinates(): Collection
     {
         return $this->repository->findActive()
-            ->filter(fn($employee) => $employee->hasManager());
+            ->filter(fn ($employee) => $employee->hasManager());
     }
 
     public function getAllSubordinatesDTO(): Collection
     {
         return $this->getAllSubordinates()
-            ->map(fn($employee) => EmployeeDTO::fromModel($employee));
+            ->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function getSubordinatesByDepartment(string $department): Collection
     {
         return $this->repository->findByDepartment($department)
-            ->filter(fn($employee) => $employee->hasManager());
+            ->filter(fn ($employee) => $employee->hasManager());
     }
 
     public function getSubordinatesByDepartmentDTO(string $department): Collection
     {
         return $this->getSubordinatesByDepartment($department)
-            ->map(fn($employee) => EmployeeDTO::fromModel($employee));
+            ->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     public function getEmployeesWithoutManager(): Collection
     {
         return $this->repository->findActive()
-            ->filter(fn($employee) => !$employee->hasManager());
+            ->filter(fn ($employee) => ! $employee->hasManager());
     }
 
     public function getEmployeesWithoutManagerDTO(): Collection
     {
         return $this->getEmployeesWithoutManager()
-            ->map(fn($employee) => EmployeeDTO::fromModel($employee));
+            ->map(fn ($employee) => EmployeeDTO::fromModel($employee));
     }
 
     // Hierarchy validation
@@ -151,12 +153,12 @@ trait HasEmployeeHierarchyManagement
     {
         // Check if manager exists and is active
         $manager = $this->repository->find($managerId);
-        if (!$manager || !$manager->isActive()) {
+        if (! $manager || ! $manager->isActive()) {
             return false;
         }
 
         // Check if employee exists and is active
-        if (!$employee->isActive()) {
+        if (! $employee->isActive()) {
             return false;
         }
 
@@ -181,31 +183,35 @@ trait HasEmployeeHierarchyManagement
         $result = [
             'valid' => false,
             'errors' => [],
-            'warnings' => []
+            'warnings' => [],
         ];
 
         // Check if manager exists
         $manager = $this->repository->find($managerId);
-        if (!$manager) {
+        if (! $manager) {
             $result['errors'][] = 'Manager does not exist';
+
             return $result;
         }
 
         // Check if manager is active
-        if (!$manager->isActive()) {
+        if (! $manager->isActive()) {
             $result['errors'][] = 'Manager is not active';
+
             return $result;
         }
 
         // Check if employee is active
-        if (!$employee->isActive()) {
+        if (! $employee->isActive()) {
             $result['errors'][] = 'Employee is not active';
+
             return $result;
         }
 
         // Check for self-assignment
         if ($employee->id === $managerId) {
             $result['errors'][] = 'Employee cannot be assigned as their own manager';
+
             return $result;
         }
 
@@ -214,6 +220,7 @@ trait HasEmployeeHierarchyManagement
         foreach ($managerHierarchy as $hierarchyManager) {
             if ($hierarchyManager->id === $employee->id) {
                 $result['errors'][] = 'Circular reference detected in hierarchy';
+
                 return $result;
             }
         }
@@ -226,10 +233,11 @@ trait HasEmployeeHierarchyManagement
         // Check manager's span of control (warning)
         $currentSubordinates = $manager->subordinates()->count();
         if ($currentSubordinates >= 10) {
-            $result['warnings'][] = 'Manager already has many subordinates (' . $currentSubordinates . ')';
+            $result['warnings'][] = 'Manager already has many subordinates ('.$currentSubordinates.')';
         }
 
         $result['valid'] = true;
+
         return $result;
     }
 
@@ -248,15 +256,15 @@ trait HasEmployeeHierarchyManagement
                 'average_span_of_control' => 0,
                 'max_span_of_control' => 0,
                 'min_span_of_control' => 0,
-                'hierarchy_levels' => 0
+                'hierarchy_levels' => 0,
             ];
         }
 
-        $managers = $employees->filter(fn($e) => $e->isManager());
-        $subordinates = $employees->filter(fn($e) => $e->hasManager());
-        $employeesWithoutManager = $employees->filter(fn($e) => !$e->hasManager());
+        $managers = $employees->filter(fn ($e) => $e->isManager());
+        $subordinates = $employees->filter(fn ($e) => $e->hasManager());
+        $employeesWithoutManager = $employees->filter(fn ($e) => ! $e->hasManager());
 
-        $spanOfControl = $managers->map(fn($m) => $m->subordinates()->count());
+        $spanOfControl = $managers->map(fn ($m) => $m->subordinates()->count());
         $maxSpanOfControl = $spanOfControl->max() ?? 0;
         $minSpanOfControl = $spanOfControl->min() ?? 0;
         $averageSpanOfControl = $spanOfControl->avg() ?? 0;
@@ -270,7 +278,7 @@ trait HasEmployeeHierarchyManagement
             'max_span_of_control' => $maxSpanOfControl,
             'min_span_of_control' => $minSpanOfControl,
             'hierarchy_levels' => $this->calculateHierarchyLevels(),
-            'management_ratio' => $totalEmployees > 0 ? round(($managers->count() / $totalEmployees) * 100, 2) : 0
+            'management_ratio' => $totalEmployees > 0 ? round(($managers->count() / $totalEmployees) * 100, 2) : 0,
         ];
     }
 
@@ -291,11 +299,11 @@ trait HasEmployeeHierarchyManagement
                 continue;
             }
 
-            $managers = $employees->filter(fn($e) => $e->isManager());
-            $subordinates = $employees->filter(fn($e) => $e->hasManager());
-            $employeesWithoutManager = $employees->filter(fn($e) => !$e->hasManager());
+            $managers = $employees->filter(fn ($e) => $e->isManager());
+            $subordinates = $employees->filter(fn ($e) => $e->hasManager());
+            $employeesWithoutManager = $employees->filter(fn ($e) => ! $e->hasManager());
 
-            $spanOfControl = $managers->map(fn($m) => $m->subordinates()->count());
+            $spanOfControl = $managers->map(fn ($m) => $m->subordinates()->count());
             $averageSpanOfControl = $spanOfControl->avg() ?? 0;
 
             $stats[$department] = [
@@ -304,7 +312,7 @@ trait HasEmployeeHierarchyManagement
                 'subordinates_count' => $subordinates->count(),
                 'employees_without_manager' => $employeesWithoutManager->count(),
                 'average_span_of_control' => round($averageSpanOfControl, 2),
-                'management_ratio' => round(($managers->count() / $totalEmployees) * 100, 2)
+                'management_ratio' => round(($managers->count() / $totalEmployees) * 100, 2),
             ];
         }
 
@@ -312,11 +320,11 @@ trait HasEmployeeHierarchyManagement
     }
 
     // Hierarchy visualization
-    public function getOrganizationalChart(int $rootEmployeeId = null): array
+    public function getOrganizationalChart(?int $rootEmployeeId = null): array
     {
         if ($rootEmployeeId) {
             $rootEmployee = $this->repository->find($rootEmployeeId);
-            if (!$rootEmployee) {
+            if (! $rootEmployee) {
                 return [];
             }
         } else {
@@ -334,7 +342,7 @@ trait HasEmployeeHierarchyManagement
     public function getOrganizationalChartByDepartment(string $department): array
     {
         $departmentEmployees = $this->repository->findByDepartment($department);
-        $rootEmployees = $departmentEmployees->filter(fn($e) => !$e->hasManager());
+        $rootEmployees = $departmentEmployees->filter(fn ($e) => ! $e->hasManager());
 
         $charts = [];
         foreach ($rootEmployees as $rootEmployee) {
@@ -353,7 +361,7 @@ trait HasEmployeeHierarchyManagement
             'position' => $employee->position,
             'department' => $employee->department,
             'email' => $employee->email,
-            'subordinates' => []
+            'subordinates' => [],
         ];
 
         $subordinates = $employee->subordinates;
@@ -380,16 +388,17 @@ trait HasEmployeeHierarchyManagement
 
     private function calculateEmployeeLevel(Employee $employee): int
     {
-        if (!$employee->hasManager()) {
+        if (! $employee->hasManager()) {
             return 1;
         }
 
         $manager = $employee->manager;
+
         return 1 + $this->calculateEmployeeLevel($manager);
     }
 
     // Hierarchy reporting
-    public function generateHierarchyReport(string $department = null): array
+    public function generateHierarchyReport(?string $department = null): array
     {
         $employees = $department
             ? $this->repository->findByDepartment($department)
@@ -399,13 +408,12 @@ trait HasEmployeeHierarchyManagement
             'department' => $department,
             'total_employees' => $employees->count(),
             'hierarchy_stats' => $this->getHierarchyStats(),
-            'managers' => $employees->filter(fn($e) => $e->isManager())->count(),
-            'subordinates' => $employees->filter(fn($e) => $e->hasManager())->count(),
-            'employees_without_manager' => $employees->filter(fn($e) => !$e->hasManager())->count(),
-            'organizational_chart' => $department ? $this->getOrganizationalChartByDepartment($department) : $this->getOrganizationalChart()
+            'managers' => $employees->filter(fn ($e) => $e->isManager())->count(),
+            'subordinates' => $employees->filter(fn ($e) => $e->hasManager())->count(),
+            'employees_without_manager' => $employees->filter(fn ($e) => ! $e->hasManager())->count(),
+            'organizational_chart' => $department ? $this->getOrganizationalChartByDepartment($department) : $this->getOrganizationalChart(),
         ];
 
         return $report;
     }
 }
-

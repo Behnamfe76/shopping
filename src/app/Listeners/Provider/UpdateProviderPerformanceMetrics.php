@@ -2,10 +2,10 @@
 
 namespace Fereydooni\Shopping\app\Listeners\Provider;
 
-use Fereydooni\Shopping\app\Events\Provider\ProviderRatingUpdated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderQualityRatingUpdated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderDeliveryRatingUpdated;
 use Fereydooni\Shopping\app\Events\Provider\ProviderCommunicationRatingUpdated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderDeliveryRatingUpdated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderQualityRatingUpdated;
+use Fereydooni\Shopping\app\Events\Provider\ProviderRatingUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
@@ -27,7 +27,7 @@ class UpdateProviderPerformanceMetrics implements ShouldQueue
     public function handleProviderRatingUpdated(ProviderRatingUpdated $event): void
     {
         // Update provider performance metrics when overall rating changes
-        \Log::info('Provider performance metrics updated for rating change: ' . $event->provider->id);
+        \Log::info('Provider performance metrics updated for rating change: '.$event->provider->id);
     }
 
     /**
@@ -36,7 +36,7 @@ class UpdateProviderPerformanceMetrics implements ShouldQueue
     public function handleProviderQualityRatingUpdated(ProviderQualityRatingUpdated $event): void
     {
         // Update provider quality performance metrics
-        \Log::info('Provider quality performance metrics updated for: ' . $event->provider->id);
+        \Log::info('Provider quality performance metrics updated for: '.$event->provider->id);
     }
 
     /**
@@ -45,7 +45,7 @@ class UpdateProviderPerformanceMetrics implements ShouldQueue
     public function handleProviderDeliveryRatingUpdated(ProviderDeliveryRatingUpdated $event): void
     {
         // Update provider delivery performance metrics
-        \Log::info('Provider delivery performance metrics updated for: ' . $event->provider->id);
+        \Log::info('Provider delivery performance metrics updated for: '.$event->provider->id);
     }
 
     /**
@@ -54,6 +54,6 @@ class UpdateProviderPerformanceMetrics implements ShouldQueue
     public function handleProviderCommunicationRatingUpdated(ProviderCommunicationRatingUpdated $event): void
     {
         // Update provider communication performance metrics
-        \Log::info('Provider communication performance metrics updated for: ' . $event->provider->id);
+        \Log::info('Provider communication performance metrics updated for: '.$event->provider->id);
     }
 }

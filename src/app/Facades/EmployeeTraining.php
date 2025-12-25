@@ -2,19 +2,19 @@
 
 namespace Fereydooni\Shopping\Facades;
 
-use Illuminate\Support\Facades\Facade;
-use Illuminate\Support\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Fereydooni\Shopping\Models\EmployeeTraining;
-use Fereydooni\Shopping\DTOs\EmployeeTrainingDTO;
-use Fereydooni\Shopping\Actions\EmployeeTraining\CreateEmployeeTrainingAction;
-use Fereydooni\Shopping\Actions\EmployeeTraining\UpdateEmployeeTrainingAction;
-use Fereydooni\Shopping\Actions\EmployeeTraining\StartEmployeeTrainingAction;
+use Fereydooni\Shopping\Actions\EmployeeTraining\CalculateTrainingProgressAction;
 use Fereydooni\Shopping\Actions\EmployeeTraining\CompleteEmployeeTrainingAction;
+use Fereydooni\Shopping\Actions\EmployeeTraining\CreateEmployeeTrainingAction;
 use Fereydooni\Shopping\Actions\EmployeeTraining\FailEmployeeTrainingAction;
 use Fereydooni\Shopping\Actions\EmployeeTraining\RenewEmployeeTrainingAction;
-use Fereydooni\Shopping\Actions\EmployeeTraining\CalculateTrainingProgressAction;
+use Fereydooni\Shopping\Actions\EmployeeTraining\StartEmployeeTrainingAction;
+use Fereydooni\Shopping\Actions\EmployeeTraining\UpdateEmployeeTrainingAction;
+use Fereydooni\Shopping\DTOs\EmployeeTrainingDTO;
+use Fereydooni\Shopping\Models\EmployeeTraining;
 use Fereydooni\Shopping\Repositories\Interfaces\EmployeeTrainingRepositoryInterface;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static Collection all()
@@ -378,7 +378,7 @@ class EmployeeTraining extends Facade
     /**
      * Get training statistics
      */
-    public static function getStatistics(int $employeeId = null): array
+    public static function getStatistics(?int $employeeId = null): array
     {
         return app(EmployeeTrainingRepositoryInterface::class)->getTrainingStatistics($employeeId);
     }
@@ -386,7 +386,7 @@ class EmployeeTraining extends Facade
     /**
      * Get training effectiveness
      */
-    public static function getEffectiveness(int $employeeId = null): array
+    public static function getEffectiveness(?int $employeeId = null): array
     {
         return app(EmployeeTrainingRepositoryInterface::class)->getTrainingEffectiveness($employeeId);
     }
@@ -394,7 +394,7 @@ class EmployeeTraining extends Facade
     /**
      * Get training trends
      */
-    public static function getTrends(string $startDate = null, string $endDate = null): array
+    public static function getTrends(?string $startDate = null, ?string $endDate = null): array
     {
         return app(EmployeeTrainingRepositoryInterface::class)->getTrainingTrends($startDate, $endDate);
     }

@@ -41,15 +41,15 @@ class InvoiceOverdue extends Notification implements ShouldQueue
         $daysOverdue = now()->diffInDays($this->invoice->due_date);
 
         return (new MailMessage)
-            ->subject('Provider Invoice Overdue - ' . $this->invoice->invoice_number)
-            ->greeting('Hello ' . ($notifiable->name ?? 'Team Member'))
+            ->subject('Provider Invoice Overdue - '.$this->invoice->invoice_number)
+            ->greeting('Hello '.($notifiable->name ?? 'Team Member'))
             ->line('A provider invoice has become overdue.')
-            ->line('Invoice Number: ' . $this->invoice->invoice_number)
-            ->line('Provider: ' . ($provider->name ?? 'Unknown Provider'))
-            ->line('Amount: $' . number_format($this->invoice->total_amount, 2))
-            ->line('Due Date: ' . $this->invoice->due_date->format('M d, Y'))
-            ->line('Days Overdue: ' . $daysOverdue . ' day(s)')
-            ->action('View Invoice', url('/provider-invoices/' . $this->invoice->id))
+            ->line('Invoice Number: '.$this->invoice->invoice_number)
+            ->line('Provider: '.($provider->name ?? 'Unknown Provider'))
+            ->line('Amount: $'.number_format($this->invoice->total_amount, 2))
+            ->line('Due Date: '.$this->invoice->due_date->format('M d, Y'))
+            ->line('Days Overdue: '.$daysOverdue.' day(s)')
+            ->action('View Invoice', url('/provider-invoices/'.$this->invoice->id))
             ->line('Please follow up with the provider regarding this overdue payment.');
     }
 
@@ -72,7 +72,7 @@ class InvoiceOverdue extends Notification implements ShouldQueue
             'days_overdue' => $daysOverdue,
             'status' => $this->invoice->status,
             'type' => 'invoice_overdue',
-            'message' => 'Provider invoice overdue: ' . $this->invoice->invoice_number . ' (' . $daysOverdue . ' days)'
+            'message' => 'Provider invoice overdue: '.$this->invoice->invoice_number.' ('.$daysOverdue.' days)',
         ];
     }
 
@@ -84,4 +84,3 @@ class InvoiceOverdue extends Notification implements ShouldQueue
         return $this->toArray($notifiable);
     }
 }
-

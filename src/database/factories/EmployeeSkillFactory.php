@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use App\Enums\ProficiencyLevel;
 use App\Enums\SkillCategory;
-use App\Models\Employee;
 use App\Models\EmployeeSkill;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -30,7 +29,7 @@ class EmployeeSkillFactory extends Factory
     {
         $skillCategories = SkillCategory::values();
         $proficiencyLevels = ProficiencyLevel::values();
-        
+
         $skillName = $this->faker->randomElement([
             'PHP', 'JavaScript', 'Python', 'Java', 'C#', 'Ruby', 'Go', 'Rust',
             'React', 'Vue.js', 'Angular', 'Node.js', 'Laravel', 'Django', 'Spring',
@@ -40,13 +39,13 @@ class EmployeeSkillFactory extends Factory
             'Project Management', 'Leadership', 'Communication', 'Problem Solving',
             'English', 'Spanish', 'French', 'German', 'Chinese', 'Japanese',
             'Photoshop', 'Illustrator', 'Figma', 'Sketch', 'InDesign',
-            'Excel', 'PowerPoint', 'Word', 'Power BI', 'Tableau'
+            'Excel', 'PowerPoint', 'Word', 'Power BI', 'Tableau',
         ]);
 
         $skillCategory = $this->faker->randomElement($skillCategories);
         $proficiencyLevel = $this->faker->randomElement($proficiencyLevels);
         $yearsExperience = $this->faker->numberBetween(0, 15);
-        
+
         // Adjust proficiency level based on experience
         if ($yearsExperience < 2) {
             $proficiencyLevel = $this->faker->randomElement(['beginner', 'intermediate']);
@@ -58,7 +57,7 @@ class EmployeeSkillFactory extends Factory
 
         $certificationRequired = $this->faker->boolean(20);
         $hasCertification = $certificationRequired && $this->faker->boolean(70);
-        
+
         $data = [
             'skill_name' => $skillName,
             'skill_category' => $skillCategory,
@@ -74,7 +73,7 @@ class EmployeeSkillFactory extends Factory
             'tags' => $this->generateTags($skillCategory),
             'notes' => $this->faker->optional(0.3)->sentence(),
             'attachments' => $this->faker->optional(0.2)->randomElements([
-                'certificate.pdf', 'portfolio.pdf', 'reference.pdf', 'assessment.pdf'
+                'certificate.pdf', 'portfolio.pdf', 'reference.pdf', 'assessment.pdf',
             ], $this->faker->numberBetween(1, 3)),
         ];
 
@@ -100,7 +99,7 @@ class EmployeeSkillFactory extends Factory
     private function generateKeywords(string $skillName, string $category): array
     {
         $baseKeywords = [$skillName, $category];
-        
+
         $additionalKeywords = [
             'technical' => ['development', 'programming', 'coding', 'software', 'web', 'mobile'],
             'soft_skills' => ['communication', 'leadership', 'teamwork', 'problem-solving', 'time-management'],
@@ -108,7 +107,7 @@ class EmployeeSkillFactory extends Factory
             'tools' => ['software', 'application', 'platform', 'system', 'tool'],
             'methodologies' => ['agile', 'scrum', 'waterfall', 'lean', 'six-sigma'],
             'certifications' => ['certified', 'accredited', 'licensed', 'qualified', 'professional'],
-            'other' => ['specialized', 'domain', 'industry', 'field', 'area']
+            'other' => ['specialized', 'domain', 'industry', 'field', 'area'],
         ];
 
         if (isset($additionalKeywords[$category])) {
@@ -134,11 +133,11 @@ class EmployeeSkillFactory extends Factory
             'tools' => ['software', 'application', 'platform'],
             'methodologies' => ['process', 'framework', 'methodology'],
             'certifications' => ['certified', 'accredited', 'professional'],
-            'other' => ['specialized', 'domain', 'industry']
+            'other' => ['specialized', 'domain', 'industry'],
         ];
 
         $tags = $tagMap[$category] ?? ['general'];
-        
+
         // Add some random tags
         $randomTags = ['essential', 'advanced', 'core', 'specialized', 'emerging'];
         $tags = array_merge($tags, $this->faker->randomElements($randomTags, 2));
@@ -172,10 +171,10 @@ class EmployeeSkillFactory extends Factory
             'Advanced Certification',
             'Expert Certification',
             'Specialist Certification',
-            'Master Certification'
+            'Master Certification',
         ];
 
-        return $skillName . ' ' . $this->faker->randomElement($genericCertifications);
+        return $skillName.' '.$this->faker->randomElement($genericCertifications);
     }
 
     /**
@@ -187,8 +186,8 @@ class EmployeeSkillFactory extends Factory
             'skill_category' => SkillCategory::TECHNICAL,
             'skill_name' => $this->faker->randomElement([
                 'PHP', 'JavaScript', 'Python', 'Java', 'React', 'Vue.js', 'Node.js',
-                'MySQL', 'PostgreSQL', 'Docker', 'AWS', 'Git', 'Linux'
-            ])
+                'MySQL', 'PostgreSQL', 'Docker', 'AWS', 'Git', 'Linux',
+            ]),
         ]);
     }
 
@@ -201,8 +200,8 @@ class EmployeeSkillFactory extends Factory
             'skill_category' => SkillCategory::SOFT_SKILLS,
             'skill_name' => $this->faker->randomElement([
                 'Leadership', 'Communication', 'Problem Solving', 'Teamwork',
-                'Time Management', 'Critical Thinking', 'Adaptability', 'Creativity'
-            ])
+                'Time Management', 'Critical Thinking', 'Adaptability', 'Creativity',
+            ]),
         ]);
     }
 
@@ -215,8 +214,8 @@ class EmployeeSkillFactory extends Factory
             'skill_category' => SkillCategory::LANGUAGES,
             'skill_name' => $this->faker->randomElement([
                 'English', 'Spanish', 'French', 'German', 'Chinese', 'Japanese',
-                'Portuguese', 'Italian', 'Russian', 'Arabic'
-            ])
+                'Portuguese', 'Italian', 'Russian', 'Arabic',
+            ]),
         ]);
     }
 

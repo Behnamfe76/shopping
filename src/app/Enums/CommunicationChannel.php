@@ -14,7 +14,7 @@ enum CommunicationChannel: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::EMAIL => 'Email',
             self::SMS => 'SMS',
             self::PUSH => 'Push Notification',
@@ -27,7 +27,7 @@ enum CommunicationChannel: string
 
     public function description(): string
     {
-        return match($this) {
+        return match ($this) {
             self::EMAIL => 'Electronic mail delivery',
             self::SMS => 'Short message service',
             self::PUSH => 'Mobile push notification',
@@ -60,7 +60,7 @@ enum CommunicationChannel: string
 
     public function getIcon(): string
     {
-        return match($this) {
+        return match ($this) {
             self::EMAIL => 'mail',
             self::SMS => 'message-circle',
             self::PUSH => 'bell',
@@ -73,7 +73,7 @@ enum CommunicationChannel: string
 
     public static function toArray(): array
     {
-        return array_map(fn($case) => [
+        return array_map(fn ($case) => [
             'value' => $case->value,
             'label' => $case->label(),
             'description' => $case->description(),

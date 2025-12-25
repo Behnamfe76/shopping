@@ -2,21 +2,23 @@
 
 namespace Tests\Feature\ProviderPayment;
 
-use Tests\TestCase;
-use Fereydooni\Shopping\App\Models\ProviderPayment;
+use Fereydooni\Shopping\App\Enums\ProviderPaymentMethod;
+use Fereydooni\Shopping\App\Enums\ProviderPaymentStatus;
 use Fereydooni\Shopping\App\Models\Provider;
 use Fereydooni\Shopping\App\Models\ProviderInvoice;
+use Fereydooni\Shopping\App\Models\ProviderPayment;
 use Fereydooni\Shopping\App\Models\User;
-use Fereydooni\Shopping\App\Enums\ProviderPaymentStatus;
-use Fereydooni\Shopping\App\Enums\ProviderPaymentMethod;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class ProviderPaymentTest extends TestCase
 {
     use RefreshDatabase;
 
     protected Provider $provider;
+
     protected ProviderInvoice $invoice;
+
     protected User $user;
 
     protected function setUp(): void
@@ -26,7 +28,7 @@ class ProviderPaymentTest extends TestCase
         // Create test data
         $this->provider = Provider::factory()->create();
         $this->invoice = ProviderInvoice::factory()->create([
-            'provider_id' => $this->provider->id
+            'provider_id' => $this->provider->id,
         ]);
         $this->user = User::factory()->create();
     }
@@ -108,7 +110,7 @@ class ProviderPaymentTest extends TestCase
         $providerPayments = ProviderPayment::where('provider_id', $this->provider->id)->get();
 
         $this->assertCount(3, $providerPayments);
-        $this->assertTrue($providerPayments->every(fn($payment) => $payment->provider_id === $this->provider->id));
+        $this->assertTrue($providerPayments->every(fn ($payment) => $payment->provider_id === $this->provider->id));
     }
 
     /** @test */

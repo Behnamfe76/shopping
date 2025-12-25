@@ -2,19 +2,19 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Fereydooni\Shopping\app\Models\UserSubscription;
-use Fereydooni\Shopping\app\Services\UserSubscriptionService;
-use Fereydooni\Shopping\app\Http\Requests\StoreUserSubscriptionRequest;
-use Fereydooni\Shopping\app\Http\Requests\UpdateUserSubscriptionRequest;
 use Fereydooni\Shopping\app\Http\Requests\ActivateUserSubscriptionRequest;
 use Fereydooni\Shopping\app\Http\Requests\CancelUserSubscriptionRequest;
 use Fereydooni\Shopping\app\Http\Requests\SearchUserSubscriptionRequest;
-use Fereydooni\Shopping\app\Http\Resources\UserSubscriptionResource;
+use Fereydooni\Shopping\app\Http\Requests\StoreUserSubscriptionRequest;
+use Fereydooni\Shopping\app\Http\Requests\UpdateUserSubscriptionRequest;
 use Fereydooni\Shopping\app\Http\Resources\UserSubscriptionCollection;
+use Fereydooni\Shopping\app\Http\Resources\UserSubscriptionResource;
 use Fereydooni\Shopping\app\Http\Resources\UserSubscriptionSearchResource;
 use Fereydooni\Shopping\app\Http\Resources\UserSubscriptionStatisticsResource;
+use Fereydooni\Shopping\app\Models\UserSubscription;
+use Fereydooni\Shopping\app\Services\UserSubscriptionService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class UserSubscriptionController extends Controller
 {
@@ -83,7 +83,7 @@ class UserSubscriptionController extends Controller
         $data = $request->validated();
         $updatedUserSubscription = $this->userSubscriptionService->updateUserSubscription($userSubscription->id, $data);
 
-        if (!$updatedUserSubscription) {
+        if (! $updatedUserSubscription) {
             return response()->json([
                 'message' => 'Failed to update user subscription.',
             ], 400);
@@ -104,7 +104,7 @@ class UserSubscriptionController extends Controller
 
         $deleted = $this->userSubscriptionService->deleteUserSubscription($userSubscription->id);
 
-        if (!$deleted) {
+        if (! $deleted) {
             return response()->json([
                 'message' => 'Failed to delete user subscription.',
             ], 400);
@@ -124,7 +124,7 @@ class UserSubscriptionController extends Controller
 
         $activated = $this->userSubscriptionService->activateUserSubscription($userSubscription->id);
 
-        if (!$activated) {
+        if (! $activated) {
             return response()->json([
                 'message' => 'Failed to activate user subscription.',
             ], 400);
@@ -145,7 +145,7 @@ class UserSubscriptionController extends Controller
         $reason = $request->get('reason');
         $cancelled = $this->userSubscriptionService->cancelUserSubscription($userSubscription->id, $reason);
 
-        if (!$cancelled) {
+        if (! $cancelled) {
             return response()->json([
                 'message' => 'Failed to cancel user subscription.',
             ], 400);
@@ -165,7 +165,7 @@ class UserSubscriptionController extends Controller
 
         $renewed = $this->userSubscriptionService->renewUserSubscription($userSubscription->id);
 
-        if (!$renewed) {
+        if (! $renewed) {
             return response()->json([
                 'message' => 'Failed to renew user subscription.',
             ], 400);
@@ -186,7 +186,7 @@ class UserSubscriptionController extends Controller
         $reason = $request->get('reason');
         $paused = $this->userSubscriptionService->pauseUserSubscription($userSubscription->id, $reason);
 
-        if (!$paused) {
+        if (! $paused) {
             return response()->json([
                 'message' => 'Failed to pause user subscription.',
             ], 400);
@@ -206,7 +206,7 @@ class UserSubscriptionController extends Controller
 
         $resumed = $this->userSubscriptionService->resumeUserSubscription($userSubscription->id);
 
-        if (!$resumed) {
+        if (! $resumed) {
             return response()->json([
                 'message' => 'Failed to resume user subscription.',
             ], 400);

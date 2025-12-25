@@ -13,6 +13,7 @@ class ContractExpiringReminder extends Notification implements ShouldQueue
     use Queueable;
 
     public ProviderContract $contract;
+
     public int $daysUntilExpiry;
 
     /**
@@ -43,16 +44,16 @@ class ContractExpiringReminder extends Notification implements ShouldQueue
 
         return (new MailMessage)
             ->subject('Provider Contract Expiring Soon')
-            ->greeting('Hello ' . $notifiable->name)
+            ->greeting('Hello '.$notifiable->name)
             ->line('A provider contract is expiring soon.')
             ->line('Contract Details:')
-            ->line('- Contract Number: ' . $this->contract->contract_number)
-            ->line('- Provider: ' . $provider->name)
-            ->line('- Contract Type: ' . ucfirst($this->contract->contract_type))
-            ->line('- End Date: ' . $this->contract->end_date->format('M d, Y'))
-            ->line('- Days Until Expiry: ' . $this->daysUntilExpiry)
-            ->line('- Auto Renewal: ' . ($this->contract->auto_renewal ? 'Enabled' : 'Disabled'))
-            ->action('View Contract', url('/provider-contracts/' . $this->contract->id))
+            ->line('- Contract Number: '.$this->contract->contract_number)
+            ->line('- Provider: '.$provider->name)
+            ->line('- Contract Type: '.ucfirst($this->contract->contract_type))
+            ->line('- End Date: '.$this->contract->end_date->format('M d, Y'))
+            ->line('- Days Until Expiry: '.$this->daysUntilExpiry)
+            ->line('- Auto Renewal: '.($this->contract->auto_renewal ? 'Enabled' : 'Disabled'))
+            ->action('View Contract', url('/provider-contracts/'.$this->contract->id))
             ->line('Please review and take necessary actions before expiration.');
     }
 
@@ -70,8 +71,8 @@ class ContractExpiringReminder extends Notification implements ShouldQueue
             'days_until_expiry' => $this->daysUntilExpiry,
             'end_date' => $this->contract->end_date,
             'auto_renewal' => $this->contract->auto_renewal,
-            'message' => 'Provider contract expiring in ' . $this->daysUntilExpiry . ' days: ' . $this->contract->contract_number,
-            'type' => 'contract_expiring_reminder'
+            'message' => 'Provider contract expiring in '.$this->daysUntilExpiry.' days: '.$this->contract->contract_number,
+            'type' => 'contract_expiring_reminder',
         ];
     }
 }

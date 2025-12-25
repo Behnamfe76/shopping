@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Repositories\Interfaces;
 
-use Fereydooni\Shopping\app\Models\Order;
 use Fereydooni\Shopping\app\DTOs\OrderDTO;
+use Fereydooni\Shopping\app\Models\Order;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 
 interface OrderRepositoryInterface
@@ -29,7 +29,7 @@ interface OrderRepositoryInterface
     /**
      * Get cursor paginated orders
      */
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator;
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator;
 
     /**
      * Find order by ID
@@ -109,12 +109,12 @@ interface OrderRepositoryInterface
     /**
      * Cancel order
      */
-    public function cancel(Order $order, string $reason = null): bool;
+    public function cancel(Order $order, ?string $reason = null): bool;
 
     /**
      * Cancel order and return DTO
      */
-    public function cancelAndReturnDTO(Order $order, string $reason = null): ?OrderDTO;
+    public function cancelAndReturnDTO(Order $order, ?string $reason = null): ?OrderDTO;
 
     /**
      * Mark order as paid
@@ -124,7 +124,7 @@ interface OrderRepositoryInterface
     /**
      * Mark order as shipped
      */
-    public function markAsShipped(Order $order, string $trackingNumber = null): bool;
+    public function markAsShipped(Order $order, ?string $trackingNumber = null): bool;
 
     /**
      * Mark order as completed

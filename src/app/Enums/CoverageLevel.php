@@ -11,7 +11,7 @@ enum CoverageLevel: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::INDIVIDUAL => 'Individual',
             self::FAMILY => 'Family',
             self::EMPLOYEE_PLUS_SPOUSE => 'Employee + Spouse',
@@ -21,7 +21,7 @@ enum CoverageLevel: string
 
     public function description(): string
     {
-        return match($this) {
+        return match ($this) {
             self::INDIVIDUAL => 'Coverage for employee only',
             self::FAMILY => 'Coverage for employee and all dependents',
             self::EMPLOYEE_PLUS_SPOUSE => 'Coverage for employee and spouse',
@@ -51,7 +51,7 @@ enum CoverageLevel: string
 
     public function getDependentCount(): int
     {
-        return match($this) {
+        return match ($this) {
             self::INDIVIDUAL => 0,
             self::EMPLOYEE_PLUS_SPOUSE => 1,
             self::EMPLOYEE_PLUS_CHILDREN => 1,
@@ -68,8 +68,8 @@ enum CoverageLevel: string
     {
         return array_reduce(self::cases(), function ($carry, $case) {
             $carry[$case->value] = $case->label();
+
             return $carry;
         }, []);
     }
 }
-

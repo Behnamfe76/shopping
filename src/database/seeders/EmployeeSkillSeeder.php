@@ -20,9 +20,10 @@ class EmployeeSkillSeeder extends Seeder
 
         // Get existing employees
         $employees = Employee::with('user')->get();
-        
+
         if ($employees->isEmpty()) {
             $this->command->warn('No employees found. Please run EmployeeSeeder first.');
+
             return;
         }
 
@@ -39,15 +40,15 @@ class EmployeeSkillSeeder extends Seeder
         foreach ($employees as $employee) {
             // Determine how many skills this employee should have (1-8 skills)
             $skillCount = rand(1, 8);
-            
+
             // Select random skills for this employee
             $employeeSkills = $this->faker->randomElements($sampleSkills, $skillCount);
-            
+
             foreach ($employeeSkills as $skillData) {
                 // Adjust proficiency based on employee's experience
                 $proficiencyLevel = $this->adjustProficiencyForEmployee($employee, $skillData['proficiency_level']);
                 $yearsExperience = $this->calculateYearsExperience($proficiencyLevel);
-                
+
                 $skill = EmployeeSkill::create([
                     'employee_id' => $employee->id,
                     'skill_name' => $skillData['name'],
@@ -69,12 +70,12 @@ class EmployeeSkillSeeder extends Seeder
                     'tags' => $this->generateTags($skillData['category']),
                     'notes' => $this->faker->optional(0.3)->sentence(),
                     'attachments' => $this->faker->optional(0.2)->randomElements([
-                        'certificate.pdf', 'portfolio.pdf', 'reference.pdf', 'assessment.pdf'
+                        'certificate.pdf', 'portfolio.pdf', 'reference.pdf', 'assessment.pdf',
                     ], rand(1, 2)),
                 ]);
 
                 $skillsCreated++;
-                
+
                 if ($skill->is_verified) {
                     $skillsVerified++;
                 }
@@ -180,17 +181,17 @@ class EmployeeSkillSeeder extends Seeder
     {
         // Get employee's years of experience
         $employeeExperience = $employee->years_of_experience ?? 0;
-        
+
         // Adjust proficiency based on experience
         if ($employeeExperience < 2) {
             return ProficiencyLevel::BEGINNER;
         } elseif ($employeeExperience < 5) {
-            return in_array($baseLevel, [ProficiencyLevel::MASTER, ProficiencyLevel::EXPERT]) 
-                ? ProficiencyLevel::ADVANCED 
+            return in_array($baseLevel, [ProficiencyLevel::MASTER, ProficiencyLevel::EXPERT])
+                ? ProficiencyLevel::ADVANCED
                 : $baseLevel;
         } elseif ($employeeExperience < 8) {
-            return in_array($baseLevel, [ProficiencyLevel::MASTER]) 
-                ? ProficiencyLevel::EXPERT 
+            return in_array($baseLevel, [ProficiencyLevel::MASTER])
+                ? ProficiencyLevel::EXPERT
                 : $baseLevel;
         } else {
             return $baseLevel;
@@ -202,7 +203,7 @@ class EmployeeSkillSeeder extends Seeder
      */
     private function calculateYearsExperience(ProficiencyLevel $level): int
     {
-        return match($level) {
+        return match ($level) {
             ProficiencyLevel::BEGINNER => rand(0, 1),
             ProficiencyLevel::INTERMEDIATE => rand(2, 4),
             ProficiencyLevel::ADVANCED => rand(5, 8),
@@ -239,10 +240,10 @@ class EmployeeSkillSeeder extends Seeder
             'Advanced Certification',
             'Expert Certification',
             'Specialist Certification',
-            'Master Certification'
+            'Master Certification',
         ];
 
-        return $skillName . ' ' . $this->faker->randomElement($genericCertifications);
+        return $skillName.' '.$this->faker->randomElement($genericCertifications);
     }
 
     /**
@@ -255,6 +256,7 @@ class EmployeeSkillSeeder extends Seeder
         }
 
         $maxYearsBack = min($yearsExperience, 3);
+
         return $this->faker->dateTimeBetween("-{$maxYearsBack} years", 'now')->format('Y-m-d');
     }
 
@@ -293,7 +295,7 @@ class EmployeeSkillSeeder extends Seeder
     private function generateKeywords(string $skillName, SkillCategory $category): array
     {
         $baseKeywords = [$skillName, $category->value];
-        
+
         $additionalKeywords = [
             'technical' => ['development', 'programming', 'coding', 'software', 'web', 'mobile'],
             'soft_skills' => ['communication', 'leadership', 'teamwork', 'problem-solving', 'time-management'],
@@ -301,7 +303,7 @@ class EmployeeSkillSeeder extends Seeder
             'tools' => ['software', 'application', 'platform', 'system', 'tool'],
             'methodologies' => ['agile', 'scrum', 'waterfall', 'lean', 'six-sigma'],
             'certifications' => ['certified', 'accredited', 'licensed', 'qualified', 'professional'],
-            'other' => ['specialized', 'domain', 'industry', 'field', 'area']
+            'other' => ['specialized', 'domain', 'industry', 'field', 'area'],
         ];
 
         if (isset($additionalKeywords[$category->value])) {
@@ -323,11 +325,11 @@ class EmployeeSkillSeeder extends Seeder
             'tools' => ['software', 'application', 'platform'],
             'methodologies' => ['process', 'framework', 'methodology'],
             'certifications' => ['certified', 'accredited', 'professional'],
-            'other' => ['specialized', 'domain', 'industry']
+            'other' => ['specialized', 'domain', 'industry'],
         ];
 
         $tags = $tagMap[$category->value] ?? ['general'];
-        
+
         // Add some random tags
         $randomTags = ['essential', 'advanced', 'core', 'specialized', 'emerging'];
         $tags = array_merge($tags, $this->faker->randomElements($randomTags, 2));

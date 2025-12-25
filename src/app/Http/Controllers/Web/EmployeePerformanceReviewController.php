@@ -2,15 +2,13 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers\Web;
 
-use Illuminate\Routing\Controller;
 use Fereydooni\Shopping\app\Services\EmployeePerformanceReviewService;
-use Fereydooni\Shopping\app\DTOs\EmployeePerformanceReviewDTO;
-use Fereydooni\Shopping\app\Models\EmployeePerformanceReview;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\View\View;
 
 class EmployeePerformanceReviewController extends Controller
 {
@@ -69,9 +67,11 @@ class EmployeePerformanceReviewController extends Controller
             $review = $this->service->createReview($request->all());
 
             Session::flash('success', 'Performance review created successfully');
+
             return redirect()->route('employee-performance-reviews.show', $review->id);
         } catch (\Exception $e) {
-            Session::flash('error', 'Failed to create performance review: ' . $e->getMessage());
+            Session::flash('error', 'Failed to create performance review: '.$e->getMessage());
+
             return redirect()->back()->withInput();
         }
     }
@@ -83,7 +83,7 @@ class EmployeePerformanceReviewController extends Controller
     {
         $review = $this->service->find($id);
 
-        if (!$review) {
+        if (! $review) {
             abort(404, 'Performance review not found');
         }
 
@@ -97,7 +97,7 @@ class EmployeePerformanceReviewController extends Controller
     {
         $review = $this->service->find($id);
 
-        if (!$review) {
+        if (! $review) {
             abort(404, 'Performance review not found');
         }
 
@@ -135,9 +135,11 @@ class EmployeePerformanceReviewController extends Controller
             $review = $this->service->updateReview($id, $request->all());
 
             Session::flash('success', 'Performance review updated successfully');
+
             return redirect()->route('employee-performance-reviews.show', $review->id);
         } catch (\Exception $e) {
-            Session::flash('error', 'Failed to update performance review: ' . $e->getMessage());
+            Session::flash('error', 'Failed to update performance review: '.$e->getMessage());
+
             return redirect()->back()->withInput();
         }
     }
@@ -152,13 +154,16 @@ class EmployeePerformanceReviewController extends Controller
 
             if ($result) {
                 Session::flash('success', 'Performance review deleted successfully');
+
                 return redirect()->route('employee-performance-reviews.index');
             } else {
                 Session::flash('error', 'Failed to delete performance review');
+
                 return redirect()->back();
             }
         } catch (\Exception $e) {
-            Session::flash('error', 'Failed to delete performance review: ' . $e->getMessage());
+            Session::flash('error', 'Failed to delete performance review: '.$e->getMessage());
+
             return redirect()->back();
         }
     }
@@ -187,6 +192,7 @@ class EmployeePerformanceReviewController extends Controller
     public function storeForEmployee(Request $request, int $employeeId): RedirectResponse
     {
         $request->merge(['employee_id' => $employeeId]);
+
         return $this->store($request);
     }
 
@@ -197,7 +203,7 @@ class EmployeePerformanceReviewController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'query' => 'required|string|min:2',
-            'filters' => 'nullable|array'
+            'filters' => 'nullable|array',
         ]);
 
         if ($validator->fails()) {
@@ -226,7 +232,7 @@ class EmployeePerformanceReviewController extends Controller
                 Session::flash('error', 'Failed to submit performance review for approval');
             }
         } catch (\Exception $e) {
-            Session::flash('error', 'Failed to submit performance review: ' . $e->getMessage());
+            Session::flash('error', 'Failed to submit performance review: '.$e->getMessage());
         }
 
         return redirect()->back();
@@ -246,7 +252,7 @@ class EmployeePerformanceReviewController extends Controller
                 Session::flash('error', 'Failed to approve performance review');
             }
         } catch (\Exception $e) {
-            Session::flash('error', 'Failed to approve performance review: ' . $e->getMessage());
+            Session::flash('error', 'Failed to approve performance review: '.$e->getMessage());
         }
 
         return redirect()->back();
@@ -258,7 +264,7 @@ class EmployeePerformanceReviewController extends Controller
     public function reject(Request $request, int $id): RedirectResponse
     {
         $validator = Validator::make($request->all(), [
-            'reason' => 'nullable|string|max:500'
+            'reason' => 'nullable|string|max:500',
         ]);
 
         if ($validator->fails()) {
@@ -280,7 +286,7 @@ class EmployeePerformanceReviewController extends Controller
                 Session::flash('error', 'Failed to reject performance review');
             }
         } catch (\Exception $e) {
-            Session::flash('error', 'Failed to reject performance review: ' . $e->getMessage());
+            Session::flash('error', 'Failed to reject performance review: '.$e->getMessage());
         }
 
         return redirect()->back();
@@ -292,7 +298,7 @@ class EmployeePerformanceReviewController extends Controller
     public function assignReviewer(Request $request, int $id): RedirectResponse
     {
         $validator = Validator::make($request->all(), [
-            'reviewer_id' => 'required|exists:users,id'
+            'reviewer_id' => 'required|exists:users,id',
         ]);
 
         if ($validator->fails()) {
@@ -310,7 +316,7 @@ class EmployeePerformanceReviewController extends Controller
                 Session::flash('error', 'Failed to assign reviewer');
             }
         } catch (\Exception $e) {
-            Session::flash('error', 'Failed to assign reviewer: ' . $e->getMessage());
+            Session::flash('error', 'Failed to assign reviewer: '.$e->getMessage());
         }
 
         return redirect()->back();
@@ -322,7 +328,7 @@ class EmployeePerformanceReviewController extends Controller
     public function schedule(Request $request, int $id): RedirectResponse
     {
         $validator = Validator::make($request->all(), [
-            'review_date' => 'required|date|after:today'
+            'review_date' => 'required|date|after:today',
         ]);
 
         if ($validator->fails()) {
@@ -340,7 +346,7 @@ class EmployeePerformanceReviewController extends Controller
                 Session::flash('error', 'Failed to schedule performance review');
             }
         } catch (\Exception $e) {
-            Session::flash('error', 'Failed to schedule performance review: ' . $e->getMessage());
+            Session::flash('error', 'Failed to schedule performance review: '.$e->getMessage());
         }
 
         return redirect()->back();
@@ -416,7 +422,7 @@ class EmployeePerformanceReviewController extends Controller
         $validator = Validator::make($request->all(), [
             'type' => 'required|in:employee,department,company',
             'id' => 'required_if:type,employee,department|integer',
-            'period' => 'required|in:month,quarter,year'
+            'period' => 'required|in:month,quarter,year',
         ]);
 
         if ($validator->fails()) {
@@ -451,7 +457,8 @@ class EmployeePerformanceReviewController extends Controller
 
             return view('shopping::employee-performance-reviews.reports', compact('report', 'type', 'period'));
         } catch (\Exception $e) {
-            Session::flash('error', 'Failed to generate report: ' . $e->getMessage());
+            Session::flash('error', 'Failed to generate report: '.$e->getMessage());
+
             return redirect()->back()->withInput();
         }
     }
@@ -463,7 +470,7 @@ class EmployeePerformanceReviewController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'filters' => 'nullable|array',
-            'format' => 'required|in:json,csv,xlsx,pdf'
+            'format' => 'required|in:json,csv,xlsx,pdf',
         ]);
 
         if ($validator->fails()) {
@@ -478,9 +485,11 @@ class EmployeePerformanceReviewController extends Controller
             $exportData = $this->service->exportReviews($filters, $format);
 
             Session::flash('success', 'Performance reviews exported successfully');
+
             return redirect()->back()->with('export_url', $exportData);
         } catch (\Exception $e) {
-            Session::flash('error', 'Failed to export reviews: ' . $e->getMessage());
+            Session::flash('error', 'Failed to export reviews: '.$e->getMessage());
+
             return redirect()->back()->withInput();
         }
     }
@@ -492,7 +501,7 @@ class EmployeePerformanceReviewController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'data' => 'required|string',
-            'format' => 'required|in:json,csv,xlsx'
+            'format' => 'required|in:json,csv,xlsx',
         ]);
 
         if ($validator->fails()) {
@@ -513,7 +522,7 @@ class EmployeePerformanceReviewController extends Controller
                 Session::flash('error', 'Failed to import performance reviews');
             }
         } catch (\Exception $e) {
-            Session::flash('error', 'Failed to import reviews: ' . $e->getMessage());
+            Session::flash('error', 'Failed to import reviews: '.$e->getMessage());
         }
 
         return redirect()->back();
@@ -526,7 +535,7 @@ class EmployeePerformanceReviewController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'review_ids' => 'required|array|min:1',
-            'review_ids.*' => 'integer|exists:employee_performance_reviews,id'
+            'review_ids.*' => 'integer|exists:employee_performance_reviews,id',
         ]);
 
         if ($validator->fails()) {
@@ -544,7 +553,7 @@ class EmployeePerformanceReviewController extends Controller
                 Session::flash('error', 'Failed to bulk approve performance reviews');
             }
         } catch (\Exception $e) {
-            Session::flash('error', 'Failed to bulk approve reviews: ' . $e->getMessage());
+            Session::flash('error', 'Failed to bulk approve reviews: '.$e->getMessage());
         }
 
         return redirect()->back();
@@ -558,7 +567,7 @@ class EmployeePerformanceReviewController extends Controller
         $validator = Validator::make($request->all(), [
             'review_ids' => 'required|array|min:1',
             'review_ids.*' => 'integer|exists:employee_performance_reviews,id',
-            'reason' => 'nullable|string|max:500'
+            'reason' => 'nullable|string|max:500',
         ]);
 
         if ($validator->fails()) {
@@ -579,7 +588,7 @@ class EmployeePerformanceReviewController extends Controller
                 Session::flash('error', 'Failed to bulk reject performance reviews');
             }
         } catch (\Exception $e) {
-            Session::flash('error', 'Failed to bulk reject reviews: ' . $e->getMessage());
+            Session::flash('error', 'Failed to bulk reject reviews: '.$e->getMessage());
         }
 
         return redirect()->back();
@@ -599,7 +608,7 @@ class EmployeePerformanceReviewController extends Controller
                 Session::flash('error', 'Failed to send review reminders');
             }
         } catch (\Exception $e) {
-            Session::flash('error', 'Failed to send reminders: ' . $e->getMessage());
+            Session::flash('error', 'Failed to send reminders: '.$e->getMessage());
         }
 
         return redirect()->back();

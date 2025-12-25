@@ -5,15 +5,16 @@ namespace App\Notifications\EmployeeDepartment;
 use App\Models\EmployeeDepartment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\BroadcastMessage;
 
 class DepartmentCreated extends Notification implements ShouldQueue
 {
     use Queueable;
 
     public $department;
+
     public $createdBy;
 
     /**
@@ -41,21 +42,21 @@ class DepartmentCreated extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('New Department Created: ' . $this->department->name)
-            ->greeting('Hello ' . $notifiable->name . ',')
+            ->subject('New Department Created: '.$this->department->name)
+            ->greeting('Hello '.$notifiable->name.',')
             ->line('A new department has been created in the organization.')
-            ->line('Department: ' . $this->department->name)
-            ->line('Code: ' . $this->department->code)
-            ->line('Location: ' . ($this->department->location ?? 'Not specified'))
-            ->line('Budget: $' . number_format($this->department->budget ?? 0, 2))
-            ->line('Headcount Limit: ' . ($this->department->headcount_limit ?? 'Not specified'))
+            ->line('Department: '.$this->department->name)
+            ->line('Code: '.$this->department->code)
+            ->line('Location: '.($this->department->location ?? 'Not specified'))
+            ->line('Budget: $'.number_format($this->department->budget ?? 0, 2))
+            ->line('Headcount Limit: '.($this->department->headcount_limit ?? 'Not specified'))
             ->when($this->department->parent_id, function ($message) {
-                return $message->line('Parent Department: ' . $this->getParentDepartmentName());
+                return $message->line('Parent Department: '.$this->getParentDepartmentName());
             })
             ->when($this->department->manager_id, function ($message) {
-                return $message->line('Manager: ' . $this->getManagerName());
+                return $message->line('Manager: '.$this->getManagerName());
             })
-            ->line('Created by: ' . $this->getCreatedByName())
+            ->line('Created by: '.$this->getCreatedByName())
             ->action('View Department', $this->getDepartmentUrl())
             ->line('Please review the department details and ensure all necessary resources are allocated.')
             ->salutation('Best regards, HR Team');
@@ -80,9 +81,9 @@ class DepartmentCreated extends Notification implements ShouldQueue
             'headcount_limit' => $this->department->headcount_limit,
             'created_by' => $this->createdBy,
             'created_at' => $this->department->created_at,
-            'message' => 'New department "' . $this->department->name . '" has been created.',
+            'message' => 'New department "'.$this->department->name.'" has been created.',
             'action_url' => $this->getDepartmentUrl(),
-            'priority' => 'normal'
+            'priority' => 'normal',
         ];
     }
 
@@ -95,9 +96,9 @@ class DepartmentCreated extends Notification implements ShouldQueue
             'type' => 'department_created',
             'department_id' => $this->department->id,
             'department_name' => $this->department->name,
-            'message' => 'New department "' . $this->department->name . '" has been created.',
+            'message' => 'New department "'.$this->department->name.'" has been created.',
             'timestamp' => now()->toISOString(),
-            'action_url' => $this->getDepartmentUrl()
+            'action_url' => $this->getDepartmentUrl(),
         ]);
     }
 
@@ -125,8 +126,10 @@ class DepartmentCreated extends Notification implements ShouldQueue
         try {
             if ($this->department->parent_id) {
                 $parent = EmployeeDepartment::find($this->department->parent_id);
+
                 return $parent ? $parent->name : 'Unknown';
             }
+
             return 'None (Root Department)';
         } catch (\Exception $e) {
             return 'Unknown';
@@ -141,8 +144,9 @@ class DepartmentCreated extends Notification implements ShouldQueue
         try {
             if ($this->department->manager_id) {
                 // This would typically query the Employee model
-                return 'Manager ID: ' . $this->department->manager_id;
+                return 'Manager ID: '.$this->department->manager_id;
             }
+
             return 'Not assigned';
         } catch (\Exception $e) {
             return 'Unknown';
@@ -157,8 +161,9 @@ class DepartmentCreated extends Notification implements ShouldQueue
         try {
             if ($this->createdBy) {
                 // This would typically query the User model
-                return 'User ID: ' . $this->createdBy;
+                return 'User ID: '.$this->createdBy;
             }
+
             return 'System';
         } catch (\Exception $e) {
             return 'Unknown';
@@ -171,7 +176,7 @@ class DepartmentCreated extends Notification implements ShouldQueue
     protected function getDepartmentUrl(): string
     {
         // This would return the URL to view the department
-        return '/departments/' . $this->department->id;
+        return '/departments/'.$this->department->id;
     }
 
     /**
@@ -193,7 +198,7 @@ class DepartmentCreated extends Notification implements ShouldQueue
             'department',
             'department_created',
             'hr',
-            'organization'
+            'organization',
         ];
     }
 }

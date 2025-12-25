@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Permissions;
 
-use Illuminate\Support\Facades\Gate;
 use Fereydooni\Shopping\app\Models\EmployeeBenefits;
 use Fereydooni\Shopping\app\Models\User;
+use Illuminate\Support\Facades\Gate;
 
 class EmployeeBenefitsPermissions
 {
@@ -161,7 +161,7 @@ class EmployeeBenefitsPermissions
             'employee-benefits.import',
             'employee-benefits.statistics',
             'employee-benefits.cost-analysis',
-            'employee-benefits.renewal-management'
+            'employee-benefits.renewal-management',
         ];
     }
 
@@ -175,12 +175,12 @@ class EmployeeBenefitsPermissions
                 'employee-benefits.view',
                 'employee-benefits.create',
                 'employee-benefits.edit',
-                'employee-benefits.delete'
+                'employee-benefits.delete',
             ],
             'Enrollment Management' => [
                 'employee-benefits.enroll',
                 'employee-benefits.terminate',
-                'employee-benefits.cancel'
+                'employee-benefits.cancel',
             ],
             'Access Control' => [
                 'employee-benefits.view-own',
@@ -189,17 +189,17 @@ class EmployeeBenefitsPermissions
                 'employee-benefits.view-team',
                 'employee-benefits.view-department',
                 'employee-benefits.view-all',
-                'employee-benefits.manage-all'
+                'employee-benefits.manage-all',
             ],
             'Data Management' => [
                 'employee-benefits.export',
-                'employee-benefits.import'
+                'employee-benefits.import',
             ],
             'Analytics' => [
                 'employee-benefits.statistics',
                 'employee-benefits.cost-analysis',
-                'employee-benefits.renewal-management'
-            ]
+                'employee-benefits.renewal-management',
+            ],
         ];
     }
 }

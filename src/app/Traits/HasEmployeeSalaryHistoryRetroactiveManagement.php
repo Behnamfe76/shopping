@@ -3,11 +3,10 @@
 namespace App\Traits;
 
 use App\Models\EmployeeSalaryHistory;
-use App\DTOs\EmployeeSalaryHistoryDTO;
 use App\Repositories\Interfaces\EmployeeSalaryHistoryRepositoryInterface;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
-use Carbon\Carbon;
 
 trait HasEmployeeSalaryHistoryRetroactiveManagement
 {
@@ -38,8 +37,8 @@ trait HasEmployeeSalaryHistoryRetroactiveManagement
             Log::info('Retroactive salary adjustment created via trait', [
                 'id' => $salaryHistory->id,
                 'employee_id' => $data['employee_id'],
-                'retroactive_period' => $data['retroactive_period_days'] . ' days',
-                'adjustment_amount' => $data['retroactive_adjustment_amount']
+                'retroactive_period' => $data['retroactive_period_days'].' days',
+                'adjustment_amount' => $data['retroactive_adjustment_amount'],
             ]);
 
             return $salaryHistory;
@@ -47,7 +46,7 @@ trait HasEmployeeSalaryHistoryRetroactiveManagement
         } catch (\Exception $e) {
             Log::error('Failed to create retroactive salary adjustment via trait', [
                 'error' => $e->getMessage(),
-                'data' => $data
+                'data' => $data,
             ]);
             throw $e;
         }
@@ -100,7 +99,7 @@ trait HasEmployeeSalaryHistoryRetroactiveManagement
     /**
      * Calculate total retroactive adjustment amount for employee
      */
-    public function calculateTotalRetroactiveAdjustmentAmount(int $employeeId, string $startDate = null, string $endDate = null): float
+    public function calculateTotalRetroactiveAdjustmentAmount(int $employeeId, ?string $startDate = null, ?string $endDate = null): float
     {
         $adjustments = $this->getRetroactiveAdjustmentsByEmployee($employeeId);
 
@@ -117,7 +116,7 @@ trait HasEmployeeSalaryHistoryRetroactiveManagement
     /**
      * Calculate total retroactive adjustment amount for company
      */
-    public function calculateTotalRetroactiveAdjustmentAmountForCompany(string $startDate = null, string $endDate = null): float
+    public function calculateTotalRetroactiveAdjustmentAmountForCompany(?string $startDate = null, ?string $endDate = null): float
     {
         $adjustments = $this->getAllRetroactiveAdjustments();
 
@@ -275,6 +274,7 @@ trait HasEmployeeSalaryHistoryRetroactiveManagement
     public function hasRetroactivePeriodConflicts(int $employeeId, string $startDate, string $endDate): bool
     {
         $overlaps = $this->calculateRetroactivePeriodOverlap($employeeId, $startDate, $endDate);
+
         return count($overlaps) > 0;
     }
 
@@ -325,7 +325,7 @@ trait HasEmployeeSalaryHistoryRetroactiveManagement
         $requiredFields = ['employee_id', 'old_salary', 'new_salary', 'change_type', 'retroactive_start_date', 'retroactive_end_date'];
 
         foreach ($requiredFields as $field) {
-            if (!isset($data[$field])) {
+            if (! isset($data[$field])) {
                 throw new \InvalidArgumentException("Required field '{$field}' is missing for retroactive adjustment");
             }
         }

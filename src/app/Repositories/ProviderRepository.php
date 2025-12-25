@@ -2,24 +2,21 @@
 
 namespace Fereydooni\Shopping\App\Repositories;
 
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderRepositoryInterface;
-use Fereydooni\Shopping\App\Models\Provider;
 use Fereydooni\Shopping\App\DTOs\ProviderDTO;
 use Fereydooni\Shopping\App\Enums\ProviderStatus;
 use Fereydooni\Shopping\App\Enums\ProviderType;
-use Carbon\Carbon;
+use Fereydooni\Shopping\App\Models\Provider;
+use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ProviderRepository implements ProviderRepositoryInterface
 {
-    public function __construct(protected Provider $model)
-    {
-    }
+    public function __construct(protected Provider $model) {}
 
     // Basic CRUD operations
     public function all(): Collection
@@ -37,7 +34,7 @@ class ProviderRepository implements ProviderRepositoryInterface
         return $this->model->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->model->cursorPaginate($perPage, ['*'], 'id', $cursor);
     }
@@ -51,6 +48,7 @@ class ProviderRepository implements ProviderRepositoryInterface
     public function findDTO(int $id): ?ProviderDTO
     {
         $provider = $this->find($id);
+
         return $provider ? ProviderDTO::fromModel($provider) : null;
     }
 
@@ -62,6 +60,7 @@ class ProviderRepository implements ProviderRepositoryInterface
     public function findByUserIdDTO(int $userId): ?ProviderDTO
     {
         $provider = $this->findByUserId($userId);
+
         return $provider ? ProviderDTO::fromModel($provider) : null;
     }
 
@@ -73,6 +72,7 @@ class ProviderRepository implements ProviderRepositoryInterface
     public function findByEmailDTO(string $email): ?ProviderDTO
     {
         $provider = $this->findByEmail($email);
+
         return $provider ? ProviderDTO::fromModel($provider) : null;
     }
 
@@ -84,6 +84,7 @@ class ProviderRepository implements ProviderRepositoryInterface
     public function findByPhoneDTO(string $phone): ?ProviderDTO
     {
         $provider = $this->findByPhone($phone);
+
         return $provider ? ProviderDTO::fromModel($provider) : null;
     }
 
@@ -95,6 +96,7 @@ class ProviderRepository implements ProviderRepositoryInterface
     public function findByProviderNumberDTO(string $providerNumber): ?ProviderDTO
     {
         $provider = $this->findByProviderNumber($providerNumber);
+
         return $provider ? ProviderDTO::fromModel($provider) : null;
     }
 
@@ -106,6 +108,7 @@ class ProviderRepository implements ProviderRepositoryInterface
     public function findByCompanyNameDTO(string $companyName): ?ProviderDTO
     {
         $provider = $this->findByCompanyName($companyName);
+
         return $provider ? ProviderDTO::fromModel($provider) : null;
     }
 
@@ -117,6 +120,7 @@ class ProviderRepository implements ProviderRepositoryInterface
     public function findByTaxIdDTO(string $taxId): ?ProviderDTO
     {
         $provider = $this->findByTaxId($taxId);
+
         return $provider ? ProviderDTO::fromModel($provider) : null;
     }
 
@@ -129,7 +133,8 @@ class ProviderRepository implements ProviderRepositoryInterface
     public function findByStatusDTO(string $status): Collection
     {
         $providers = $this->findByStatus($status);
-        return $providers->map(fn($provider) => ProviderDTO::fromModel($provider));
+
+        return $providers->map(fn ($provider) => ProviderDTO::fromModel($provider));
     }
 
     public function findByType(string $type): Collection
@@ -140,7 +145,8 @@ class ProviderRepository implements ProviderRepositoryInterface
     public function findByTypeDTO(string $type): Collection
     {
         $providers = $this->findByType($type);
-        return $providers->map(fn($provider) => ProviderDTO::fromModel($provider));
+
+        return $providers->map(fn ($provider) => ProviderDTO::fromModel($provider));
     }
 
     public function findActive(): Collection
@@ -151,7 +157,8 @@ class ProviderRepository implements ProviderRepositoryInterface
     public function findActiveDTO(): Collection
     {
         $providers = $this->findActive();
-        return $providers->map(fn($provider) => ProviderDTO::fromModel($provider));
+
+        return $providers->map(fn ($provider) => ProviderDTO::fromModel($provider));
     }
 
     public function findInactive(): Collection
@@ -162,7 +169,8 @@ class ProviderRepository implements ProviderRepositoryInterface
     public function findInactiveDTO(): Collection
     {
         $providers = $this->findInactive();
-        return $providers->map(fn($provider) => ProviderDTO::fromModel($provider));
+
+        return $providers->map(fn ($provider) => ProviderDTO::fromModel($provider));
     }
 
     public function findSuspended(): Collection
@@ -173,13 +181,14 @@ class ProviderRepository implements ProviderRepositoryInterface
     public function findSuspendedDTO(): Collection
     {
         $providers = $this->findSuspended();
-        return $providers->map(fn($provider) => ProviderDTO::fromModel($provider));
+
+        return $providers->map(fn ($provider) => ProviderDTO::fromModel($provider));
     }
 
     // Create and update operations
     public function create(array $data): Provider
     {
-        if (!isset($data['provider_number'])) {
+        if (! isset($data['provider_number'])) {
             $data['provider_number'] = $this->generateProviderNumber();
         }
 
@@ -189,6 +198,7 @@ class ProviderRepository implements ProviderRepositoryInterface
     public function createAndReturnDTO(array $data): ProviderDTO
     {
         $provider = $this->create($data);
+
         return ProviderDTO::fromModel($provider);
     }
 
@@ -200,6 +210,7 @@ class ProviderRepository implements ProviderRepositoryInterface
     public function updateAndReturnDTO(Provider $provider, array $data): ?ProviderDTO
     {
         $updated = $this->update($provider, $data);
+
         return $updated ? ProviderDTO::fromModel($provider->fresh()) : null;
     }
 
@@ -219,7 +230,7 @@ class ProviderRepository implements ProviderRepositoryInterface
         return $provider->deactivate();
     }
 
-    public function suspend(Provider $provider, string $reason = null): bool
+    public function suspend(Provider $provider, ?string $reason = null): bool
     {
         return $provider->suspend($reason);
     }
@@ -272,7 +283,7 @@ class ProviderRepository implements ProviderRepositoryInterface
         return $provider->extendContract($newEndDate);
     }
 
-    public function terminateContract(Provider $provider, string $reason = null): bool
+    public function terminateContract(Provider $provider, ?string $reason = null): bool
     {
         return $provider->terminateContract($reason);
     }
@@ -346,19 +357,20 @@ class ProviderRepository implements ProviderRepositoryInterface
     // Search operations
     public function search(string $query): Collection
     {
-        return $this->model->where(function($q) use ($query) {
+        return $this->model->where(function ($q) use ($query) {
             $q->where('company_name', 'LIKE', "%{$query}%")
-              ->orWhere('contact_person', 'LIKE', "%{$query}%")
-              ->orWhere('email', 'LIKE', "%{$query}%")
-              ->orWhere('phone', 'LIKE', "%{$query}%")
-              ->orWhere('provider_number', 'LIKE', "%{$query}%");
+                ->orWhere('contact_person', 'LIKE', "%{$query}%")
+                ->orWhere('email', 'LIKE', "%{$query}%")
+                ->orWhere('phone', 'LIKE', "%{$query}%")
+                ->orWhere('provider_number', 'LIKE', "%{$query}%");
         })->get();
     }
 
     public function searchDTO(string $query): Collection
     {
         $providers = $this->search($query);
-        return $providers->map(fn($provider) => ProviderDTO::fromModel($provider));
+
+        return $providers->map(fn ($provider) => ProviderDTO::fromModel($provider));
     }
 
     public function searchByCompany(string $companyName): Collection
@@ -369,7 +381,8 @@ class ProviderRepository implements ProviderRepositoryInterface
     public function searchByCompanyDTO(string $companyName): Collection
     {
         $providers = $this->searchByCompany($companyName);
-        return $providers->map(fn($provider) => ProviderDTO::fromModel($provider));
+
+        return $providers->map(fn ($provider) => ProviderDTO::fromModel($provider));
     }
 
     public function searchBySpecialization(string $specialization): Collection
@@ -380,7 +393,8 @@ class ProviderRepository implements ProviderRepositoryInterface
     public function searchBySpecializationDTO(string $specialization): Collection
     {
         $providers = $this->searchBySpecialization($specialization);
-        return $providers->map(fn($provider) => ProviderDTO::fromModel($provider));
+
+        return $providers->map(fn ($provider) => ProviderDTO::fromModel($provider));
     }
 
     // Top performers
@@ -392,7 +406,8 @@ class ProviderRepository implements ProviderRepositoryInterface
     public function getTopRatedDTO(int $limit = 10): Collection
     {
         $providers = $this->getTopRated($limit);
-        return $providers->map(fn($provider) => ProviderDTO::fromModel($provider));
+
+        return $providers->map(fn ($provider) => ProviderDTO::fromModel($provider));
     }
 
     public function getTopSpenders(int $limit = 10): Collection
@@ -403,7 +418,8 @@ class ProviderRepository implements ProviderRepositoryInterface
     public function getTopSpendersDTO(int $limit = 10): Collection
     {
         $providers = $this->getTopSpenders($limit);
-        return $providers->map(fn($provider) => ProviderDTO::fromModel($provider));
+
+        return $providers->map(fn ($provider) => ProviderDTO::fromModel($provider));
     }
 
     public function getMostReliable(int $limit = 10): Collection
@@ -414,7 +430,8 @@ class ProviderRepository implements ProviderRepositoryInterface
     public function getMostReliableDTO(int $limit = 10): Collection
     {
         $providers = $this->getMostReliable($limit);
-        return $providers->map(fn($provider) => ProviderDTO::fromModel($provider));
+
+        return $providers->map(fn ($provider) => ProviderDTO::fromModel($provider));
     }
 
     public function getNewestProviders(int $limit = 10): Collection
@@ -425,7 +442,8 @@ class ProviderRepository implements ProviderRepositoryInterface
     public function getNewestProvidersDTO(int $limit = 10): Collection
     {
         $providers = $this->getNewestProviders($limit);
-        return $providers->map(fn($provider) => ProviderDTO::fromModel($provider));
+
+        return $providers->map(fn ($provider) => ProviderDTO::fromModel($provider));
     }
 
     public function getLongestServing(int $limit = 10): Collection
@@ -436,28 +454,30 @@ class ProviderRepository implements ProviderRepositoryInterface
     public function getLongestServingDTO(int $limit = 10): Collection
     {
         $providers = $this->getLongestServing($limit);
-        return $providers->map(fn($provider) => ProviderDTO::fromModel($provider));
+
+        return $providers->map(fn ($provider) => ProviderDTO::fromModel($provider));
     }
 
     // Validation and utilities
     public function validateProvider(array $data): bool
     {
         $validator = validator($data, ProviderDTO::rules(), ProviderDTO::messages());
-        return !$validator->fails();
+
+        return ! $validator->fails();
     }
 
     public function generateProviderNumber(): string
     {
         do {
-            $number = 'PROV-' . strtoupper(Str::random(8));
-        } while (!$this->isProviderNumberUnique($number));
+            $number = 'PROV-'.strtoupper(Str::random(8));
+        } while (! $this->isProviderNumberUnique($number));
 
         return $number;
     }
 
     public function isProviderNumberUnique(string $providerNumber): bool
     {
-        return !$this->model->where('provider_number', $providerNumber)->exists();
+        return ! $this->model->where('provider_number', $providerNumber)->exists();
     }
 
     // Analytics and reporting
@@ -481,6 +501,7 @@ class ProviderRepository implements ProviderRepositoryInterface
         foreach (ProviderStatus::values() as $status) {
             $stats[$status] = $this->getProviderCountByStatus($status);
         }
+
         return $stats;
     }
 
@@ -490,18 +511,19 @@ class ProviderRepository implements ProviderRepositoryInterface
         foreach (ProviderType::values() as $type) {
             $stats[$type] = $this->getProviderCountByType($type);
         }
+
         return $stats;
     }
 
     public function getProviderGrowthStats(string $period = 'monthly'): array
     {
         $query = $this->model->selectRaw('DATE(created_at) as date, COUNT(*) as count')
-                            ->groupBy('date')
-                            ->orderBy('date');
+            ->groupBy('date')
+            ->orderBy('date');
 
         if ($period === 'monthly') {
             $query->selectRaw('DATE_FORMAT(created_at, "%Y-%m") as date, COUNT(*) as count')
-                  ->groupBy(DB::raw('DATE_FORMAT(created_at, "%Y-%m")'));
+                ->groupBy(DB::raw('DATE_FORMAT(created_at, "%Y-%m")'));
         }
 
         return $query->get()->pluck('count', 'date')->toArray();
@@ -544,6 +566,7 @@ class ProviderRepository implements ProviderRepositoryInterface
     public function getProviderContractStats(): array
     {
         $now = now();
+
         return [
             'total_contracts' => $this->model->whereNotNull('contract_start_date')->count(),
             'active_contracts' => $this->model->where('contract_end_date', '>', $now)->count(),
@@ -556,30 +579,35 @@ class ProviderRepository implements ProviderRepositoryInterface
     public function getProviderLifetimeValue(int $providerId): float
     {
         $provider = $this->find($providerId);
+
         return $provider ? $provider->total_spent : 0.0;
     }
 
     public function getProviderOrderHistory(int $providerId): Collection
     {
         $provider = $this->find($providerId);
+
         return $provider ? $provider->orders : collect();
     }
 
     public function getProviderProducts(int $providerId): Collection
     {
         $provider = $this->find($providerId);
+
         return $provider ? $provider->products : collect();
     }
 
     public function getProviderInvoices(int $providerId): Collection
     {
         $provider = $this->find($providerId);
+
         return $provider ? $provider->invoices : collect();
     }
 
     public function getProviderPayments(int $providerId): Collection
     {
         $provider = $this->find($providerId);
+
         return $provider ? $provider->payments : collect();
     }
 
@@ -603,6 +631,7 @@ class ProviderRepository implements ProviderRepositoryInterface
     public function getProviderSpecializations(int $providerId): array
     {
         $provider = $this->find($providerId);
+
         return $provider ? ($provider->specializations ?? []) : [];
     }
 
@@ -614,6 +643,7 @@ class ProviderRepository implements ProviderRepositoryInterface
     public function getProviderCertifications(int $providerId): array
     {
         $provider = $this->find($providerId);
+
         return $provider ? ($provider->certifications ?? []) : [];
     }
 
@@ -626,6 +656,7 @@ class ProviderRepository implements ProviderRepositoryInterface
     public function getProviderInsurance(int $providerId): array
     {
         $provider = $this->find($providerId);
+
         return $provider ? ($provider->insurance_info ?? []) : [];
     }
 
@@ -633,12 +664,14 @@ class ProviderRepository implements ProviderRepositoryInterface
     public function calculateProviderScore(int $providerId): float
     {
         $provider = $this->find($providerId);
+
         return $provider ? $provider->calculateScore() : 0.0;
     }
 
     public function getProviderPerformanceMetrics(int $providerId): array
     {
         $provider = $this->find($providerId);
+
         return $provider ? $provider->getPerformanceMetrics() : [];
     }
 }

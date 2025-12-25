@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\app\Repositories\Interfaces;
 
-use Fereydooni\Shopping\app\Models\ProviderNote;
 use Fereydooni\Shopping\app\DTOs\ProviderNoteDTO;
+use Fereydooni\Shopping\app\Models\ProviderNote;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
 
 interface ProviderNoteRepositoryInterface
 {
@@ -29,7 +29,7 @@ interface ProviderNoteRepositoryInterface
     /**
      * Get cursor paginated provider notes
      */
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator;
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator;
 
     /**
      * Find provider note by ID

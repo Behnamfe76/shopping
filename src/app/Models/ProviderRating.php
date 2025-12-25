@@ -2,16 +2,14 @@
 
 namespace Fereydooni\Shopping\App\Models;
 
+use Fereydooni\Shopping\App\Enums\RatingCategory;
+use Fereydooni\Shopping\App\Enums\RatingStatus;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Builder;
-use Fereydooni\Shopping\App\Enums\RatingScale;
-use Fereydooni\Shopping\App\Enums\RatingCategory;
-use Fereydooni\Shopping\App\Enums\RatingStatus;
-use Carbon\Carbon;
 
 class ProviderRating extends Model
 {
@@ -159,6 +157,7 @@ class ProviderRating extends Model
         if ($this->max_rating <= 0) {
             return 0;
         }
+
         return round(($this->rating_value / $this->max_rating) * 100, 2);
     }
 
@@ -167,6 +166,7 @@ class ProviderRating extends Model
         if ($this->max_rating <= 0) {
             return 0;
         }
+
         return round(($this->rating_value / $this->max_rating) * 5, 1);
     }
 
@@ -175,12 +175,13 @@ class ProviderRating extends Model
         if ($this->total_votes <= 0) {
             return 0;
         }
+
         return round(($this->helpful_votes / $this->total_votes) * 100, 2);
     }
 
     public function getFormattedRatingAttribute(): string
     {
-        return match($this->category) {
+        return match ($this->category) {
             RatingCategory::OVERALL => "{$this->rating_stars}/5 stars",
             RatingCategory::QUALITY => "{$this->rating_value}/{$this->max_rating}",
             RatingCategory::SERVICE => "{$this->rating_value}/{$this->max_rating}",
@@ -192,6 +193,7 @@ class ProviderRating extends Model
     {
         $color = $this->status->getColor();
         $description = $this->status->getDescription();
+
         return "<span class=\"badge badge-{$color}\">{$description}</span>";
     }
 
@@ -231,7 +233,7 @@ class ProviderRating extends Model
         return $this->isApproved() && $this->isVerified();
     }
 
-    public function approve(int $moderatorId, string $notes = null): bool
+    public function approve(int $moderatorId, ?string $notes = null): bool
     {
         $this->update([
             'status' => RatingStatus::APPROVED,
@@ -243,7 +245,7 @@ class ProviderRating extends Model
         return true;
     }
 
-    public function reject(int $moderatorId, string $reason, string $notes = null): bool
+    public function reject(int $moderatorId, string $reason, ?string $notes = null): bool
     {
         $this->update([
             'status' => RatingStatus::REJECTED,
@@ -256,7 +258,7 @@ class ProviderRating extends Model
         return true;
     }
 
-    public function flag(int $moderatorId, string $reason, string $notes = null): bool
+    public function flag(int $moderatorId, string $reason, ?string $notes = null): bool
     {
         $this->update([
             'status' => RatingStatus::FLAGGED,
@@ -305,7 +307,7 @@ class ProviderRating extends Model
     {
         $existingVote = $this->votes()->where('user_id', $userId)->first();
 
-        if (!$existingVote || !$existingVote->is_helpful) {
+        if (! $existingVote || ! $existingVote->is_helpful) {
             return false;
         }
 
@@ -323,9 +325,9 @@ class ProviderRating extends Model
             $oldHelpful = $existingVote->is_helpful;
             $existingVote->update(['is_helpful' => $isHelpful]);
 
-            if ($oldHelpful && !$isHelpful) {
+            if ($oldHelpful && ! $isHelpful) {
                 $this->decrement('helpful_votes');
-            } elseif (!$oldHelpful && $isHelpful) {
+            } elseif (! $oldHelpful && $isHelpful) {
                 $this->increment('helpful_votes');
             }
         } else {

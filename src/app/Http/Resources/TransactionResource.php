@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Http\Resources;
 
+use Fereydooni\Shopping\app\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Fereydooni\Shopping\app\Models\Transaction;
 
 class TransactionResource extends JsonResource
 {
@@ -111,6 +111,6 @@ class TransactionResource extends JsonResource
      */
     private function formatAmount(float $amount, string $currency): string
     {
-        return number_format($amount, 2) . ' ' . strtoupper($currency);
+        return number_format($amount, 2).' '.strtoupper($currency);
     }
 }

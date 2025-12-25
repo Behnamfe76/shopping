@@ -2,10 +2,10 @@
 
 namespace Fereydooni\Shopping\database\factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Fereydooni\Shopping\app\Models\EmployeeEmergencyContact;
-use Fereydooni\Shopping\app\Models\Employee;
 use Fereydooni\Shopping\app\Enums\Relationship;
+use Fereydooni\Shopping\app\Models\Employee;
+use Fereydooni\Shopping\app\Models\EmployeeEmergencyContact;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Fereydooni\Shopping\app\Models\EmployeeEmergencyContact>
@@ -78,7 +78,7 @@ class EmployeeEmergencyContactFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'relationship' => Relationship::CHILD,
-            'contact_name' => $this->faker->firstName() . ' ' . $this->faker->lastName(),
+            'contact_name' => $this->faker->firstName().' '.$this->faker->lastName(),
         ]);
     }
 
@@ -281,7 +281,7 @@ class EmployeeEmergencyContactFactory extends Factory
 
             case Relationship::CHILD:
                 $state = $state->state(fn (array $attributes) => [
-                    'contact_name' => $this->faker->firstName() . ' ' . $this->faker->lastName(),
+                    'contact_name' => $this->faker->firstName().' '.$this->faker->lastName(),
                     'phone_primary' => $this->faker->phoneNumber(),
                     'phone_secondary' => $this->faker->optional(0.3)->phoneNumber(),
                     'email' => $this->faker->optional(0.7)->safeEmail(),

@@ -26,7 +26,7 @@ return new class extends Migration
                 'bereavement',
                 'jury_duty',
                 'military',
-                'other'
+                'other',
             ]);
 
             // Date and time fields
@@ -48,7 +48,7 @@ return new class extends Migration
                 'pending',
                 'approved',
                 'rejected',
-                'cancelled'
+                'cancelled',
             ])->default('pending');
 
             // Approval fields
@@ -99,4 +99,3 @@ return new class extends Migration
         Schema::dropIfExists('employee_time_offs');
     }
 };
-

@@ -11,7 +11,7 @@ enum CustomerType: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::INDIVIDUAL => 'Individual',
             self::BUSINESS => 'Business',
             self::WHOLESALE => 'Wholesale',
@@ -21,7 +21,7 @@ enum CustomerType: string
 
     public function color(): string
     {
-        return match($this) {
+        return match ($this) {
             self::INDIVIDUAL => 'blue',
             self::BUSINESS => 'purple',
             self::WHOLESALE => 'orange',

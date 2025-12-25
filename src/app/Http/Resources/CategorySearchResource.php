@@ -43,11 +43,12 @@ class CategorySearchResource extends ResourceCollection
      */
     private function getHighlightedTerms(?string $query): array
     {
-        if (!$query) {
+        if (! $query) {
             return [];
         }
 
         $terms = explode(' ', strtolower($query));
+
         return array_filter($terms, function ($term) {
             return strlen($term) > 2; // Only highlight terms longer than 2 characters
         });

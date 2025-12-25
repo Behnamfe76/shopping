@@ -2,15 +2,14 @@
 
 namespace Fereydooni\Shopping\App\Listeners\ProviderSpecialization;
 
+use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderPrimarySpecializationChanged;
+use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationActivated;
+use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationCreated;
+use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationDeactivated;
+use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationRejected;
+use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationVerified;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationCreated;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationUpdated;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationVerified;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationRejected;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationActivated;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationDeactivated;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderPrimarySpecializationChanged;
 
 class UpdateProviderProfile implements ShouldQueue
 {
@@ -24,7 +23,7 @@ class UpdateProviderProfile implements ShouldQueue
         $specialization = $event->specialization;
         $provider = $specialization->provider;
 
-        if (!$provider) {
+        if (! $provider) {
             return;
         }
 

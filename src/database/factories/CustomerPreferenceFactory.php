@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\database\factories;
 
-use Fereydooni\Shopping\app\Models\CustomerPreference;
-use Fereydooni\Shopping\app\Models\Customer;
 use Fereydooni\Shopping\app\Enums\CustomerPreferenceType;
+use Fereydooni\Shopping\app\Models\Customer;
+use Fereydooni\Shopping\app\Models\CustomerPreference;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class CustomerPreferenceFactory extends Factory
@@ -43,7 +43,7 @@ class CustomerPreferenceFactory extends Factory
         $preferenceValue = $this->faker->randomElement($preferenceTypes[$preferenceKey]);
 
         // Determine type based on value
-        $type = match(true) {
+        $type = match (true) {
             is_bool($preferenceValue) => CustomerPreferenceType::BOOLEAN,
             is_int($preferenceValue) => CustomerPreferenceType::INTEGER,
             is_float($preferenceValue) => CustomerPreferenceType::FLOAT,
@@ -63,7 +63,7 @@ class CustomerPreferenceFactory extends Factory
                 'category' => $this->getCategoryFromKey($preferenceKey),
                 'default' => $preferenceValue,
                 'created_by' => 'factory',
-                'version' => '1.0'
+                'version' => '1.0',
             ],
         ];
     }
@@ -98,7 +98,7 @@ class CustomerPreferenceFactory extends Factory
                 'ui.theme',
                 'ui.language',
                 'ui.currency',
-                'ui.timezone'
+                'ui.timezone',
             ]),
             'preference_type' => CustomerPreferenceType::STRING,
         ]);
@@ -114,11 +114,11 @@ class CustomerPreferenceFactory extends Factory
                 'notifications.email',
                 'notifications.sms',
                 'notifications.push',
-                'notifications.frequency'
+                'notifications.frequency',
             ]),
             'preference_type' => $this->faker->randomElement([
                 CustomerPreferenceType::BOOLEAN,
-                CustomerPreferenceType::STRING
+                CustomerPreferenceType::STRING,
             ]),
         ]);
     }
@@ -133,12 +133,12 @@ class CustomerPreferenceFactory extends Factory
                 'shopping.sort_by',
                 'shopping.items_per_page',
                 'shopping.show_out_of_stock',
-                'shopping.auto_add_to_cart'
+                'shopping.auto_add_to_cart',
             ]),
             'preference_type' => $this->faker->randomElement([
                 CustomerPreferenceType::STRING,
                 CustomerPreferenceType::INTEGER,
-                CustomerPreferenceType::BOOLEAN
+                CustomerPreferenceType::BOOLEAN,
             ]),
         ]);
     }
@@ -152,7 +152,7 @@ class CustomerPreferenceFactory extends Factory
             'preference_key' => $this->faker->randomElement([
                 'privacy.share_data',
                 'privacy.analytics',
-                'privacy.marketing'
+                'privacy.marketing',
             ]),
             'preference_type' => CustomerPreferenceType::BOOLEAN,
         ]);
@@ -164,6 +164,7 @@ class CustomerPreferenceFactory extends Factory
     private function getCategoryFromKey(string $key): string
     {
         $parts = explode('.', $key);
+
         return $parts[0] ?? 'general';
     }
 }

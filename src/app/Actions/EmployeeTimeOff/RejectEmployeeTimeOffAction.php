@@ -2,14 +2,13 @@
 
 namespace Fereydooni\Shopping\app\Actions\EmployeeTimeOff;
 
+use Fereydooni\Shopping\app\DTOs\EmployeeTimeOffDTO;
+use Fereydooni\Shopping\app\Enums\TimeOffStatus;
+use Fereydooni\Shopping\app\Models\EmployeeTimeOff;
+use Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeTimeOffRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use Fereydooni\Shopping\app\DTOs\EmployeeTimeOffDTO;
-use Fereydooni\Shopping\app\Models\EmployeeTimeOff;
-use Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeTimeOffRepositoryInterface;
-use Fereydooni\Shopping\app\Enums\TimeOffStatus;
-use Carbon\Carbon;
 
 class RejectEmployeeTimeOffAction
 {
@@ -34,7 +33,7 @@ class RejectEmployeeTimeOffAction
             // Reject the time-off request
             $rejected = $this->repository->reject($timeOff, $data['rejected_by'], $data['rejection_reason'] ?? null);
 
-            if (!$rejected) {
+            if (! $rejected) {
                 throw new \RuntimeException('Failed to reject time-off request');
             }
 
@@ -47,7 +46,7 @@ class RejectEmployeeTimeOffAction
                 'id' => $timeOff->id,
                 'employee_id' => $timeOff->employee_id,
                 'rejected_by' => $data['rejected_by'],
-                'reason' => $data['rejection_reason'] ?? null
+                'reason' => $data['rejection_reason'] ?? null,
             ]);
 
             return EmployeeTimeOffDTO::fromModel($timeOff->fresh());
@@ -57,7 +56,7 @@ class RejectEmployeeTimeOffAction
             Log::error('Failed to reject time-off request', [
                 'error' => $e->getMessage(),
                 'time_off_id' => $timeOff->id,
-                'data' => $data
+                'data' => $data,
             ]);
             throw $e;
         }
@@ -94,7 +93,7 @@ class RejectEmployeeTimeOffAction
         // Implementation depends on your notification system
         Log::info('Rejection notifications would be sent here', [
             'time_off_id' => $timeOff->id,
-            'employee_id' => $timeOff->employee_id
+            'employee_id' => $timeOff->employee_id,
         ]);
     }
 }

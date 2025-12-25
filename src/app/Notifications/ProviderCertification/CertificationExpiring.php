@@ -14,6 +14,7 @@ class CertificationExpiring extends Notification implements ShouldQueue
     use Queueable;
 
     public $certification;
+
     public $daysUntilExpiry;
 
     /**
@@ -45,38 +46,38 @@ class CertificationExpiring extends Notification implements ShouldQueue
 
         $url = URL::route('provider.certifications.show', [
             'provider' => $provider->id,
-            'certification' => $certification->id
+            'certification' => $certification->id,
         ]);
 
         $urgencyLevel = $this->getUrgencyLevel();
-        $subject = $urgencyLevel . ' - Certification Expiring in ' . $this->daysUntilExpiry . ' days';
+        $subject = $urgencyLevel.' - Certification Expiring in '.$this->daysUntilExpiry.' days';
 
         $mailMessage = (new MailMessage)
             ->subject($subject)
-            ->greeting('Hello ' . $provider->name . ',')
+            ->greeting('Hello '.$provider->name.',')
             ->line('This is a reminder that your certification will expire soon.')
             ->line('**Certification Details:**')
-            ->line('• **Name:** ' . $certification->certification_name)
-            ->line('• **Number:** ' . $certification->certification_number)
-            ->line('• **Issuing Organization:** ' . $certification->issuing_organization)
-            ->line('• **Category:** ' . ucfirst(str_replace('_', ' ', $certification->category)))
-            ->line('• **Expiry Date:** ' . $certification->expiry_date->format('M d, Y'))
-            ->line('• **Days Until Expiry:** ' . $this->daysUntilExpiry . ' days')
-            ->line('• **Status:** ' . ucfirst($certification->status))
-            ->line('• **Verification Status:** ' . ucfirst(str_replace('_', ' ', $certification->verification_status)));
+            ->line('• **Name:** '.$certification->certification_name)
+            ->line('• **Number:** '.$certification->certification_number)
+            ->line('• **Issuing Organization:** '.$certification->issuing_organization)
+            ->line('• **Category:** '.ucfirst(str_replace('_', ' ', $certification->category)))
+            ->line('• **Expiry Date:** '.$certification->expiry_date->format('M d, Y'))
+            ->line('• **Days Until Expiry:** '.$this->daysUntilExpiry.' days')
+            ->line('• **Status:** '.ucfirst($certification->status))
+            ->line('• **Verification Status:** '.ucfirst(str_replace('_', ' ', $certification->verification_status)));
 
         if ($certification->is_recurring) {
             $mailMessage->line('**Renewal Information:**')
-                       ->line('• **Renewal Period:** ' . $certification->renewal_period . ' months')
-                       ->line('• **Renewal Requirements:** ' . ($certification->renewal_requirements ?: 'Standard renewal process'));
+                ->line('• **Renewal Period:** '.$certification->renewal_period.' months')
+                ->line('• **Renewal Requirements:** '.($certification->renewal_requirements ?: 'Standard renewal process'));
         }
 
         $mailMessage->line('**Action Required:**')
-                   ->line('Please review your certification and take necessary action to renew it before expiration.')
-                   ->action('View Certification', $url)
-                   ->line('**Important:** Expired certifications may affect your ability to provide services and your professional credibility.')
-                   ->line('If you have any questions about the renewal process, please contact our support team.')
-                   ->salutation('Best regards,<br>' . config('app.name') . ' Team');
+            ->line('Please review your certification and take necessary action to renew it before expiration.')
+            ->action('View Certification', $url)
+            ->line('**Important:** Expired certifications may affect your ability to provide services and your professional credibility.')
+            ->line('If you have any questions about the renewal process, please contact our support team.')
+            ->salutation('Best regards,<br>'.config('app.name').' Team');
 
         return $mailMessage;
     }
@@ -100,10 +101,10 @@ class CertificationExpiring extends Notification implements ShouldQueue
             'days_until_expiry' => $this->daysUntilExpiry,
             'expiry_date' => $this->certification->expiry_date->toISOString(),
             'urgency_level' => $this->getUrgencyLevel(),
-            'message' => 'Your certification "' . $this->certification->certification_name . '" will expire in ' . $this->daysUntilExpiry . ' days.',
+            'message' => 'Your certification "'.$this->certification->certification_name.'" will expire in '.$this->daysUntilExpiry.' days.',
             'action_url' => URL::route('provider.certifications.show', [
                 'provider' => $notifiable->id,
-                'certification' => $this->certification->id
+                'certification' => $this->certification->id,
             ]),
             'created_at' => now()->toISOString(),
         ];
@@ -152,9 +153,9 @@ class CertificationExpiring extends Notification implements ShouldQueue
         return [
             'provider_certification',
             'certification_expiring',
-            'provider_' . $this->certification->provider_id,
-            'certification_' . $this->certification->id,
-            'urgency_' . strtolower($this->getUrgencyLevel())
+            'provider_'.$this->certification->provider_id,
+            'certification_'.$this->certification->id,
+            'urgency_'.strtolower($this->getUrgencyLevel()),
         ];
     }
 }

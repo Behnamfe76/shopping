@@ -38,7 +38,7 @@ class TriggerSegmentBasedActions implements ShouldQueue
                 $this->handleCustomerRemoved($event);
             }
         } catch (\Exception $e) {
-            Log::error('Error triggering segment-based actions: ' . $e->getMessage());
+            Log::error('Error triggering segment-based actions: '.$e->getMessage());
         }
     }
 
@@ -48,9 +48,9 @@ class TriggerSegmentBasedActions implements ShouldQueue
     private function handleSegmentActivated(CustomerSegmentActivated $event): void
     {
         $segment = $event->segment;
-        
+
         Log::info("Triggering actions for activated segment: {$segment->name}");
-        
+
         // Here you would typically trigger segment-based actions
         // For example:
         // - Send welcome emails to customers in the segment
@@ -67,9 +67,9 @@ class TriggerSegmentBasedActions implements ShouldQueue
     {
         $segment = $event->segment;
         $customerCount = $event->customerCount;
-        
+
         Log::info("Triggering actions for calculated segment: {$segment->name} with {$customerCount} customers");
-        
+
         // Here you would typically trigger segment-based actions
         // For example:
         // - Update marketing campaign targets
@@ -85,9 +85,9 @@ class TriggerSegmentBasedActions implements ShouldQueue
     {
         $segment = $event->segment;
         $customerId = $event->customerId;
-        
+
         Log::info("Triggering actions for customer {$customerId} added to segment {$segment->name}");
-        
+
         // Here you would typically trigger customer-specific actions
         // For example:
         // - Send personalized welcome message
@@ -103,9 +103,9 @@ class TriggerSegmentBasedActions implements ShouldQueue
     {
         $segment = $event->segment;
         $customerId = $event->customerId;
-        
+
         Log::info("Triggering actions for customer {$customerId} removed from segment {$segment->name}");
-        
+
         // Here you would typically trigger customer-specific actions
         // For example:
         // - Send exit survey

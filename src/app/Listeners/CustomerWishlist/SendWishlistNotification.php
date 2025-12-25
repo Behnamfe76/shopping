@@ -34,7 +34,7 @@ class SendWishlistNotification implements ShouldQueue
         $customer = $wishlist->customer;
         $product = $wishlist->product;
 
-        if (!$customer || !$customer->email) {
+        if (! $customer || ! $customer->email) {
             return;
         }
 
@@ -47,7 +47,7 @@ class SendWishlistNotification implements ShouldQueue
 
         Mail::send('emails.wishlist.item-added', $data, function ($message) use ($customer) {
             $message->to($customer->email)
-                    ->subject('Item Added to Your Wishlist');
+                ->subject('Item Added to Your Wishlist');
         });
     }
 
@@ -59,7 +59,7 @@ class SendWishlistNotification implements ShouldQueue
         $wishlist = $event->wishlist;
         $customer = $wishlist->customer;
 
-        if (!$customer || !$customer->email) {
+        if (! $customer || ! $customer->email) {
             return;
         }
 
@@ -70,7 +70,7 @@ class SendWishlistNotification implements ShouldQueue
 
         Mail::send('emails.wishlist.made-public', $data, function ($message) use ($customer) {
             $message->to($customer->email)
-                    ->subject('Your Wishlist is Now Public');
+                ->subject('Your Wishlist is Now Public');
         });
     }
 }

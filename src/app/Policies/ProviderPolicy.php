@@ -2,10 +2,10 @@
 
 namespace Fereydooni\Shopping\App\Policies;
 
+use Fereydooni\Shopping\App\Enums\ProviderStatus;
+use Fereydooni\Shopping\App\Models\Provider;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Foundation\Auth\User;
-use Fereydooni\Shopping\App\Models\Provider;
-use Fereydooni\Shopping\App\Enums\ProviderStatus;
 
 class ProviderPolicy
 {

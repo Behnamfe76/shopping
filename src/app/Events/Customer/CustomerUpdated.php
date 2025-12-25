@@ -11,6 +11,7 @@ class CustomerUpdated
     use Dispatchable, SerializesModels;
 
     public Customer $customer;
+
     public array $changes;
 
     /**

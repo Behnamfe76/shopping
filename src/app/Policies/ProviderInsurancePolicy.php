@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Policies;
 
-use Illuminate\Auth\Access\HandlesAuthorization;
 use Fereydooni\Shopping\app\Models\ProviderInsurance;
 use Fereydooni\Shopping\app\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 class ProviderInsurancePolicy
 {

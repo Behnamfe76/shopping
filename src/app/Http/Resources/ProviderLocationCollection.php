@@ -27,7 +27,7 @@ class ProviderLocationCollection extends ResourceCollection
                     'from' => $this->resource->firstItem(),
                     'to' => $this->resource->lastItem(),
                     'has_more_pages' => $this->resource->hasMorePages(),
-                    'has_pages' => $this->resource->hasPages()
+                    'has_pages' => $this->resource->hasPages(),
                 ];
             }),
 
@@ -38,7 +38,7 @@ class ProviderLocationCollection extends ResourceCollection
                     'last' => $this->resource->url($this->resource->lastPage()),
                     'prev' => $this->resource->previousPageUrl(),
                     'next' => $this->resource->nextPageUrl(),
-                    'current' => $this->resource->url($this->resource->currentPage())
+                    'current' => $this->resource->url($this->resource->currentPage()),
                 ];
             }),
 
@@ -68,7 +68,7 @@ class ProviderLocationCollection extends ResourceCollection
                 'has_more_pages' => $this->when($this->resource instanceof \Illuminate\Pagination\LengthAwarePaginator,
                     $this->resource->hasMorePages(),
                     false
-                )
+                ),
             ],
 
             // Collection statistics
@@ -81,8 +81,8 @@ class ProviderLocationCollection extends ResourceCollection
                     return $location->latitude && $location->longitude;
                 })->count(),
                 'locations_without_coordinates' => $this->collection->filter(function ($location) {
-                    return !$location->latitude || !$location->longitude;
-                })->count()
+                    return ! $location->latitude || ! $location->longitude;
+                })->count(),
             ],
 
             // Location type distribution
@@ -90,7 +90,7 @@ class ProviderLocationCollection extends ResourceCollection
                 return [
                     'type' => $group->first()->location_type,
                     'count' => $group->count(),
-                    'percentage' => round(($group->count() / $this->collection->count()) * 100, 2)
+                    'percentage' => round(($group->count() / $this->collection->count()) * 100, 2),
                 ];
             })->values(),
 
@@ -99,7 +99,7 @@ class ProviderLocationCollection extends ResourceCollection
                 return [
                     'country' => $group->first()->country,
                     'count' => $group->count(),
-                    'percentage' => round(($group->count() / $this->collection->count()) * 100, 2)
+                    'percentage' => round(($group->count() / $this->collection->count()) * 100, 2),
                 ];
             })->values(),
 
@@ -108,7 +108,7 @@ class ProviderLocationCollection extends ResourceCollection
                 return [
                     'state' => $group->first()->state,
                     'count' => $group->count(),
-                    'percentage' => round(($group->count() / $this->collection->count()) * 100, 2)
+                    'percentage' => round(($group->count() / $this->collection->count()) * 100, 2),
                 ];
             })->values(),
 
@@ -117,18 +117,19 @@ class ProviderLocationCollection extends ResourceCollection
                 return [
                     'city' => $group->first()->city,
                     'count' => $group->count(),
-                    'percentage' => round(($group->count() / $this->collection->count()) * 100, 2)
+                    'percentage' => round(($group->count() / $this->collection->count()) * 100, 2),
                 ];
             })->values(),
 
             // Provider distribution
             'providers' => $this->collection->groupBy('provider_id')->map(function ($group) {
                 $firstLocation = $group->first();
+
                 return [
                     'provider_id' => $firstLocation->provider_id,
                     'provider_name' => $firstLocation->provider->name ?? 'Unknown',
                     'count' => $group->count(),
-                    'percentage' => round(($group->count() / $this->collection->count()) * 100, 2)
+                    'percentage' => round(($group->count() / $this->collection->count()) * 100, 2),
                 ];
             })->values(),
 
@@ -140,7 +141,7 @@ class ProviderLocationCollection extends ResourceCollection
                 return [
                     'reference_point' => [
                         'latitude' => $latitude,
-                        'longitude' => $longitude
+                        'longitude' => $longitude,
                     ],
                     'locations_with_distance' => $this->collection->filter(function ($location) {
                         return $location->latitude && $location->longitude;
@@ -155,9 +156,9 @@ class ProviderLocationCollection extends ResourceCollection
                         return [
                             'location_id' => $location->id,
                             'distance_km' => round($distance, 2),
-                            'distance_miles' => round($distance * 0.621371, 2)
+                            'distance_miles' => round($distance * 0.621371, 2),
                         ];
-                    })->sortBy('distance_km')->values()
+                    })->sortBy('distance_km')->values(),
                 ];
             }),
 
@@ -169,8 +170,8 @@ class ProviderLocationCollection extends ResourceCollection
                 'request_url' => $request->fullUrl(),
                 'request_method' => $request->method(),
                 'user_agent' => $request->userAgent(),
-                'ip_address' => $request->ip()
-            ]
+                'ip_address' => $request->ip(),
+            ],
         ];
     }
 

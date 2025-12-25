@@ -2,14 +2,13 @@
 
 namespace Fereydooni\Shopping\Listeners\EmployeeTraining;
 
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
-use Fereydooni\Shopping\Events\EmployeeTraining\EmployeeTrainingCreated;
-use Fereydooni\Shopping\Events\EmployeeTraining\EmployeeTrainingUpdated;
-use Fereydooni\Shopping\Events\EmployeeTraining\EmployeeTrainingStarted;
 use Fereydooni\Shopping\Events\EmployeeTraining\EmployeeTrainingCompleted;
+use Fereydooni\Shopping\Events\EmployeeTraining\EmployeeTrainingCreated;
 use Fereydooni\Shopping\Events\EmployeeTraining\EmployeeTrainingFailed;
 use Fereydooni\Shopping\Events\EmployeeTraining\EmployeeTrainingRenewed;
+use Fereydooni\Shopping\Events\EmployeeTraining\EmployeeTrainingStarted;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
 
 class UpdateEmployeeTrainingRecord implements ShouldQueue
 {
@@ -47,7 +46,7 @@ class UpdateEmployeeTrainingRecord implements ShouldQueue
         if ($training->employee) {
             $training->employee->update([
                 'current_training_id' => $training->id,
-                'training_status' => 'assigned'
+                'training_status' => 'assigned',
             ]);
         }
 
@@ -63,7 +62,7 @@ class UpdateEmployeeTrainingRecord implements ShouldQueue
         if ($training->employee) {
             $training->employee->update([
                 'current_training_id' => $training->id,
-                'training_status' => 'in_progress'
+                'training_status' => 'in_progress',
             ]);
         }
 
@@ -81,7 +80,7 @@ class UpdateEmployeeTrainingRecord implements ShouldQueue
         if ($training->employee) {
             $training->employee->update([
                 'current_training_id' => null,
-                'training_status' => 'available'
+                'training_status' => 'available',
             ]);
 
             // Update employee's training statistics
@@ -91,7 +90,7 @@ class UpdateEmployeeTrainingRecord implements ShouldQueue
         // Create training history record
         $this->createTrainingHistory($training, 'completed', 'Training completed successfully', [
             'score' => $score,
-            'grade' => $grade
+            'grade' => $grade,
         ]);
 
         // Update employee skills if applicable
@@ -107,13 +106,13 @@ class UpdateEmployeeTrainingRecord implements ShouldQueue
         if ($training->employee) {
             $training->employee->update([
                 'current_training_id' => null,
-                'training_status' => 'available'
+                'training_status' => 'available',
             ]);
         }
 
         // Create training history record
         $this->createTrainingHistory($training, 'failed', 'Training failed', [
-            'reason' => $reason
+            'reason' => $reason,
         ]);
     }
 
@@ -124,7 +123,7 @@ class UpdateEmployeeTrainingRecord implements ShouldQueue
 
         // Create training history record
         $this->createTrainingHistory($training, 'renewed', 'Training certification renewed', [
-            'renewal_date' => $renewalDate
+            'renewal_date' => $renewalDate,
         ]);
 
         // Update employee's certification status
@@ -190,7 +189,7 @@ class UpdateEmployeeTrainingRecord implements ShouldQueue
         if ($training->employee && $training->is_certification) {
             $training->employee->update([
                 'certifications_count' => $training->employee->certifications_count + 1,
-                'last_certification_date' => now()
+                'last_certification_date' => now(),
             ]);
         }
     }

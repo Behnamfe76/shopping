@@ -11,7 +11,7 @@ enum TimeOffStatus: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::PENDING => 'Pending',
             self::APPROVED => 'Approved',
             self::REJECTED => 'Rejected',
@@ -21,7 +21,7 @@ enum TimeOffStatus: string
 
     public function description(): string
     {
-        return match($this) {
+        return match ($this) {
             self::PENDING => 'Time-off request is pending approval',
             self::APPROVED => 'Time-off request has been approved',
             self::REJECTED => 'Time-off request has been rejected',
@@ -31,7 +31,7 @@ enum TimeOffStatus: string
 
     public function color(): string
     {
-        return match($this) {
+        return match ($this) {
             self::PENDING => 'yellow',
             self::APPROVED => 'green',
             self::REJECTED => 'red',
@@ -41,7 +41,7 @@ enum TimeOffStatus: string
 
     public function isActive(): bool
     {
-        return match($this) {
+        return match ($this) {
             self::PENDING, self::APPROVED => true,
             self::REJECTED, self::CANCELLED => false,
         };
@@ -49,7 +49,7 @@ enum TimeOffStatus: string
 
     public function canBeModified(): bool
     {
-        return match($this) {
+        return match ($this) {
             self::PENDING => true,
             self::APPROVED, self::REJECTED, self::CANCELLED => false,
         };
@@ -57,10 +57,9 @@ enum TimeOffStatus: string
 
     public function requiresAction(): bool
     {
-        return match($this) {
+        return match ($this) {
             self::PENDING => true,
             self::APPROVED, self::REJECTED, self::CANCELLED => false,
         };
     }
 }
-

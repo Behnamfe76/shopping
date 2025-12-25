@@ -3,22 +3,21 @@
 namespace App\Services;
 
 use App\DTOs\ProviderInsuranceDTO;
-use App\Repositories\Interfaces\ProviderInsuranceRepositoryInterface;
 use App\Events\ProviderInsurance\ProviderInsuranceCreated;
-use App\Events\ProviderInsurance\ProviderInsuranceUpdated;
 use App\Events\ProviderInsurance\ProviderInsuranceDeleted;
-use App\Events\ProviderInsurance\ProviderInsuranceVerified;
+use App\Events\ProviderInsurance\ProviderInsuranceDocumentUploaded;
 use App\Events\ProviderInsurance\ProviderInsuranceExpired;
 use App\Events\ProviderInsurance\ProviderInsuranceRenewed;
-use App\Events\ProviderInsurance\ProviderInsuranceDocumentUploaded;
+use App\Events\ProviderInsurance\ProviderInsuranceUpdated;
+use App\Events\ProviderInsurance\ProviderInsuranceVerified;
 use App\Models\ProviderInsurance;
-use Illuminate\Support\Collection;
+use App\Repositories\Interfaces\ProviderInsuranceRepositoryInterface;
+use Exception;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
-use Exception;
 
 class ProviderInsuranceService
 {
@@ -45,7 +44,7 @@ class ProviderInsuranceService
         return $this->repository->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->repository->cursorPaginate($perPage, $cursor);
     }
@@ -241,7 +240,7 @@ class ProviderInsuranceService
         } catch (Exception $e) {
             Log::error('Failed to create provider insurance', [
                 'data' => $data,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -250,6 +249,7 @@ class ProviderInsuranceService
     public function createAndReturnDTO(array $data): ProviderInsuranceDTO
     {
         $providerInsurance = $this->create($data);
+
         return $this->repository->findDTO($providerInsurance->id);
     }
 
@@ -271,7 +271,7 @@ class ProviderInsuranceService
             Log::error('Failed to update provider insurance', [
                 'id' => $providerInsurance->id,
                 'data' => $data,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -280,6 +280,7 @@ class ProviderInsuranceService
     public function updateAndReturnDTO(ProviderInsurance $providerInsurance, array $data): ?ProviderInsuranceDTO
     {
         $result = $this->update($providerInsurance, $data);
+
         return $result ? $this->repository->findDTO($providerInsurance->id) : null;
     }
 
@@ -297,7 +298,7 @@ class ProviderInsuranceService
         } catch (Exception $e) {
             Log::error('Failed to delete provider insurance', [
                 'id' => $providerInsurance->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -324,27 +325,27 @@ class ProviderInsuranceService
         return $result;
     }
 
-    public function cancel(ProviderInsurance $providerInsurance, string $reason = null): bool
+    public function cancel(ProviderInsurance $providerInsurance, ?string $reason = null): bool
     {
         $data = ['status' => 'cancelled'];
         if ($reason) {
-            $data['notes'] = ($providerInsurance->notes ? $providerInsurance->notes . "\n" : '') . "Cancelled: " . $reason;
+            $data['notes'] = ($providerInsurance->notes ? $providerInsurance->notes."\n" : '').'Cancelled: '.$reason;
         }
 
         return $this->update($providerInsurance, $data);
     }
 
-    public function suspend(ProviderInsurance $providerInsurance, string $reason = null): bool
+    public function suspend(ProviderInsurance $providerInsurance, ?string $reason = null): bool
     {
         $data = ['status' => 'suspended'];
         if ($reason) {
-            $data['notes'] = ($providerInsurance->notes ? $providerInsurance->notes . "\n" : '') . "Suspended: " . $reason;
+            $data['notes'] = ($providerInsurance->notes ? $providerInsurance->notes."\n" : '').'Suspended: '.$reason;
         }
 
         return $this->update($providerInsurance, $data);
     }
 
-    public function verify(ProviderInsurance $providerInsurance, int $verifiedBy, string $notes = null): bool
+    public function verify(ProviderInsurance $providerInsurance, int $verifiedBy, ?string $notes = null): bool
     {
         $data = [
             'verification_status' => 'verified',
@@ -353,7 +354,7 @@ class ProviderInsuranceService
         ];
 
         if ($notes) {
-            $data['notes'] = ($providerInsurance->notes ? $providerInsurance->notes . "\n" : '') . "Verified: " . $notes;
+            $data['notes'] = ($providerInsurance->notes ? $providerInsurance->notes."\n" : '').'Verified: '.$notes;
         }
 
         $result = $this->update($providerInsurance, $data);
@@ -371,7 +372,7 @@ class ProviderInsuranceService
             'verification_status' => 'rejected',
             'verified_by' => $rejectedBy,
             'verified_at' => now(),
-            'notes' => ($providerInsurance->notes ? $providerInsurance->notes . "\n" : '') . "Rejected: " . $reason
+            'notes' => ($providerInsurance->notes ? $providerInsurance->notes."\n" : '').'Rejected: '.$reason,
         ];
 
         return $this->update($providerInsurance, $data);
@@ -393,8 +394,8 @@ class ProviderInsuranceService
                 'end_date' => $renewalData['end_date'],
                 'status' => 'pending',
                 'verification_status' => 'pending',
-                'notes' => 'Renewal of policy ' . $providerInsurance->policy_number,
-                'documents' => $renewalData['documents'] ?? []
+                'notes' => 'Renewal of policy '.$providerInsurance->policy_number,
+                'documents' => $renewalData['documents'] ?? [],
             ];
 
             $newInsurance = $this->create($newInsuranceData);
@@ -410,7 +411,7 @@ class ProviderInsuranceService
             Log::error('Failed to renew provider insurance', [
                 'id' => $providerInsurance->id,
                 'renewal_data' => $renewalData,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -433,7 +434,7 @@ class ProviderInsuranceService
             Log::error('Failed to add document to provider insurance', [
                 'id' => $providerInsurance->id,
                 'document_path' => $documentPath,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -443,14 +444,14 @@ class ProviderInsuranceService
     {
         try {
             $documents = $providerInsurance->documents ?? [];
-            $documents = array_filter($documents, fn($doc) => $doc !== $documentPath);
+            $documents = array_filter($documents, fn ($doc) => $doc !== $documentPath);
 
             return $this->update($providerInsurance, ['documents' => array_values($documents)]);
         } catch (Exception $e) {
             Log::error('Failed to remove document from provider insurance', [
                 'id' => $providerInsurance->id,
                 'document_path' => $documentPath,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -700,7 +701,7 @@ class ProviderInsuranceService
 
         // Validate insurance type
         $validTypes = ['general_liability', 'professional_liability', 'product_liability', 'workers_compensation', 'auto_insurance', 'property_insurance', 'cyber_insurance', 'other'];
-        if (!in_array($data['insurance_type'], $validTypes)) {
+        if (! in_array($data['insurance_type'], $validTypes)) {
             throw new Exception('Invalid insurance type');
         }
     }
@@ -722,7 +723,7 @@ class ProviderInsuranceService
         // Validate insurance type if provided
         if (isset($data['insurance_type'])) {
             $validTypes = ['general_liability', 'professional_liability', 'product_liability', 'workers_compensation', 'auto_insurance', 'property_insurance', 'cyber_insurance', 'other'];
-            if (!in_array($data['insurance_type'], $validTypes)) {
+            if (! in_array($data['insurance_type'], $validTypes)) {
                 throw new Exception('Invalid insurance type');
             }
         }
@@ -753,7 +754,7 @@ class ProviderInsuranceService
     {
         $prefix = strtoupper(substr($insuranceType, 0, 3));
         $timestamp = time();
-        $random = strtoupper(substr(md5($providerId . $timestamp), 0, 6));
+        $random = strtoupper(substr(md5($providerId.$timestamp), 0, 6));
 
         return "{$prefix}-{$providerId}-{$timestamp}-{$random}";
     }

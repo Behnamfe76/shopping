@@ -2,15 +2,16 @@
 
 namespace Fereydooni\Shopping\App\Events\ProviderSpecialization;
 
+use Fereydooni\Shopping\App\Models\ProviderSpecialization;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Fereydooni\Shopping\App\Models\ProviderSpecialization;
 
 class ProviderPrimarySpecializationChanged
 {
     use Dispatchable, SerializesModels;
 
     public $specialization;
+
     public $previousPrimary;
 
     /**

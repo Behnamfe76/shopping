@@ -2,13 +2,13 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
+use Fereydooni\Shopping\app\Enums\BrandStatus;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Scout\Searchable;
 use Spatie\MediaLibrary\HasMedia;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 use Spatie\MediaLibrary\InteractsWithMedia;
-use Fereydooni\Shopping\app\Enums\BrandStatus;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Brand extends Model implements HasMedia
 {
@@ -57,9 +57,9 @@ class Brand extends Model implements HasMedia
             self::class => [
                 'collection-schema' => self::getTypesenseCollectionSchema(),
                 'search-parameters' => [
-                    'query_by' => implode(',', self::searchableFields())
-                ]
-            ]
+                    'query_by' => implode(',', self::searchableFields()),
+                ],
+            ],
         ];
     }
 
@@ -193,15 +193,15 @@ class Brand extends Model implements HasMedia
                     'facet' => false,
                 ],
                 [
-                    "name" => "embedding",
-                    "type" => "float[]",
-                    "embed" => [
-                        "from" => self::searchableFields(),
-                        "model_config" => [
-                            "model_name" => "ts/all-MiniLM-L12-v2"
-                        ]
-                    ]
-                ]
+                    'name' => 'embedding',
+                    'type' => 'float[]',
+                    'embed' => [
+                        'from' => self::searchableFields(),
+                        'model_config' => [
+                            'model_name' => 'ts/all-MiniLM-L12-v2',
+                        ],
+                    ],
+                ],
             ],
             'default_sorting_field' => 'created_at',
         ];
@@ -297,6 +297,7 @@ class Brand extends Model implements HasMedia
     public function getLogoUrlAttribute(): ?string
     {
         $media = $this->getLogoMedia();
+
         return $media ? $media->getUrl() : $this->attributes['logo_url'] ?? null;
     }
 
@@ -306,6 +307,7 @@ class Brand extends Model implements HasMedia
     public function getBannerUrlAttribute(): ?string
     {
         $media = $this->getBannerMedia();
+
         return $media ? $media->getUrl() : $this->attributes['banner_url'] ?? null;
     }
 }

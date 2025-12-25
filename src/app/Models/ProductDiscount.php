@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
+use Carbon\Carbon;
+use Fereydooni\Shopping\app\Enums\DiscountType;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Builder;
-use Fereydooni\Shopping\app\Enums\DiscountType;
-use Carbon\Carbon;
 
 class ProductDiscount extends Model
 {
@@ -77,8 +77,8 @@ class ProductDiscount extends Model
     public function scopeActive(Builder $query): void
     {
         $query->where('is_active', true)
-              ->where('start_date', '<=', Carbon::now())
-              ->where('end_date', '>=', Carbon::now());
+            ->where('start_date', '<=', Carbon::now())
+            ->where('end_date', '>=', Carbon::now());
     }
 
     public function scopeExpired(Builder $query): void
@@ -94,7 +94,7 @@ class ProductDiscount extends Model
     public function scopeCurrent(Builder $query): void
     {
         $query->where('start_date', '<=', Carbon::now())
-              ->where('end_date', '>=', Carbon::now());
+            ->where('end_date', '>=', Carbon::now());
     }
 
     public function scopeByProduct(Builder $query, int $productId): void
@@ -110,7 +110,7 @@ class ProductDiscount extends Model
     public function scopeByDateRange(Builder $query, string $startDate, string $endDate): void
     {
         $query->whereBetween('start_date', [$startDate, $endDate])
-              ->orWhereBetween('end_date', [$startDate, $endDate]);
+            ->orWhereBetween('end_date', [$startDate, $endDate]);
     }
 
     // Helper methods
@@ -133,7 +133,7 @@ class ProductDiscount extends Model
 
     public function isCurrent(): bool
     {
-        return $this->isActive() && !$this->isExpired() && !$this->isUpcoming();
+        return $this->isActive() && ! $this->isExpired() && ! $this->isUpcoming();
     }
 
     public function hasReachedUsageLimit(): bool
@@ -143,7 +143,7 @@ class ProductDiscount extends Model
 
     public function canBeApplied(float $quantity = 1, float $amount = 0): bool
     {
-        if (!$this->isActive() || $this->hasReachedUsageLimit()) {
+        if (! $this->isActive() || $this->hasReachedUsageLimit()) {
             return false;
         }
 
@@ -164,11 +164,11 @@ class ProductDiscount extends Model
 
     public function calculateDiscount(float $originalPrice, float $quantity = 1): float
     {
-        if (!$this->canBeApplied($quantity, $originalPrice * $quantity)) {
+        if (! $this->canBeApplied($quantity, $originalPrice * $quantity)) {
             return 0;
         }
 
-        $discountAmount = match($this->discount_type) {
+        $discountAmount = match ($this->discount_type) {
             DiscountType::PERCENT => ($originalPrice * $this->amount / 100) * $quantity,
             DiscountType::FIXED => $this->amount * $quantity,
         };

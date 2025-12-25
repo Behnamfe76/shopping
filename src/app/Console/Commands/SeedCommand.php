@@ -5,7 +5,6 @@ namespace Fereydooni\Shopping\app\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Str;
 
 class SeedCommand extends Command
 {
@@ -56,16 +55,18 @@ class SeedCommand extends Command
         // Check if the class exists in the package seeders
         $seederClass = $this->resolveSeederClass($class);
 
-        if (!$seederClass) {
+        if (! $seederClass) {
             $this->error("Seeder class '{$class}' not found in the shopping package.");
             $this->info('Available seeders:');
             $this->listAvailableSeeders();
+
             return;
         }
 
-        if (!$force) {
-            if (!$this->confirm("Are you sure you want to run the '{$class}' seeder?")) {
+        if (! $force) {
+            if (! $this->confirm("Are you sure you want to run the '{$class}' seeder?")) {
                 $this->info('Seeding cancelled.');
+
                 return;
             }
         }
@@ -75,12 +76,12 @@ class SeedCommand extends Command
         try {
             Artisan::call('db:seed', [
                 '--class' => $seederClass,
-                '--force' => true
+                '--force' => true,
             ], $this->getOutput());
 
             $this->info("Seeder '{$class}' completed successfully!");
         } catch (\Exception $e) {
-            $this->error("Error running seeder '{$class}': " . $e->getMessage());
+            $this->error("Error running seeder '{$class}': ".$e->getMessage());
         }
     }
 
@@ -89,9 +90,10 @@ class SeedCommand extends Command
      */
     protected function runAllSeeders(bool $force): void
     {
-        if (!$force) {
-            if (!$this->confirm('Are you sure you want to run all shopping package seeders?')) {
+        if (! $force) {
+            if (! $this->confirm('Are you sure you want to run all shopping package seeders?')) {
                 $this->info('Seeding cancelled.');
+
                 return;
             }
         }
@@ -101,12 +103,12 @@ class SeedCommand extends Command
         try {
             Artisan::call('db:seed', [
                 '--class' => \Fereydooni\Shopping\database\seeders\ShoppingDatabaseSeeder::class,
-                '--force' => true
+                '--force' => true,
             ], $this->getOutput());
 
             $this->info('All shopping package seeders completed successfully!');
         } catch (\Exception $e) {
-            $this->error('Error running seeders: ' . $e->getMessage());
+            $this->error('Error running seeders: '.$e->getMessage());
         }
     }
 
@@ -131,7 +133,7 @@ class SeedCommand extends Command
         }
 
         // Check if the seeder file exists in the package
-        $seederPath = __DIR__ . "/../../../database/seeders/{$class}.php";
+        $seederPath = __DIR__."/../../../database/seeders/{$class}.php";
 
         if (File::exists($seederPath)) {
             return $packageSeederClass;
@@ -145,10 +147,11 @@ class SeedCommand extends Command
      */
     protected function listAvailableSeeders(): void
     {
-        $seedersPath = __DIR__ . "/../../../database/seeders";
+        $seedersPath = __DIR__.'/../../../database/seeders';
 
-        if (!File::exists($seedersPath)) {
+        if (! File::exists($seedersPath)) {
             $this->error('Seeders directory not found.');
+
             return;
         }
 

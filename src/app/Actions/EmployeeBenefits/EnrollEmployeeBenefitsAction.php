@@ -2,13 +2,13 @@
 
 namespace Fereydooni\Shopping\app\Actions\EmployeeBenefits;
 
-use Fereydooni\Shopping\app\DTOs\EmployeeBenefitsDTO;
-use Fereydooni\Shopping\app\Models\EmployeeBenefits;
 use App\Repositories\EmployeeBenefitsRepository;
+use Exception;
+use Fereydooni\Shopping\app\DTOs\EmployeeBenefitsDTO;
 use Fereydooni\Shopping\app\Events\EmployeeBenefits\EmployeeBenefitsEnrolled;
+use Fereydooni\Shopping\app\Models\EmployeeBenefits;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Exception;
 
 class EnrollEmployeeBenefitsAction
 {
@@ -16,7 +16,7 @@ class EnrollEmployeeBenefitsAction
         private EmployeeBenefitsRepository $repository
     ) {}
 
-    public function execute(EmployeeBenefits $benefit, string $effectiveDate = null): EmployeeBenefitsDTO
+    public function execute(EmployeeBenefits $benefit, ?string $effectiveDate = null): EmployeeBenefitsDTO
     {
         try {
             DB::beginTransaction();
@@ -31,10 +31,10 @@ class EnrollEmployeeBenefitsAction
             $updated = $this->repository->update($benefit, [
                 'status' => 'enrolled',
                 'effective_date' => $effectiveDate,
-                'is_active' => true
+                'is_active' => true,
             ]);
 
-            if (!$updated) {
+            if (! $updated) {
                 throw new Exception('Failed to enroll employee in benefits');
             }
 
@@ -58,7 +58,7 @@ class EnrollEmployeeBenefitsAction
             DB::rollBack();
             Log::error('Failed to enroll employee in benefits', [
                 'error' => $e->getMessage(),
-                'benefit_id' => $benefit->id
+                'benefit_id' => $benefit->id,
             ]);
             throw $e;
         }
@@ -72,7 +72,7 @@ class EnrollEmployeeBenefitsAction
         }
 
         // Check if employee is active
-        if (!$benefit->employee || !$benefit->employee->is_active) {
+        if (! $benefit->employee || ! $benefit->employee->is_active) {
             throw new Exception('Employee must be active to enroll in benefits');
         }
 

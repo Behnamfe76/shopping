@@ -2,8 +2,8 @@
 
 namespace App\Facades;
 
-use Illuminate\Support\Facades\Facade;
 use App\Services\ProviderPerformanceService;
+use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static \Illuminate\Database\Eloquent\Collection getAllPerformances()
@@ -191,7 +191,7 @@ class ProviderPerformance extends Facade
      */
     public static function model()
     {
-        return new \App\Models\ProviderPerformance();
+        return new \App\Models\ProviderPerformance;
     }
 
     /**
@@ -280,6 +280,7 @@ class ProviderPerformance extends Facade
         foreach (\App\Enums\PerformanceGrade::cases() as $grade) {
             $grades[$grade->value] = $grade->getDescription();
         }
+
         return $grades;
     }
 
@@ -294,6 +295,7 @@ class ProviderPerformance extends Facade
         foreach (\App\Enums\PerformanceGrade::cases() as $grade) {
             $colors[$grade->value] = $grade->getColor();
         }
+
         return $colors;
     }
 
@@ -308,6 +310,7 @@ class ProviderPerformance extends Facade
         foreach (\App\Enums\PerformanceGrade::cases() as $grade) {
             $ranges[$grade->value] = $grade->getScoreRange();
         }
+
         return $ranges;
     }
 
@@ -322,6 +325,7 @@ class ProviderPerformance extends Facade
         foreach (\App\Enums\PeriodType::cases() as $periodType) {
             $descriptions[$periodType->value] = $periodType->getDescription();
         }
+
         return $descriptions;
     }
 
@@ -336,6 +340,7 @@ class ProviderPerformance extends Facade
         foreach (\App\Enums\PeriodType::cases() as $periodType) {
             $labels[$periodType->value] = $periodType->getLabel();
         }
+
         return $labels;
     }
 
@@ -350,69 +355,66 @@ class ProviderPerformance extends Facade
         foreach (\App\Enums\PeriodType::cases() as $periodType) {
             $days[$periodType->value] = $periodType->getDays();
         }
+
         return $days;
     }
 
     /**
      * Check if a performance score corresponds to a specific grade.
-     *
-     * @param float $score
-     * @param string $grade
-     * @return bool
      */
     public static function isScoreInGrade(float $score, string $grade): bool
     {
         $gradeEnum = \App\Enums\PerformanceGrade::from($grade);
         $range = $gradeEnum->getScoreRange();
+
         return $score >= $range[0] && $score <= $range[1];
     }
 
     /**
      * Get the grade for a performance score.
-     *
-     * @param float $score
-     * @return string
      */
     public static function getGradeForScore(float $score): string
     {
-        if ($score >= 90) return 'A';
-        if ($score >= 80) return 'B';
-        if ($score >= 70) return 'C';
-        if ($score >= 60) return 'D';
+        if ($score >= 90) {
+            return 'A';
+        }
+        if ($score >= 80) {
+            return 'B';
+        }
+        if ($score >= 70) {
+            return 'C';
+        }
+        if ($score >= 60) {
+            return 'D';
+        }
+
         return 'F';
     }
 
     /**
      * Get the grade description for a performance score.
-     *
-     * @param float $score
-     * @return string
      */
     public static function getGradeDescriptionForScore(float $score): string
     {
         $grade = static::getGradeForScore($score);
         $gradeEnum = \App\Enums\PerformanceGrade::from($grade);
+
         return $gradeEnum->getDescription();
     }
 
     /**
      * Get the grade color for a performance score.
-     *
-     * @param float $score
-     * @return string
      */
     public static function getGradeColorForScore(float $score): string
     {
         $grade = static::getGradeForScore($score);
         $gradeEnum = \App\Enums\PerformanceGrade::from($grade);
+
         return $gradeEnum->getColor();
     }
 
     /**
      * Calculate the performance score from individual metrics.
-     *
-     * @param array $metrics
-     * @return float
      */
     public static function calculateScoreFromMetrics(array $metrics): float
     {
@@ -442,23 +444,24 @@ class ProviderPerformance extends Facade
 
     /**
      * Get the performance trend for a score.
-     *
-     * @param float $score
-     * @return string
      */
     public static function getTrendForScore(float $score): string
     {
-        if ($score >= 80) return 'excellent';
-        if ($score >= 60) return 'good';
-        if ($score >= 40) return 'fair';
+        if ($score >= 80) {
+            return 'excellent';
+        }
+        if ($score >= 60) {
+            return 'good';
+        }
+        if ($score >= 40) {
+            return 'fair';
+        }
+
         return 'poor';
     }
 
     /**
      * Get the performance alerts for metrics.
-     *
-     * @param array $metrics
-     * @return array
      */
     public static function getAlertsForMetrics(array $metrics): array
     {
@@ -485,9 +488,6 @@ class ProviderPerformance extends Facade
 
     /**
      * Get improvement suggestions for metrics.
-     *
-     * @param array $metrics
-     * @return array
      */
     public static function getImprovementSuggestionsForMetrics(array $metrics): array
     {

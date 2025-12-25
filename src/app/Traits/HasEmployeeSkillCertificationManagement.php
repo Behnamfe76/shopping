@@ -2,13 +2,12 @@
 
 namespace App\Traits;
 
-use App\Models\EmployeeSkill;
 use App\DTOs\EmployeeSkillDTO;
+use App\Models\EmployeeSkill;
 use App\Repositories\Interfaces\EmployeeSkillRepositoryInterface;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 trait HasEmployeeSkillCertificationManagement
 {
@@ -21,10 +20,10 @@ trait HasEmployeeSkillCertificationManagement
     {
         try {
             $result = $this->employeeSkillRepository->addCertification($skill, $certData);
-            
+
             if ($result) {
                 $this->clearCertificationCaches($skill->employee_id);
-                
+
                 Log::info('Certification added to employee skill', [
                     'skill_id' => $skill->id,
                     'employee_id' => $skill->employee_id,
@@ -32,14 +31,15 @@ trait HasEmployeeSkillCertificationManagement
                     'expiry_date' => $certData['certification_expiry'] ?? null,
                 ]);
             }
-            
+
             return $result;
         } catch (\Exception $e) {
             Log::error('Failed to add certification to employee skill', [
                 'skill_id' => $skill->id,
                 'cert_data' => $certData,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -51,10 +51,10 @@ trait HasEmployeeSkillCertificationManagement
     {
         try {
             $result = $this->employeeSkillRepository->updateCertification($skill, $certData);
-            
+
             if ($result) {
                 $this->clearCertificationCaches($skill->employee_id);
-                
+
                 Log::info('Certification updated for employee skill', [
                     'skill_id' => $skill->id,
                     'employee_id' => $skill->employee_id,
@@ -62,14 +62,15 @@ trait HasEmployeeSkillCertificationManagement
                     'expiry_date' => $certData['certification_expiry'] ?? null,
                 ]);
             }
-            
+
             return $result;
         } catch (\Exception $e) {
             Log::error('Failed to update certification for employee skill', [
                 'skill_id' => $skill->id,
                 'cert_data' => $certData,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -81,22 +82,23 @@ trait HasEmployeeSkillCertificationManagement
     {
         try {
             $result = $this->employeeSkillRepository->removeCertification($skill);
-            
+
             if ($result) {
                 $this->clearCertificationCaches($skill->employee_id);
-                
+
                 Log::info('Certification removed from employee skill', [
                     'skill_id' => $skill->id,
                     'employee_id' => $skill->employee_id,
                 ]);
             }
-            
+
             return $result;
         } catch (\Exception $e) {
             Log::error('Failed to remove certification from employee skill', [
                 'skill_id' => $skill->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
+
             return false;
         }
     }
@@ -227,7 +229,7 @@ trait HasEmployeeSkillCertificationManagement
         $certifiedSkills = $this->getEmployeeCertifiedSkills($employeeId)->count();
         $expiringSkills = $this->getEmployeeExpiringCertifications($employeeId, 30)->count();
         $expiredSkills = $this->getEmployeeExpiredCertifications($employeeId)->count();
-        
+
         return [
             'total_skills' => $totalSkills,
             'certified_skills' => $certifiedSkills,
@@ -247,7 +249,7 @@ trait HasEmployeeSkillCertificationManagement
         $certifiedSkills = $this->employeeSkillRepository->getTotalCertifiedSkillsCount();
         $expiringSkills = $this->getSkillsWithExpiringCertifications(30)->count();
         $expiredSkills = $this->getSkillsWithExpiredCertifications()->count();
-        
+
         return [
             'total_skills' => $totalSkills,
             'certified_skills' => $certifiedSkills,
@@ -266,7 +268,7 @@ trait HasEmployeeSkillCertificationManagement
         $certifiedSkills = $this->getEmployeeCertifiedSkills($employeeId);
         $expiringSkills = $this->getEmployeeExpiringCertifications($employeeId, 30);
         $expiredSkills = $this->getEmployeeExpiredCertifications($employeeId);
-        
+
         return [
             'employee_id' => $employeeId,
             'total_certified' => $certifiedSkills->count(),
@@ -284,7 +286,7 @@ trait HasEmployeeSkillCertificationManagement
     private function getCertificationStatus(int $employeeId): string
     {
         $stats = $this->getEmployeeCertificationStats($employeeId);
-        
+
         if ($stats['expired'] > 0) {
             return 'Has Expired Certifications';
         } elseif ($stats['expiring_soon'] > 0) {
@@ -302,12 +304,13 @@ trait HasEmployeeSkillCertificationManagement
     private function getNextCertificationExpiry(int $employeeId): ?string
     {
         $expiringSkills = $this->getEmployeeExpiringCertifications($employeeId, 365);
-        
+
         if ($expiringSkills->isEmpty()) {
             return null;
         }
-        
+
         $nextExpiry = $expiringSkills->min('certification_expiry');
+
         return $nextExpiry ? $nextExpiry->format('Y-m-d') : null;
     }
 
@@ -317,9 +320,9 @@ trait HasEmployeeSkillCertificationManagement
     public function getEmployeeCertificationTimeline(int $employeeId): array
     {
         $certifiedSkills = $this->getEmployeeCertifiedSkills($employeeId);
-        
+
         $timeline = [];
-        
+
         foreach ($certifiedSkills as $skill) {
             if ($skill->certification_date) {
                 $timeline[] = [
@@ -327,17 +330,17 @@ trait HasEmployeeSkillCertificationManagement
                     'certification_name' => $skill->certification_name,
                     'certification_date' => $skill->certification_date->format('Y-m-d'),
                     'expiry_date' => $skill->certification_expiry ? $skill->certification_expiry->format('Y-m-d') : null,
-                    'status' => $skill->isCertificationExpired() ? 'Expired' : 
+                    'status' => $skill->isCertificationExpired() ? 'Expired' :
                                ($skill->isCertificationExpiring(30) ? 'Expiring Soon' : 'Valid'),
                 ];
             }
         }
-        
+
         // Sort by certification date (newest first)
         usort($timeline, function ($a, $b) {
             return strtotime($b['certification_date']) - strtotime($a['certification_date']);
         });
-        
+
         return $timeline;
     }
 
@@ -347,9 +350,9 @@ trait HasEmployeeSkillCertificationManagement
     private function clearCertificationCaches(int $employeeId): void
     {
         Cache::forget("employee_certified_skills_{$employeeId}");
-        Cache::forget("expiring_certifications_30");
-        Cache::forget("expiring_certifications_60");
-        Cache::forget("expiring_certifications_90");
+        Cache::forget('expiring_certifications_30');
+        Cache::forget('expiring_certifications_60');
+        Cache::forget('expiring_certifications_90');
         Cache::forget('expired_certifications');
         Cache::forget('total_certified_skills_count');
     }

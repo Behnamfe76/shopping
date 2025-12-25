@@ -34,7 +34,7 @@ return new class extends Migration
                 'pending_approval',
                 'approved',
                 'rejected',
-                'overdue'
+                'overdue',
             ])->default('draft');
             $table->boolean('is_approved')->default(false);
             $table->foreignId('approved_by')->nullable()->constrained('users')->onDelete('set null');

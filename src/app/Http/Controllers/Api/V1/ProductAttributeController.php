@@ -2,25 +2,25 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Gate;
-use Fereydooni\Shopping\app\Models\ProductAttribute;
-use Fereydooni\Shopping\app\Enums\ProductAttributeType;
 use Fereydooni\Shopping\app\Enums\ProductAttributeInputType;
-use Fereydooni\Shopping\app\Http\Resources\ProductAttributeResource;
-use Fereydooni\Shopping\app\Http\Resources\ProductAttributeCollection;
-use Fereydooni\Shopping\app\Http\Requests\StoreProductAttributeRequest;
-use Fereydooni\Shopping\app\Http\Requests\SearchProductAttributeRequest;
-use Fereydooni\Shopping\app\Http\Requests\UpdateProductAttributeRequest;
-use Fereydooni\Shopping\app\Http\Resources\ProductAttributeValueResource;
+use Fereydooni\Shopping\app\Enums\ProductAttributeType;
+use Fereydooni\Shopping\app\Facades\ProductAttribute as ProductAttributeFacade;
 use Fereydooni\Shopping\app\Http\Requests\AddProductAttributeValueRequest;
-use Fereydooni\Shopping\app\Http\Resources\ProductAttributeSearchResource;
+use Fereydooni\Shopping\app\Http\Requests\SearchProductAttributeRequest;
+use Fereydooni\Shopping\app\Http\Requests\StoreProductAttributeRequest;
+use Fereydooni\Shopping\app\Http\Requests\ToggleProductAttributeStatusRequest;
+use Fereydooni\Shopping\app\Http\Requests\UpdateProductAttributeRequest;
 use Fereydooni\Shopping\app\Http\Requests\UpdateProductAttributeValueRequest;
 use Fereydooni\Shopping\app\Http\Resources\ProductAttributeAnalyticsResource;
-use Fereydooni\Shopping\app\Http\Requests\ToggleProductAttributeStatusRequest;
-use Fereydooni\Shopping\app\Facades\ProductAttribute as ProductAttributeFacade;
+use Fereydooni\Shopping\app\Http\Resources\ProductAttributeCollection;
+use Fereydooni\Shopping\app\Http\Resources\ProductAttributeResource;
+use Fereydooni\Shopping\app\Http\Resources\ProductAttributeSearchResource;
+use Fereydooni\Shopping\app\Http\Resources\ProductAttributeValueResource;
+use Fereydooni\Shopping\app\Models\ProductAttribute;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class ProductAttributeController extends Controller
 {
@@ -52,7 +52,7 @@ class ProductAttributeController extends Controller
         }
     }
 
-     /**
+    /**
      * Display a listing of category statuses.
      */
     public function types(): JsonResponse
@@ -61,9 +61,9 @@ class ProductAttributeController extends Controller
 
         try {
             return response()->json([
-                'data' => array_map(fn($status) => [
+                'data' => array_map(fn ($status) => [
                     'id' => $status->value,
-                    'name' => __('product-attributes.types.' . $status->value),
+                    'name' => __('product-attributes.types.'.$status->value),
                 ], ProductAttributeType::cases()),
             ], 200);
         } catch (\Exception $e) {
@@ -74,7 +74,7 @@ class ProductAttributeController extends Controller
         }
     }
 
-     /**
+    /**
      * Display a listing of category statuses.
      */
     public function inputTypes(): JsonResponse
@@ -83,9 +83,9 @@ class ProductAttributeController extends Controller
 
         try {
             return response()->json([
-                'data' => array_map(fn($status) => [
+                'data' => array_map(fn ($status) => [
                     'id' => $status->value,
-                    'name' => __('product-attributes.input-types.' . $status->value),
+                    'name' => __('product-attributes.input-types.'.$status->value),
                 ], ProductAttributeInputType::cases()),
             ], 200);
         } catch (\Exception $e) {

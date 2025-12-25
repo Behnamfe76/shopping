@@ -13,7 +13,7 @@ enum EmploymentType: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::FULL_TIME => 'Full Time',
             self::PART_TIME => 'Part Time',
             self::CONTRACT => 'Contract',
@@ -25,7 +25,7 @@ enum EmploymentType: string
 
     public function shortLabel(): string
     {
-        return match($this) {
+        return match ($this) {
             self::FULL_TIME => 'FT',
             self::PART_TIME => 'PT',
             self::CONTRACT => 'Contract',
@@ -77,7 +77,7 @@ enum EmploymentType: string
 
     public function getDefaultVacationDays(): int
     {
-        return match($this) {
+        return match ($this) {
             self::FULL_TIME => 20,
             self::PART_TIME => 10,
             self::CONTRACT => 0,
@@ -89,7 +89,7 @@ enum EmploymentType: string
 
     public function getDefaultSickDays(): int
     {
-        return match($this) {
+        return match ($this) {
             self::FULL_TIME => 10,
             self::PART_TIME => 5,
             self::CONTRACT => 0,
@@ -99,4 +99,3 @@ enum EmploymentType: string
         };
     }
 }
-

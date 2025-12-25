@@ -2,12 +2,6 @@
 
 namespace App\Listeners\EmployeeBenefits;
 
-use App\Events\EmployeeBenefits\EmployeeBenefitsCreated;
-use App\Events\EmployeeBenefits\EmployeeBenefitsUpdated;
-use App\Events\EmployeeBenefits\EmployeeBenefitsEnrolled;
-use App\Events\EmployeeBenefits\EmployeeBenefitsTerminated;
-use App\Events\EmployeeBenefits\EmployeeBenefitsCancelled;
-use App\Events\EmployeeBenefits\EmployeeBenefitsExpiring;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
@@ -29,7 +23,7 @@ class EmployeeBenefitsListeners implements ShouldQueue
             Log::error('Error in EmployeeBenefitsListeners', [
                 'event' => get_class($event),
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
         }
     }
@@ -58,7 +52,7 @@ class EmployeeBenefitsListeners implements ShouldQueue
         } catch (\Exception $e) {
             Log::error('Error dispatching to individual listeners', [
                 'event' => get_class($event),
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }

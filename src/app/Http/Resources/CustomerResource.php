@@ -3,8 +3,8 @@
 namespace Fereydooni\Shopping\app\Http\Resources;
 
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Fereydooni\Shopping\app\DTOs\CustomerDTO;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CustomerResource extends JsonResource
@@ -35,15 +35,15 @@ class CustomerResource extends JsonResource
             'company_name' => $customer->company_name,
             'tax_id' => $customer->tax_id,
             'customer_type' => $customer->customer_type,
-            'customer_type_label' => __('customers.customer_types.' . $customer->customer_type->value),
+            'customer_type_label' => __('customers.customer_types.'.$customer->customer_type->value),
             'status' => $customer->status,
-            'status_label' => __('customers.statuses.' . $customer->status->value),
+            'status_label' => __('customers.statuses.'.$customer->status->value),
             'loyalty_points' => $customer->loyalty_points,
             'total_orders' => $customer->total_orders,
             'total_spent' => $customer->total_spent,
-            'total_spent_formatted' => '$' . number_format($customer->total_spent, 2),
+            'total_spent_formatted' => '$'.number_format($customer->total_spent, 2),
             'average_order_value' => $customer->average_order_value,
-            'average_order_value_formatted' => '$' . number_format($customer->average_order_value, 2),
+            'average_order_value_formatted' => '$'.number_format($customer->average_order_value, 2),
             'last_order_date' => $customer->last_order_date?->toISOString(),
             'first_order_date' => $customer->first_order_date?->toISOString(),
             'preferred_payment_method' => $customer->preferred_payment_method,

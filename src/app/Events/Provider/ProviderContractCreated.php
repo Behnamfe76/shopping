@@ -3,11 +3,8 @@
 namespace Fereydooni\Shopping\app\Events\Provider;
 
 use Fereydooni\Shopping\app\Models\ProviderContract;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -16,12 +13,12 @@ class ProviderContractCreated
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $contract;
+
     public $createdAt;
 
     /**
      * Create a new event instance.
      *
-     * @param ProviderContract $contract
      * @return void
      */
     public function __construct(ProviderContract $contract)

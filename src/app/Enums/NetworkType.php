@@ -12,7 +12,7 @@ enum NetworkType: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::PPO => 'PPO (Preferred Provider Organization)',
             self::HMO => 'HMO (Health Maintenance Organization)',
             self::EPO => 'EPO (Exclusive Provider Organization)',
@@ -23,7 +23,7 @@ enum NetworkType: string
 
     public function description(): string
     {
-        return match($this) {
+        return match ($this) {
             self::PPO => 'Flexible network with out-of-network coverage',
             self::HMO => 'Restricted network requiring referrals',
             self::EPO => 'Exclusive network with no out-of-network coverage',
@@ -49,7 +49,7 @@ enum NetworkType: string
 
     public function getNetworkFlexibility(): string
     {
-        return match($this) {
+        return match ($this) {
             self::PPO => 'High',
             self::HMO => 'Low',
             self::EPO => 'None',
@@ -67,8 +67,8 @@ enum NetworkType: string
     {
         return array_reduce(self::cases(), function ($carry, $case) {
             $carry[$case->value] = $case->label();
+
             return $carry;
         }, []);
     }
 }
-

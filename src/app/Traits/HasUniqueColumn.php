@@ -21,7 +21,6 @@ trait HasUniqueColumn
         return property_exists($this, 'uniqueColumnField') ? $this->uniqueColumnField : 'unique_column';
     }
 
-
     /**
      * Define your signature configuration here or override in a model.
      */
@@ -29,7 +28,7 @@ trait HasUniqueColumn
     {
         return property_exists($this, 'uniqueColumnSignature') ? $this->uniqueColumnSignature : [
             'length' => 8,
-            'type'   => 'alphanumeric', // options: numeric, alpha, alphanumeric
+            'type' => 'alphanumeric', // options: numeric, alpha, alphanumeric
             'prefix' => '',             // optional prefix
             'suffix' => '',             // optional suffix
         ];

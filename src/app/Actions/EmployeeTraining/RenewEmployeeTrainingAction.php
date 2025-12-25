@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\Actions\EmployeeTraining;
 
+use Fereydooni\Shopping\DTOs\EmployeeTrainingDTO;
+use Fereydooni\Shopping\Enums\TrainingStatus;
+use Fereydooni\Shopping\Models\EmployeeTraining;
+use Fereydooni\Shopping\Repositories\Interfaces\EmployeeTrainingRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Fereydooni\Shopping\Models\EmployeeTraining;
-use Fereydooni\Shopping\DTOs\EmployeeTrainingDTO;
-use Fereydooni\Shopping\Repositories\Interfaces\EmployeeTrainingRepositoryInterface;
-use Fereydooni\Shopping\Enums\TrainingStatus;
 
 class RenewEmployeeTrainingAction
 {
@@ -26,7 +26,7 @@ class RenewEmployeeTrainingAction
             // Renew the training
             $renewed = $this->repository->renew($training, $renewalDate);
 
-            if (!$renewed) {
+            if (! $renewed) {
                 throw new \Exception('Failed to renew employee training');
             }
 
@@ -48,7 +48,7 @@ class RenewEmployeeTrainingAction
             Log::error('Failed to renew employee training', [
                 'training_id' => $training->id,
                 'error' => $e->getMessage(),
-                'renewal_date' => $renewalDate
+                'renewal_date' => $renewalDate,
             ]);
             throw $e;
         }
@@ -57,7 +57,7 @@ class RenewEmployeeTrainingAction
     private function validateRenewalData(EmployeeTraining $training, ?string $renewalDate): void
     {
         // Check if training is renewable
-        if (!$training->is_renewable) {
+        if (! $training->is_renewable) {
             throw new \Exception('Training is not renewable');
         }
 
@@ -67,7 +67,7 @@ class RenewEmployeeTrainingAction
         }
 
         // Check if training is a certification
-        if (!$training->is_certification) {
+        if (! $training->is_certification) {
             throw new \Exception('Only certification trainings can be renewed');
         }
 
@@ -83,7 +83,7 @@ class RenewEmployeeTrainingAction
         if ($training->expiry_date) {
             $expiryDate = \Carbon\Carbon::parse($training->expiry_date);
             $now = \Carbon\Carbon::now();
-            
+
             // Allow renewal if expiring within 30 days or already expired
             if ($expiryDate->isFuture() && $expiryDate->diffInDays($now) > 30) {
                 throw new \Exception('Training can only be renewed if expiring within 30 days or already expired');
@@ -123,7 +123,7 @@ class RenewEmployeeTrainingAction
         $training->update([
             'certificate_number' => $newCertificateNumber,
             'renewal_date' => now(),
-            'expiry_date' => $this->calculateNewExpiryDate($training)
+            'expiry_date' => $this->calculateNewExpiryDate($training),
         ]);
     }
 
@@ -135,7 +135,7 @@ class RenewEmployeeTrainingAction
         $trainingId = str_pad($training->id, 6, '0', STR_PAD_LEFT);
         $employeeId = str_pad($training->employee_id, 4, '0', STR_PAD_LEFT);
         $renewalCount = $this->getRenewalCount($training) + 1;
-        
+
         return "{$prefix}-{$year}-{$trainingId}-{$employeeId}-R{$renewalCount}";
     }
 
@@ -151,10 +151,10 @@ class RenewEmployeeTrainingAction
     {
         // Calculate new expiry date based on training type and company policy
         $baseExpiryPeriod = $this->getBaseExpiryPeriod($training->training_type);
-        
+
         // Add any additional time for renewals
         $renewalBonus = $this->getRenewalBonus($training);
-        
+
         return now()->addDays($baseExpiryPeriod + $renewalBonus);
     }
 
@@ -168,7 +168,7 @@ class RenewEmployeeTrainingAction
             'safety' => 365, // 1 year
             'leadership' => 730, // 2 years
             'product' => 545, // 1.5 years
-            'other' => 365 // 1 year
+            'other' => 365, // 1 year
         ];
 
         return $expiryPeriods[$trainingType] ?? 365;
@@ -178,6 +178,7 @@ class RenewEmployeeTrainingAction
     {
         // Add bonus days for renewals (e.g., 30 days for each renewal)
         $renewalCount = $this->getRenewalCount($training);
+
         return $renewalCount * 30;
     }
 }

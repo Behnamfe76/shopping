@@ -2,20 +2,19 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Email;
-use Spatie\LaravelData\Attributes\Validation\Max;
-use Spatie\LaravelData\Attributes\Validation\Min;
-use Spatie\LaravelData\Attributes\Validation\Nullable;
-use Spatie\LaravelData\Attributes\Validation\Required;
-use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
-use Spatie\LaravelData\Attributes\Validation\BooleanType;
-use Spatie\LaravelData\Attributes\Validation\Regex;
-use Spatie\LaravelData\Attributes\Validation\In;
-use Illuminate\Support\Carbon;
 use Fereydooni\Shopping\app\Enums\Relationship;
 use Fereydooni\Shopping\app\Models\EmployeeEmergencyContact;
+use Illuminate\Support\Carbon;
+use Spatie\LaravelData\Attributes\Validation\BooleanType;
+use Spatie\LaravelData\Attributes\Validation\Email;
+use Spatie\LaravelData\Attributes\Validation\In;
+use Spatie\LaravelData\Attributes\Validation\IntegerType;
+use Spatie\LaravelData\Attributes\Validation\Max;
+use Spatie\LaravelData\Attributes\Validation\Nullable;
+use Spatie\LaravelData\Attributes\Validation\Regex;
+use Spatie\LaravelData\Attributes\Validation\Required;
+use Spatie\LaravelData\Attributes\Validation\StringType;
+use Spatie\LaravelData\Data;
 
 class EmployeeEmergencyContactDTO extends Data
 {
@@ -57,10 +56,10 @@ class EmployeeEmergencyContactDTO extends Data
         public ?string $country,
 
         #[BooleanType]
-        public bool $is_primary = false,
+        public bool $is_primary,
 
         #[BooleanType]
-        public bool $is_active = true,
+        public bool $is_active,
 
         #[Nullable, StringType, Max(1000)]
         public ?string $notes,
@@ -70,8 +69,7 @@ class EmployeeEmergencyContactDTO extends Data
 
         #[Nullable]
         public ?Carbon $updated_at,
-    ) {
-    }
+    ) {}
 
     public static function fromModel(EmployeeEmergencyContact $contact): self
     {
@@ -101,7 +99,7 @@ class EmployeeEmergencyContactDTO extends Data
         return [
             'employee_id' => ['required', 'integer', 'exists:employees,id'],
             'contact_name' => ['required', 'string', 'max:100'],
-            'relationship' => ['required', 'string', 'in:' . implode(',', array_column(Relationship::cases(), 'value'))],
+            'relationship' => ['required', 'string', 'in:'.implode(',', array_column(Relationship::cases(), 'value'))],
             'phone_primary' => ['required', 'string', 'max:20', 'regex:/^\+?[1-9]\d{1,14}$/'],
             'phone_secondary' => ['nullable', 'string', 'max:20', 'regex:/^\+?[1-9]\d{1,14}$/'],
             'email' => ['nullable', 'email', 'max:255'],
@@ -169,7 +167,7 @@ class EmployeeEmergencyContactDTO extends Data
             $this->city,
             $this->state,
             $this->postal_code,
-            $this->country
+            $this->country,
         ]);
 
         return implode(', ', $parts);
@@ -182,17 +180,17 @@ class EmployeeEmergencyContactDTO extends Data
 
     public function hasValidPhone(): bool
     {
-        return !empty($this->phone_primary) || !empty($this->phone_secondary);
+        return ! empty($this->phone_primary) || ! empty($this->phone_secondary);
     }
 
     public function hasValidEmail(): bool
     {
-        return !empty($this->email) && filter_var($this->email, FILTER_VALIDATE_EMAIL);
+        return ! empty($this->email) && filter_var($this->email, FILTER_VALIDATE_EMAIL);
     }
 
     public function hasValidAddress(): bool
     {
-        return !empty($this->address) && !empty($this->city) && !empty($this->state);
+        return ! empty($this->address) && ! empty($this->city) && ! empty($this->state);
     }
 
     public function getContactMethod(): string
@@ -203,6 +201,7 @@ class EmployeeEmergencyContactDTO extends Data
         if ($this->hasValidEmail()) {
             return 'email';
         }
+
         return 'address';
     }
 

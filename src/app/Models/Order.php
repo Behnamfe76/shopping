@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
+use Fereydooni\Shopping\app\Enums\OrderStatus;
+use Fereydooni\Shopping\app\Enums\PaymentStatus;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Builder;
-use Fereydooni\Shopping\app\Enums\OrderStatus;
-use Fereydooni\Shopping\app\Enums\PaymentStatus;
 
 class Order extends Model
 {
@@ -179,13 +179,13 @@ class Order extends Model
     {
         $query->where(function ($q) use ($search) {
             $q->where('id', 'like', "%{$search}%")
-              ->orWhere('tracking_number', 'like', "%{$search}%")
-              ->orWhere('coupon_code', 'like', "%{$search}%")
-              ->orWhere('notes', 'like', "%{$search}%")
-              ->orWhereHas('user', function ($userQuery) use ($search) {
-                  $userQuery->where('name', 'like', "%{$search}%")
-                           ->orWhere('email', 'like', "%{$search}%");
-              });
+                ->orWhere('tracking_number', 'like', "%{$search}%")
+                ->orWhere('coupon_code', 'like', "%{$search}%")
+                ->orWhere('notes', 'like', "%{$search}%")
+                ->orWhereHas('user', function ($userQuery) use ($search) {
+                    $userQuery->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%");
+                });
         });
     }
 
@@ -329,6 +329,7 @@ class Order extends Model
     public function getNotesByType(string $type): array
     {
         $notes = $this->getNotes();
-        return array_filter($notes, fn($note) => $note['type'] === $type);
+
+        return array_filter($notes, fn ($note) => $note['type'] === $type);
     }
 }

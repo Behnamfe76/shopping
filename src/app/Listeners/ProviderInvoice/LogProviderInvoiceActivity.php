@@ -2,16 +2,16 @@
 
 namespace Fereydooni\Shopping\App\Listeners\ProviderInvoice;
 
-use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoiceCreated;
-use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoiceUpdated;
-use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoiceSent;
-use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoicePaid;
-use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoiceOverdue;
 use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoiceCancelled;
+use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoiceCreated;
+use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoiceOverdue;
+use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoicePaid;
+use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoiceSent;
+use Fereydooni\Shopping\App\Events\ProviderInvoice\ProviderInvoiceUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class LogProviderInvoiceActivity implements ShouldQueue
 {
@@ -36,7 +36,7 @@ class LogProviderInvoiceActivity implements ShouldQueue
                 'user_name' => $userName,
                 'timestamp' => now()->toISOString(),
                 'ip_address' => request()->ip(),
-                'user_agent' => request()->userAgent()
+                'user_agent' => request()->userAgent(),
             ];
 
             switch (get_class($event)) {
@@ -64,7 +64,7 @@ class LogProviderInvoiceActivity implements ShouldQueue
             Log::error('Failed to log provider invoice activity', [
                 'event' => get_class($event),
                 'invoice_id' => $event->invoice->id ?? 'unknown',
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -113,4 +113,3 @@ class LogProviderInvoiceActivity implements ShouldQueue
         Log::info('Provider invoice cancelled', $activityData);
     }
 }
-

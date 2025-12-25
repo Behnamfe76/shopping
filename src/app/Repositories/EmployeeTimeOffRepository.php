@@ -2,24 +2,25 @@
 
 namespace Fereydooni\Shopping\app\Repositories;
 
-use Illuminate\Support\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
-use Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeTimeOffRepositoryInterface;
-use Fereydooni\Shopping\app\Models\EmployeeTimeOff;
 use Fereydooni\Shopping\app\DTOs\EmployeeTimeOffDTO;
 use Fereydooni\Shopping\app\Enums\TimeOffStatus;
 use Fereydooni\Shopping\app\Enums\TimeOffType;
-use Carbon\Carbon;
+use Fereydooni\Shopping\app\Models\EmployeeTimeOff;
+use Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeTimeOffRepositoryInterface;
+use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class EmployeeTimeOffRepository implements EmployeeTimeOffRepositoryInterface
 {
     protected $model;
+
     protected $cachePrefix = 'employee_time_off';
+
     protected $cacheTtl = 3600; // 1 hour
 
     public function __construct(EmployeeTimeOff $model)
@@ -37,27 +38,27 @@ class EmployeeTimeOffRepository implements EmployeeTimeOffRepositoryInterface
 
     public function paginate(int $perPage = 15): LengthAwarePaginator
     {
-        $cacheKey = "{$this->cachePrefix}:paginate:{$perPage}:" . request()->get('page', 1);
+        $cacheKey = "{$this->cachePrefix}:paginate:{$perPage}:".request()->get('page', 1);
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($perPage) {
             return $this->model->with(['employee', 'user', 'approver', 'rejector'])
-                              ->orderBy('created_at', 'desc')
-                              ->paginate($perPage);
+                ->orderBy('created_at', 'desc')
+                ->paginate($perPage);
         });
     }
 
     public function simplePaginate(int $perPage = 15): Paginator
     {
         return $this->model->with(['employee', 'user', 'approver', 'rejector'])
-                          ->orderBy('created_at', 'desc')
-                          ->simplePaginate($perPage);
+            ->orderBy('created_at', 'desc')
+            ->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->model->with(['employee', 'user', 'approver', 'rejector'])
-                          ->orderBy('created_at', 'desc')
-                          ->cursorPaginate($perPage, ['*'], 'cursor', $cursor);
+            ->orderBy('created_at', 'desc')
+            ->cursorPaginate($perPage, ['*'], 'cursor', $cursor);
     }
 
     // Find operations
@@ -73,6 +74,7 @@ class EmployeeTimeOffRepository implements EmployeeTimeOffRepositoryInterface
     public function findDTO(int $id): ?EmployeeTimeOffDTO
     {
         $timeOff = $this->find($id);
+
         return $timeOff ? EmployeeTimeOffDTO::fromModel($timeOff) : null;
     }
 
@@ -82,9 +84,9 @@ class EmployeeTimeOffRepository implements EmployeeTimeOffRepositoryInterface
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($employeeId) {
             return $this->model->byEmployee($employeeId)
-                              ->with(['employee', 'user', 'approver', 'rejector'])
-                              ->orderBy('start_date', 'desc')
-                              ->get();
+                ->with(['employee', 'user', 'approver', 'rejector'])
+                ->orderBy('start_date', 'desc')
+                ->get();
         });
     }
 
@@ -101,9 +103,9 @@ class EmployeeTimeOffRepository implements EmployeeTimeOffRepositoryInterface
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($userId) {
             return $this->model->byUser($userId)
-                              ->with(['employee', 'user', 'approver', 'rejector'])
-                              ->orderBy('start_date', 'desc')
-                              ->get();
+                ->with(['employee', 'user', 'approver', 'rejector'])
+                ->orderBy('start_date', 'desc')
+                ->get();
         });
     }
 
@@ -120,9 +122,9 @@ class EmployeeTimeOffRepository implements EmployeeTimeOffRepositoryInterface
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($status) {
             return $this->model->byStatus($status)
-                              ->with(['employee', 'user', 'approver', 'rejector'])
-                              ->orderBy('created_at', 'desc')
-                              ->get();
+                ->with(['employee', 'user', 'approver', 'rejector'])
+                ->orderBy('created_at', 'desc')
+                ->get();
         });
     }
 
@@ -139,9 +141,9 @@ class EmployeeTimeOffRepository implements EmployeeTimeOffRepositoryInterface
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($timeOffType) {
             return $this->model->byTimeOffType($timeOffType)
-                              ->with(['employee', 'user', 'approver', 'rejector'])
-                              ->orderBy('start_date', 'desc')
-                              ->get();
+                ->with(['employee', 'user', 'approver', 'rejector'])
+                ->orderBy('start_date', 'desc')
+                ->get();
         });
     }
 
@@ -159,9 +161,9 @@ class EmployeeTimeOffRepository implements EmployeeTimeOffRepositoryInterface
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($startDate, $endDate) {
             return $this->model->byDateRange($startDate, $endDate)
-                              ->with(['employee', 'user', 'approver', 'rejector'])
-                              ->orderBy('start_date', 'asc')
-                              ->get();
+                ->with(['employee', 'user', 'approver', 'rejector'])
+                ->orderBy('start_date', 'asc')
+                ->get();
         });
     }
 
@@ -178,10 +180,10 @@ class EmployeeTimeOffRepository implements EmployeeTimeOffRepositoryInterface
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($employeeId, $startDate, $endDate) {
             return $this->model->byEmployee($employeeId)
-                              ->byDateRange($startDate, $endDate)
-                              ->with(['employee', 'user', 'approver', 'rejector'])
-                              ->orderBy('start_date', 'asc')
-                              ->get();
+                ->byDateRange($startDate, $endDate)
+                ->with(['employee', 'user', 'approver', 'rejector'])
+                ->orderBy('start_date', 'asc')
+                ->get();
         });
     }
 
@@ -239,9 +241,9 @@ class EmployeeTimeOffRepository implements EmployeeTimeOffRepositoryInterface
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () {
             return $this->model->urgent()
-                              ->with(['employee', 'user', 'approver', 'rejector'])
-                              ->orderBy('created_at', 'desc')
-                              ->get();
+                ->with(['employee', 'user', 'approver', 'rejector'])
+                ->orderBy('created_at', 'desc')
+                ->get();
         });
     }
 
@@ -259,8 +261,8 @@ class EmployeeTimeOffRepository implements EmployeeTimeOffRepositoryInterface
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($employeeId, $startDate, $endDate) {
             return $this->model->overlapping($employeeId, $startDate, $endDate)
-                              ->with(['employee', 'user', 'approver', 'rejector'])
-                              ->get();
+                ->with(['employee', 'user', 'approver', 'rejector'])
+                ->get();
         });
     }
 
@@ -278,9 +280,9 @@ class EmployeeTimeOffRepository implements EmployeeTimeOffRepositoryInterface
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($approverId) {
             return $this->model->byApprover($approverId)
-                              ->with(['employee', 'user', 'approver', 'rejector'])
-                              ->orderBy('created_at', 'desc')
-                              ->get();
+                ->with(['employee', 'user', 'approver', 'rejector'])
+                ->orderBy('created_at', 'desc')
+                ->get();
         });
     }
 
@@ -292,42 +294,42 @@ class EmployeeTimeOffRepository implements EmployeeTimeOffRepositoryInterface
     }
 
     // Time-based operations
-    public function findUpcoming(int $employeeId, string $date = null): Collection
+    public function findUpcoming(int $employeeId, ?string $date = null): Collection
     {
         $date = $date ?: now()->format('Y-m-d');
         $cacheKey = "{$this->cachePrefix}:upcoming:{$employeeId}:{$date}";
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($employeeId, $date) {
             return $this->model->byEmployee($employeeId)
-                              ->upcoming($date)
-                              ->with(['employee', 'user', 'approver', 'rejector'])
-                              ->orderBy('start_date', 'asc')
-                              ->get();
+                ->upcoming($date)
+                ->with(['employee', 'user', 'approver', 'rejector'])
+                ->orderBy('start_date', 'asc')
+                ->get();
         });
     }
 
-    public function findUpcomingDTO(int $employeeId, string $date = null): Collection
+    public function findUpcomingDTO(int $employeeId, ?string $date = null): Collection
     {
         return $this->findUpcoming($employeeId, $date)->map(function ($timeOff) {
             return EmployeeTimeOffDTO::fromModel($timeOff);
         });
     }
 
-    public function findPast(int $employeeId, string $date = null): Collection
+    public function findPast(int $employeeId, ?string $date = null): Collection
     {
         $date = $date ?: now()->format('Y-m-d');
         $cacheKey = "{$this->cachePrefix}:past:{$employeeId}:{$date}";
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($employeeId, $date) {
             return $this->model->byEmployee($employeeId)
-                              ->past($date)
-                              ->with(['employee', 'user', 'approver', 'rejector'])
-                              ->orderBy('start_date', 'desc')
-                              ->get();
+                ->past($date)
+                ->with(['employee', 'user', 'approver', 'rejector'])
+                ->orderBy('start_date', 'desc')
+                ->get();
         });
     }
 
-    public function findPastDTO(int $employeeId, string $date = null): Collection
+    public function findPastDTO(int $employeeId, ?string $date = null): Collection
     {
         return $this->findPast($employeeId, $date)->map(function ($timeOff) {
             return EmployeeTimeOffDTO::fromModel($timeOff);
@@ -361,6 +363,7 @@ class EmployeeTimeOffRepository implements EmployeeTimeOffRepositoryInterface
     public function createAndReturnDTO(array $data): EmployeeTimeOffDTO
     {
         $timeOff = $this->create($data);
+
         return EmployeeTimeOffDTO::fromModel($timeOff);
     }
 
@@ -392,6 +395,7 @@ class EmployeeTimeOffRepository implements EmployeeTimeOffRepositoryInterface
     public function updateAndReturnDTO(EmployeeTimeOff $timeOff, array $data): ?EmployeeTimeOffDTO
     {
         $updated = $this->update($timeOff, $data);
+
         return $updated ? EmployeeTimeOffDTO::fromModel($timeOff->fresh()) : null;
     }
 
@@ -446,7 +450,7 @@ class EmployeeTimeOffRepository implements EmployeeTimeOffRepositoryInterface
         }
     }
 
-    public function reject(EmployeeTimeOff $timeOff, int $rejectedBy, string $reason = null): bool
+    public function reject(EmployeeTimeOff $timeOff, int $rejectedBy, ?string $reason = null): bool
     {
         try {
             DB::beginTransaction();
@@ -471,7 +475,7 @@ class EmployeeTimeOffRepository implements EmployeeTimeOffRepositoryInterface
         }
     }
 
-    public function cancel(EmployeeTimeOff $timeOff, string $reason = null): bool
+    public function cancel(EmployeeTimeOff $timeOff, ?string $reason = null): bool
     {
         try {
             DB::beginTransaction();
@@ -560,33 +564,33 @@ class EmployeeTimeOffRepository implements EmployeeTimeOffRepositoryInterface
         });
     }
 
-    public function getEmployeeTotalDaysUsed(int $employeeId, string $year = null): float
+    public function getEmployeeTotalDaysUsed(int $employeeId, ?string $year = null): float
     {
         $year = $year ?: now()->year;
         $cacheKey = "{$this->cachePrefix}:days_used:{$employeeId}:{$year}";
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($employeeId, $year) {
             return $this->model->byEmployee($employeeId)
-                              ->byStatus(TimeOffStatus::APPROVED->value)
-                              ->whereYear('start_date', $year)
-                              ->sum('total_days');
+                ->byStatus(TimeOffStatus::APPROVED->value)
+                ->whereYear('start_date', $year)
+                ->sum('total_days');
         });
     }
 
-    public function getEmployeeTotalHoursUsed(int $employeeId, string $year = null): float
+    public function getEmployeeTotalHoursUsed(int $employeeId, ?string $year = null): float
     {
         $year = $year ?: now()->year;
         $cacheKey = "{$this->cachePrefix}:hours_used:{$employeeId}:{$year}";
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($employeeId, $year) {
             return $this->model->byEmployee($employeeId)
-                              ->byStatus(TimeOffStatus::APPROVED->value)
-                              ->whereYear('start_date', $year)
-                              ->sum('total_hours');
+                ->byStatus(TimeOffStatus::APPROVED->value)
+                ->whereYear('start_date', $year)
+                ->sum('total_hours');
         });
     }
 
-    public function getEmployeeRemainingDays(int $employeeId, string $timeOffType, string $year = null): float
+    public function getEmployeeRemainingDays(int $employeeId, string $timeOffType, ?string $year = null): float
     {
         // This would typically integrate with employee benefits/entitlements
         // For now, returning a placeholder calculation
@@ -595,7 +599,7 @@ class EmployeeTimeOffRepository implements EmployeeTimeOffRepositoryInterface
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($employeeId, $timeOffType, $year) {
             // Placeholder: assume 20 days per year for vacation, 10 for sick, etc.
-            $entitlement = match($timeOffType) {
+            $entitlement = match ($timeOffType) {
                 TimeOffType::VACATION->value => 20,
                 TimeOffType::SICK->value => 10,
                 TimeOffType::PERSONAL->value => 5,
@@ -608,9 +612,10 @@ class EmployeeTimeOffRepository implements EmployeeTimeOffRepositoryInterface
         });
     }
 
-    public function getEmployeeRemainingHours(int $employeeId, string $timeOffType, string $year = null): float
+    public function getEmployeeRemainingHours(int $employeeId, string $timeOffType, ?string $year = null): float
     {
         $remainingDays = $this->getEmployeeRemainingDays($employeeId, $timeOffType, $year);
+
         return $remainingDays * 8; // Assuming 8-hour workday
     }
 
@@ -663,19 +668,19 @@ class EmployeeTimeOffRepository implements EmployeeTimeOffRepositoryInterface
     // Search operations
     public function searchTimeOff(string $query): Collection
     {
-        $cacheKey = "{$this->cachePrefix}:search:" . md5($query);
+        $cacheKey = "{$this->cachePrefix}:search:".md5($query);
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($query) {
             return $this->model->where(function ($q) use ($query) {
                 $q->where('reason', 'like', "%{$query}%")
-                  ->orWhere('description', 'like', "%{$query}%")
-                  ->orWhereHas('employee', function ($empQ) use ($query) {
-                      $empQ->where('first_name', 'like', "%{$query}%")
-                           ->orWhere('last_name', 'like', "%{$query}%");
-                  });
+                    ->orWhere('description', 'like', "%{$query}%")
+                    ->orWhereHas('employee', function ($empQ) use ($query) {
+                        $empQ->where('first_name', 'like', "%{$query}%")
+                            ->orWhere('last_name', 'like', "%{$query}%");
+                    });
             })->with(['employee', 'user', 'approver', 'rejector'])
-              ->orderBy('created_at', 'desc')
-              ->get();
+                ->orderBy('created_at', 'desc')
+                ->get();
         });
     }
 
@@ -688,17 +693,17 @@ class EmployeeTimeOffRepository implements EmployeeTimeOffRepositoryInterface
 
     public function searchTimeOffByEmployee(int $employeeId, string $query): Collection
     {
-        $cacheKey = "{$this->cachePrefix}:search_employee:{$employeeId}:" . md5($query);
+        $cacheKey = "{$this->cachePrefix}:search_employee:{$employeeId}:".md5($query);
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($employeeId, $query) {
             return $this->model->byEmployee($employeeId)
-                              ->where(function ($q) use ($query) {
-                                  $q->where('reason', 'like', "%{$query}%")
-                                    ->orWhere('description', 'like', "%{$query}%");
-                              })
-                              ->with(['employee', 'user', 'approver', 'rejector'])
-                              ->orderBy('created_at', 'desc')
-                              ->get();
+                ->where(function ($q) use ($query) {
+                    $q->where('reason', 'like', "%{$query}%")
+                        ->orWhere('description', 'like', "%{$query}%");
+                })
+                ->with(['employee', 'user', 'approver', 'rejector'])
+                ->orderBy('created_at', 'desc')
+                ->get();
         });
     }
 
@@ -745,17 +750,17 @@ class EmployeeTimeOffRepository implements EmployeeTimeOffRepositoryInterface
                     $row->time_off_type->value,
                     $row->start_date->format('Y-m-d'),
                     $row->end_date->format('Y-m-d'),
-                    '"' . str_replace('"', '""', $row->reason) . '"',
+                    '"'.str_replace('"', '""', $row->reason).'"',
                     $row->status->value,
                     $row->approved_by,
                     $row->approved_at?->format('Y-m-d H:i:s'),
                     $row->rejected_by,
                     $row->rejected_at?->format('Y-m-d H:i:s'),
-                    '"' . str_replace('"', '""', $row->rejection_reason ?? '') . '"',
+                    '"'.str_replace('"', '""', $row->rejection_reason ?? '').'"',
                     $row->is_half_day ? 'Yes' : 'No',
                     $row->is_urgent ? 'Yes' : 'No',
                     $row->created_at->format('Y-m-d H:i:s'),
-                ]) . "\n";
+                ])."\n";
             }
 
             return $csv;
@@ -778,7 +783,9 @@ class EmployeeTimeOffRepository implements EmployeeTimeOffRepositoryInterface
             $errors = [];
 
             foreach ($lines as $lineNumber => $line) {
-                if (empty(trim($line))) continue;
+                if (empty(trim($line))) {
+                    continue;
+                }
 
                 $row = array_combine($headers, str_getcsv($line));
 
@@ -803,11 +810,11 @@ class EmployeeTimeOffRepository implements EmployeeTimeOffRepositoryInterface
                     $imported++;
 
                 } catch (\Exception $e) {
-                    $errors[] = "Line " . ($lineNumber + 2) . ": " . $e->getMessage();
+                    $errors[] = 'Line '.($lineNumber + 2).': '.$e->getMessage();
                 }
             }
 
-            if (!empty($errors)) {
+            if (! empty($errors)) {
                 Log::warning('Time-off data import completed with errors', ['errors' => $errors, 'imported' => $imported]);
             }
 
@@ -825,9 +832,9 @@ class EmployeeTimeOffRepository implements EmployeeTimeOffRepositoryInterface
     }
 
     // Statistics operations
-    public function getTimeOffStatistics(int $employeeId = null): array
+    public function getTimeOffStatistics(?int $employeeId = null): array
     {
-        $cacheKey = "{$this->cachePrefix}:stats" . ($employeeId ? ":employee:{$employeeId}" : '');
+        $cacheKey = "{$this->cachePrefix}:stats".($employeeId ? ":employee:{$employeeId}" : '');
 
         return Cache::remember($cacheKey, $this->cacheTtl, function () use ($employeeId) {
             $query = $this->model;
@@ -865,7 +872,7 @@ class EmployeeTimeOffRepository implements EmployeeTimeOffRepositoryInterface
     {
         $cacheKey = "{$this->cachePrefix}:stats:department:{$departmentId}";
 
-        return Cache::remember($cacheKey, $this->cacheTtl, function () use ($departmentId) {
+        return Cache::remember($cacheKey, $this->cacheTtl, function () {
             // This would need to join with employees table to filter by department
             // For now, returning basic stats
             return [
@@ -925,9 +932,9 @@ class EmployeeTimeOffRepository implements EmployeeTimeOffRepositoryInterface
     protected function calculateAverageApprovalTime(): float
     {
         $approvedRequests = $this->model->approved()
-                                      ->whereNotNull('approved_at')
-                                      ->whereNotNull('created_at')
-                                      ->get();
+            ->whereNotNull('approved_at')
+            ->whereNotNull('created_at')
+            ->get();
 
         if ($approvedRequests->isEmpty()) {
             return 0;
@@ -940,4 +947,3 @@ class EmployeeTimeOffRepository implements EmployeeTimeOffRepositoryInterface
         return round($totalHours / $approvedRequests->count(), 2);
     }
 }
-

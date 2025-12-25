@@ -3,22 +3,20 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreProviderPerformanceRequest;
-use App\Http\Requests\UpdateProviderPerformanceRequest;
-use App\Http\Requests\VerifyPerformanceRequest;
 use App\Http\Requests\CalculatePerformanceRequest;
 use App\Http\Requests\GenerateReportRequest;
 use App\Http\Requests\SearchPerformanceRequest;
+use App\Http\Requests\StoreProviderPerformanceRequest;
+use App\Http\Requests\UpdateProviderPerformanceRequest;
+use App\Http\Requests\VerifyPerformanceRequest;
+use App\Http\Resources\ProviderPerformanceReportResource;
 use App\Http\Resources\ProviderPerformanceResource;
-use App\Http\Resources\ProviderPerformanceCollection;
 use App\Http\Resources\ProviderPerformanceSearchResource;
 use App\Http\Resources\ProviderPerformanceStatisticsResource;
-use App\Http\Resources\ProviderPerformanceReportResource;
 use App\Models\ProviderPerformance;
 use App\Services\ProviderPerformanceService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\ResourceCollection;
 use Illuminate\Support\Facades\Log;
 
 class ProviderPerformanceController extends Controller
@@ -46,17 +44,17 @@ class ProviderPerformanceController extends Controller
                     'last_page' => $providerPerformances->lastPage(),
                     'per_page' => $providerPerformances->perPage(),
                     'total' => $providerPerformances->total(),
-                ]
+                ],
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to fetch provider performances', [
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return response()->json([
                 'message' => 'Failed to fetch provider performances',
-                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error'
+                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error',
             ], 500);
         }
     }
@@ -71,18 +69,18 @@ class ProviderPerformanceController extends Controller
 
             return response()->json([
                 'message' => 'Provider performance created successfully',
-                'data' => new ProviderPerformanceResource($providerPerformance)
+                'data' => new ProviderPerformanceResource($providerPerformance),
             ], 201);
         } catch (\Exception $e) {
             Log::error('Failed to create provider performance', [
                 'error' => $e->getMessage(),
                 'data' => $request->validated(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return response()->json([
                 'message' => 'Failed to create provider performance',
-                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error'
+                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error',
             ], 500);
         }
     }
@@ -94,18 +92,18 @@ class ProviderPerformanceController extends Controller
     {
         try {
             return response()->json([
-                'data' => new ProviderPerformanceResource($providerPerformance)
+                'data' => new ProviderPerformanceResource($providerPerformance),
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to fetch provider performance', [
                 'error' => $e->getMessage(),
                 'id' => $providerPerformance->id,
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return response()->json([
                 'message' => 'Failed to fetch provider performance',
-                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error'
+                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error',
             ], 500);
         }
     }
@@ -120,26 +118,27 @@ class ProviderPerformanceController extends Controller
 
             if ($updated) {
                 $providerPerformance->refresh();
+
                 return response()->json([
                     'message' => 'Provider performance updated successfully',
-                    'data' => new ProviderPerformanceResource($providerPerformance)
+                    'data' => new ProviderPerformanceResource($providerPerformance),
                 ]);
             }
 
             return response()->json([
-                'message' => 'Failed to update provider performance'
+                'message' => 'Failed to update provider performance',
             ], 400);
         } catch (\Exception $e) {
             Log::error('Failed to update provider performance', [
                 'error' => $e->getMessage(),
                 'id' => $providerPerformance->id,
                 'data' => $request->validated(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return response()->json([
                 'message' => 'Failed to update provider performance',
-                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error'
+                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error',
             ], 500);
         }
     }
@@ -154,23 +153,23 @@ class ProviderPerformanceController extends Controller
 
             if ($deleted) {
                 return response()->json([
-                    'message' => 'Provider performance deleted successfully'
+                    'message' => 'Provider performance deleted successfully',
                 ]);
             }
 
             return response()->json([
-                'message' => 'Failed to delete provider performance'
+                'message' => 'Failed to delete provider performance',
             ], 400);
         } catch (\Exception $e) {
             Log::error('Failed to delete provider performance', [
                 'error' => $e->getMessage(),
                 'id' => $providerPerformance->id,
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return response()->json([
                 'message' => 'Failed to delete provider performance',
-                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error'
+                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error',
             ], 500);
         }
     }
@@ -189,25 +188,26 @@ class ProviderPerformanceController extends Controller
 
             if ($verified) {
                 $providerPerformance->refresh();
+
                 return response()->json([
                     'message' => 'Provider performance verified successfully',
-                    'data' => new ProviderPerformanceResource($providerPerformance)
+                    'data' => new ProviderPerformanceResource($providerPerformance),
                 ]);
             }
 
             return response()->json([
-                'message' => 'Failed to verify provider performance'
+                'message' => 'Failed to verify provider performance',
             ], 400);
         } catch (\Exception $e) {
             Log::error('Failed to verify provider performance', [
                 'error' => $e->getMessage(),
                 'id' => $providerPerformance->id,
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return response()->json([
                 'message' => 'Failed to verify provider performance',
-                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error'
+                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error',
             ], 500);
         }
     }
@@ -222,25 +222,26 @@ class ProviderPerformanceController extends Controller
 
             if ($unverified) {
                 $providerPerformance->refresh();
+
                 return response()->json([
                     'message' => 'Provider performance unverified successfully',
-                    'data' => new ProviderPerformanceResource($providerPerformance)
+                    'data' => new ProviderPerformanceResource($providerPerformance),
                 ]);
             }
 
             return response()->json([
-                'message' => 'Failed to unverify provider performance'
+                'message' => 'Failed to unverify provider performance',
             ], 400);
         } catch (\Exception $e) {
             Log::error('Failed to unverify provider performance', [
                 'error' => $e->getMessage(),
                 'id' => $providerPerformance->id,
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return response()->json([
                 'message' => 'Failed to unverify provider performance',
-                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error'
+                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error',
             ], 500);
         }
     }
@@ -255,25 +256,26 @@ class ProviderPerformanceController extends Controller
 
             if ($calculated) {
                 $providerPerformance->refresh();
+
                 return response()->json([
                     'message' => 'Performance calculated successfully',
-                    'data' => new ProviderPerformanceResource($providerPerformance)
+                    'data' => new ProviderPerformanceResource($providerPerformance),
                 ]);
             }
 
             return response()->json([
-                'message' => 'Failed to calculate performance'
+                'message' => 'Failed to calculate performance',
             ], 400);
         } catch (\Exception $e) {
             Log::error('Failed to calculate performance', [
                 'error' => $e->getMessage(),
                 'id' => $providerPerformance->id,
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return response()->json([
                 'message' => 'Failed to calculate performance',
-                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error'
+                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error',
             ], 500);
         }
     }
@@ -288,18 +290,18 @@ class ProviderPerformanceController extends Controller
             $results = $this->providerPerformanceService->searchPerformance($query);
 
             return response()->json([
-                'data' => ProviderPerformanceSearchResource::collection($results)
+                'data' => ProviderPerformanceSearchResource::collection($results),
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to search provider performances', [
                 'error' => $e->getMessage(),
                 'query' => $request->get('query'),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return response()->json([
                 'message' => 'Failed to search provider performances',
-                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error'
+                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error',
             ], 500);
         }
     }
@@ -316,18 +318,18 @@ class ProviderPerformanceController extends Controller
                 : $this->providerPerformanceService->getGlobalPerformanceAnalytics();
 
             return response()->json([
-                'data' => new ProviderPerformanceStatisticsResource($analytics)
+                'data' => new ProviderPerformanceStatisticsResource($analytics),
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to fetch performance analytics', [
                 'error' => $e->getMessage(),
                 'provider_id' => $request->get('provider_id'),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return response()->json([
                 'message' => 'Failed to fetch performance analytics',
-                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error'
+                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error',
             ], 500);
         }
     }
@@ -346,19 +348,19 @@ class ProviderPerformanceController extends Controller
                 : $this->providerPerformanceService->getGlobalPerformanceReports($reportType);
 
             return response()->json([
-                'data' => new ProviderPerformanceReportResource($report)
+                'data' => new ProviderPerformanceReportResource($report),
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to generate performance report', [
                 'error' => $e->getMessage(),
                 'report_type' => $request->get('report_type'),
                 'provider_id' => $request->get('provider_id'),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return response()->json([
                 'message' => 'Failed to generate performance report',
-                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error'
+                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error',
             ], 500);
         }
     }
@@ -373,17 +375,17 @@ class ProviderPerformanceController extends Controller
             $topPerformers = $this->providerPerformanceService->findTopPerformers($limit);
 
             return response()->json([
-                'data' => ProviderPerformanceResource::collection($topPerformers)
+                'data' => ProviderPerformanceResource::collection($topPerformers),
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to fetch top performers', [
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return response()->json([
                 'message' => 'Failed to fetch top performers',
-                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error'
+                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error',
             ], 500);
         }
     }
@@ -398,27 +400,27 @@ class ProviderPerformanceController extends Controller
             $periodType = $request->get('period_type', 'monthly');
             $periods = $request->get('periods', 12);
 
-            if (!$providerId) {
+            if (! $providerId) {
                 return response()->json([
-                    'message' => 'Provider ID is required for trend analysis'
+                    'message' => 'Provider ID is required for trend analysis',
                 ], 400);
             }
 
             $trends = $this->providerPerformanceService->getPerformanceTrend($providerId, $periodType, $periods);
 
             return response()->json([
-                'data' => ProviderPerformanceResource::collection($trends)
+                'data' => ProviderPerformanceResource::collection($trends),
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to fetch performance trends', [
                 'error' => $e->getMessage(),
                 'provider_id' => $request->get('provider_id'),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return response()->json([
                 'message' => 'Failed to fetch performance trends',
-                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error'
+                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error',
             ], 500);
         }
     }
@@ -435,18 +437,18 @@ class ProviderPerformanceController extends Controller
                 : $this->providerPerformanceService->getGlobalPerformanceAlerts();
 
             return response()->json([
-                'data' => $alerts
+                'data' => $alerts,
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to fetch performance alerts', [
                 'error' => $e->getMessage(),
                 'provider_id' => $request->get('provider_id'),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return response()->json([
                 'message' => 'Failed to fetch performance alerts',
-                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error'
+                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error',
             ], 500);
         }
     }
@@ -460,18 +462,18 @@ class ProviderPerformanceController extends Controller
             $performances = $this->providerPerformanceService->findByProviderId($providerId);
 
             return response()->json([
-                'data' => ProviderPerformanceResource::collection($performances)
+                'data' => ProviderPerformanceResource::collection($performances),
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to fetch provider performances by provider', [
                 'error' => $e->getMessage(),
                 'provider_id' => $providerId,
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return response()->json([
                 'message' => 'Failed to fetch provider performances',
-                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error'
+                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error',
             ], 500);
         }
     }
@@ -485,18 +487,18 @@ class ProviderPerformanceController extends Controller
             $performances = $this->providerPerformanceService->findByPerformanceGrade($grade);
 
             return response()->json([
-                'data' => ProviderPerformanceResource::collection($performances)
+                'data' => ProviderPerformanceResource::collection($performances),
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to fetch provider performances by grade', [
                 'error' => $e->getMessage(),
                 'grade' => $grade,
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return response()->json([
                 'message' => 'Failed to fetch provider performances',
-                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error'
+                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error',
             ], 500);
         }
     }
@@ -510,28 +512,28 @@ class ProviderPerformanceController extends Controller
             $periodStart = $request->get('period_start');
             $periodEnd = $request->get('period_end');
 
-            if (!$periodStart || !$periodEnd) {
+            if (! $periodStart || ! $periodEnd) {
                 return response()->json([
-                    'message' => 'Period start and end dates are required'
+                    'message' => 'Period start and end dates are required',
                 ], 400);
             }
 
             $performances = $this->providerPerformanceService->findByPeriod($periodStart, $periodEnd);
 
             return response()->json([
-                'data' => ProviderPerformanceResource::collection($performances)
+                'data' => ProviderPerformanceResource::collection($performances),
             ]);
         } catch (\Exception $e) {
             Log::error('Failed to fetch provider performances by period', [
                 'error' => $e->getMessage(),
                 'period_start' => $request->get('period_start'),
                 'period_end' => $request->get('period_end'),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return response()->json([
                 'message' => 'Failed to fetch provider performances',
-                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error'
+                'error' => config('app.debug') ? $e->getMessage() : 'Internal server error',
             ], 500);
         }
     }

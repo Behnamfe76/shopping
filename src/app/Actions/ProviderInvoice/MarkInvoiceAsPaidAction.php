@@ -2,13 +2,13 @@
 
 namespace Fereydooni\Shopping\App\Actions\ProviderInvoice;
 
+use Exception;
 use Fereydooni\Shopping\App\DTOs\ProviderInvoiceDTO;
+use Fereydooni\Shopping\App\Enums\InvoiceStatus;
 use Fereydooni\Shopping\App\Models\ProviderInvoice;
 use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderInvoiceRepositoryInterface;
-use Fereydooni\Shopping\App\Enums\InvoiceStatus;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Exception;
 
 class MarkInvoiceAsPaidAction
 {
@@ -19,13 +19,13 @@ class MarkInvoiceAsPaidAction
         $this->repository = $repository;
     }
 
-    public function execute(ProviderInvoice $invoice, string $paymentDate = null): ProviderInvoiceDTO
+    public function execute(ProviderInvoice $invoice, ?string $paymentDate = null): ProviderInvoiceDTO
     {
         try {
             DB::beginTransaction();
 
             // Validate payment data
-            if (!$this->canInvoiceBeMarkedAsPaid($invoice)) {
+            if (! $this->canInvoiceBeMarkedAsPaid($invoice)) {
                 throw new Exception('Invoice cannot be marked as paid in its current status.');
             }
 
@@ -35,7 +35,7 @@ class MarkInvoiceAsPaidAction
             // Update invoice status to paid
             $result = $this->repository->markAsPaid($invoice, $paymentDate);
 
-            if (!$result) {
+            if (! $result) {
                 throw new Exception('Failed to mark invoice as paid.');
             }
 
@@ -57,7 +57,7 @@ class MarkInvoiceAsPaidAction
             Log::error('Failed to mark provider invoice as paid', [
                 'invoice_id' => $invoice->id,
                 'error' => $e->getMessage(),
-                'payment_date' => $paymentDate
+                'payment_date' => $paymentDate,
             ]);
             throw $e;
         }
@@ -68,7 +68,7 @@ class MarkInvoiceAsPaidAction
         return in_array($invoice->status, [
             InvoiceStatus::SENT->value,
             InvoiceStatus::OVERDUE->value,
-            InvoiceStatus::PARTIALLY_PAID->value
+            InvoiceStatus::PARTIALLY_PAID->value,
         ]);
     }
 
@@ -89,7 +89,7 @@ class MarkInvoiceAsPaidAction
         // Update payment records
         Log::info('Payment records processed for invoice', [
             'invoice_id' => $invoice->id,
-            'payment_date' => $paymentDate ?? now()->format('Y-m-d')
+            'payment_date' => $paymentDate ?? now()->format('Y-m-d'),
         ]);
 
         // Could add more payment processing logic here
@@ -102,21 +102,20 @@ class MarkInvoiceAsPaidAction
         Log::info('Payment received notification sent to provider', [
             'invoice_id' => $invoice->id,
             'provider_id' => $invoice->provider_id,
-            'amount' => $invoice->total_amount
+            'amount' => $invoice->total_amount,
         ]);
 
         // Send notification to internal team
         Log::info('Payment received notification sent to internal team', [
             'invoice_id' => $invoice->id,
             'provider_id' => $invoice->provider_id,
-            'amount' => $invoice->total_amount
+            'amount' => $invoice->total_amount,
         ]);
 
         // Send notification to accounting/finance team
         Log::info('Payment received notification sent to finance team', [
             'invoice_id' => $invoice->id,
-            'amount' => $invoice->total_amount
+            'amount' => $invoice->total_amount,
         ]);
     }
 }
-

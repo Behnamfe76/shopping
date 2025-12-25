@@ -42,8 +42,8 @@ class BenefitsExpiringReminder extends Notification implements ShouldQueue
         return (new MailMessage)
             ->subject('Your Benefits Are Expiring Soon')
             ->greeting("Hello {$notifiable->name},")
-            ->line("This is a reminder that your benefits enrollment will expire soon.")
-            ->line("**Expiring Benefits Details:**")
+            ->line('This is a reminder that your benefits enrollment will expire soon.')
+            ->line('**Expiring Benefits Details:**')
             ->line("- **Benefit Type:** {$this->benefit->benefit_type}")
             ->line("- **Benefit Name:** {$this->benefit->benefit_name}")
             ->line("- **Provider:** {$this->benefit->provider}")
@@ -53,7 +53,7 @@ class BenefitsExpiringReminder extends Notification implements ShouldQueue
             ->line('- Please review your renewal options before the expiration date.')
             ->line('- Contact HR if you need assistance with renewal or have questions.')
             ->line('- Consider alternative coverage options if renewal is not available.')
-            ->action('Review Benefits', url('/employee/benefits/' . $this->benefit->id))
+            ->action('Review Benefits', url('/employee/benefits/'.$this->benefit->id))
             ->line('Don\'t let your coverage lapse - take action today!')
             ->salutation('Best regards, HR Team');
     }
@@ -79,7 +79,7 @@ class BenefitsExpiringReminder extends Notification implements ShouldQueue
             'end_date' => $this->benefit->end_date,
             'days_until_expiry' => $daysUntilExpiry,
             'created_at' => now()->toISOString(),
-            'action_url' => '/employee/benefits/' . $this->benefit->id
+            'action_url' => '/employee/benefits/'.$this->benefit->id,
         ];
     }
 

@@ -23,13 +23,13 @@ class SetPrimaryLocationRequest extends FormRequest
             'confirm' => [
                 'required',
                 'boolean',
-                'accepted'
+                'accepted',
             ],
             'reason' => [
                 'nullable',
                 'string',
-                'max:500'
-            ]
+                'max:500',
+            ],
         ];
     }
 
@@ -41,7 +41,7 @@ class SetPrimaryLocationRequest extends FormRequest
         return [
             'confirm.required' => 'Please confirm that you want to set this location as primary.',
             'confirm.accepted' => 'You must confirm to set this location as primary.',
-            'reason.max' => 'Reason cannot exceed 500 characters.'
+            'reason.max' => 'Reason cannot exceed 500 characters.',
         ];
     }
 
@@ -52,7 +52,7 @@ class SetPrimaryLocationRequest extends FormRequest
     {
         return [
             'confirm' => 'confirmation',
-            'reason' => 'reason'
+            'reason' => 'reason',
         ];
     }
 
@@ -63,7 +63,7 @@ class SetPrimaryLocationRequest extends FormRequest
     {
         if ($this->has('reason')) {
             $this->merge([
-                'reason' => trim($this->reason)
+                'reason' => trim($this->reason),
             ]);
         }
     }

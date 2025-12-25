@@ -80,11 +80,11 @@ return [
     // booting routes
     'routes' => [
         'api' => false,
-        'web' => false
+        'web' => false,
     ],
 
     // Define guards here for roles and permissions
     'auth_guards' => [
-        'web', 'api'
-    ]
+        'web', 'api',
+    ],
 ];

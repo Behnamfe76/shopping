@@ -2,15 +2,15 @@
 
 namespace Fereydooni\Shopping\App\Actions\ProviderPayment;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Event;
 use Fereydooni\Shopping\App\DTOs\ProviderPaymentDTO;
+use Fereydooni\Shopping\App\Enums\ProviderPaymentMethod;
+use Fereydooni\Shopping\App\Enums\ProviderPaymentStatus;
+use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentUpdated;
 use Fereydooni\Shopping\App\Models\ProviderPayment;
 use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderPaymentRepositoryInterface;
-use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentUpdated;
-use Fereydooni\Shopping\App\Enums\ProviderPaymentStatus;
-use Fereydooni\Shopping\App\Enums\ProviderPaymentMethod;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
 
 class UpdateProviderPaymentAction
 {
@@ -35,7 +35,7 @@ class UpdateProviderPaymentAction
             // Update the payment
             $updated = $this->repository->update($payment, $updateData);
 
-            if (!$updated) {
+            if (! $updated) {
                 throw new \Exception('Failed to update provider payment');
             }
 
@@ -43,7 +43,7 @@ class UpdateProviderPaymentAction
             $payment->refresh();
 
             // Handle attachments if provided
-            if (!empty($data['attachments'])) {
+            if (! empty($data['attachments'])) {
                 $this->handleAttachments($payment, $data['attachments']);
             }
 
@@ -63,7 +63,7 @@ class UpdateProviderPaymentAction
             Log::info('Provider payment updated successfully', [
                 'payment_id' => $payment->id,
                 'provider_id' => $payment->provider_id,
-                'changes' => $updateData
+                'changes' => $updateData,
             ]);
 
             return ProviderPaymentDTO::fromModel($payment);
@@ -74,7 +74,7 @@ class UpdateProviderPaymentAction
             Log::error('Failed to update provider payment', [
                 'error' => $e->getMessage(),
                 'payment_id' => $payment->id,
-                'data' => $data
+                'data' => $data,
             ]);
 
             throw $e;
@@ -89,7 +89,7 @@ class UpdateProviderPaymentAction
         // Check if payment is in a state that allows modification
         $nonModifiableStatuses = [
             ProviderPaymentStatus::COMPLETED->value,
-            ProviderPaymentStatus::RECONCILED->value
+            ProviderPaymentStatus::RECONCILED->value,
         ];
 
         if (in_array($payment->status, $nonModifiableStatuses)) {
@@ -103,7 +103,7 @@ class UpdateProviderPaymentAction
     protected function prepareUpdateData(ProviderPayment $payment, array $data): array
     {
         // Validate payment method if provided
-        if (!empty($data['payment_method'])) {
+        if (! empty($data['payment_method'])) {
             $this->validatePaymentMethod($data['payment_method']);
         }
 
@@ -113,17 +113,17 @@ class UpdateProviderPaymentAction
         }
 
         // Validate status if provided
-        if (!empty($data['status'])) {
+        if (! empty($data['status'])) {
             $this->validateStatusTransition($payment->status, $data['status']);
         }
 
         // Validate provider if provided
-        if (!empty($data['provider_id'])) {
+        if (! empty($data['provider_id'])) {
             $this->validateProvider($data['provider_id']);
         }
 
         // Validate invoice if provided
-        if (!empty($data['invoice_id'])) {
+        if (! empty($data['invoice_id'])) {
             $this->validateInvoice($data['invoice_id']);
         }
 
@@ -138,7 +138,7 @@ class UpdateProviderPaymentAction
         // Implementation for handling file uploads and storage
         Log::info('Handling attachments for payment update', [
             'payment_id' => $payment->id,
-            'attachment_count' => count($attachments)
+            'attachment_count' => count($attachments),
         ]);
     }
 
@@ -150,7 +150,7 @@ class UpdateProviderPaymentAction
         Log::info('Payment status changed', [
             'payment_id' => $payment->id,
             'old_status' => $payment->getOriginal('status'),
-            'new_status' => $newStatus
+            'new_status' => $newStatus,
         ]);
 
         // Additional logic for specific status changes could go here
@@ -164,7 +164,7 @@ class UpdateProviderPaymentAction
         Log::info('Sending notifications for payment update', [
             'payment_id' => $payment->id,
             'provider_id' => $payment->provider_id,
-            'action' => $action
+            'action' => $action,
         ]);
     }
 
@@ -173,7 +173,7 @@ class UpdateProviderPaymentAction
      */
     protected function validatePaymentMethod(string $method): void
     {
-        if (!in_array($method, array_column(ProviderPaymentMethod::cases(), 'value'))) {
+        if (! in_array($method, array_column(ProviderPaymentMethod::cases(), 'value'))) {
             throw new \InvalidArgumentException("Invalid payment method: {$method}");
         }
     }
@@ -184,7 +184,7 @@ class UpdateProviderPaymentAction
     protected function validateAmount(float $amount): void
     {
         if ($amount <= 0) {
-            throw new \InvalidArgumentException("Payment amount must be greater than 0");
+            throw new \InvalidArgumentException('Payment amount must be greater than 0');
         }
     }
 
@@ -196,20 +196,20 @@ class UpdateProviderPaymentAction
         $allowedTransitions = [
             ProviderPaymentStatus::PENDING->value => [
                 ProviderPaymentStatus::PROCESSED->value,
-                ProviderPaymentStatus::CANCELLED->value
+                ProviderPaymentStatus::CANCELLED->value,
             ],
             ProviderPaymentStatus::PROCESSED->value => [
                 ProviderPaymentStatus::COMPLETED->value,
-                ProviderPaymentStatus::FAILED->value
+                ProviderPaymentStatus::FAILED->value,
             ],
             ProviderPaymentStatus::COMPLETED->value => [
                 ProviderPaymentStatus::RECONCILED->value,
-                ProviderPaymentStatus::REFUNDED->value
-            ]
+                ProviderPaymentStatus::REFUNDED->value,
+            ],
         ];
 
         if (isset($allowedTransitions[$currentStatus]) &&
-            !in_array($newStatus, $allowedTransitions[$currentStatus])) {
+            ! in_array($newStatus, $allowedTransitions[$currentStatus])) {
             throw new \InvalidArgumentException("Invalid status transition from {$currentStatus} to {$newStatus}");
         }
     }

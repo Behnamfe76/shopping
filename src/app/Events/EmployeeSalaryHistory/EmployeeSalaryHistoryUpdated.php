@@ -2,15 +2,16 @@
 
 namespace App\Events\EmployeeSalaryHistory;
 
+use App\Models\EmployeeSalaryHistory;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use App\Models\EmployeeSalaryHistory;
 
 class EmployeeSalaryHistoryUpdated
 {
     use Dispatchable, SerializesModels;
 
     public $salaryHistory;
+
     public $changes;
 
     public function __construct(EmployeeSalaryHistory $salaryHistory, array $changes = [])

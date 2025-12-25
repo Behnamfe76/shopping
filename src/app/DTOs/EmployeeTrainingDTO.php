@@ -2,26 +2,25 @@
 
 namespace Fereydooni\Shopping\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Required;
-use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\IntegerType;
-use Spatie\LaravelData\Attributes\Validation\Numeric;
+use Fereydooni\Shopping\Enums\TrainingMethod;
+use Fereydooni\Shopping\Enums\TrainingStatus;
+use Fereydooni\Shopping\Enums\TrainingType;
+use Fereydooni\Shopping\Models\EmployeeTraining;
+use Spatie\LaravelData\Attributes\Validation\ArrayType;
 use Spatie\LaravelData\Attributes\Validation\BooleanType;
 use Spatie\LaravelData\Attributes\Validation\Date;
-use Spatie\LaravelData\Attributes\Validation\Nullable;
 use Spatie\LaravelData\Attributes\Validation\In;
-use Spatie\LaravelData\Attributes\Validation\Min;
+use Spatie\LaravelData\Attributes\Validation\IntegerType;
 use Spatie\LaravelData\Attributes\Validation\Max;
+use Spatie\LaravelData\Attributes\Validation\Min;
+use Spatie\LaravelData\Attributes\Validation\Nullable;
+use Spatie\LaravelData\Attributes\Validation\Numeric;
+use Spatie\LaravelData\Attributes\Validation\Required;
+use Spatie\LaravelData\Attributes\Validation\StringType;
 use Spatie\LaravelData\Attributes\Validation\Url;
-use Spatie\LaravelData\Attributes\Validation\ArrayType;
 use Spatie\LaravelData\Attributes\WithTransformer;
+use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Transformers\DateTimeTransformer;
-use Fereydooni\Shopping\Enums\TrainingType;
-use Fereydooni\Shopping\Enums\TrainingStatus;
-use Fereydooni\Shopping\Enums\TrainingMethod;
-use Fereydooni\Shopping\Models\EmployeeTraining;
-use Carbon\Carbon;
 
 class EmployeeTrainingDTO extends Data
 {
@@ -156,8 +155,7 @@ class EmployeeTrainingDTO extends Data
         // Employee relationship
         #[Nullable]
         public ?array $employee,
-    ) {
-    }
+    ) {}
 
     /**
      * Create DTO from model.
@@ -224,14 +222,14 @@ class EmployeeTrainingDTO extends Data
     {
         return [
             'employee_id' => ['required', 'integer', 'exists:employees,id'],
-            'training_type' => ['required', 'string', 'in:' . implode(',', TrainingType::values())],
+            'training_type' => ['required', 'string', 'in:'.implode(',', TrainingType::values())],
             'training_name' => ['required', 'string', 'min:1', 'max:255'],
             'provider' => ['required', 'string', 'min:1', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
             'start_date' => ['nullable', 'date', 'after_or_equal:today'],
             'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
             'completion_date' => ['nullable', 'date', 'after_or_equal:start_date'],
-            'status' => ['required', 'string', 'in:' . implode(',', TrainingStatus::values())],
+            'status' => ['required', 'string', 'in:'.implode(',', TrainingStatus::values())],
             'score' => ['nullable', 'numeric', 'min:0', 'max:100'],
             'grade' => ['nullable', 'string', 'max:10'],
             'certificate_number' => ['nullable', 'string', 'max:100'],
@@ -246,7 +244,7 @@ class EmployeeTrainingDTO extends Data
             'expiry_date' => ['nullable', 'date', 'after:today'],
             'instructor' => ['nullable', 'string', 'max:255'],
             'location' => ['nullable', 'string', 'max:255'],
-            'training_method' => ['required', 'string', 'in:' . implode(',', TrainingMethod::values())],
+            'training_method' => ['required', 'string', 'in:'.implode(',', TrainingMethod::values())],
             'materials' => ['nullable', 'array'],
             'notes' => ['nullable', 'string', 'max:1000'],
             'attachments' => ['nullable', 'array'],

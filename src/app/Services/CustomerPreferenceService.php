@@ -2,27 +2,24 @@
 
 namespace Fereydooni\Shopping\app\Services;
 
+use Fereydooni\Shopping\app\DTOs\CustomerPreferenceDTO;
+use Fereydooni\Shopping\app\Models\CustomerPreference;
 use Fereydooni\Shopping\app\Repositories\Interfaces\CustomerPreferenceRepositoryInterface;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
-use Fereydooni\Shopping\app\Traits\HasSearchOperations;
 use Fereydooni\Shopping\app\Traits\HasCustomerPreferenceOperations;
 use Fereydooni\Shopping\app\Traits\HasCustomerPreferenceStatusManagement;
 use Fereydooni\Shopping\app\Traits\HasNotesManagement;
-use Fereydooni\Shopping\app\DTOs\CustomerPreferenceDTO;
-use Fereydooni\Shopping\app\Models\CustomerPreference;
+use Fereydooni\Shopping\app\Traits\HasSearchOperations;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Support\Facades\Log;
 
 class CustomerPreferenceService
 {
     use HasCrudOperations,
-        HasSearchOperations,
         HasCustomerPreferenceOperations,
         HasCustomerPreferenceStatusManagement,
-        HasNotesManagement;
+        HasNotesManagement,
+        HasSearchOperations;
 
     public function __construct(
         private CustomerPreferenceRepositoryInterface $repository
@@ -39,6 +36,7 @@ class CustomerPreferenceService
     public function initializeCustomerPreferences(int $customerId): bool
     {
         $defaultPreferences = $this->repository->getDefaultPreferences();
+
         return $this->setMultipleCustomerPreferences($customerId, $defaultPreferences);
     }
 
@@ -72,7 +70,7 @@ class CustomerPreferenceService
 
         // Add default preferences for the category that don't exist
         foreach ($defaultPreferences as $key => $default) {
-            if ($this->getPreferenceCategory($key) === $category && !isset($preferences[$key])) {
+            if ($this->getPreferenceCategory($key) === $category && ! isset($preferences[$key])) {
                 $preferences[$key] = $default['value'];
             }
         }
@@ -83,10 +81,10 @@ class CustomerPreferenceService
     /**
      * Update customer preference with validation
      */
-    public function updateCustomerPreference(int $customerId, string $key, $value, string $type = 'string', string $description = null): bool
+    public function updateCustomerPreference(int $customerId, string $key, $value, string $type = 'string', ?string $description = null): bool
     {
         // Validate the preference value based on type
-        if (!$this->validatePreferenceValue($value, $type)) {
+        if (! $this->validatePreferenceValue($value, $type)) {
             throw new \InvalidArgumentException("Invalid value for preference type: {$type}");
         }
 
@@ -103,7 +101,7 @@ class CustomerPreferenceService
             $type = is_array($preference) ? ($preference['type'] ?? 'string') : 'string';
             $description = is_array($preference) ? ($preference['description'] ?? null) : null;
 
-            if (!$this->validatePreferenceValue($value, $type)) {
+            if (! $this->validatePreferenceValue($value, $type)) {
                 throw new \InvalidArgumentException("Invalid value for preference key: {$key}");
             }
         }
@@ -165,13 +163,14 @@ class CustomerPreferenceService
 
         foreach ($preferences as $preference) {
             $category = $this->getPreferenceCategory($preference->preference_key);
-            if (!isset($categories[$category])) {
+            if (! isset($categories[$category])) {
                 $categories[$category] = 0;
             }
             $categories[$category]++;
         }
 
         arsort($categories);
+
         return $categories;
     }
 
@@ -192,8 +191,8 @@ class CustomerPreferenceService
 
         // Validate that all preferences are of the correct type
         foreach ($preferences as $key => $value) {
-            if (!$this->validatePreferenceValue($value, $type)) {
-                Log::warning("Invalid preference value found", [
+            if (! $this->validatePreferenceValue($value, $type)) {
+                Log::warning('Invalid preference value found', [
                     'customer_id' => $customerId,
                     'key' => $key,
                     'value' => $value,
@@ -262,7 +261,7 @@ class CustomerPreferenceService
     /**
      * Get preference analytics
      */
-    public function getPreferenceAnalytics(int $customerId = null): array
+    public function getPreferenceAnalytics(?int $customerId = null): array
     {
         if ($customerId) {
             return $this->getCustomerPreferenceAnalytics($customerId);
@@ -342,7 +341,7 @@ class CustomerPreferenceService
      */
     protected function validatePreferenceValue($value, string $type): bool
     {
-        return match($type) {
+        return match ($type) {
             'string' => is_string($value),
             'integer' => is_numeric($value) && floor($value) == $value,
             'float' => is_numeric($value),
@@ -358,6 +357,7 @@ class CustomerPreferenceService
     protected function getPreferenceCategory(string $key): string
     {
         $parts = explode('.', $key);
+
         return $parts[0] ?? 'general';
     }
 
@@ -366,7 +366,7 @@ class CustomerPreferenceService
      */
     protected function convertStringToValue(string $value, string $type): mixed
     {
-        return match($type) {
+        return match ($type) {
             'string' => $value,
             'integer' => (int) $value,
             'float' => (float) $value,
@@ -376,4 +376,3 @@ class CustomerPreferenceService
         };
     }
 }
-

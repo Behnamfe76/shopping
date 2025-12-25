@@ -3,9 +3,9 @@
 namespace Fereydooni\Shopping\app\Listeners\Provider;
 
 use Fereydooni\Shopping\app\Events\Provider\ProviderCreated;
-use Fereydooni\Shopping\app\Events\Provider\ProviderUpdated;
 use Fereydooni\Shopping\app\Events\Provider\ProviderDeleted;
 use Fereydooni\Shopping\app\Events\Provider\ProviderStatusChanged;
+use Fereydooni\Shopping\app\Events\Provider\ProviderUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
@@ -27,7 +27,7 @@ class LogProviderActivity implements ShouldQueue
     public function handleProviderCreated(ProviderCreated $event): void
     {
         // Log provider creation activity
-        \Log::info('Provider created: ' . $event->provider->id);
+        \Log::info('Provider created: '.$event->provider->id);
     }
 
     /**
@@ -36,7 +36,7 @@ class LogProviderActivity implements ShouldQueue
     public function handleProviderUpdated(ProviderUpdated $event): void
     {
         // Log provider update activity
-        \Log::info('Provider updated: ' . $event->provider->id);
+        \Log::info('Provider updated: '.$event->provider->id);
     }
 
     /**
@@ -45,7 +45,7 @@ class LogProviderActivity implements ShouldQueue
     public function handleProviderDeleted(ProviderDeleted $event): void
     {
         // Log provider deletion activity
-        \Log::info('Provider deleted: ' . $event->provider->id);
+        \Log::info('Provider deleted: '.$event->provider->id);
     }
 
     /**
@@ -54,6 +54,6 @@ class LogProviderActivity implements ShouldQueue
     public function handleProviderStatusChanged(ProviderStatusChanged $event): void
     {
         // Log provider status change activity
-        \Log::info('Provider status changed: ' . $event->provider->id . ' to ' . $event->provider->status);
+        \Log::info('Provider status changed: '.$event->provider->id.' to '.$event->provider->status);
     }
 }

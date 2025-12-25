@@ -12,7 +12,7 @@ enum OrderStatus: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::PENDING => 'Pending',
             self::PAID => 'Paid',
             self::SHIPPED => 'Shipped',

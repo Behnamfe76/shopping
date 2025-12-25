@@ -2,15 +2,15 @@
 
 namespace Fereydooni\Shopping\App\Traits;
 
-use App\Models\ProviderRating;
 use App\DTOs\ProviderRatingDTO;
+use App\Models\ProviderRating;
 use App\Repositories\Interfaces\ProviderRatingRepositoryInterface;
-use Illuminate\Support\Collection;
+use Exception;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
-use Exception;
 
 trait HasProviderRatingOperations
 {
@@ -25,6 +25,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->all();
         } catch (Exception $e) {
             Log::error('Failed to get all provider ratings', ['error' => $e->getMessage()]);
+
             return collect();
         }
     }
@@ -38,6 +39,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->paginate($perPage);
         } catch (Exception $e) {
             Log::error('Failed to get paginated provider ratings', ['error' => $e->getMessage()]);
+
             return new LengthAwarePaginator([], 0, $perPage);
         }
     }
@@ -51,6 +53,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->simplePaginate($perPage);
         } catch (Exception $e) {
             Log::error('Failed to get simple paginated provider ratings', ['error' => $e->getMessage()]);
+
             return new Paginator([], $perPage);
         }
     }
@@ -58,12 +61,13 @@ trait HasProviderRatingOperations
     /**
      * Get cursor paginated provider ratings
      */
-    public function getCursorPaginatedProviderRatings(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function getCursorPaginatedProviderRatings(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         try {
             return $this->providerRatingRepository->cursorPaginate($perPage, $cursor);
         } catch (Exception $e) {
             Log::error('Failed to get cursor paginated provider ratings', ['error' => $e->getMessage()]);
+
             return new CursorPaginator([], $perPage);
         }
     }
@@ -77,6 +81,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->find($id);
         } catch (Exception $e) {
             Log::error('Failed to find provider rating', ['id' => $id, 'error' => $e->getMessage()]);
+
             return null;
         }
     }
@@ -90,6 +95,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->findDTO($id);
         } catch (Exception $e) {
             Log::error('Failed to find provider rating DTO', ['id' => $id, 'error' => $e->getMessage()]);
+
             return null;
         }
     }
@@ -103,6 +109,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->findByProviderId($providerId);
         } catch (Exception $e) {
             Log::error('Failed to find provider ratings by provider', ['provider_id' => $providerId, 'error' => $e->getMessage()]);
+
             return collect();
         }
     }
@@ -116,6 +123,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->findByProviderIdDTO($providerId);
         } catch (Exception $e) {
             Log::error('Failed to find provider ratings DTOs by provider', ['provider_id' => $providerId, 'error' => $e->getMessage()]);
+
             return collect();
         }
     }
@@ -129,6 +137,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->findByUserId($userId);
         } catch (Exception $e) {
             Log::error('Failed to find provider ratings by user', ['user_id' => $userId, 'error' => $e->getMessage()]);
+
             return collect();
         }
     }
@@ -142,6 +151,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->findByUserIdDTO($userId);
         } catch (Exception $e) {
             Log::error('Failed to find provider ratings DTOs by user', ['user_id' => $userId, 'error' => $e->getMessage()]);
+
             return collect();
         }
     }
@@ -155,6 +165,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->findByCategory($category);
         } catch (Exception $e) {
             Log::error('Failed to find provider ratings by category', ['category' => $category, 'error' => $e->getMessage()]);
+
             return collect();
         }
     }
@@ -168,6 +179,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->findByCategoryDTO($category);
         } catch (Exception $e) {
             Log::error('Failed to find provider ratings DTOs by category', ['category' => $category, 'error' => $e->getMessage()]);
+
             return collect();
         }
     }
@@ -181,6 +193,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->findByStatus($status);
         } catch (Exception $e) {
             Log::error('Failed to find provider ratings by status', ['status' => $status, 'error' => $e->getMessage()]);
+
             return collect();
         }
     }
@@ -194,6 +207,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->findByStatusDTO($status);
         } catch (Exception $e) {
             Log::error('Failed to find provider ratings DTOs by status', ['status' => $status, 'error' => $e->getMessage()]);
+
             return collect();
         }
     }
@@ -207,6 +221,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->findByRatingValue($ratingValue);
         } catch (Exception $e) {
             Log::error('Failed to find provider ratings by value', ['rating_value' => $ratingValue, 'error' => $e->getMessage()]);
+
             return collect();
         }
     }
@@ -220,6 +235,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->findByRatingRange($minRating, $maxRating);
         } catch (Exception $e) {
             Log::error('Failed to find provider ratings by range', ['min' => $minRating, 'max' => $maxRating, 'error' => $e->getMessage()]);
+
             return collect();
         }
     }
@@ -233,6 +249,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->findByProviderAndCategory($providerId, $category);
         } catch (Exception $e) {
             Log::error('Failed to find provider ratings by provider and category', ['provider_id' => $providerId, 'category' => $category, 'error' => $e->getMessage()]);
+
             return collect();
         }
     }
@@ -246,6 +263,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->findByProviderAndUser($providerId, $userId);
         } catch (Exception $e) {
             Log::error('Failed to find provider ratings by provider and user', ['provider_id' => $providerId, 'user_id' => $userId, 'error' => $e->getMessage()]);
+
             return collect();
         }
     }
@@ -259,6 +277,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->create($data);
         } catch (Exception $e) {
             Log::error('Failed to create provider rating', ['data' => $data, 'error' => $e->getMessage()]);
+
             return null;
         }
     }
@@ -272,6 +291,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->createAndReturnDTO($data);
         } catch (Exception $e) {
             Log::error('Failed to create provider rating DTO', ['data' => $data, 'error' => $e->getMessage()]);
+
             return null;
         }
     }
@@ -285,6 +305,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->update($rating, $data);
         } catch (Exception $e) {
             Log::error('Failed to update provider rating', ['rating_id' => $rating->id, 'data' => $data, 'error' => $e->getMessage()]);
+
             return false;
         }
     }
@@ -298,6 +319,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->updateAndReturnDTO($rating, $data);
         } catch (Exception $e) {
             Log::error('Failed to update provider rating DTO', ['rating_id' => $rating->id, 'data' => $data, 'error' => $e->getMessage()]);
+
             return null;
         }
     }
@@ -311,6 +333,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->delete($rating);
         } catch (Exception $e) {
             Log::error('Failed to delete provider rating', ['rating_id' => $rating->id, 'error' => $e->getMessage()]);
+
             return false;
         }
     }
@@ -324,6 +347,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->searchRatings($query);
         } catch (Exception $e) {
             Log::error('Failed to search provider ratings', ['query' => $query, 'error' => $e->getMessage()]);
+
             return collect();
         }
     }
@@ -337,6 +361,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->searchRatingsDTO($query);
         } catch (Exception $e) {
             Log::error('Failed to search provider ratings DTOs', ['query' => $query, 'error' => $e->getMessage()]);
+
             return collect();
         }
     }
@@ -350,6 +375,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->searchRatingsByProvider($providerId, $query);
         } catch (Exception $e) {
             Log::error('Failed to search provider ratings by provider', ['provider_id' => $providerId, 'query' => $query, 'error' => $e->getMessage()]);
+
             return collect();
         }
     }
@@ -363,6 +389,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->searchRatingsByProviderDTO($providerId, $query);
         } catch (Exception $e) {
             Log::error('Failed to search provider ratings DTOs by provider', ['provider_id' => $providerId, 'query' => $query, 'error' => $e->getMessage()]);
+
             return collect();
         }
     }
@@ -376,6 +403,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->getTotalRatingCount();
         } catch (Exception $e) {
             Log::error('Failed to get total provider rating count', ['error' => $e->getMessage()]);
+
             return 0;
         }
     }
@@ -389,6 +417,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->getAverageRating();
         } catch (Exception $e) {
             Log::error('Failed to get average provider rating', ['error' => $e->getMessage()]);
+
             return 0.0;
         }
     }
@@ -402,6 +431,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->getRatingCountByValue($ratingValue);
         } catch (Exception $e) {
             Log::error('Failed to get provider rating count by value', ['rating_value' => $ratingValue, 'error' => $e->getMessage()]);
+
             return 0;
         }
     }
@@ -415,6 +445,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->getRatingCountByCategory($category);
         } catch (Exception $e) {
             Log::error('Failed to get provider rating count by category', ['category' => $category, 'error' => $e->getMessage()]);
+
             return 0;
         }
     }
@@ -428,6 +459,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->getRecommendationPercentage();
         } catch (Exception $e) {
             Log::error('Failed to get provider recommendation percentage', ['error' => $e->getMessage()]);
+
             return 0.0;
         }
     }
@@ -441,6 +473,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->exportRatingData($filters);
         } catch (Exception $e) {
             Log::error('Failed to export provider rating data', ['filters' => $filters, 'error' => $e->getMessage()]);
+
             return '';
         }
     }
@@ -454,6 +487,7 @@ trait HasProviderRatingOperations
             return $this->providerRatingRepository->importRatingData($data);
         } catch (Exception $e) {
             Log::error('Failed to import provider rating data', ['data' => $data, 'error' => $e->getMessage()]);
+
             return false;
         }
     }

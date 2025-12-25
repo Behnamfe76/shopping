@@ -2,23 +2,22 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Gate;
-use Fereydooni\Shopping\app\Models\Category;
-use Fereydooni\Shopping\app\DTOs\CategoryDTO;
 use Fereydooni\Shopping\app\Enums\CategoryStatus;
-use Fereydooni\Shopping\app\Http\Resources\CategoryResource;
-use Fereydooni\Shopping\app\Http\Requests\MoveCategoryRequest;
-use Fereydooni\Shopping\app\Http\Resources\CategoryCollection;
 use Fereydooni\Shopping\app\Facades\Category as CategoryFacade;
-use Fereydooni\Shopping\app\Http\Requests\StoreCategoryRequest;
-use Fereydooni\Shopping\app\Http\Requests\SearchCategoryRequest;
-use Fereydooni\Shopping\app\Http\Requests\UpdateCategoryRequest;
-use Fereydooni\Shopping\app\Http\Resources\CategoryTreeResource;
+use Fereydooni\Shopping\app\Http\Requests\MoveCategoryRequest;
 use Fereydooni\Shopping\app\Http\Requests\ReorderCategoryRequest;
-use Fereydooni\Shopping\app\Http\Resources\CategorySearchResource;
+use Fereydooni\Shopping\app\Http\Requests\SearchCategoryRequest;
 use Fereydooni\Shopping\app\Http\Requests\SetDefaultCategoryRequest;
+use Fereydooni\Shopping\app\Http\Requests\StoreCategoryRequest;
+use Fereydooni\Shopping\app\Http\Requests\UpdateCategoryRequest;
+use Fereydooni\Shopping\app\Http\Resources\CategoryCollection;
+use Fereydooni\Shopping\app\Http\Resources\CategoryResource;
+use Fereydooni\Shopping\app\Http\Resources\CategorySearchResource;
+use Fereydooni\Shopping\app\Http\Resources\CategoryTreeResource;
+use Fereydooni\Shopping\app\Models\Category;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class CategoryController extends \App\Http\Controllers\Controller
 {
@@ -58,9 +57,9 @@ class CategoryController extends \App\Http\Controllers\Controller
 
         try {
             return response()->json([
-                'data' => array_map(fn($status) => [
+                'data' => array_map(fn ($status) => [
                     'id' => $status->value,
-                    'name' => __('categories.statuses.' . $status->value),
+                    'name' => __('categories.statuses.'.$status->value),
                 ], CategoryStatus::cases()),
             ], 200);
         } catch (\Exception $e) {
@@ -218,7 +217,6 @@ class CategoryController extends \App\Http\Controllers\Controller
         }
     }
 
-
     /**
      * Set the category as default.
      */
@@ -229,7 +227,7 @@ class CategoryController extends \App\Http\Controllers\Controller
         try {
             $categoryDTO = CategoryFacade::setDefaultDTO($category);
 
-            if (!$categoryDTO) {
+            if (! $categoryDTO) {
                 return response()->json([
                     'error' => 'Failed to set category as default',
                 ], 500);
@@ -394,7 +392,7 @@ class CategoryController extends \App\Http\Controllers\Controller
         try {
             $reordered = CategoryFacade::reorderCategories($request->validated());
 
-            if (!$reordered) {
+            if (! $reordered) {
                 return response()->json([
                     'error' => 'Failed to reorder categories',
                 ], 500);
@@ -421,7 +419,7 @@ class CategoryController extends \App\Http\Controllers\Controller
         try {
             $moved = CategoryFacade::moveCategory($category, $request->get('parent_id'));
 
-            if (!$moved) {
+            if (! $moved) {
                 return response()->json([
                     'error' => 'Failed to move category',
                 ], 500);

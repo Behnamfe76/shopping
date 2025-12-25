@@ -2,18 +2,16 @@
 
 namespace Fereydooni\Shopping\App\Listeners\ProviderSpecialization;
 
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Carbon;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationCreated;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationUpdated;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationVerified;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationRejected;
+use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderPrimarySpecializationChanged;
 use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationActivated;
 use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationDeactivated;
-use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderPrimarySpecializationChanged;
+use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationRejected;
+use Fereydooni\Shopping\App\Events\ProviderSpecialization\ProviderSpecializationVerified;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class UpdateProviderSpecializationRecord implements ShouldQueue
 {
@@ -70,7 +68,7 @@ class UpdateProviderSpecializationRecord implements ShouldQueue
     {
         $specialization->update([
             'verification_status' => 'rejected',
-            'notes' => $reason ? ($specialization->notes . "\nRejection reason: " . $reason) : $specialization->notes,
+            'notes' => $reason ? ($specialization->notes."\nRejection reason: ".$reason) : $specialization->notes,
         ]);
     }
 

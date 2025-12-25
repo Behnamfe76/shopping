@@ -2,13 +2,11 @@
 
 namespace Fereydooni\Shopping\database\seeders;
 
-use Illuminate\Database\Seeder;
-use Fereydooni\Shopping\app\Models\Employee;
 use Fereydooni\Shopping\app\Enums\EmployeeStatus;
 use Fereydooni\Shopping\app\Enums\EmploymentType;
 use Fereydooni\Shopping\app\Enums\Gender;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
+use Fereydooni\Shopping\app\Models\Employee;
+use Illuminate\Database\Seeder;
 
 class EmployeeSeeder extends Seeder
 {
@@ -27,7 +25,7 @@ class EmployeeSeeder extends Seeder
             'Customer Support',
             'Product Management',
             'Design',
-            'Legal'
+            'Legal',
         ];
 
         $positions = [
@@ -50,7 +48,7 @@ class EmployeeSeeder extends Seeder
             'Product Manager',
             'Senior Product Manager',
             'UI/UX Designer',
-            'Legal Counsel'
+            'Legal Counsel',
         ];
 
         $employees = [

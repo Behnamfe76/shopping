@@ -40,14 +40,14 @@ return new class extends Migration
 
             // Foreign key constraints
             $table->foreign('parent_id')
-                  ->references('id')
-                  ->on('employee_departments')
-                  ->onDelete('set null');
+                ->references('id')
+                ->on('employee_departments')
+                ->onDelete('set null');
 
             $table->foreign('manager_id')
-                  ->references('id')
-                  ->on('employees')
-                  ->onDelete('set null');
+                ->references('id')
+                ->on('employees')
+                ->onDelete('set null');
         });
     }
 

@@ -2,11 +2,11 @@
 
 namespace App\Listeners\EmployeeSalaryHistory;
 
-use App\Events\EmployeeSalaryHistory\EmployeeSalaryHistoryCreated;
-use App\Events\EmployeeSalaryHistory\EmployeeSalaryHistoryUpdated;
 use App\Events\EmployeeSalaryHistory\EmployeeSalaryHistoryApproved;
-use App\Events\EmployeeSalaryHistory\EmployeeSalaryHistoryRejected;
+use App\Events\EmployeeSalaryHistory\EmployeeSalaryHistoryCreated;
 use App\Events\EmployeeSalaryHistory\EmployeeSalaryHistoryProcessed;
+use App\Events\EmployeeSalaryHistory\EmployeeSalaryHistoryRejected;
+use App\Events\EmployeeSalaryHistory\EmployeeSalaryHistoryUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
@@ -49,7 +49,7 @@ class LogSalaryHistoryActivity implements ShouldQueue
 
     private function getEventType($event): string
     {
-        return match(true) {
+        return match (true) {
             $event instanceof EmployeeSalaryHistoryCreated => 'created',
             $event instanceof EmployeeSalaryHistoryUpdated => 'updated',
             $event instanceof EmployeeSalaryHistoryApproved => 'approved',

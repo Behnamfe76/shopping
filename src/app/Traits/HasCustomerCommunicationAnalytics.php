@@ -3,8 +3,6 @@
 namespace Fereydooni\Shopping\app\Traits;
 
 use Fereydooni\Shopping\app\Models\CustomerCommunication;
-use Fereydooni\Shopping\app\Enums\CommunicationStatus;
-use Illuminate\Database\Eloquent\Collection;
 
 trait HasCustomerCommunicationAnalytics
 {
@@ -223,7 +221,7 @@ trait HasCustomerCommunicationAnalytics
     public function getCommunicationEngagementStats(): array
     {
         $stats = $this->repository->getCommunicationStats();
-        
+
         return [
             'total_communications' => $stats['total'] ?? 0,
             'engagement_rate' => $this->calculateEngagementRate(),
@@ -241,7 +239,7 @@ trait HasCustomerCommunicationAnalytics
     public function getCommunicationEngagementStatsByCustomer(int $customerId): array
     {
         $customerCommunications = $this->repository->findByCustomerId($customerId);
-        
+
         return [
             'customer_id' => $customerId,
             'total_communications' => $customerCommunications->count(),
@@ -381,7 +379,7 @@ trait HasCustomerCommunicationAnalytics
     {
         $customerCommunications = $this->repository->findByCustomerId($customerId);
         $totalCommunications = $customerCommunications->count();
-        
+
         if ($totalCommunications === 0) {
             return 0.0;
         }
@@ -419,7 +417,7 @@ trait HasCustomerCommunicationAnalytics
     private function getCustomerPreferredChannels(int $customerId): array
     {
         $customerCommunications = $this->repository->findByCustomerId($customerId);
-        
+
         return $customerCommunications->groupBy('channel')
             ->map(function ($communications) {
                 return $communications->count();
@@ -434,7 +432,7 @@ trait HasCustomerCommunicationAnalytics
     private function getCustomerEngagementHistory(int $customerId): array
     {
         $customerCommunications = $this->repository->findByCustomerId($customerId);
-        
+
         return $customerCommunications->map(function ($communication) {
             return [
                 'id' => $communication->id,

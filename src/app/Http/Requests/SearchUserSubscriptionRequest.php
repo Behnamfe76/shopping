@@ -2,8 +2,8 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
 use Fereydooni\Shopping\app\Models\UserSubscription;
+use Illuminate\Foundation\Http\FormRequest;
 
 class SearchUserSubscriptionRequest extends FormRequest
 {
@@ -79,21 +79,21 @@ class SearchUserSubscriptionRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         // Ensure user can only search own subscriptions if they don't have search.any permission
-        if (!$this->user()->can('search.any', UserSubscription::class) &&
+        if (! $this->user()->can('search.any', UserSubscription::class) &&
             $this->user()->can('search.own', UserSubscription::class)) {
             $this->merge(['user_id' => $this->user()->id]);
         }
 
         // Set default values
-        if (!$this->has('per_page')) {
+        if (! $this->has('per_page')) {
             $this->merge(['per_page' => 15]);
         }
 
-        if (!$this->has('sort_by')) {
+        if (! $this->has('sort_by')) {
             $this->merge(['sort_by' => 'created_at']);
         }
 
-        if (!$this->has('sort_direction')) {
+        if (! $this->has('sort_direction')) {
             $this->merge(['sort_direction' => 'desc']);
         }
     }

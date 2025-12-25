@@ -17,7 +17,7 @@ enum PerformanceGrade: string
 
     public function getDescription(): string
     {
-        return match($this) {
+        return match ($this) {
             self::A => 'Excellent Performance',
             self::B => 'Good Performance',
             self::C => 'Average Performance',
@@ -28,7 +28,7 @@ enum PerformanceGrade: string
 
     public function getColor(): string
     {
-        return match($this) {
+        return match ($this) {
             self::A => 'green',
             self::B => 'blue',
             self::C => 'yellow',
@@ -39,7 +39,7 @@ enum PerformanceGrade: string
 
     public function getScoreRange(): array
     {
-        return match($this) {
+        return match ($this) {
             self::A => [90, 100],
             self::B => [80, 89],
             self::C => [70, 79],

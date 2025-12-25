@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\app\Facades;
 
-use Illuminate\Support\Facades\Facade;
-use Illuminate\Support\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Fereydooni\Shopping\app\Models\EmployeeEmergencyContact;
 use Fereydooni\Shopping\app\DTOs\EmployeeEmergencyContactDTO;
+use Fereydooni\Shopping\app\Models\EmployeeEmergencyContact;
 use Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeEmergencyContactRepositoryInterface;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static Collection all()
@@ -87,6 +87,7 @@ class EmployeeEmergencyContactFacade extends Facade
             return static::all();
         } catch (\Exception $e) {
             static::logError('Failed to get all emergency contacts', $e);
+
             return collect();
         }
     }
@@ -98,11 +99,13 @@ class EmployeeEmergencyContactFacade extends Facade
     {
         try {
             $contacts = static::all();
+
             return $contacts->map(function ($contact) {
                 return EmployeeEmergencyContactDTO::fromModel($contact);
             });
         } catch (\Exception $e) {
             static::logError('Failed to get all emergency contacts as DTOs', $e);
+
             return collect();
         }
     }
@@ -116,6 +119,7 @@ class EmployeeEmergencyContactFacade extends Facade
             return static::find($id);
         } catch (\Exception $e) {
             static::logError("Failed to find emergency contact with ID: {$id}", $e);
+
             return null;
         }
     }
@@ -129,6 +133,7 @@ class EmployeeEmergencyContactFacade extends Facade
             return static::findDTO($id);
         } catch (\Exception $e) {
             static::logError("Failed to find emergency contact DTO with ID: {$id}", $e);
+
             return null;
         }
     }
@@ -142,14 +147,17 @@ class EmployeeEmergencyContactFacade extends Facade
             // Basic validation
             if (empty($data['employee_id']) || empty($data['contact_name']) || empty($data['phone_primary'])) {
                 static::logWarning('Invalid data provided for emergency contact creation', $data);
+
                 return null;
             }
 
             $contact = static::create($data);
             static::logInfo('Emergency contact created successfully', ['id' => $contact->id]);
+
             return $contact;
         } catch (\Exception $e) {
             static::logError('Failed to create emergency contact', $e);
+
             return null;
         }
     }
@@ -161,9 +169,11 @@ class EmployeeEmergencyContactFacade extends Facade
     {
         try {
             $contact = static::createSafe($data);
+
             return $contact ? EmployeeEmergencyContactDTO::fromModel($contact) : null;
         } catch (\Exception $e) {
             static::logError('Failed to create emergency contact DTO', $e);
+
             return null;
         }
     }
@@ -178,9 +188,11 @@ class EmployeeEmergencyContactFacade extends Facade
             if ($result) {
                 static::logInfo('Emergency contact updated successfully', ['id' => $contact->id]);
             }
+
             return $result;
         } catch (\Exception $e) {
             static::logError('Failed to update emergency contact', $e);
+
             return false;
         }
     }
@@ -195,9 +207,11 @@ class EmployeeEmergencyContactFacade extends Facade
             if ($result) {
                 static::logInfo('Emergency contact deleted successfully', ['id' => $contact->id]);
             }
+
             return $result;
         } catch (\Exception $e) {
             static::logError('Failed to delete emergency contact', $e);
+
             return false;
         }
     }
@@ -211,6 +225,7 @@ class EmployeeEmergencyContactFacade extends Facade
             return static::findByEmployeeId($employeeId);
         } catch (\Exception $e) {
             static::logError("Failed to get emergency contacts for employee ID: {$employeeId}", $e);
+
             return collect();
         }
     }
@@ -224,6 +239,7 @@ class EmployeeEmergencyContactFacade extends Facade
             return static::findByEmployeeIdDTO($employeeId);
         } catch (\Exception $e) {
             static::logError("Failed to get emergency contact DTOs for employee ID: {$employeeId}", $e);
+
             return collect();
         }
     }
@@ -237,9 +253,11 @@ class EmployeeEmergencyContactFacade extends Facade
             if (empty(trim($query))) {
                 return collect();
             }
+
             return static::searchContacts($query);
         } catch (\Exception $e) {
             static::logError("Failed to search emergency contacts with query: {$query}", $e);
+
             return collect();
         }
     }
@@ -251,11 +269,13 @@ class EmployeeEmergencyContactFacade extends Facade
     {
         try {
             $contacts = static::searchSafe($query);
+
             return $contacts->map(function ($contact) {
                 return EmployeeEmergencyContactDTO::fromModel($contact);
             });
         } catch (\Exception $e) {
             static::logError("Failed to search emergency contact DTOs with query: {$query}", $e);
+
             return collect();
         }
     }
@@ -269,6 +289,7 @@ class EmployeeEmergencyContactFacade extends Facade
             return static::getEmployeeContactCount($employeeId);
         } catch (\Exception $e) {
             static::logError("Failed to get emergency contact count for employee ID: {$employeeId}", $e);
+
             return 0;
         }
     }
@@ -282,6 +303,7 @@ class EmployeeEmergencyContactFacade extends Facade
             return static::getTotalContactCount();
         } catch (\Exception $e) {
             static::logError('Failed to get total emergency contact count', $e);
+
             return 0;
         }
     }
@@ -295,6 +317,7 @@ class EmployeeEmergencyContactFacade extends Facade
             return static::getContactStatistics();
         } catch (\Exception $e) {
             static::logError('Failed to get emergency contact statistics', $e);
+
             return [
                 'total_contacts' => 0,
                 'active_contacts' => 0,
@@ -315,6 +338,7 @@ class EmployeeEmergencyContactFacade extends Facade
             return static::getEmployeeContactStatistics($employeeId);
         } catch (\Exception $e) {
             static::logError("Failed to get emergency contact statistics for employee ID: {$employeeId}", $e);
+
             return [
                 'total_contacts' => 0,
                 'active_contacts' => 0,
@@ -335,6 +359,7 @@ class EmployeeEmergencyContactFacade extends Facade
             return static::exportContactData($filters);
         } catch (\Exception $e) {
             static::logError('Failed to export emergency contact data', $e);
+
             return '';
         }
     }
@@ -347,6 +372,7 @@ class EmployeeEmergencyContactFacade extends Facade
         try {
             if (empty(trim($data))) {
                 static::logWarning('Empty data provided for emergency contact import');
+
                 return false;
             }
 
@@ -354,9 +380,11 @@ class EmployeeEmergencyContactFacade extends Facade
             if ($result) {
                 static::logInfo('Emergency contact data imported successfully');
             }
+
             return $result;
         } catch (\Exception $e) {
             static::logError('Failed to import emergency contact data', $e);
+
             return false;
         }
     }
@@ -370,6 +398,7 @@ class EmployeeEmergencyContactFacade extends Facade
             return static::validateContactInformation($contactId);
         } catch (\Exception $e) {
             static::logError("Failed to validate emergency contact information for ID: {$contactId}", $e);
+
             return [
                 'valid' => false,
                 'errors' => ['Validation failed due to system error'],
@@ -391,9 +420,11 @@ class EmployeeEmergencyContactFacade extends Facade
             if ($result) {
                 static::logInfo('Emergency contact activated successfully', ['id' => $contact->id]);
             }
+
             return $result;
         } catch (\Exception $e) {
             static::logError('Failed to activate emergency contact', $e);
+
             return false;
         }
     }
@@ -408,9 +439,11 @@ class EmployeeEmergencyContactFacade extends Facade
             if ($result) {
                 static::logInfo('Emergency contact deactivated successfully', ['id' => $contact->id]);
             }
+
             return $result;
         } catch (\Exception $e) {
             static::logError('Failed to deactivate emergency contact', $e);
+
             return false;
         }
     }
@@ -425,9 +458,11 @@ class EmployeeEmergencyContactFacade extends Facade
             if ($result) {
                 static::logInfo('Emergency contact set as primary successfully', ['id' => $contact->id]);
             }
+
             return $result;
         } catch (\Exception $e) {
             static::logError('Failed to set emergency contact as primary', $e);
+
             return false;
         }
     }
@@ -442,9 +477,11 @@ class EmployeeEmergencyContactFacade extends Facade
             if ($result) {
                 static::logInfo('Primary status removed from emergency contact successfully', ['id' => $contact->id]);
             }
+
             return $result;
         } catch (\Exception $e) {
             static::logError('Failed to remove primary status from emergency contact', $e);
+
             return false;
         }
     }
@@ -458,6 +495,7 @@ class EmployeeEmergencyContactFacade extends Facade
             return static::getEmployeePrimaryContact($employeeId);
         } catch (\Exception $e) {
             static::logError("Failed to get primary emergency contact for employee ID: {$employeeId}", $e);
+
             return null;
         }
     }
@@ -471,6 +509,7 @@ class EmployeeEmergencyContactFacade extends Facade
             return static::getEmployeeActiveContacts($employeeId);
         } catch (\Exception $e) {
             static::logError("Failed to get active emergency contacts for employee ID: {$employeeId}", $e);
+
             return collect();
         }
     }
@@ -484,6 +523,7 @@ class EmployeeEmergencyContactFacade extends Facade
             return static::getEmployeeContactCount($employeeId) > 0;
         } catch (\Exception $e) {
             static::logError("Failed to check if employee has emergency contacts for ID: {$employeeId}", $e);
+
             return false;
         }
     }
@@ -497,6 +537,7 @@ class EmployeeEmergencyContactFacade extends Facade
             return static::getEmployeePrimaryContact($employeeId) !== null;
         } catch (\Exception $e) {
             static::logError("Failed to check if employee has primary emergency contact for ID: {$employeeId}", $e);
+
             return false;
         }
     }
@@ -508,9 +549,11 @@ class EmployeeEmergencyContactFacade extends Facade
     {
         try {
             $contacts = static::getEmployeeActiveContacts($employeeId);
+
             return $contacts->isNotEmpty();
         } catch (\Exception $e) {
             static::logError("Failed to check if employee has active emergency contacts for ID: {$employeeId}", $e);
+
             return false;
         }
     }
@@ -538,7 +581,7 @@ class EmployeeEmergencyContactFacade extends Facade
     /**
      * Log error message.
      */
-    protected static function logError(string $message, \Throwable $exception = null, array $context = []): void
+    protected static function logError(string $message, ?\Throwable $exception = null, array $context = []): void
     {
         if (function_exists('logger')) {
             $context['exception'] = $exception ? $exception->getMessage() : null;

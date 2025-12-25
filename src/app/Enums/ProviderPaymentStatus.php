@@ -13,7 +13,7 @@ enum ProviderPaymentStatus: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::PENDING => 'Pending',
             self::PROCESSED => 'Processed',
             self::COMPLETED => 'Completed',
@@ -45,7 +45,7 @@ enum ProviderPaymentStatus: string
 
     public function color(): string
     {
-        return match($this) {
+        return match ($this) {
             self::PENDING => 'warning',
             self::PROCESSED => 'info',
             self::COMPLETED => 'success',

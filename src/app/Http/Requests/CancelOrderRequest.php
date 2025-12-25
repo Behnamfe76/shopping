@@ -3,7 +3,6 @@
 namespace Fereydooni\Shopping\app\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Fereydooni\Shopping\app\Models\Order;
 
 class CancelOrderRequest extends FormRequest
 {
@@ -13,6 +12,7 @@ class CancelOrderRequest extends FormRequest
     public function authorize(): bool
     {
         $order = $this->route('order');
+
         return $this->user()->can('cancel', $order);
     }
 

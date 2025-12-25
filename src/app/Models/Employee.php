@@ -2,14 +2,13 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Carbon;
 use Fereydooni\Shopping\app\Enums\EmployeeStatus;
 use Fereydooni\Shopping\app\Enums\EmploymentType;
 use Fereydooni\Shopping\app\Enums\Gender;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Employee extends Model
 {
@@ -251,7 +250,7 @@ class Employee extends Model
     // Manager methods
     public function hasManager(): bool
     {
-        return !is_null($this->manager_id);
+        return ! is_null($this->manager_id);
     }
 
     public function isManager(): bool
@@ -272,7 +271,7 @@ class Employee extends Model
     // Performance methods
     public function hasPerformanceRating(): bool
     {
-        return !is_null($this->performance_rating);
+        return ! is_null($this->performance_rating);
     }
 
     public function isTopPerformer(float $threshold = 4.0): bool
@@ -337,7 +336,7 @@ class Employee extends Model
             $this->city,
             $this->state,
             $this->postal_code,
-            $this->country
+            $this->country,
         ]);
 
         return implode(', ', $parts);
@@ -345,25 +344,25 @@ class Employee extends Model
 
     public function hasAddress(): bool
     {
-        return !empty($this->address) || !empty($this->city);
+        return ! empty($this->address) || ! empty($this->city);
     }
 
     // Emergency contact methods
     public function hasEmergencyContact(): bool
     {
-        return !empty($this->emergency_contact_name) && !empty($this->emergency_contact_phone);
+        return ! empty($this->emergency_contact_name) && ! empty($this->emergency_contact_phone);
     }
 
     // Banking methods
     public function hasBankingInfo(): bool
     {
-        return !empty($this->bank_account_number) && !empty($this->bank_routing_number);
+        return ! empty($this->bank_account_number) && ! empty($this->bank_routing_number);
     }
 
     // Tax methods
     public function hasTaxInfo(): bool
     {
-        return !empty($this->tax_id) || !empty($this->social_security_number);
+        return ! empty($this->tax_id) || ! empty($this->social_security_number);
     }
 
     // Benefits methods
@@ -492,12 +491,11 @@ class Employee extends Model
     {
         return $query->where(function ($q) use ($search) {
             $q->where('first_name', 'like', "%{$search}%")
-              ->orWhere('last_name', 'like', "%{$search}%")
-              ->orWhere('email', 'like', "%{$search}%")
-              ->orWhere('employee_number', 'like', "%{$search}%")
-              ->orWhere('position', 'like', "%{$search}%")
-              ->orWhere('department', 'like', "%{$search}%");
+                ->orWhere('last_name', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%")
+                ->orWhere('employee_number', 'like', "%{$search}%")
+                ->orWhere('position', 'like', "%{$search}%")
+                ->orWhere('department', 'like', "%{$search}%");
         });
     }
 }
-

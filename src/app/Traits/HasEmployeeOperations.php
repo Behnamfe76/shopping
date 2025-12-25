@@ -2,18 +2,14 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
-use Fereydooni\Shopping\app\Models\Employee;
 use Fereydooni\Shopping\app\DTOs\EmployeeDTO;
-use Fereydooni\Shopping\app\Enums\EmployeeStatus;
-use Fereydooni\Shopping\app\Enums\EmploymentType;
+use Fereydooni\Shopping\app\Models\Employee;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
 
 trait HasEmployeeOperations
 {
     protected Employee $model;
+
     protected string $dtoClass = EmployeeDTO::class;
 
     // Employee-specific CRUD operations
@@ -171,7 +167,7 @@ trait HasEmployeeOperations
     // Employee creation and validation
     public function createEmployee(array $data): Employee
     {
-        if (!$this->repository->validateEmployee($data)) {
+        if (! $this->repository->validateEmployee($data)) {
             throw new \InvalidArgumentException('Invalid employee data provided');
         }
 
@@ -335,4 +331,3 @@ trait HasEmployeeOperations
         return $this->repository->getEmployeeStatsByEmploymentType();
     }
 }
-

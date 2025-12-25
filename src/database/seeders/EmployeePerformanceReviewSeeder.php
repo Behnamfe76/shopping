@@ -2,14 +2,12 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\EmployeePerformanceReview;
 use App\Models\Employee;
+use App\Models\EmployeePerformanceReview;
 use App\Models\User;
-use App\Enums\EmployeePerformanceReviewStatus;
-use App\Enums\EmployeePerformanceReviewRating;
 use Carbon\Carbon;
 use Faker\Factory as Faker;
+use Illuminate\Database\Seeder;
 
 class EmployeePerformanceReviewSeeder extends Seeder
 {
@@ -26,6 +24,7 @@ class EmployeePerformanceReviewSeeder extends Seeder
 
         if ($employees->isEmpty() || $users->isEmpty()) {
             $this->command->warn('No employees or users found. Please seed employees and users first.');
+
             return;
         }
 
@@ -128,7 +127,7 @@ class EmployeePerformanceReviewSeeder extends Seeder
                     'approved_at' => $status === 'approved' ? $reviewDate : null,
                 ]);
 
-                $this->command->line("Created historical review {$review->id} for employee {$employee->id} for year " . $reviewPeriodStart->year);
+                $this->command->line("Created historical review {$review->id} for employee {$employee->id} for year ".$reviewPeriodStart->year);
             }
         }
     }
@@ -245,7 +244,7 @@ class EmployeePerformanceReviewSeeder extends Seeder
             'Increase code quality',
             'Complete training programs',
             'Mentor junior team members',
-            'Implement process improvements'
+            'Implement process improvements',
         ];
 
         $numGoals = $faker->numberBetween(2, 5);
@@ -259,7 +258,7 @@ class EmployeePerformanceReviewSeeder extends Seeder
                 'priority' => $faker->randomElement(['low', 'medium', 'high']),
                 'achieved' => $achieved,
                 'achievement_date' => $achieved ? $faker->dateTimeBetween('-6 months', 'now')->format('Y-m-d') : null,
-                'notes' => $faker->optional(0.7)->sentence()
+                'notes' => $faker->optional(0.7)->sentence(),
             ];
         }
 
@@ -286,13 +285,13 @@ class EmployeePerformanceReviewSeeder extends Seeder
             'Excellent customer service orientation',
             'Strong leadership and mentoring abilities',
             'Consistent delivery of high-quality work',
-            'Great learning ability and continuous improvement mindset'
+            'Great learning ability and continuous improvement mindset',
         ];
 
         $numStrengths = $faker->numberBetween(3, 6);
         $selectedStrengths = $faker->randomElements($strengths, $numStrengths);
 
-        return implode("\n• ", array_merge(['• ' . $selectedStrengths[0]], array_slice($selectedStrengths, 1)));
+        return implode("\n• ", array_merge(['• '.$selectedStrengths[0]], array_slice($selectedStrengths, 1)));
     }
 
     /**
@@ -315,13 +314,13 @@ class EmployeePerformanceReviewSeeder extends Seeder
             'Could improve customer relationship management',
             'Should work on innovation and creative thinking',
             'Needs to enhance project management skills',
-            'Could benefit from leadership development training'
+            'Could benefit from leadership development training',
         ];
 
         $numAreas = $faker->numberBetween(2, 4);
         $selectedAreas = $faker->randomElements($improvementAreas, $numAreas);
 
-        return implode("\n• ", array_merge(['• ' . $selectedAreas[0]], array_slice($selectedAreas, 1)));
+        return implode("\n• ", array_merge(['• '.$selectedAreas[0]], array_slice($selectedAreas, 1)));
     }
 
     /**
@@ -344,13 +343,13 @@ class EmployeePerformanceReviewSeeder extends Seeder
             'Continue developing soft skills and emotional intelligence',
             'Take on strategic planning responsibilities',
             'Consider international assignments or projects',
-            'Focus on building industry knowledge and expertise'
+            'Focus on building industry knowledge and expertise',
         ];
 
         $numRecommendations = $faker->numberBetween(3, 5);
         $selectedRecommendations = $faker->randomElements($recommendations, $numRecommendations);
 
-        return implode("\n• ", array_merge(['• ' . $selectedRecommendations[0]], array_slice($selectedRecommendations, 1)));
+        return implode("\n• ", array_merge(['• '.$selectedRecommendations[0]], array_slice($selectedRecommendations, 1)));
     }
 
     /**
@@ -376,7 +375,7 @@ class EmployeePerformanceReviewSeeder extends Seeder
                     'priority' => 'high',
                     'achieved' => true,
                     'achievement_date' => Carbon::now()->subMonth()->format('Y-m-d'),
-                    'notes' => 'Successfully delivered all project milestones on time'
+                    'notes' => 'Successfully delivered all project milestones on time',
                 ],
                 [
                     'description' => 'Improve technical skills',
@@ -384,8 +383,8 @@ class EmployeePerformanceReviewSeeder extends Seeder
                     'priority' => 'medium',
                     'achieved' => true,
                     'achievement_date' => Carbon::now()->subMonth()->format('Y-m-d'),
-                    'notes' => 'Completed advanced training and obtained certification'
-                ]
+                    'notes' => 'Completed advanced training and obtained certification',
+                ],
             ],
             'goals_missed' => [
                 [
@@ -394,8 +393,8 @@ class EmployeePerformanceReviewSeeder extends Seeder
                     'priority' => 'medium',
                     'achieved' => false,
                     'achievement_date' => null,
-                    'notes' => 'Limited opportunities due to remote work constraints'
-                ]
+                    'notes' => 'Limited opportunities due to remote work constraints',
+                ],
             ],
             'strengths' => "• Excellent technical skills and problem-solving abilities\n• Strong communication and interpersonal skills\n• Reliable and consistent performance\n• Great team player and collaborator\n• Self-motivated and takes initiative",
             'areas_for_improvement' => "• Could improve time management and prioritization\n• Needs to enhance public speaking skills\n• Should work on delegating tasks more effectively",

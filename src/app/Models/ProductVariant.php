@@ -4,7 +4,6 @@ namespace Fereydooni\Shopping\app\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Fereydooni\Shopping\app\Models\ProductVariantValue;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 

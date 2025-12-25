@@ -2,20 +2,19 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
-use Fereydooni\Shopping\app\Models\ProductReview;
-use Fereydooni\Shopping\app\Services\ProductReviewService;
+use Fereydooni\Shopping\app\Http\Requests\ApproveProductReviewRequest;
+use Fereydooni\Shopping\app\Http\Requests\FlagProductReviewRequest;
+use Fereydooni\Shopping\app\Http\Requests\RejectProductReviewRequest;
+use Fereydooni\Shopping\app\Http\Requests\SearchProductReviewRequest;
 use Fereydooni\Shopping\app\Http\Requests\StoreProductReviewRequest;
 use Fereydooni\Shopping\app\Http\Requests\UpdateProductReviewRequest;
-use Fereydooni\Shopping\app\Http\Requests\ApproveProductReviewRequest;
-use Fereydooni\Shopping\app\Http\Requests\RejectProductReviewRequest;
 use Fereydooni\Shopping\app\Http\Requests\VoteProductReviewRequest;
-use Fereydooni\Shopping\app\Http\Requests\FlagProductReviewRequest;
-use Fereydooni\Shopping\app\Http\Requests\SearchProductReviewRequest;
-use Fereydooni\Shopping\app\Http\Resources\ProductReviewResource;
 use Fereydooni\Shopping\app\Http\Resources\ProductReviewCollection;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Fereydooni\Shopping\app\Http\Resources\ProductReviewResource;
+use Fereydooni\Shopping\app\Models\ProductReview;
+use Fereydooni\Shopping\app\Services\ProductReviewService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class ProductReviewController extends Controller
 {

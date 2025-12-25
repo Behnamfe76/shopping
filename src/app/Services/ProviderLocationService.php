@@ -2,25 +2,25 @@
 
 namespace Fereydooni\Shopping\App\Services;
 
+use Fereydooni\Shopping\App\DTOs\ProviderLocationDTO;
+use Fereydooni\Shopping\App\Enums\Country;
+use Fereydooni\Shopping\App\Enums\LocationType;
+use Fereydooni\Shopping\App\Events\LocationCoordinatesUpdated;
+use Fereydooni\Shopping\App\Events\LocationGeocoded;
+use Fereydooni\Shopping\App\Events\LocationOperatingHoursUpdated;
+use Fereydooni\Shopping\App\Events\PrimaryLocationChanged;
+use Fereydooni\Shopping\App\Events\ProviderLocationCreated;
+use Fereydooni\Shopping\App\Events\ProviderLocationDeleted;
+use Fereydooni\Shopping\App\Events\ProviderLocationUpdated;
+use Fereydooni\Shopping\App\Models\ProviderLocation;
+use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderLocationRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderLocationRepositoryInterface;
-use Fereydooni\Shopping\App\Models\ProviderLocation;
-use Fereydooni\Shopping\App\DTOs\ProviderLocationDTO;
-use Fereydooni\Shopping\App\Events\ProviderLocationCreated;
-use Fereydooni\Shopping\App\Events\ProviderLocationUpdated;
-use Fereydooni\Shopping\App\Events\ProviderLocationDeleted;
-use Fereydooni\Shopping\App\Events\PrimaryLocationChanged;
-use Fereydooni\Shopping\App\Events\LocationCoordinatesUpdated;
-use Fereydooni\Shopping\App\Events\LocationOperatingHoursUpdated;
-use Fereydooni\Shopping\App\Events\LocationGeocoded;
-use Fereydooni\Shopping\App\Enums\LocationType;
-use Fereydooni\Shopping\App\Enums\Country;
 
 class ProviderLocationService
 {
@@ -47,7 +47,7 @@ class ProviderLocationService
         return $this->repository->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->repository->cursorPaginate($perPage, $cursor);
     }
@@ -277,6 +277,7 @@ class ProviderLocationService
     public function createAndReturnDTO(array $data): ProviderLocationDTO
     {
         $location = $this->create($data);
+
         return ProviderLocationDTO::fromModel($location);
     }
 
@@ -298,6 +299,7 @@ class ProviderLocationService
     public function updateAndReturnDTO(ProviderLocation $providerLocation, array $data): ?ProviderLocationDTO
     {
         $result = $this->update($providerLocation, $data);
+
         return $result ? ProviderLocationDTO::fromModel($providerLocation->fresh()) : null;
     }
 
@@ -647,7 +649,7 @@ class ProviderLocationService
     {
         $existingPrimary = $this->findPrimary($providerId);
 
-        if ($existingPrimary && (!$existingLocation || $existingPrimary->id !== $existingLocation->id)) {
+        if ($existingPrimary && (! $existingLocation || $existingPrimary->id !== $existingLocation->id)) {
             throw new \InvalidArgumentException('Provider already has a primary location. Only one primary location is allowed per provider.');
         }
     }
@@ -683,16 +685,16 @@ class ProviderLocationService
         $validDays = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
         foreach ($operatingHours as $day => $hours) {
-            if (!in_array(strtolower($day), $validDays)) {
+            if (! in_array(strtolower($day), $validDays)) {
                 throw new \InvalidArgumentException("Invalid day of week: {$day}");
             }
 
-            if (!is_array($hours)) {
+            if (! is_array($hours)) {
                 throw new \InvalidArgumentException("Operating hours for {$day} must be an array");
             }
 
             foreach ($hours as $time) {
-                if (!preg_match('/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/', $time)) {
+                if (! preg_match('/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/', $time)) {
                     throw new \InvalidArgumentException("Invalid time format for {$day}: {$time}");
                 }
             }
@@ -715,7 +717,7 @@ class ProviderLocationService
             $rules['contact_email'] = 'email|max:255';
         }
 
-        if (!empty($rules)) {
+        if (! empty($rules)) {
             $validator = Validator::make($contactInfo, $rules);
 
             if ($validator->fails()) {
@@ -734,12 +736,13 @@ class ProviderLocationService
             if ($coordinates) {
                 $this->updateCoordinates($providerLocation, $coordinates['latitude'], $coordinates['longitude']);
                 Event::dispatch(new LocationGeocoded($providerLocation, $coordinates));
+
                 return true;
             }
 
             return false;
         } catch (\Exception $e) {
-            Log::error('Geocoding failed for location: ' . $providerLocation->id, [
+            Log::error('Geocoding failed for location: '.$providerLocation->id, [
                 'error' => $e->getMessage(),
                 'address' => $providerLocation->getFullAddress(),
             ]);
@@ -773,6 +776,7 @@ class ProviderLocationService
     public function calculateDistanceInKm(float $lat1, float $lon1, float $lat2, float $lon2): float
     {
         $miles = $this->calculateDistance($lat1, $lon1, $lat2, $lon2);
+
         return $miles * 1.609344;
     }
 

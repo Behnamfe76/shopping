@@ -59,12 +59,12 @@ trait HasNotesManagement
     {
         $notes = $this->getNotes($item);
 
-        if (!isset($notes[$noteIndex])) {
+        if (! isset($notes[$noteIndex])) {
             return false;
         }
 
         // Check if user can delete this note
-        if (!$this->canDeleteNote($item, $notes[$noteIndex])) {
+        if (! $this->canDeleteNote($item, $notes[$noteIndex])) {
             return false;
         }
 
@@ -85,16 +85,16 @@ trait HasNotesManagement
     /**
      * Update note by index
      */
-    public function updateNote(object $item, int $noteIndex, string $note, string $type = null): bool
+    public function updateNote(object $item, int $noteIndex, string $note, ?string $type = null): bool
     {
         $notes = $this->getNotes($item);
 
-        if (!isset($notes[$noteIndex])) {
+        if (! isset($notes[$noteIndex])) {
             return false;
         }
 
         // Check if user can update this note
-        if (!$this->canUpdateNote($item, $notes[$noteIndex])) {
+        if (! $this->canUpdateNote($item, $notes[$noteIndex])) {
             return false;
         }
 
@@ -140,7 +140,7 @@ trait HasNotesManagement
     {
         $rules = [
             'note' => 'required|string|max:1000',
-            'type' => 'required|string|in:' . implode(',', array_keys($this->getNoteTypes())),
+            'type' => 'required|string|in:'.implode(',', array_keys($this->getNoteTypes())),
         ];
 
         $data = [
@@ -216,6 +216,7 @@ trait HasNotesManagement
     public function getNoteCountByType(object $item, string $type): int
     {
         $notes = $this->getNotesByType($item, $type);
+
         return count($notes);
     }
 

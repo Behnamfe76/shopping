@@ -2,12 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Services;
 
-use Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeNoteRepositoryInterface;
 use Fereydooni\Shopping\app\DTOs\EmployeeNoteDTO;
-use Fereydooni\Shopping\app\Models\EmployeeNote;
-use Illuminate\Support\Collection;
+use Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeNoteRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class EmployeeNoteService
 {
@@ -33,22 +32,22 @@ class EmployeeNoteService
     public function updateNote(int $id, array $data): ?EmployeeNoteDTO
     {
         $note = $this->employeeNoteRepository->find($id);
-        
-        if (!$note) {
+
+        if (! $note) {
             return null;
         }
-        
+
         return $this->employeeNoteRepository->updateAndReturnDTO($note, $data);
     }
 
     public function deleteNote(int $id): bool
     {
         $note = $this->employeeNoteRepository->find($id);
-        
-        if (!$note) {
+
+        if (! $note) {
             return false;
         }
-        
+
         return $this->employeeNoteRepository->delete($note);
     }
 
@@ -60,22 +59,22 @@ class EmployeeNoteService
     public function archiveNote(int $id): bool
     {
         $note = $this->employeeNoteRepository->find($id);
-        
-        if (!$note) {
+
+        if (! $note) {
             return false;
         }
-        
+
         return $this->employeeNoteRepository->archive($note);
     }
 
     public function unarchiveNote(int $id): bool
     {
         $note = $this->employeeNoteRepository->find($id);
-        
-        if (!$note) {
+
+        if (! $note) {
             return false;
         }
-        
+
         return $this->employeeNoteRepository->unarchive($note);
     }
 
@@ -100,7 +99,7 @@ class EmployeeNoteService
                 'public' => $this->employeeNoteRepository->getPublicNoteCount($employeeId),
             ];
         }
-        
+
         return [
             'total' => $this->employeeNoteRepository->getTotalNoteCount(),
             'by_type' => [

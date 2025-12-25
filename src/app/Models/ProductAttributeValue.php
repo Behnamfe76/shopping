@@ -143,17 +143,18 @@ class ProductAttributeValue extends Model
         if ($this->usage_count > 0) {
             return $this->decrement('usage_count') > 0;
         }
+
         return false;
     }
 
     public function toggleActive(): bool
     {
-        return $this->update(['is_active' => !$this->is_active]);
+        return $this->update(['is_active' => ! $this->is_active]);
     }
 
     public function toggleDefault(): bool
     {
-        return $this->update(['is_default' => !$this->is_default]);
+        return $this->update(['is_default' => ! $this->is_default]);
     }
 
     public function setAsDefault(): bool
@@ -168,7 +169,7 @@ class ProductAttributeValue extends Model
 
     public function isUniqueInAttribute(): bool
     {
-        return !static::where('attribute_id', $this->attribute_id)
+        return ! static::where('attribute_id', $this->attribute_id)
             ->where('value', $this->value)
             ->where('id', '!=', $this->id)
             ->exists();

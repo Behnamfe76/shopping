@@ -2,15 +2,15 @@
 
 namespace Fereydooni\Shopping\App\Actions\ProviderContract;
 
-use Fereydooni\Shopping\App\Models\ProviderContract;
-use Fereydooni\Shopping\App\DTOs\ProviderContractDTO;
-use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderContractRepositoryInterface;
-use Fereydooni\Shopping\App\Events\ProviderContract\ProviderContractCreated;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Validator;
 use Exception;
+use Fereydooni\Shopping\App\DTOs\ProviderContractDTO;
+use Fereydooni\Shopping\App\Events\ProviderContract\ProviderContractCreated;
+use Fereydooni\Shopping\App\Models\ProviderContract;
+use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderContractRepositoryInterface;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class CreateProviderContractAction
 {
@@ -56,15 +56,15 @@ class CreateProviderContractAction
             Log::info('Provider contract created successfully', [
                 'contract_id' => $contract->id,
                 'provider_id' => $contract->provider_id,
-                'contract_number' => $contract->contract_number
+                'contract_number' => $contract->contract_number,
             ]);
 
             return $dto;
         } catch (Exception $e) {
             DB::rollBack();
-            Log::error('Failed to create provider contract: ' . $e->getMessage(), [
+            Log::error('Failed to create provider contract: '.$e->getMessage(), [
                 'data' => $data,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
             throw $e;
         }
@@ -78,7 +78,7 @@ class CreateProviderContractAction
         $validator = Validator::make($data, $rules, $messages);
 
         if ($validator->fails()) {
-            throw new Exception('Validation failed: ' . $validator->errors()->first());
+            throw new Exception('Validation failed: '.$validator->errors()->first());
         }
     }
 
@@ -94,7 +94,7 @@ class CreateProviderContractAction
                     'path' => $attachment['path'],
                     'size' => $attachment['size'] ?? 0,
                     'type' => $attachment['type'] ?? 'unknown',
-                    'uploaded_at' => now()->toISOString()
+                    'uploaded_at' => now()->toISOString(),
                 ];
             }
         }
@@ -112,7 +112,7 @@ class CreateProviderContractAction
         // For now, we'll just log the notification intent
         Log::info('Notifications would be sent for new contract', [
             'contract_id' => $contract->id,
-            'provider_id' => $contract->provider_id
+            'provider_id' => $contract->provider_id,
         ]);
     }
 }

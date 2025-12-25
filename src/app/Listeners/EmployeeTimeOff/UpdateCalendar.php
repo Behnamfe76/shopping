@@ -2,15 +2,15 @@
 
 namespace App\Listeners\EmployeeTimeOff;
 
-use App\Events\EmployeeTimeOff\EmployeeTimeOffCreated;
-use App\Events\EmployeeTimeOff\EmployeeTimeOffUpdated;
 use App\Events\EmployeeTimeOff\EmployeeTimeOffApproved;
 use App\Events\EmployeeTimeOff\EmployeeTimeOffCancelled;
+use App\Events\EmployeeTimeOff\EmployeeTimeOffCreated;
 use App\Events\EmployeeTimeOff\EmployeeTimeOffRejected;
+use App\Events\EmployeeTimeOff\EmployeeTimeOffUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class UpdateCalendar implements ShouldQueue
 {
@@ -49,11 +49,11 @@ class UpdateCalendar implements ShouldQueue
             $this->clearCalendarCache($timeOff);
 
         } catch (\Exception $e) {
-            Log::error('Failed to update calendar for time-off: ' . $e->getMessage(), [
+            Log::error('Failed to update calendar for time-off: '.$e->getMessage(), [
                 'time_off_id' => $event->timeOff->id ?? 'unknown',
                 'event' => get_class($event),
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
         }
     }
@@ -77,7 +77,7 @@ class UpdateCalendar implements ShouldQueue
         Log::info('Time-off added to calendar', [
             'time_off_id' => $timeOff->id,
             'employee_id' => $timeOff->employee_id,
-            'dates' => $timeOff->start_date->toDateString() . ' to ' . $timeOff->end_date->toDateString()
+            'dates' => $timeOff->start_date->toDateString().' to '.$timeOff->end_date->toDateString(),
         ]);
     }
 
@@ -97,7 +97,7 @@ class UpdateCalendar implements ShouldQueue
 
         Log::info('Time-off calendar updated', [
             'time_off_id' => $timeOff->id,
-            'employee_id' => $timeOff->employee_id
+            'employee_id' => $timeOff->employee_id,
         ]);
     }
 
@@ -114,7 +114,7 @@ class UpdateCalendar implements ShouldQueue
 
         Log::info('Time-off calendar entry confirmed', [
             'time_off_id' => $timeOff->id,
-            'employee_id' => $timeOff->employee_id
+            'employee_id' => $timeOff->employee_id,
         ]);
     }
 
@@ -134,7 +134,7 @@ class UpdateCalendar implements ShouldQueue
 
         Log::info('Time-off removed from calendar', [
             'time_off_id' => $timeOff->id,
-            'employee_id' => $timeOff->employee_id
+            'employee_id' => $timeOff->employee_id,
         ]);
     }
 
@@ -236,7 +236,7 @@ class UpdateCalendar implements ShouldQueue
         $startDate = $timeOff->start_date->format('Y-m-d');
         $endDate = $timeOff->end_date->format('Y-m-d');
 
-        for ($date = $startDate; $date <= $endDate; $date = date('Y-m-d', strtotime($date . ' +1 day'))) {
+        for ($date = $startDate; $date <= $endDate; $date = date('Y-m-d', strtotime($date.' +1 day'))) {
             Cache::forget("calendar_date_{$date}");
         }
     }

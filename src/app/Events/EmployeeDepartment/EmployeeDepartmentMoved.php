@@ -5,9 +5,7 @@ namespace App\Events\EmployeeDepartment;
 use App\Models\EmployeeDepartment;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
@@ -16,9 +14,13 @@ class EmployeeDepartmentMoved
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $department;
+
     public $previousParentId;
+
     public $newParentId;
+
     public $movedBy;
+
     public $timestamp;
 
     /**
@@ -42,7 +44,7 @@ class EmployeeDepartmentMoved
     {
         return [
             new PrivateChannel('departments'),
-            new Channel('department-updates')
+            new Channel('department-updates'),
         ];
     }
 
@@ -58,7 +60,7 @@ class EmployeeDepartmentMoved
             'new_parent_id' => $this->newParentId,
             'moved_by' => $this->movedBy,
             'moved_at' => $this->timestamp->toISOString(),
-            'event_type' => 'department_moved'
+            'event_type' => 'department_moved',
         ];
     }
 

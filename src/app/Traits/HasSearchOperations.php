@@ -3,7 +3,6 @@
 namespace Fereydooni\Shopping\app\Traits;
 
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 trait HasSearchOperations
@@ -22,7 +21,8 @@ trait HasSearchOperations
     public function searchDTO(string $query, array $fields = []): Collection
     {
         $models = $this->search($query, $fields);
-        return $models->map(fn($model) => $this->dtoClass::fromModel($model));
+
+        return $models->map(fn ($model) => $this->dtoClass::fromModel($model));
     }
 
     public function searchWithPagination(string $query, int $perPage = 15, array $fields = []): LengthAwarePaginator

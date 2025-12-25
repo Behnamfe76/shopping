@@ -42,6 +42,7 @@ class ListRoutesCommand extends Command
 
         if (empty($routes)) {
             $this->warn('No shopping routes found.');
+
             return;
         }
 
@@ -77,15 +78,15 @@ class ListRoutesCommand extends Command
                 $method = implode('|', array_diff($methods, ['HEAD']));
 
                 // Apply filters
-                if (!empty($typeFilter) && !in_array($routeType, $typeFilter)) {
+                if (! empty($typeFilter) && ! in_array($routeType, $typeFilter)) {
                     continue;
                 }
 
-                if (!empty($groupFilter) && !in_array($routeGroup, $groupFilter)) {
+                if (! empty($groupFilter) && ! in_array($routeGroup, $groupFilter)) {
                     continue;
                 }
 
-                if (!empty($methodFilter) && !in_array($method, $methodFilter)) {
+                if (! empty($methodFilter) && ! in_array($method, $methodFilter)) {
                     continue;
                 }
 
@@ -122,7 +123,7 @@ class ListRoutesCommand extends Command
             'product-attributes', 'product-discounts', 'products',
             'product-meta', 'product-reviews', 'product-tags',
             'product-variants', 'shipments', 'transactions',
-            'user-subscriptions'
+            'user-subscriptions',
         ];
 
         foreach ($shoppingApiPatterns as $pattern) {
@@ -156,7 +157,7 @@ class ListRoutesCommand extends Command
                 'product-attributes', 'product-discounts', 'products',
                 'product-meta', 'product-reviews', 'product-tags',
                 'product-variants', 'shipments', 'transactions',
-                'user-subscriptions'
+                'user-subscriptions',
             ])) {
                 return $segment;
             }

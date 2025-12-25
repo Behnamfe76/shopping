@@ -114,7 +114,7 @@ class UpdateTransactionRequest extends FormRequest
             'response_data.card_exp_year' => [
                 'nullable',
                 'integer',
-                'min:' . date('Y'),
+                'min:'.date('Y'),
             ],
             'response_data.billing_address' => [
                 'nullable',

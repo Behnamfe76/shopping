@@ -42,8 +42,8 @@ class BenefitsRenewalNotice extends Notification implements ShouldQueue
         return (new MailMessage)
             ->subject('Benefits Renewal Notice')
             ->greeting("Hello {$notifiable->name},")
-            ->line("Your benefits enrollment is eligible for renewal.")
-            ->line("**Renewal Details:**")
+            ->line('Your benefits enrollment is eligible for renewal.')
+            ->line('**Renewal Details:**')
             ->line("- **Benefit Type:** {$this->benefit->benefit_type}")
             ->line("- **Benefit Name:** {$this->benefit->benefit_name}")
             ->line("- **Provider:** {$this->benefit->provider}")
@@ -54,7 +54,7 @@ class BenefitsRenewalNotice extends Notification implements ShouldQueue
             ->line('- Switch to alternative plans')
             ->line('- Adjust coverage levels')
             ->line('- Update dependent information')
-            ->action('Renew Benefits', url('/employee/benefits/' . $this->benefit->id . '/renew'))
+            ->action('Renew Benefits', url('/employee/benefits/'.$this->benefit->id.'/renew'))
             ->line('Please complete your renewal by the deadline to avoid any coverage gaps.')
             ->line('Contact HR if you need assistance with the renewal process.')
             ->salutation('Best regards, HR Team');
@@ -81,7 +81,7 @@ class BenefitsRenewalNotice extends Notification implements ShouldQueue
             'end_date' => $this->benefit->end_date,
             'renewal_deadline' => $renewalDeadline,
             'created_at' => now()->toISOString(),
-            'action_url' => '/employee/benefits/' . $this->benefit->id . '/renew'
+            'action_url' => '/employee/benefits/'.$this->benefit->id.'/renew',
         ];
     }
 

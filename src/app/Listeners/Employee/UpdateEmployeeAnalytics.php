@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\app\Listeners\Employee;
 
-use Fereydooni\Shopping\app\Events\Employee\EmployeeCreated;
-use Fereydooni\Shopping\app\Events\Employee\EmployeeUpdated;
-use Fereydooni\Shopping\app\Events\Employee\EmployeeDeleted;
 use Fereydooni\Shopping\app\Events\Employee\EmployeeActivated;
+use Fereydooni\Shopping\app\Events\Employee\EmployeeCreated;
 use Fereydooni\Shopping\app\Events\Employee\EmployeeDeactivated;
+use Fereydooni\Shopping\app\Events\Employee\EmployeeDeleted;
 use Fereydooni\Shopping\app\Events\Employee\EmployeeTerminated;
+use Fereydooni\Shopping\app\Events\Employee\EmployeeUpdated;
 use Fereydooni\Shopping\app\Services\EmployeeService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -35,7 +35,7 @@ class UpdateEmployeeAnalytics implements ShouldQueue
     {
         $this->clearAnalyticsCache();
         Log::info('Employee analytics cache cleared after employee creation', [
-            'employee_id' => $event->employee->id
+            'employee_id' => $event->employee->id,
         ]);
     }
 
@@ -47,7 +47,7 @@ class UpdateEmployeeAnalytics implements ShouldQueue
         $this->clearAnalyticsCache();
         Log::info('Employee analytics cache cleared after employee update', [
             'employee_id' => $event->employee->id,
-            'changes' => $event->changes
+            'changes' => $event->changes,
         ]);
     }
 
@@ -58,7 +58,7 @@ class UpdateEmployeeAnalytics implements ShouldQueue
     {
         $this->clearAnalyticsCache();
         Log::info('Employee analytics cache cleared after employee deletion', [
-            'employee_id' => $event->employee->id
+            'employee_id' => $event->employee->id,
         ]);
     }
 
@@ -69,7 +69,7 @@ class UpdateEmployeeAnalytics implements ShouldQueue
     {
         $this->clearAnalyticsCache();
         Log::info('Employee analytics cache cleared after employee activation', [
-            'employee_id' => $event->employee->id
+            'employee_id' => $event->employee->id,
         ]);
     }
 
@@ -80,7 +80,7 @@ class UpdateEmployeeAnalytics implements ShouldQueue
     {
         $this->clearAnalyticsCache();
         Log::info('Employee analytics cache cleared after employee deactivation', [
-            'employee_id' => $event->employee->id
+            'employee_id' => $event->employee->id,
         ]);
     }
 
@@ -92,7 +92,7 @@ class UpdateEmployeeAnalytics implements ShouldQueue
         $this->clearAnalyticsCache();
         Log::info('Employee analytics cache cleared after employee termination', [
             'employee_id' => $event->employee->id,
-            'reason' => $event->reason
+            'reason' => $event->reason,
         ]);
     }
 
@@ -112,7 +112,7 @@ class UpdateEmployeeAnalytics implements ShouldQueue
             Cache::forget('employee_salary_stats');
         } catch (\Exception $e) {
             Log::error('Failed to clear employee analytics cache', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
@@ -124,7 +124,7 @@ class UpdateEmployeeAnalytics implements ShouldQueue
     {
         Log::error('Failed to update employee analytics', [
             'event' => get_class($event),
-            'error' => $exception->getMessage()
+            'error' => $exception->getMessage(),
         ]);
     }
 }

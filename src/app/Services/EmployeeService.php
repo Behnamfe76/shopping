@@ -2,34 +2,33 @@
 
 namespace Fereydooni\Shopping\app\Services;
 
+use Fereydooni\Shopping\app\DTOs\EmployeeDTO;
+use Fereydooni\Shopping\app\Enums\EmployeeStatus;
+use Fereydooni\Shopping\app\Models\Employee;
 use Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeRepositoryInterface;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
-use Fereydooni\Shopping\app\Traits\HasSearchOperations;
-use Fereydooni\Shopping\app\Traits\HasEmployeeOperations;
-use Fereydooni\Shopping\app\Traits\HasEmployeeStatusManagement;
-use Fereydooni\Shopping\app\Traits\HasEmployeePerformanceManagement;
-use Fereydooni\Shopping\app\Traits\HasEmployeeTimeOffManagement;
+use Fereydooni\Shopping\app\Traits\HasEmployeeAnalytics;
 use Fereydooni\Shopping\app\Traits\HasEmployeeBenefitsManagement;
 use Fereydooni\Shopping\app\Traits\HasEmployeeHierarchyManagement;
-use Fereydooni\Shopping\app\Traits\HasEmployeeAnalytics;
-use Fereydooni\Shopping\app\DTOs\EmployeeDTO;
-use Fereydooni\Shopping\app\Models\Employee;
-use Fereydooni\Shopping\app\Enums\EmployeeStatus;
-use Fereydooni\Shopping\app\Enums\EmploymentType;
+use Fereydooni\Shopping\app\Traits\HasEmployeeOperations;
+use Fereydooni\Shopping\app\Traits\HasEmployeePerformanceManagement;
+use Fereydooni\Shopping\app\Traits\HasEmployeeStatusManagement;
+use Fereydooni\Shopping\app\Traits\HasEmployeeTimeOffManagement;
+use Fereydooni\Shopping\app\Traits\HasSearchOperations;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 
 class EmployeeService
 {
     use HasCrudOperations,
-        HasSearchOperations,
-        HasEmployeeOperations,
-        HasEmployeeStatusManagement,
-        HasEmployeePerformanceManagement,
-        HasEmployeeTimeOffManagement,
+        HasEmployeeAnalytics,
         HasEmployeeBenefitsManagement,
         HasEmployeeHierarchyManagement,
-        HasEmployeeAnalytics;
+        HasEmployeeOperations,
+        HasEmployeePerformanceManagement,
+        HasEmployeeStatusManagement,
+        HasEmployeeTimeOffManagement,
+        HasSearchOperations;
 
     public function __construct(
         private EmployeeRepositoryInterface $repository
@@ -43,7 +42,7 @@ class EmployeeService
     {
         $data['status'] = EmployeeStatus::PENDING;
 
-        if (!isset($data['employee_number'])) {
+        if (! isset($data['employee_number'])) {
             $data['employee_number'] = $this->generateEmployeeNumber();
         }
 
@@ -51,7 +50,7 @@ class EmployeeService
 
         Log::info('Employee onboarded', [
             'employee_id' => $employee->id,
-            'employee_number' => $employee->employee_number
+            'employee_number' => $employee->employee_number,
         ]);
 
         return EmployeeDTO::fromModel($employee);
@@ -66,7 +65,7 @@ class EmployeeService
         return $this->activateEmployee($employee);
     }
 
-    public function offboardEmployee(Employee $employee, string $reason = null): bool
+    public function offboardEmployee(Employee $employee, ?string $reason = null): bool
     {
         return $this->terminateEmployee($employee, $reason);
     }
@@ -92,25 +91,25 @@ class EmployeeService
     }
 
     // Salary and compensation management
-    public function updateSalary(Employee $employee, float $newSalary, string $effectiveDate = null): bool
+    public function updateSalary(Employee $employee, float $newSalary, ?string $effectiveDate = null): bool
     {
         return $this->repository->updateSalary($employee, $newSalary, $effectiveDate);
     }
 
-    public function updatePosition(Employee $employee, string $newPosition, string $effectiveDate = null): bool
+    public function updatePosition(Employee $employee, string $newPosition, ?string $effectiveDate = null): bool
     {
         return $this->repository->updatePosition($employee, $newPosition, $effectiveDate);
     }
 
-    public function updateDepartment(Employee $employee, string $newDepartment, string $effectiveDate = null): bool
+    public function updateDepartment(Employee $employee, string $newDepartment, ?string $effectiveDate = null): bool
     {
         return $this->repository->updateDepartment($employee, $newDepartment, $effectiveDate);
     }
 
     // Performance management
-    public function updatePerformanceRating(Employee $employee, float $rating, string $reviewDate = null): bool
+    public function updatePerformanceRating(Employee $employee, float $rating, ?string $reviewDate = null): bool
     {
-        if (!$this->isValidPerformanceRating($rating)) {
+        if (! $this->isValidPerformanceRating($rating)) {
             return false;
         }
 
@@ -123,13 +122,13 @@ class EmployeeService
     }
 
     // Time-off management
-    public function requestTimeOff(Employee $employee, string $type, int $days, string $startDate, string $endDate, string $reason = null): bool
+    public function requestTimeOff(Employee $employee, string $type, int $days, string $startDate, string $endDate, ?string $reason = null): bool
     {
-        if ($type === 'vacation' && !$this->hasVacationDaysAvailable($employee, $days)) {
+        if ($type === 'vacation' && ! $this->hasVacationDaysAvailable($employee, $days)) {
             return false;
         }
 
-        if ($type === 'sick' && !$this->hasSickDaysAvailable($employee, $days)) {
+        if ($type === 'sick' && ! $this->hasSickDaysAvailable($employee, $days)) {
             return false;
         }
 
@@ -158,11 +157,11 @@ class EmployeeService
             'average_salary' => $this->getAverageSalary(),
             'employees_needing_reviews' => $this->getEmployeesNeedingReviews()->count(),
             'employees_with_low_vacation' => $this->getEmployeesWithLowVacationDays(5)->count(),
-            'top_performers' => $this->getTopPerformers(5)->toArray()
+            'top_performers' => $this->getTopPerformers(5)->toArray(),
         ];
     }
 
-    public function generateEmployeeReport(string $department = null, string $period = 'current'): array
+    public function generateEmployeeReport(?string $department = null, string $period = 'current'): array
     {
         return $this->generateComprehensiveAnalyticsReport($department, $period);
     }
@@ -172,7 +171,7 @@ class EmployeeService
     {
         $validation = $this->validateHierarchyAssignment($employee, $managerId);
 
-        if (!$validation['valid']) {
+        if (! $validation['valid']) {
             return false;
         }
 
@@ -231,7 +230,7 @@ class EmployeeService
             $recommendations[] = 'Encourage vacation usage to prevent burnout';
         }
 
-        if (!$employee->skills || count($employee->skills) < 3) {
+        if (! $employee->skills || count($employee->skills) < 3) {
             $recommendations[] = 'Provide training and skill development opportunities';
         }
 
@@ -244,7 +243,7 @@ class EmployeeService
         Log::info('Employee notification sent', [
             'employee_id' => $employee->id,
             'type' => $type,
-            'message' => $message
+            'message' => $message,
         ]);
 
         return true;
@@ -255,7 +254,7 @@ class EmployeeService
         $results = [
             'total_employees' => $employees->count(),
             'successful_sends' => 0,
-            'failed_sends' => 0
+            'failed_sends' => 0,
         ];
 
         foreach ($employees as $employee) {

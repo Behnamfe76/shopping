@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\App\Notifications\ProviderPayment;
 
+use Fereydooni\Shopping\App\Models\ProviderPayment;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Fereydooni\Shopping\App\Models\ProviderPayment;
 
 class PaymentFailed extends Notification implements ShouldQueue
 {
@@ -43,12 +43,12 @@ class PaymentFailed extends Notification implements ShouldQueue
             ->greeting('Hello!')
             ->line('Your provider payment has failed.')
             ->line('Payment Details:')
-            ->line('Payment Number: ' . $this->payment->payment_number)
-            ->line('Amount: ' . $this->payment->currency . ' ' . number_format($this->payment->amount, 2))
-            ->line('Payment Method: ' . $this->payment->payment_method)
-            ->line('Status: ' . ucfirst($this->payment->status))
+            ->line('Payment Number: '.$this->payment->payment_number)
+            ->line('Amount: '.$this->payment->currency.' '.number_format($this->payment->amount, 2))
+            ->line('Payment Method: '.$this->payment->payment_method)
+            ->line('Status: '.ucfirst($this->payment->status))
             ->line('Please contact support for assistance.')
-            ->action('View Payment', url('/provider-payments/' . $this->payment->id))
+            ->action('View Payment', url('/provider-payments/'.$this->payment->id))
             ->line('Thank you for using our application!');
     }
 
@@ -66,7 +66,7 @@ class PaymentFailed extends Notification implements ShouldQueue
             'payment_method' => $this->payment->payment_method,
             'status' => $this->payment->status,
             'type' => 'payment_failed',
-            'message' => 'Provider payment failed: ' . $this->payment->payment_number
+            'message' => 'Provider payment failed: '.$this->payment->payment_number,
         ];
     }
 }

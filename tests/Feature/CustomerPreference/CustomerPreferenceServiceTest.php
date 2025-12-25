@@ -2,23 +2,24 @@
 
 namespace Tests\Feature\CustomerPreference;
 
-use Tests\TestCase;
-use Fereydooni\Shopping\app\Models\CustomerPreference;
 use Fereydooni\Shopping\app\Models\Customer;
+use Fereydooni\Shopping\app\Models\CustomerPreference;
 use Fereydooni\Shopping\app\Services\CustomerPreferenceService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class CustomerPreferenceServiceTest extends TestCase
 {
     use RefreshDatabase;
 
     protected Customer $customer;
+
     protected CustomerPreferenceService $service;
 
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->customer = Customer::factory()->create();
         $this->service = app(CustomerPreferenceService::class);
     }
@@ -107,7 +108,7 @@ class CustomerPreferenceServiceTest extends TestCase
         $result = $this->service->initializeCustomerPreferences($this->customer->id);
 
         $this->assertTrue($result);
-        
+
         // Check that default preferences were created
         $this->assertDatabaseHas('customer_preferences', [
             'customer_id' => $this->customer->id,
@@ -271,4 +272,3 @@ class CustomerPreferenceServiceTest extends TestCase
         $this->assertArrayHasKey('ui.language', $uiPreferences);
     }
 }
-

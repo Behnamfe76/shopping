@@ -2,95 +2,93 @@
 
 namespace Fereydooni\Shopping\app\DTOs;
 
-use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Attributes\Validation\Required;
-use Spatie\LaravelData\Attributes\Validation\Numeric;
-use Spatie\LaravelData\Attributes\Validation\Min;
-use Spatie\LaravelData\Attributes\Validation\Max;
-use Spatie\LaravelData\Attributes\Validation\Date;
-use Spatie\LaravelData\Attributes\Validation\After;
-use Spatie\LaravelData\Attributes\Validation\Before;
-use Spatie\LaravelData\Attributes\Validation\Boolean;
-use Spatie\LaravelData\Attributes\Validation\Integer;
-use Spatie\LaravelData\Attributes\Validation\Nullable;
-use Spatie\LaravelData\Attributes\Validation\StringType;
-use Spatie\LaravelData\Attributes\Validation\In;
-use Spatie\LaravelData\Attributes\Validation\Json;
-use Spatie\LaravelData\Attributes\WithTransformer;
-use Spatie\LaravelData\Transformers\DateTimeTransformer;
+use Carbon\Carbon;
 use Fereydooni\Shopping\app\Enums\DiscountType;
 use Fereydooni\Shopping\app\Models\ProductDiscount;
-use Carbon\Carbon;
+use Spatie\LaravelData\Attributes\Validation\After;
+use Spatie\LaravelData\Attributes\Validation\Boolean;
+use Spatie\LaravelData\Attributes\Validation\Date;
+use Spatie\LaravelData\Attributes\Validation\In;
+use Spatie\LaravelData\Attributes\Validation\Integer;
+use Spatie\LaravelData\Attributes\Validation\Json;
+use Spatie\LaravelData\Attributes\Validation\Max;
+use Spatie\LaravelData\Attributes\Validation\Min;
+use Spatie\LaravelData\Attributes\Validation\Nullable;
+use Spatie\LaravelData\Attributes\Validation\Numeric;
+use Spatie\LaravelData\Attributes\Validation\Required;
+use Spatie\LaravelData\Attributes\Validation\StringType;
+use Spatie\LaravelData\Attributes\WithTransformer;
+use Spatie\LaravelData\Data;
+use Spatie\LaravelData\Transformers\DateTimeTransformer;
 
 class ProductDiscountDTO extends Data
 {
     public function __construct(
         #[Required, Integer, Min(1)]
         public int $product_id,
-        
+
         #[Required, StringType, In(['percent', 'fixed'])]
         public DiscountType $discount_type,
-        
+
         #[Required, Numeric, Min(0)]
         public float $amount,
-        
+
         #[Required, Date]
         public Carbon $start_date,
-        
+
         #[Required, Date, After('start_date')]
         public Carbon $end_date,
-        
+
         #[Boolean]
         public bool $is_active = true,
-        
+
         #[Nullable, Integer, Min(1)]
         public ?int $minimum_quantity = null,
-        
+
         #[Nullable, Integer, Min(1)]
         public ?int $maximum_quantity = null,
-        
+
         #[Nullable, Numeric, Min(0)]
         public ?float $minimum_amount = null,
-        
+
         #[Nullable, Numeric, Min(0)]
         public ?float $maximum_discount = null,
-        
+
         #[Nullable, Integer, Min(1)]
         public ?int $usage_limit = null,
-        
+
         #[Integer, Min(0)]
         public int $used_count = 0,
-        
+
         #[Boolean]
         public bool $is_first_time_only = false,
-        
+
         #[Boolean]
         public bool $is_cumulative = false,
-        
+
         #[Integer, Min(1), Max(100)]
         public int $priority = 1,
-        
+
         #[Nullable, StringType, Max(1000)]
         public ?string $description = null,
-        
+
         #[Nullable, Json]
         public ?array $conditions = null,
-        
+
         #[Nullable, Integer]
         public ?int $created_by = null,
-        
+
         #[Nullable, Integer]
         public ?int $updated_by = null,
-        
+
         #[WithTransformer(DateTimeTransformer::class)]
         public ?Carbon $created_at = null,
-        
+
         #[WithTransformer(DateTimeTransformer::class)]
         public ?Carbon $updated_at = null,
-        
+
         public ?int $id = null,
-    ) {
-    }
+    ) {}
 
     public static function fromModel(ProductDiscount $discount): self
     {
@@ -171,8 +169,8 @@ class ProductDiscountDTO extends Data
 
     public function isActive(): bool
     {
-        return $this->is_active && 
-               $this->start_date->isPast() && 
+        return $this->is_active &&
+               $this->start_date->isPast() &&
                $this->end_date->isFuture();
     }
 
@@ -188,7 +186,7 @@ class ProductDiscountDTO extends Data
 
     public function isCurrent(): bool
     {
-        return $this->isActive() && !$this->isExpired() && !$this->isUpcoming();
+        return $this->isActive() && ! $this->isExpired() && ! $this->isUpcoming();
     }
 
     public function hasReachedUsageLimit(): bool
@@ -198,7 +196,7 @@ class ProductDiscountDTO extends Data
 
     public function canBeApplied(float $quantity = 1, float $amount = 0): bool
     {
-        if (!$this->isActive() || $this->hasReachedUsageLimit()) {
+        if (! $this->isActive() || $this->hasReachedUsageLimit()) {
             return false;
         }
 
@@ -219,11 +217,11 @@ class ProductDiscountDTO extends Data
 
     public function calculateDiscount(float $originalPrice, float $quantity = 1): float
     {
-        if (!$this->canBeApplied($quantity, $originalPrice * $quantity)) {
+        if (! $this->canBeApplied($quantity, $originalPrice * $quantity)) {
             return 0;
         }
 
-        $discountAmount = match($this->discount_type) {
+        $discountAmount = match ($this->discount_type) {
             DiscountType::PERCENT => ($originalPrice * $this->amount / 100) * $quantity,
             DiscountType::FIXED => $this->amount * $quantity,
         };
@@ -243,6 +241,7 @@ class ProductDiscountDTO extends Data
     public function getFinalPrice(float $originalPrice, float $quantity = 1): float
     {
         $discount = $this->calculateDiscount($originalPrice, $quantity);
+
         return round(($originalPrice * $quantity) - $discount, 2);
     }
 }

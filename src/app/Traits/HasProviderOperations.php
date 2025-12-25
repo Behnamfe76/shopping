@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\App\Traits;
 
+use Fereydooni\Shopping\App\DTOs\ProviderDTO;
+use Fereydooni\Shopping\App\Models\Provider;
+use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Fereydooni\Shopping\App\Models\Provider;
-use Fereydooni\Shopping\App\DTOs\ProviderDTO;
-use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderRepositoryInterface;
 
 trait HasProviderOperations
 {

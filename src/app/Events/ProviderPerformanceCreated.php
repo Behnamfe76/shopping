@@ -5,7 +5,6 @@ namespace App\Events;
 use App\Models\ProviderPerformance;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -17,8 +16,11 @@ class ProviderPerformanceCreated implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $providerPerformance;
+
     public $user;
+
     public $timestamp;
+
     public $calculatedMetrics;
 
     /**
@@ -52,7 +54,7 @@ class ProviderPerformanceCreated implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('provider-performance.' . $this->providerPerformance->provider_id),
+            new PrivateChannel('provider-performance.'.$this->providerPerformance->provider_id),
             new PrivateChannel('admin.provider-performance'),
             new Channel('provider-performance-updates'),
         ];
@@ -159,8 +161,8 @@ class ProviderPerformanceCreated implements ShouldBroadcast
     {
         return [
             'provider_performance',
-            'provider_' . $this->providerPerformance->provider_id,
-            'performance_' . $this->providerPerformance->id,
+            'provider_'.$this->providerPerformance->provider_id,
+            'performance_'.$this->providerPerformance->id,
             'event_created',
         ];
     }
@@ -199,7 +201,7 @@ class ProviderPerformanceCreated implements ShouldBroadcast
      */
     public function uniqueId(): string
     {
-        return 'provider_performance_created_' . $this->providerPerformance->id;
+        return 'provider_performance_created_'.$this->providerPerformance->id;
     }
 
     /**

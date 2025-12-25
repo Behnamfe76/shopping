@@ -2,25 +2,27 @@
 
 namespace Tests\Feature\CustomerPreference;
 
-use Tests\TestCase;
-use Fereydooni\Shopping\app\Models\CustomerPreference;
 use Fereydooni\Shopping\app\Models\Customer;
+use Fereydooni\Shopping\app\Models\CustomerPreference;
 use Fereydooni\Shopping\app\Services\CustomerPreferenceService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Tests\TestCase;
 
 class CustomerPreferenceControllerTest extends TestCase
 {
     use RefreshDatabase, WithFaker;
 
     protected Customer $customer;
+
     protected CustomerPreference $preference;
+
     protected CustomerPreferenceService $service;
 
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->customer = Customer::factory()->create();
         $this->preference = CustomerPreference::factory()->create([
             'customer_id' => $this->customer->id,
@@ -45,8 +47,8 @@ class CustomerPreferenceControllerTest extends TestCase
                         'is_active',
                         'created_at',
                         'updated_at',
-                    ]
-                ]
+                    ],
+                ],
             ]);
     }
 
@@ -74,7 +76,7 @@ class CustomerPreferenceControllerTest extends TestCase
                     'preference_value',
                     'preference_type',
                     'is_active',
-                ]
+                ],
             ]);
 
         $this->assertDatabaseHas('customer_preferences', [
@@ -98,7 +100,7 @@ class CustomerPreferenceControllerTest extends TestCase
                     'preference_value',
                     'preference_type',
                     'is_active',
-                ]
+                ],
             ]);
     }
 
@@ -119,7 +121,7 @@ class CustomerPreferenceControllerTest extends TestCase
                     'id',
                     'preference_value',
                     'description',
-                ]
+                ],
             ]);
 
         $this->assertDatabaseHas('customer_preferences', [
@@ -135,7 +137,7 @@ class CustomerPreferenceControllerTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJson([
-                'message' => 'Customer preference deleted successfully'
+                'message' => 'Customer preference deleted successfully',
             ]);
 
         $this->assertDatabaseMissing('customer_preferences', [
@@ -152,7 +154,7 @@ class CustomerPreferenceControllerTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJson([
-                'message' => 'Customer preference activated successfully'
+                'message' => 'Customer preference activated successfully',
             ]);
 
         $this->assertDatabaseHas('customer_preferences', [
@@ -170,7 +172,7 @@ class CustomerPreferenceControllerTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJson([
-                'message' => 'Customer preference deactivated successfully'
+                'message' => 'Customer preference deactivated successfully',
             ]);
 
         $this->assertDatabaseHas('customer_preferences', [
@@ -192,8 +194,8 @@ class CustomerPreferenceControllerTest extends TestCase
                         'value',
                         'type',
                         'description',
-                    ]
-                ]
+                    ],
+                ],
             ]);
     }
 
@@ -211,7 +213,7 @@ class CustomerPreferenceControllerTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJson([
-                'message' => 'Customer preference set successfully'
+                'message' => 'Customer preference set successfully',
             ]);
 
         $this->assertDatabaseHas('customer_preferences', [
@@ -237,7 +239,7 @@ class CustomerPreferenceControllerTest extends TestCase
                 'data' => [
                     'key',
                     'value',
-                ]
+                ],
             ]);
     }
 
@@ -259,7 +261,7 @@ class CustomerPreferenceControllerTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJson([
-                'message' => 'Customer preference updated successfully'
+                'message' => 'Customer preference updated successfully',
             ]);
 
         $this->assertDatabaseHas('customer_preferences', [
@@ -281,7 +283,7 @@ class CustomerPreferenceControllerTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJson([
-                'message' => 'Customer preference removed successfully'
+                'message' => 'Customer preference removed successfully',
             ]);
 
         $this->assertDatabaseMissing('customer_preferences', [
@@ -300,7 +302,7 @@ class CustomerPreferenceControllerTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJson([
-                'message' => 'Customer preferences reset successfully'
+                'message' => 'Customer preferences reset successfully',
             ]);
 
         $this->assertDatabaseMissing('customer_preferences', [
@@ -332,7 +334,7 @@ class CustomerPreferenceControllerTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJson([
-                'message' => 'Customer preferences imported successfully'
+                'message' => 'Customer preferences imported successfully',
             ]);
 
         $this->assertDatabaseHas('customer_preferences', [
@@ -363,8 +365,8 @@ class CustomerPreferenceControllerTest extends TestCase
                         'type',
                         'description',
                         'is_active',
-                    ]
-                ]
+                    ],
+                ],
             ]);
     }
 
@@ -396,7 +398,7 @@ class CustomerPreferenceControllerTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJson([
-                'message' => 'Customer preferences synced successfully'
+                'message' => 'Customer preferences synced successfully',
             ]);
 
         $this->assertDatabaseHas('customer_preferences', [
@@ -429,8 +431,8 @@ class CustomerPreferenceControllerTest extends TestCase
                         'id',
                         'preference_key',
                         'preference_value',
-                    ]
-                ]
+                    ],
+                ],
             ]);
     }
 
@@ -449,7 +451,7 @@ class CustomerPreferenceControllerTest extends TestCase
                     'total_preferences',
                     'active_preferences',
                     'inactive_preferences',
-                ]
+                ],
             ]);
     }
 
@@ -471,7 +473,7 @@ class CustomerPreferenceControllerTest extends TestCase
                     'inactive_preferences',
                     'preferences_by_category',
                     'preferences_by_type',
-                ]
+                ],
             ]);
     }
 
@@ -482,7 +484,7 @@ class CustomerPreferenceControllerTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJson([
-                'message' => 'Customer preferences initialized successfully'
+                'message' => 'Customer preferences initialized successfully',
             ]);
 
         // Check that default preferences were created
@@ -504,7 +506,7 @@ class CustomerPreferenceControllerTest extends TestCase
                     'notifications',
                     'privacy',
                     'shopping',
-                ]
+                ],
             ]);
     }
 
@@ -519,7 +521,7 @@ class CustomerPreferenceControllerTest extends TestCase
 
         $response->assertStatus(200)
             ->assertJson([
-                'message' => 'Preference template applied successfully'
+                'message' => 'Preference template applied successfully',
             ]);
 
         // Check that UI template preferences were created
@@ -574,8 +576,7 @@ class CustomerPreferenceControllerTest extends TestCase
 
         $response->assertStatus(404)
             ->assertJson([
-                'message' => 'Customer preference not found'
+                'message' => 'Customer preference not found',
             ]);
     }
 }
-

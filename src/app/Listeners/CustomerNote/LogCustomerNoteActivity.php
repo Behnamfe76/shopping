@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\app\Listeners\CustomerNote;
 
+use Fereydooni\Shopping\app\Events\CustomerNote\CustomerNoteCreated;
+use Fereydooni\Shopping\app\Events\CustomerNote\CustomerNoteDeleted;
+use Fereydooni\Shopping\app\Events\CustomerNote\CustomerNoteUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
-use Fereydooni\Shopping\app\Events\CustomerNote\CustomerNoteCreated;
-use Fereydooni\Shopping\app\Events\CustomerNote\CustomerNoteUpdated;
-use Fereydooni\Shopping\app\Events\CustomerNote\CustomerNoteDeleted;
 
 class LogCustomerNoteActivity implements ShouldQueue
 {
@@ -18,7 +18,7 @@ class LogCustomerNoteActivity implements ShouldQueue
      */
     public function handle(CustomerNoteCreated|CustomerNoteUpdated|CustomerNoteDeleted $event): void
     {
-        $action = match(true) {
+        $action = match (true) {
             $event instanceof CustomerNoteCreated => 'created',
             $event instanceof CustomerNoteUpdated => 'updated',
             $event instanceof CustomerNoteDeleted => 'deleted',

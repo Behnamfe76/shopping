@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
-use Illuminate\Database\Eloquent\Collection;
-use Fereydooni\Shopping\app\Models\EmployeeDepartment;
 use Fereydooni\Shopping\app\DTOs\EmployeeDepartmentDTO;
 use Fereydooni\Shopping\app\Enums\DepartmentStatus;
+use Fereydooni\Shopping\app\Models\EmployeeDepartment;
 use Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeDepartmentRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
 
 trait HasEmployeeDepartmentStatusManagement
 {
@@ -275,6 +275,6 @@ trait HasEmployeeDepartmentStatusManagement
      */
     public function getOperationalDepartmentsDTO(): Collection
     {
-        return $this->getOperationalDepartments()->map(fn($dept) => EmployeeDepartmentDTO::fromModel($dept));
+        return $this->getOperationalDepartments()->map(fn ($dept) => EmployeeDepartmentDTO::fromModel($dept));
     }
 }

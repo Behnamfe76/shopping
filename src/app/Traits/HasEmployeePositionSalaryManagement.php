@@ -4,9 +4,9 @@ namespace App\Traits;
 
 use App\Models\EmployeePosition;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 trait HasEmployeePositionSalaryManagement
 {
@@ -22,7 +22,7 @@ trait HasEmployeePositionSalaryManagement
 
             $position->update([
                 'salary_min' => $minSalary,
-                'salary_max' => $maxSalary
+                'salary_max' => $maxSalary,
             ]);
 
             // Clear cache
@@ -35,7 +35,7 @@ trait HasEmployeePositionSalaryManagement
                 'old_max' => $position->getOriginal('salary_max'),
                 'new_min' => $minSalary,
                 'new_max' => $maxSalary,
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return true;
@@ -44,8 +44,9 @@ trait HasEmployeePositionSalaryManagement
                 'error' => $e->getMessage(),
                 'position_id' => $position->id,
                 'min_salary' => $minSalary,
-                'max_salary' => $maxSalary
+                'max_salary' => $maxSalary,
             ]);
+
             return false;
         }
     }
@@ -62,7 +63,7 @@ trait HasEmployeePositionSalaryManagement
 
             $position->update([
                 'hourly_rate_min' => $minRate,
-                'hourly_rate_max' => $maxRate
+                'hourly_rate_max' => $maxRate,
             ]);
 
             // Clear cache
@@ -75,7 +76,7 @@ trait HasEmployeePositionSalaryManagement
                 'old_max' => $position->getOriginal('hourly_rate_max'),
                 'new_min' => $minRate,
                 'new_max' => $maxRate,
-                'user_id' => auth()->id()
+                'user_id' => auth()->id(),
             ]);
 
             return true;
@@ -84,8 +85,9 @@ trait HasEmployeePositionSalaryManagement
                 'error' => $e->getMessage(),
                 'position_id' => $position->id,
                 'min_rate' => $minRate,
-                'max_rate' => $maxRate
+                'max_rate' => $maxRate,
             ]);
+
             return false;
         }
     }
@@ -159,7 +161,7 @@ trait HasEmployeePositionSalaryManagement
             'min' => $position->salary_min,
             'max' => $position->salary_max,
             'mid' => ($position->salary_min + $position->salary_max) / 2,
-            'range' => $position->salary_max - $position->salary_min
+            'range' => $position->salary_max - $position->salary_min,
         ];
     }
 
@@ -172,7 +174,7 @@ trait HasEmployeePositionSalaryManagement
             'min' => $position->hourly_rate_min,
             'max' => $position->hourly_rate_max,
             'mid' => ($position->hourly_rate_min + $position->hourly_rate_max) / 2,
-            'range' => $position->hourly_rate_max - $position->hourly_rate_min
+            'range' => $position->hourly_rate_max - $position->hourly_rate_min,
         ];
     }
 
@@ -195,7 +197,7 @@ trait HasEmployeePositionSalaryManagement
                 'vs_department' => $departmentAvg > 0 ? (($positionMid - $departmentAvg) / $departmentAvg) * 100 : 0,
                 'vs_level' => $levelAvg > 0 ? (($positionMid - $levelAvg) / $levelAvg) * 100 : 0,
                 'market_position' => $this->getMarketPosition($positionMid, $departmentAvg, $levelAvg),
-                'recommendations' => $this->getSalaryRecommendations($position, $departmentAvg, $levelAvg)
+                'recommendations' => $this->getSalaryRecommendations($position, $departmentAvg, $levelAvg),
             ];
         });
     }

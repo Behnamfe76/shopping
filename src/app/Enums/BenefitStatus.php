@@ -11,7 +11,7 @@ enum BenefitStatus: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::ENROLLED => 'Enrolled',
             self::PENDING => 'Pending',
             self::TERMINATED => 'Terminated',
@@ -21,7 +21,7 @@ enum BenefitStatus: string
 
     public function description(): string
     {
-        return match($this) {
+        return match ($this) {
             self::ENROLLED => 'Employee is actively enrolled and receiving benefits',
             self::PENDING => 'Enrollment is pending approval or processing',
             self::TERMINATED => 'Benefits have been terminated',
@@ -58,8 +58,8 @@ enum BenefitStatus: string
     {
         return array_reduce(self::cases(), function ($carry, $case) {
             $carry[$case->value] = $case->label();
+
             return $carry;
         }, []);
     }
 }
-

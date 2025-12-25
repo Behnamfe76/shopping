@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\app\Listeners\CustomerCommunication;
 
+use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationBounced;
+use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationClicked;
+use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationOpened;
+use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationUnsubscribed;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationOpened;
-use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationClicked;
-use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationBounced;
-use Fereydooni\Shopping\app\Events\CustomerCommunication\CustomerCommunicationUnsubscribed;
 
 class TriggerFollowUpCommunication implements ShouldQueue
 {
@@ -19,7 +19,7 @@ class TriggerFollowUpCommunication implements ShouldQueue
     public function handle($event): void
     {
         $communication = $event->communication;
-        
+
         // Trigger follow-up communications based on event type
         switch (get_class($event)) {
             case CustomerCommunicationOpened::class:

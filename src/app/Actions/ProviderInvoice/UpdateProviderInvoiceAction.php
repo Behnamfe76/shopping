@@ -2,13 +2,13 @@
 
 namespace Fereydooni\Shopping\App\Actions\ProviderInvoice;
 
+use Exception;
 use Fereydooni\Shopping\App\DTOs\ProviderInvoiceDTO;
+use Fereydooni\Shopping\App\Enums\InvoiceStatus;
 use Fereydooni\Shopping\App\Models\ProviderInvoice;
 use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderInvoiceRepositoryInterface;
-use Fereydooni\Shopping\App\Enums\InvoiceStatus;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Exception;
 
 class UpdateProviderInvoiceAction
 {
@@ -25,7 +25,7 @@ class UpdateProviderInvoiceAction
             DB::beginTransaction();
 
             // Check if invoice can be modified
-            if (!$this->canInvoiceBeModified($invoice)) {
+            if (! $this->canInvoiceBeModified($invoice)) {
                 throw new Exception('Invoice cannot be modified in its current status.');
             }
 
@@ -35,7 +35,7 @@ class UpdateProviderInvoiceAction
             // Update invoice
             $result = $this->repository->update($invoice, $data);
 
-            if (!$result) {
+            if (! $result) {
                 throw new Exception('Failed to update invoice.');
             }
 
@@ -64,7 +64,7 @@ class UpdateProviderInvoiceAction
             Log::error('Failed to update provider invoice', [
                 'invoice_id' => $invoice->id,
                 'error' => $e->getMessage(),
-                'data' => $data
+                'data' => $data,
             ]);
             throw $e;
         }
@@ -73,6 +73,7 @@ class UpdateProviderInvoiceAction
     protected function canInvoiceBeModified(ProviderInvoice $invoice): bool
     {
         $status = InvoiceStatus::from($invoice->status);
+
         return $status->isEditable();
     }
 
@@ -121,7 +122,7 @@ class UpdateProviderInvoiceAction
         Log::info('Provider invoice status changed', [
             'invoice_id' => $invoice->id,
             'old_status' => $oldStatus,
-            'new_status' => $newStatus
+            'new_status' => $newStatus,
         ]);
     }
 
@@ -150,7 +151,7 @@ class UpdateProviderInvoiceAction
             // Status change notification
             Log::info('Status change notification sent for invoice', [
                 'invoice_id' => $invoice->id,
-                'new_status' => $data['status']
+                'new_status' => $data['status'],
             ]);
         }
 
@@ -158,9 +159,8 @@ class UpdateProviderInvoiceAction
             // Due date change notification
             Log::info('Due date change notification sent for invoice', [
                 'invoice_id' => $invoice->id,
-                'new_due_date' => $data['due_date']
+                'new_due_date' => $data['due_date'],
             ]);
         }
     }
 }
-

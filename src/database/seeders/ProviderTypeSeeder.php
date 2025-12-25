@@ -2,10 +2,10 @@
 
 namespace Fereydooni\Shopping\database\seeders;
 
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 
 class ProviderTypeSeeder extends Seeder
 {
@@ -54,7 +54,7 @@ class ProviderTypeSeeder extends Seeder
         ];
 
         // Check if provider_types table exists, if not create it
-        if (!Schema::hasTable('provider_types')) {
+        if (! Schema::hasTable('provider_types')) {
             Schema::create('provider_types', function (Blueprint $table) {
                 $table->id();
                 $table->string('name')->unique();

@@ -3,10 +3,10 @@
 namespace Fereydooni\Shopping\app\Actions\ProviderNote;
 
 use Fereydooni\Shopping\app\DTOs\ProviderNoteDTO;
-use Fereydooni\Shopping\app\Repositories\Interfaces\ProviderNoteRepositoryInterface;
 use Fereydooni\Shopping\app\Models\ProviderNote;
-use Illuminate\Support\Facades\Validator;
+use Fereydooni\Shopping\app\Repositories\Interfaces\ProviderNoteRepositoryInterface;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class UpdateProviderNoteAction
 {
@@ -34,7 +34,7 @@ class UpdateProviderNoteAction
 
         try {
             // Check if note can be modified
-            if (!$this->canModifyNote($providerNote)) {
+            if (! $this->canModifyNote($providerNote)) {
                 throw new \Exception('Provider note cannot be modified');
             }
 
@@ -51,7 +51,7 @@ class UpdateProviderNoteAction
             // Update the provider note
             $providerNoteDTO = $this->providerNoteRepository->updateAndReturnDTO($providerNote, $data);
 
-            if (!$providerNoteDTO) {
+            if (! $providerNoteDTO) {
                 throw new \Exception('Failed to update provider note');
             }
 
@@ -93,6 +93,7 @@ class UpdateProviderNoteAction
         // Clean and validate tags
         $processedTags = array_map(function ($tag) {
             $tag = trim($tag);
+
             return strlen($tag) > 0 ? $tag : null;
         }, $tags);
 
@@ -110,6 +111,7 @@ class UpdateProviderNoteAction
             if (is_string($attachment) && file_exists($attachment)) {
                 return $attachment;
             }
+
             return null;
         }, $attachments);
 

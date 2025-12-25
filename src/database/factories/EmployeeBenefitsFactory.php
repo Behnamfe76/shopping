@@ -2,12 +2,12 @@
 
 namespace Fereydooni\Shopping\database\factories;
 
-use Fereydooni\Shopping\app\Models\EmployeeBenefits;
-use Fereydooni\Shopping\app\Models\Employee;
-use Fereydooni\Shopping\app\Enums\BenefitType;
 use Fereydooni\Shopping\app\Enums\BenefitStatus;
+use Fereydooni\Shopping\app\Enums\BenefitType;
 use Fereydooni\Shopping\app\Enums\CoverageLevel;
 use Fereydooni\Shopping\app\Enums\NetworkType;
+use Fereydooni\Shopping\app\Models\Employee;
+use Fereydooni\Shopping\app\Models\EmployeeBenefits;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class EmployeeBenefitsFactory extends Factory
@@ -70,7 +70,7 @@ class EmployeeBenefitsFactory extends Factory
                     'Aetna HMO',
                     'UnitedHealthcare EPO',
                     'Cigna POS',
-                    'Kaiser Permanente HMO'
+                    'Kaiser Permanente HMO',
                 ]),
                 'deductible' => $this->faker->randomFloat(2, 500, 5000),
                 'co_pay' => $this->faker->randomFloat(2, 15, 50),
@@ -93,7 +93,7 @@ class EmployeeBenefitsFactory extends Factory
                     'MetLife Dental',
                     'Aetna Dental',
                     'Cigna Dental',
-                    'Humana Dental'
+                    'Humana Dental',
                 ]),
                 'deductible' => $this->faker->randomFloat(2, 50, 200),
                 'co_pay' => $this->faker->randomFloat(2, 5, 25),
@@ -116,7 +116,7 @@ class EmployeeBenefitsFactory extends Factory
                     'EyeMed Vision',
                     'Davis Vision',
                     'Superior Vision',
-                    'Anthem Vision'
+                    'Anthem Vision',
                 ]),
                 'deductible' => $this->faker->randomFloat(2, 0, 50),
                 'co_pay' => $this->faker->randomFloat(2, 10, 35),
@@ -161,6 +161,7 @@ class EmployeeBenefitsFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             $effectiveDate = $this->faker->dateTimeBetween('-1 year', '-3 months');
+
             return [
                 'status' => 'terminated',
                 'is_active' => false,
@@ -233,6 +234,7 @@ class EmployeeBenefitsFactory extends Factory
         ];
 
         $typeNames = $names[$benefitType] ?? $names['other'];
+
         return $this->faker->randomElement($typeNames);
     }
 
@@ -252,6 +254,7 @@ class EmployeeBenefitsFactory extends Factory
         ];
 
         $typeProviders = $providers[$benefitType] ?? $providers['other'];
+
         return $this->faker->randomElement($typeProviders);
     }
 
@@ -381,4 +384,4 @@ class EmployeeBenefitsFactory extends Factory
 
         return $this->faker->randomElements($documents, $count);
     }
-};
+}

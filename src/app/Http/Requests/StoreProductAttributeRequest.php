@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Fereydooni\Shopping\app\Enums\ProductAttributeType;
 use Fereydooni\Shopping\app\Enums\ProductAttributeInputType;
+use Fereydooni\Shopping\app\Enums\ProductAttributeType;
+use Illuminate\Foundation\Http\FormRequest;
 
 class StoreProductAttributeRequest extends FormRequest
 {
@@ -25,8 +25,8 @@ class StoreProductAttributeRequest extends FormRequest
             'name' => 'required|string|max:255',
             'slug' => 'nullable|string|max:255|regex:/^[a-z0-9-]+$/|unique:product_attributes,slug',
             'description' => 'nullable|string|max:1000',
-            'type' => 'required|string|in:' . implode(',', array_column(ProductAttributeType::cases(), 'value')),
-            'input_type' => 'required|string|in:' . implode(',', array_column(ProductAttributeInputType::cases(), 'value')),
+            'type' => 'required|string|in:'.implode(',', array_column(ProductAttributeType::cases(), 'value')),
+            'input_type' => 'required|string|in:'.implode(',', array_column(ProductAttributeInputType::cases(), 'value')),
             'is_required' => 'boolean',
             'is_searchable' => 'boolean',
             'is_filterable' => 'boolean',
@@ -114,9 +114,9 @@ class StoreProductAttributeRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         // Generate slug if not provided
-        if (!$this->has('slug') && $this->has('name')) {
+        if (! $this->has('slug') && $this->has('name')) {
             $this->merge([
-                'slug' => \Illuminate\Support\Str::slug($this->name)
+                'slug' => \Illuminate\Support\Str::slug($this->name),
             ]);
         }
 
@@ -133,4 +133,3 @@ class StoreProductAttributeRequest extends FormRequest
         ]);
     }
 }
-

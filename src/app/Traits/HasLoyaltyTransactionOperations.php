@@ -2,13 +2,12 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
+use Fereydooni\Shopping\app\DTOs\LoyaltyTransactionDTO;
+use Fereydooni\Shopping\app\Enums\LoyaltyReferenceType;
+use Fereydooni\Shopping\app\Enums\LoyaltyTransactionStatus;
+use Fereydooni\Shopping\app\Enums\LoyaltyTransactionType;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
-use Fereydooni\Shopping\app\Models\LoyaltyTransaction;
-use Fereydooni\Shopping\app\DTOs\LoyaltyTransactionDTO;
-use Fereydooni\Shopping\app\Enums\LoyaltyTransactionType;
-use Fereydooni\Shopping\app\Enums\LoyaltyTransactionStatus;
-use Fereydooni\Shopping\app\Enums\LoyaltyReferenceType;
 
 trait HasLoyaltyTransactionOperations
 {
@@ -198,12 +197,12 @@ trait HasLoyaltyTransactionOperations
     {
         return $this->model::where(function ($q) use ($query) {
             $q->where('description', 'like', "%{$query}%")
-              ->orWhere('reason', 'like', "%{$query}%")
-              ->orWhereHas('customer', function ($customerQuery) use ($query) {
-                  $customerQuery->where('first_name', 'like', "%{$query}%")
-                               ->orWhere('last_name', 'like', "%{$query}%")
-                               ->orWhere('email', 'like', "%{$query}%");
-              });
+                ->orWhere('reason', 'like', "%{$query}%")
+                ->orWhereHas('customer', function ($customerQuery) use ($query) {
+                    $customerQuery->where('first_name', 'like', "%{$query}%")
+                        ->orWhere('last_name', 'like', "%{$query}%")
+                        ->orWhere('email', 'like', "%{$query}%");
+                });
         })->get();
     }
 
@@ -218,7 +217,7 @@ trait HasLoyaltyTransactionOperations
     {
         return $this->model::byCustomer($customerId)->where(function ($q) use ($query) {
             $q->where('description', 'like', "%{$query}%")
-              ->orWhere('reason', 'like', "%{$query}%");
+                ->orWhere('reason', 'like', "%{$query}%");
         })->get();
     }
 
@@ -294,7 +293,7 @@ trait HasLoyaltyTransactionOperations
     public function getCustomerTransactionSummary(int $customerId): array
     {
         $transactions = $this->model::byCustomer($customerId);
-        
+
         return [
             'total_transactions' => $transactions->count(),
             'total_points_earned' => $transactions->earned()->sum('points'),
@@ -317,7 +316,7 @@ trait HasLoyaltyTransactionOperations
     public function exportCustomerHistory(int $customerId): array
     {
         $transactions = $this->getCustomerTransactionHistory($customerId);
-        
+
         return $transactions->map(function ($transaction) {
             return [
                 'id' => $transaction->id,
@@ -348,6 +347,7 @@ trait HasLoyaltyTransactionOperations
                 $transactionData['customer_id'] = $customerId;
                 $this->create($transactionData);
             }
+
             return true;
         });
     }
@@ -356,7 +356,7 @@ trait HasLoyaltyTransactionOperations
     public function getTransactionAnalytics(int $customerId): array
     {
         $transactions = $this->model::byCustomer($customerId);
-        
+
         return [
             'total_transactions' => $transactions->count(),
             'points_earned' => $transactions->earned()->sum('points'),
@@ -375,7 +375,7 @@ trait HasLoyaltyTransactionOperations
     public function getTransactionAnalyticsByType(LoyaltyTransactionType $type): array
     {
         $transactions = $this->model::byType($type);
-        
+
         return [
             'total_transactions' => $transactions->count(),
             'total_points' => $transactions->sum('points'),
@@ -388,7 +388,7 @@ trait HasLoyaltyTransactionOperations
     public function getTransactionAnalyticsByDateRange(string $startDate, string $endDate): array
     {
         $transactions = $this->model::whereBetween('created_at', [$startDate, $endDate]);
-        
+
         return [
             'total_transactions' => $transactions->count(),
             'total_points' => $transactions->sum('points'),
@@ -402,24 +402,24 @@ trait HasLoyaltyTransactionOperations
     {
         $balance = $this->calculateBalance($customerId);
         $history = $this->getCustomerTransactionHistory($customerId);
-        
+
         $recommendations = [];
-        
+
         if ($balance > 1000) {
             $recommendations[] = 'You have enough points to redeem for rewards!';
         }
-        
+
         if ($history->count() < 5) {
             $recommendations[] = 'Make more purchases to earn more loyalty points!';
         }
-        
+
         return $recommendations;
     }
 
     public function getTransactionInsights(int $customerId): array
     {
         $history = $this->getCustomerTransactionHistory($customerId);
-        
+
         return [
             'total_transactions' => $history->count(),
             'average_points_per_transaction' => $history->avg('points'),
@@ -434,15 +434,15 @@ trait HasLoyaltyTransactionOperations
     public function getTransactionTrends(int $customerId, string $period = 'monthly'): array
     {
         $transactions = $this->model::byCustomer($customerId);
-        
-        $groupBy = match($period) {
+
+        $groupBy = match ($period) {
             'daily' => 'Y-m-d',
             'weekly' => 'Y-W',
             'monthly' => 'Y-m',
             'yearly' => 'Y',
             default => 'Y-m',
         };
-        
+
         return $transactions->get()->groupBy(function ($transaction) use ($groupBy) {
             return $transaction->created_at->format($groupBy);
         })->map(function ($group) {
@@ -458,7 +458,7 @@ trait HasLoyaltyTransactionOperations
     {
         $customer1 = $this->getCustomerTransactionSummary($customerId1);
         $customer2 = $this->getCustomerTransactionSummary($customerId2);
-        
+
         return [
             'customer_1' => $customer1,
             'customer_2' => $customer2,
@@ -474,7 +474,7 @@ trait HasLoyaltyTransactionOperations
     {
         $history = $this->getCustomerTransactionHistory($customerId);
         $averagePointsPerMonth = $history->avg('points') * $history->count() / 12;
-        
+
         return [
             'projected_points_next_month' => $averagePointsPerMonth,
             'projected_balance_next_month' => $this->calculateBalance($customerId) + $averagePointsPerMonth,
@@ -511,15 +511,15 @@ trait HasLoyaltyTransactionOperations
     public function forecastTrends(string $period = 'monthly'): array
     {
         $transactions = $this->model::all();
-        
-        $groupBy = match($period) {
+
+        $groupBy = match ($period) {
             'daily' => 'Y-m-d',
             'weekly' => 'Y-W',
             'monthly' => 'Y-m',
             'yearly' => 'Y',
             default => 'Y-m',
         };
-        
+
         return $transactions->groupBy(function ($transaction) use ($groupBy) {
             return $transaction->created_at->format($groupBy);
         })->map(function ($group) {

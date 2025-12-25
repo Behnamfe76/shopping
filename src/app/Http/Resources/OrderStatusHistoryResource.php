@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Http\Resources;
 
+use Fereydooni\Shopping\app\Models\OrderStatusHistory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Fereydooni\Shopping\app\Models\OrderStatusHistory;
 
 class OrderStatusHistoryResource extends JsonResource
 {
@@ -52,7 +52,7 @@ class OrderStatusHistoryResource extends JsonResource
 
             // Computed fields
             'status_transition_description' => $this->getStatusTransitionDescription(),
-            'is_user_change' => !$this->is_system_change,
+            'is_user_change' => ! $this->is_system_change,
             'change_type_label' => $this->getChangeTypeLabel(),
             'change_category_label' => $this->getChangeCategoryLabel(),
 

@@ -2,15 +2,15 @@
 
 namespace Fereydooni\Shopping;
 
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\ServiceProvider;
 
 class ShoppingServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/config/shopping.php',
+            __DIR__.'/config/shopping.php',
             'shopping'
         );
 
@@ -22,8 +22,6 @@ class ShoppingServiceProvider extends ServiceProvider
         //     \Fereydooni\Shopping\app\Repositories\Interfaces\AddressRepositoryInterface::class,
         //     \Fereydooni\Shopping\app\Repositories\AddressRepository::class
         // );
-
-
 
         // Register Category Repository
         $this->app->bind(
@@ -45,7 +43,6 @@ class ShoppingServiceProvider extends ServiceProvider
             );
         });
 
-
         // Register Brand Repository
         $this->app->bind(
             \Fereydooni\Shopping\app\Repositories\Interfaces\BrandRepositoryInterface::class,
@@ -65,7 +62,6 @@ class ShoppingServiceProvider extends ServiceProvider
                 $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\BrandRepositoryInterface::class)
             );
         });
-
 
         // Register Product Repository
         $this->app->bind(
@@ -113,15 +109,12 @@ class ShoppingServiceProvider extends ServiceProvider
         //     \Fereydooni\Shopping\app\Repositories\OrderRepository::class
         // );
 
-
         // // Register Address Service
         // $this->app->scoped('shopping.address', function ($app) {
         //     return new \Fereydooni\Shopping\app\Services\AddressService(
         //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\AddressRepositoryInterface::class)
         //     );
         // });
-
-
 
         // // Register CustomerSegment Service
         // $this->app->scoped('shopping.customer-segment', function ($app) {
@@ -308,8 +301,6 @@ class ShoppingServiceProvider extends ServiceProvider
         //     return new \Fereydooni\Shopping\app\Services\GeographicDataService();
         // });
 
-
-
         // // Register Order Service
         // $this->app->scoped('shopping.order', function ($app) {
         //     return new \Fereydooni\Shopping\app\Services\OrderService(
@@ -418,7 +409,6 @@ class ShoppingServiceProvider extends ServiceProvider
         //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductDiscountRepositoryInterface::class)
         //     );
         // });
-
 
         // // Register ProductMeta Repository
         // $this->app->bind(
@@ -643,9 +633,9 @@ class ShoppingServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        $this->loadTranslationsFrom(__DIR__ . '/lang');
+        $this->loadTranslationsFrom(__DIR__.'/lang');
 
-        $this->loadMigrationsFrom(__DIR__ . '/database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/database/migrations');
 
         // Load routes conditionally based on configuration
         $this->loadRoutesConditionally();
@@ -662,15 +652,15 @@ class ShoppingServiceProvider extends ServiceProvider
         }
 
         $this->publishes([
-            __DIR__ . '/config/shopping.php' => config_path('shopping.php'),
+            __DIR__.'/config/shopping.php' => config_path('shopping.php'),
         ], 'shopping-config');
 
         $this->publishes([
-            __DIR__ . '/database/migrations' => database_path('migrations'),
+            __DIR__.'/database/migrations' => database_path('migrations'),
         ], 'shopping-migrations');
 
         $this->publishes([
-            __DIR__ . '/database/seeders/' => database_path('seeders/shopping/'),
+            __DIR__.'/database/seeders/' => database_path('seeders/shopping/'),
         ], 'shopping-seeders');
 
         // Register event service provider
@@ -692,12 +682,12 @@ class ShoppingServiceProvider extends ServiceProvider
 
         // Load API routes if enabled
         if ($config['api'] ?? false) {
-            $this->loadRoutesFrom(__DIR__ . '/routes/api.php');
+            $this->loadRoutesFrom(__DIR__.'/routes/api.php');
         }
 
         // Load web routes if enabled
         if ($config['web'] ?? false) {
-            $this->loadRoutesFrom(__DIR__ . '/routes/web.php');
+            $this->loadRoutesFrom(__DIR__.'/routes/web.php');
         }
     }
 
@@ -763,9 +753,9 @@ class ShoppingServiceProvider extends ServiceProvider
         $this->app->alias('shopping.provider-location.facade', \Fereydooni\Shopping\app\Facades\ProviderLocation::class);
 
         // Register ProviderInsurance facade alias
-//        $this->app->alias('shopping.provider-insurance.facade', \Fereydooni\Shopping\app\Facades\ProviderInsurance::class);
-//
-//        // Register ProviderCommunication facade alias
-//        $this->app->alias('shopping.provider-communication.facade', \Fereydooni\Shopping\app\Facades\ProviderCommunication::class);
+        //        $this->app->alias('shopping.provider-insurance.facade', \Fereydooni\Shopping\app\Facades\ProviderInsurance::class);
+        //
+        //        // Register ProviderCommunication facade alias
+        //        $this->app->alias('shopping.provider-communication.facade', \Fereydooni\Shopping\app\Facades\ProviderCommunication::class);
     }
 }

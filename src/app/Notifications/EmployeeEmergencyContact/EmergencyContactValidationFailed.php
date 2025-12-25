@@ -13,6 +13,7 @@ class EmergencyContactValidationFailed extends Notification implements ShouldQue
     use Queueable;
 
     public $contact;
+
     public $errors;
 
     /**
@@ -48,12 +49,12 @@ class EmergencyContactValidationFailed extends Notification implements ShouldQue
             ->greeting("Hello {$employee->first_name},")
             ->line("We've identified some issues with your emergency contact information that need to be addressed.");
 
-        $message->line("**Contact Details:**")
+        $message->line('**Contact Details:**')
             ->line("Name: {$contact->contact_name}")
             ->line("Relationship: {$contact->relationship}");
 
-        if (!empty($errors)) {
-            $message->line("**Validation Issues Found:**");
+        if (! empty($errors)) {
+            $message->line('**Validation Issues Found:**');
             foreach ($errors as $field => $fieldErrors) {
                 $fieldName = ucwords(str_replace('_', ' ', $field));
                 foreach ($fieldErrors as $error) {
@@ -62,14 +63,14 @@ class EmergencyContactValidationFailed extends Notification implements ShouldQue
             }
         }
 
-        $message->line("**Please take the following actions:**")
-            ->line("1. Review the validation issues listed above")
-            ->line("2. Update your emergency contact information with correct details")
-            ->line("3. Ensure all required fields are properly filled")
-            ->line("4. Verify phone numbers and email addresses are valid")
+        $message->line('**Please take the following actions:**')
+            ->line('1. Review the validation issues listed above')
+            ->line('2. Update your emergency contact information with correct details')
+            ->line('3. Ensure all required fields are properly filled')
+            ->line('4. Verify phone numbers and email addresses are valid')
             ->action('Update Your Profile', url('/employee/profile'))
             ->line("**Important:** Having accurate emergency contact information is crucial for your safety and the company's emergency response procedures.")
-            ->line("If you need assistance updating this information, please contact HR.");
+            ->line('If you need assistance updating this information, please contact HR.');
 
         return $message;
     }
@@ -119,8 +120,8 @@ class EmergencyContactValidationFailed extends Notification implements ShouldQue
         return [
             'emergency_contact',
             'validation_failed',
-            'employee_' . $this->contact->employee_id,
-            'contact_' . $this->contact->id,
+            'employee_'.$this->contact->employee_id,
+            'contact_'.$this->contact->id,
         ];
     }
 }

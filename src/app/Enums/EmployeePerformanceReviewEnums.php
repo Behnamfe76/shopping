@@ -145,6 +145,7 @@ enum EmployeePerformanceReviewRating: int
     public static function fromFloat(float $rating): self
     {
         $rounded = round($rating);
+
         return match (true) {
             $rounded <= 1 => self::POOR,
             $rounded <= 2 => self::BELOW_AVERAGE,

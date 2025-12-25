@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\App\Events\ProviderPayment;
 
+use Fereydooni\Shopping\App\Models\ProviderPayment;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Fereydooni\Shopping\App\Models\ProviderPayment;
 
 class ProviderPaymentUpdated
 {

@@ -8,6 +8,7 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 class AddressSearchResource extends ResourceCollection
 {
     private string $query;
+
     private array $searchMetadata;
 
     public function __construct($resource, string $query, array $searchMetadata = [])
@@ -76,7 +77,7 @@ class AddressSearchResource extends ResourceCollection
         $query = strtolower($this->query);
         $searchableFields = [
             'first_name', 'last_name', 'company_name', 'address_line_1',
-            'address_line_2', 'city', 'state', 'postal_code', 'country'
+            'address_line_2', 'city', 'state', 'postal_code', 'country',
         ];
 
         foreach ($searchableFields as $field) {
@@ -94,7 +95,7 @@ class AddressSearchResource extends ResourceCollection
     private function highlightText(string $text, string $query): string
     {
         $highlighted = preg_replace(
-            '/(' . preg_quote($query, '/') . ')/i',
+            '/('.preg_quote($query, '/').')/i',
             '<mark>$1</mark>',
             $text
         );
@@ -123,15 +124,15 @@ class AddressSearchResource extends ResourceCollection
             return str_contains(strtolower($country), $query);
         })->take(5)->toArray();
 
-        if (!empty($cities)) {
+        if (! empty($cities)) {
             $suggestions['cities'] = $cities;
         }
 
-        if (!empty($states)) {
+        if (! empty($states)) {
             $suggestions['states'] = $states;
         }
 
-        if (!empty($countries)) {
+        if (! empty($countries)) {
             $suggestions['countries'] = $countries;
         }
 
@@ -144,6 +145,7 @@ class AddressSearchResource extends ResourceCollection
     private function extractSearchTerms(): array
     {
         $terms = explode(' ', trim($this->query));
+
         return array_filter($terms, function ($term) {
             return strlen($term) >= 2;
         });

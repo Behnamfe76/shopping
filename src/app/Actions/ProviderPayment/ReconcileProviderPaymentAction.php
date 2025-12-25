@@ -2,14 +2,14 @@
 
 namespace Fereydooni\Shopping\App\Actions\ProviderPayment;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Event;
 use Fereydooni\Shopping\App\DTOs\ProviderPaymentDTO;
+use Fereydooni\Shopping\App\Enums\ProviderPaymentStatus;
+use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentReconciled;
 use Fereydooni\Shopping\App\Models\ProviderPayment;
 use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderPaymentRepositoryInterface;
-use Fereydooni\Shopping\App\Events\ProviderPayment\ProviderPaymentReconciled;
-use Fereydooni\Shopping\App\Enums\ProviderPaymentStatus;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
 
 class ReconcileProviderPaymentAction
 {
@@ -20,7 +20,7 @@ class ReconcileProviderPaymentAction
     /**
      * Execute the action to reconcile a provider payment.
      */
-    public function execute(ProviderPayment $payment, string $reconciliationNotes = null): ProviderPaymentDTO
+    public function execute(ProviderPayment $payment, ?string $reconciliationNotes = null): ProviderPaymentDTO
     {
         try {
             DB::beginTransaction();
@@ -34,7 +34,7 @@ class ReconcileProviderPaymentAction
             // Update payment status to reconciled
             $updated = $this->repository->reconcile($payment, $reconciliationNotes);
 
-            if (!$updated) {
+            if (! $updated) {
                 throw new \Exception('Failed to reconcile provider payment');
             }
 
@@ -56,7 +56,7 @@ class ReconcileProviderPaymentAction
                 'payment_id' => $payment->id,
                 'provider_id' => $payment->provider_id,
                 'reconciled_at' => $payment->reconciled_at,
-                'notes' => $reconciliationNotes
+                'notes' => $reconciliationNotes,
             ]);
 
             return ProviderPaymentDTO::fromModel($payment);
@@ -66,7 +66,7 @@ class ReconcileProviderPaymentAction
 
             Log::error('Failed to reconcile provider payment', [
                 'error' => $e->getMessage(),
-                'payment_id' => $payment->id
+                'payment_id' => $payment->id,
             ]);
 
             throw $e;
@@ -118,7 +118,7 @@ class ReconcileProviderPaymentAction
         Log::info('Updating financial records for reconciled payment', [
             'payment_id' => $payment->id,
             'amount' => $payment->amount,
-            'currency' => $payment->currency
+            'currency' => $payment->currency,
         ]);
     }
 
@@ -135,7 +135,7 @@ class ReconcileProviderPaymentAction
 
         Log::info('Sending reconciliation notifications', [
             'payment_id' => $payment->id,
-            'provider_id' => $payment->provider_id
+            'provider_id' => $payment->provider_id,
         ]);
     }
 }

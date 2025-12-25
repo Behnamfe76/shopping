@@ -3,8 +3,6 @@
 namespace Fereydooni\Shopping\app\Traits;
 
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
 
 trait HasTrackingOperations
 {
@@ -75,7 +73,7 @@ trait HasTrackingOperations
     /**
      * Get tracking performance metrics
      */
-    public function getTrackingPerformance(string $carrier = null): array
+    public function getTrackingPerformance(?string $carrier = null): array
     {
         $deliveryPerformance = $this->repository->getDeliveryPerformance($carrier);
         $deliveryTimes = $this->repository->getDeliveryTimes($carrier);
@@ -91,7 +89,7 @@ trait HasTrackingOperations
     /**
      * Calculate tracking accuracy
      */
-    protected function calculateTrackingAccuracy(string $carrier = null): array
+    protected function calculateTrackingAccuracy(?string $carrier = null): array
     {
         // Mock tracking accuracy calculation
         return [
@@ -106,7 +104,7 @@ trait HasTrackingOperations
     /**
      * Get real-time update statistics
      */
-    protected function getRealTimeUpdateStats(string $carrier = null): array
+    protected function getRealTimeUpdateStats(?string $carrier = null): array
     {
         // Mock real-time update stats
         return [
@@ -131,7 +129,7 @@ trait HasTrackingOperations
      */
     public function getTrackingHistory(object $item): array
     {
-        if (!$item->tracking_number) {
+        if (! $item->tracking_number) {
             return [];
         }
 
@@ -143,7 +141,7 @@ trait HasTrackingOperations
      */
     public function isTrackingAvailable(object $item): bool
     {
-        return !empty($item->tracking_number) && !empty($item->carrier);
+        return ! empty($item->tracking_number) && ! empty($item->carrier);
     }
 
     /**
@@ -151,11 +149,12 @@ trait HasTrackingOperations
      */
     public function getTrackingStatus(object $item): string
     {
-        if (!$this->isTrackingAvailable($item)) {
+        if (! $this->isTrackingAvailable($item)) {
             return 'not_available';
         }
 
         $trackingInfo = $this->getTrackingHistory($item);
+
         return $trackingInfo['status'] ?? 'unknown';
     }
 
@@ -164,11 +163,12 @@ trait HasTrackingOperations
      */
     public function getEstimatedDeliveryFromTracking(object $item): ?string
     {
-        if (!$this->isTrackingAvailable($item)) {
+        if (! $this->isTrackingAvailable($item)) {
             return null;
         }
 
         $trackingInfo = $this->getTrackingHistory($item);
+
         return $trackingInfo['estimated_delivery'] ?? null;
     }
 
@@ -177,11 +177,12 @@ trait HasTrackingOperations
      */
     public function getCurrentLocationFromTracking(object $item): ?string
     {
-        if (!$this->isTrackingAvailable($item)) {
+        if (! $this->isTrackingAvailable($item)) {
             return null;
         }
 
         $trackingInfo = $this->getTrackingHistory($item);
+
         return $trackingInfo['current_location'] ?? null;
     }
 
@@ -190,11 +191,12 @@ trait HasTrackingOperations
      */
     public function getTrackingEvents(object $item): array
     {
-        if (!$this->isTrackingAvailable($item)) {
+        if (! $this->isTrackingAvailable($item)) {
             return [];
         }
 
         $trackingInfo = $this->getTrackingHistory($item);
+
         return $trackingInfo['events'] ?? [];
     }
 
@@ -203,12 +205,12 @@ trait HasTrackingOperations
      */
     public function isTrackingOverdue(object $item): bool
     {
-        if (!$this->isTrackingAvailable($item)) {
+        if (! $this->isTrackingAvailable($item)) {
             return false;
         }
 
         $estimatedDelivery = $this->getEstimatedDeliveryFromTracking($item);
-        if (!$estimatedDelivery) {
+        if (! $estimatedDelivery) {
             return false;
         }
 
@@ -230,7 +232,7 @@ trait HasTrackingOperations
             ];
         }
 
-        if (!$this->isTrackingAvailable($item)) {
+        if (! $this->isTrackingAvailable($item)) {
             $alerts[] = [
                 'type' => 'no_tracking',
                 'message' => 'No tracking information available',

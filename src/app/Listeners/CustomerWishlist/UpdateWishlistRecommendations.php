@@ -35,7 +35,7 @@ class UpdateWishlistRecommendations implements ShouldQueue
     {
         $cacheKey = "customer_recommendations_{$customerId}";
         Cache::forget($cacheKey);
-        
+
         // Trigger recommendation calculation
         // This would typically call a service to recalculate recommendations
     }
@@ -47,7 +47,7 @@ class UpdateWishlistRecommendations implements ShouldQueue
     {
         $cacheKey = "product_recommendations_{$productId}";
         Cache::forget($cacheKey);
-        
+
         // Trigger recommendation calculation for similar products
         // This would typically call a service to recalculate recommendations
     }

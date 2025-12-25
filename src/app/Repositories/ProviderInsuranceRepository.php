@@ -2,25 +2,22 @@
 
 namespace Fereydooni\Shopping\App\Repositories;
 
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Cache;
-use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderInsuranceRepositoryInterface;
-use Fereydooni\Shopping\App\Models\ProviderInsurance;
 use Fereydooni\Shopping\App\DTOs\ProviderInsuranceDTO;
 use Fereydooni\Shopping\App\Enums\InsuranceStatus;
 use Fereydooni\Shopping\App\Enums\VerificationStatus;
-use Carbon\Carbon;
+use Fereydooni\Shopping\App\Models\ProviderInsurance;
+use Fereydooni\Shopping\App\Repositories\Interfaces\ProviderInsuranceRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterface
 {
-    public function __construct(protected ProviderInsurance $model)
-    {
-    }
+    public function __construct(protected ProviderInsurance $model) {}
 
     // Basic CRUD operations
     public function all(): Collection
@@ -38,7 +35,7 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
         return $this->model->with(['provider', 'verifiedBy'])->simplePaginate($perPage);
     }
 
-    public function cursorPaginate(int $perPage = 15, string $cursor = null): CursorPaginator
+    public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         return $this->model->with(['provider', 'verifiedBy'])->cursorPaginate($perPage, ['*'], 'id', $cursor);
     }
@@ -52,6 +49,7 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
     public function findDTO(int $id): ?ProviderInsuranceDTO
     {
         $insurance = $this->find($id);
+
         return $insurance ? ProviderInsuranceDTO::fromModel($insurance) : null;
     }
 
@@ -65,7 +63,8 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
     public function findByProviderIdDTO(int $providerId): Collection
     {
         $insurances = $this->findByProviderId($providerId);
-        return $insurances->map(fn($insurance) => ProviderInsuranceDTO::fromModel($insurance));
+
+        return $insurances->map(fn ($insurance) => ProviderInsuranceDTO::fromModel($insurance));
     }
 
     public function findByInsuranceType(string $insuranceType): Collection
@@ -78,7 +77,8 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
     public function findByInsuranceTypeDTO(string $insuranceType): Collection
     {
         $insurances = $this->findByInsuranceType($insuranceType);
-        return $insurances->map(fn($insurance) => ProviderInsuranceDTO::fromModel($insurance));
+
+        return $insurances->map(fn ($insurance) => ProviderInsuranceDTO::fromModel($insurance));
     }
 
     public function findByStatus(string $status): Collection
@@ -91,7 +91,8 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
     public function findByStatusDTO(string $status): Collection
     {
         $insurances = $this->findByStatus($status);
-        return $insurances->map(fn($insurance) => ProviderInsuranceDTO::fromModel($insurance));
+
+        return $insurances->map(fn ($insurance) => ProviderInsuranceDTO::fromModel($insurance));
     }
 
     public function findByVerificationStatus(string $verificationStatus): Collection
@@ -104,7 +105,8 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
     public function findByVerificationStatusDTO(string $verificationStatus): Collection
     {
         $insurances = $this->findByVerificationStatus($verificationStatus);
-        return $insurances->map(fn($insurance) => ProviderInsuranceDTO::fromModel($insurance));
+
+        return $insurances->map(fn ($insurance) => ProviderInsuranceDTO::fromModel($insurance));
     }
 
     public function findByPolicyNumber(string $policyNumber): ?ProviderInsurance
@@ -117,6 +119,7 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
     public function findByPolicyNumberDTO(string $policyNumber): ?ProviderInsuranceDTO
     {
         $insurance = $this->findByPolicyNumber($policyNumber);
+
         return $insurance ? ProviderInsuranceDTO::fromModel($insurance) : null;
     }
 
@@ -130,7 +133,8 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
     public function findByProviderNameDTO(string $providerName): Collection
     {
         $insurances = $this->findByProviderName($providerName);
-        return $insurances->map(fn($insurance) => ProviderInsuranceDTO::fromModel($insurance));
+
+        return $insurances->map(fn ($insurance) => ProviderInsuranceDTO::fromModel($insurance));
     }
 
     // Status-based queries
@@ -142,7 +146,8 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
     public function findActiveDTO(): Collection
     {
         $insurances = $this->findActive();
-        return $insurances->map(fn($insurance) => ProviderInsuranceDTO::fromModel($insurance));
+
+        return $insurances->map(fn ($insurance) => ProviderInsuranceDTO::fromModel($insurance));
     }
 
     public function findExpired(): Collection
@@ -153,7 +158,8 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
     public function findExpiredDTO(): Collection
     {
         $insurances = $this->findExpired();
-        return $insurances->map(fn($insurance) => ProviderInsuranceDTO::fromModel($insurance));
+
+        return $insurances->map(fn ($insurance) => ProviderInsuranceDTO::fromModel($insurance));
     }
 
     public function findExpiringSoon(int $days = 30): Collection
@@ -164,7 +170,8 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
     public function findExpiringSoonDTO(int $days = 30): Collection
     {
         $insurances = $this->findExpiringSoon($days);
-        return $insurances->map(fn($insurance) => ProviderInsuranceDTO::fromModel($insurance));
+
+        return $insurances->map(fn ($insurance) => ProviderInsuranceDTO::fromModel($insurance));
     }
 
     public function findVerified(): Collection
@@ -175,7 +182,8 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
     public function findVerifiedDTO(): Collection
     {
         $insurances = $this->findVerified();
-        return $insurances->map(fn($insurance) => ProviderInsuranceDTO::fromModel($insurance));
+
+        return $insurances->map(fn ($insurance) => ProviderInsuranceDTO::fromModel($insurance));
     }
 
     public function findPendingVerification(): Collection
@@ -186,7 +194,8 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
     public function findPendingVerificationDTO(): Collection
     {
         $insurances = $this->findPendingVerification();
-        return $insurances->map(fn($insurance) => ProviderInsuranceDTO::fromModel($insurance));
+
+        return $insurances->map(fn ($insurance) => ProviderInsuranceDTO::fromModel($insurance));
     }
 
     // Combined queries
@@ -201,6 +210,7 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
     public function findByProviderAndTypeDTO(int $providerId, string $insuranceType): ?ProviderInsuranceDTO
     {
         $insurance = $this->findByProviderAndType($providerId, $insuranceType);
+
         return $insurance ? ProviderInsuranceDTO::fromModel($insurance) : null;
     }
 
@@ -215,7 +225,8 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
     public function findByProviderAndStatusDTO(int $providerId, string $status): Collection
     {
         $insurances = $this->findByProviderAndStatus($providerId, $status);
-        return $insurances->map(fn($insurance) => ProviderInsuranceDTO::fromModel($insurance));
+
+        return $insurances->map(fn ($insurance) => ProviderInsuranceDTO::fromModel($insurance));
     }
 
     // Date and amount range queries
@@ -229,7 +240,8 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
     public function findByDateRangeDTO(string $startDate, string $endDate): Collection
     {
         $insurances = $this->findByDateRange($startDate, $endDate);
-        return $insurances->map(fn($insurance) => ProviderInsuranceDTO::fromModel($insurance));
+
+        return $insurances->map(fn ($insurance) => ProviderInsuranceDTO::fromModel($insurance));
     }
 
     public function findByCoverageAmountRange(float $minAmount, float $maxAmount): Collection
@@ -242,7 +254,8 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
     public function findByCoverageAmountRangeDTO(float $minAmount, float $maxAmount): Collection
     {
         $insurances = $this->findByCoverageAmountRange($minAmount, $maxAmount);
-        return $insurances->map(fn($insurance) => ProviderInsuranceDTO::fromModel($insurance));
+
+        return $insurances->map(fn ($insurance) => ProviderInsuranceDTO::fromModel($insurance));
     }
 
     // Create and update operations
@@ -258,7 +271,7 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
             Log::info('Provider insurance created', [
                 'insurance_id' => $insurance->id,
                 'provider_id' => $insurance->provider_id,
-                'policy_number' => $insurance->policy_number
+                'policy_number' => $insurance->policy_number,
             ]);
 
             return $insurance->load(['provider', 'verifiedBy']);
@@ -266,7 +279,7 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
             DB::rollBack();
             Log::error('Failed to create provider insurance', [
                 'error' => $e->getMessage(),
-                'data' => $data
+                'data' => $data,
             ]);
             throw $e;
         }
@@ -275,6 +288,7 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
     public function createAndReturnDTO(array $data): ProviderInsuranceDTO
     {
         $insurance = $this->create($data);
+
         return ProviderInsuranceDTO::fromModel($insurance);
     }
 
@@ -290,7 +304,7 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
             if ($updated) {
                 Log::info('Provider insurance updated', [
                     'insurance_id' => $providerInsurance->id,
-                    'provider_id' => $providerInsurance->provider_id
+                    'provider_id' => $providerInsurance->provider_id,
                 ]);
             }
 
@@ -300,7 +314,7 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
             Log::error('Failed to update provider insurance', [
                 'error' => $e->getMessage(),
                 'insurance_id' => $providerInsurance->id,
-                'data' => $data
+                'data' => $data,
             ]);
             throw $e;
         }
@@ -309,6 +323,7 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
     public function updateAndReturnDTO(ProviderInsurance $providerInsurance, array $data): ?ProviderInsuranceDTO
     {
         $updated = $this->update($providerInsurance, $data);
+
         return $updated ? ProviderInsuranceDTO::fromModel($providerInsurance->fresh()) : null;
     }
 
@@ -324,7 +339,7 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
             if ($deleted) {
                 Log::info('Provider insurance deleted', [
                     'insurance_id' => $providerInsurance->id,
-                    'provider_id' => $providerInsurance->provider_id
+                    'provider_id' => $providerInsurance->provider_id,
                 ]);
             }
 
@@ -333,7 +348,7 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
             DB::rollBack();
             Log::error('Failed to delete provider insurance', [
                 'error' => $e->getMessage(),
-                'insurance_id' => $providerInsurance->id
+                'insurance_id' => $providerInsurance->id,
             ]);
             throw $e;
         }
@@ -355,31 +370,33 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
         return $this->update($providerInsurance, ['status' => InsuranceStatus::EXPIRED->value]);
     }
 
-    public function cancel(ProviderInsurance $providerInsurance, string $reason = null): bool
+    public function cancel(ProviderInsurance $providerInsurance, ?string $reason = null): bool
     {
         $data = ['status' => InsuranceStatus::CANCELLED->value];
         if ($reason) {
             $data['notes'] = $reason;
         }
+
         return $this->update($providerInsurance, $data);
     }
 
-    public function suspend(ProviderInsurance $providerInsurance, string $reason = null): bool
+    public function suspend(ProviderInsurance $providerInsurance, ?string $reason = null): bool
     {
         $data = ['status' => InsuranceStatus::SUSPENDED->value];
         if ($reason) {
             $data['notes'] = $reason;
         }
+
         return $this->update($providerInsurance, $data);
     }
 
     // Verification management
-    public function verify(ProviderInsurance $providerInsurance, int $verifiedBy, string $notes = null): bool
+    public function verify(ProviderInsurance $providerInsurance, int $verifiedBy, ?string $notes = null): bool
     {
         $data = [
             'verification_status' => VerificationStatus::VERIFIED->value,
             'verified_by' => $verifiedBy,
-            'verified_at' => now()
+            'verified_at' => now(),
         ];
 
         if ($notes) {
@@ -395,7 +412,7 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
             'verification_status' => VerificationStatus::REJECTED->value,
             'verified_by' => $rejectedBy,
             'verified_at' => now(),
-            'notes' => $reason
+            'notes' => $reason,
         ];
 
         return $this->update($providerInsurance, $data);
@@ -592,7 +609,8 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
     public function getExpiringInsuranceDTO(int $limit = 10): Collection
     {
         $insurances = $this->getExpiringInsurance($limit);
-        return $insurances->map(fn($insurance) => ProviderInsuranceDTO::fromModel($insurance));
+
+        return $insurances->map(fn ($insurance) => ProviderInsuranceDTO::fromModel($insurance));
     }
 
     public function getExpiringInsuranceByProvider(int $providerId, int $limit = 10): Collection
@@ -608,7 +626,8 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
     public function getExpiringInsuranceByProviderDTO(int $providerId, int $limit = 10): Collection
     {
         $insurances = $this->getExpiringInsuranceByProvider($providerId, $limit);
-        return $insurances->map(fn($insurance) => ProviderInsuranceDTO::fromModel($insurance));
+
+        return $insurances->map(fn ($insurance) => ProviderInsuranceDTO::fromModel($insurance));
     }
 
     // Pending verification queries
@@ -624,7 +643,8 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
     public function getPendingVerificationDTO(int $limit = 10): Collection
     {
         $insurances = $this->getPendingVerification($limit);
-        return $insurances->map(fn($insurance) => ProviderInsuranceDTO::fromModel($insurance));
+
+        return $insurances->map(fn ($insurance) => ProviderInsuranceDTO::fromModel($insurance));
     }
 
     public function getPendingVerificationByProvider(int $providerId, int $limit = 10): Collection
@@ -640,7 +660,8 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
     public function getPendingVerificationByProviderDTO(int $providerId, int $limit = 10): Collection
     {
         $insurances = $this->getPendingVerificationByProvider($providerId, $limit);
-        return $insurances->map(fn($insurance) => ProviderInsuranceDTO::fromModel($insurance));
+
+        return $insurances->map(fn ($insurance) => ProviderInsuranceDTO::fromModel($insurance));
     }
 
     // Search operations
@@ -649,8 +670,8 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
         return $this->model->with(['provider', 'verifiedBy'])
             ->where(function ($q) use ($query) {
                 $q->where('policy_number', 'like', "%{$query}%")
-                  ->orWhere('provider_name', 'like', "%{$query}%")
-                  ->orWhere('notes', 'like', "%{$query}%");
+                    ->orWhere('provider_name', 'like', "%{$query}%")
+                    ->orWhere('notes', 'like', "%{$query}%");
             })
             ->get();
     }
@@ -658,7 +679,8 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
     public function searchInsuranceDTO(string $query): Collection
     {
         $insurances = $this->searchInsurance($query);
-        return $insurances->map(fn($insurance) => ProviderInsuranceDTO::fromModel($insurance));
+
+        return $insurances->map(fn ($insurance) => ProviderInsuranceDTO::fromModel($insurance));
     }
 
     public function searchInsuranceByProvider(int $providerId, string $query): Collection
@@ -667,8 +689,8 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
             ->where('provider_id', $providerId)
             ->where(function ($q) use ($query) {
                 $q->where('policy_number', 'like', "%{$query}%")
-                  ->orWhere('provider_name', 'like', "%{$query}%")
-                  ->orWhere('notes', 'like', "%{$query}%");
+                    ->orWhere('provider_name', 'like', "%{$query}%")
+                    ->orWhere('notes', 'like', "%{$query}%");
             })
             ->get();
     }
@@ -676,7 +698,8 @@ class ProviderInsuranceRepository implements ProviderInsuranceRepositoryInterfac
     public function searchInsuranceByProviderDTO(int $providerId, string $query): Collection
     {
         $insurances = $this->searchInsuranceByProvider($providerId, $query);
-        return $insurances->map(fn($insurance) => ProviderInsuranceDTO::fromModel($insurance));
+
+        return $insurances->map(fn ($insurance) => ProviderInsuranceDTO::fromModel($insurance));
     }
 
     // Analytics operations
