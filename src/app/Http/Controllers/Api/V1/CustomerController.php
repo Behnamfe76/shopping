@@ -142,27 +142,13 @@ class CustomerController extends Controller
         Gate::authorize('update', $customer);
 
         try {
-            $updatedCustomer = $this->customerService->updateCustomer($customer, $request->validated());
+            CustomerFacade::update($customer, $request->validated());
 
-            if (! $updatedCustomer) {
-                return response()->json([
-                    'message' => 'Failed to update customer',
-                ], 500);
-            }
-
-            return response()->json([
-                'message' => 'Customer updated successfully',
-                'data' => $updatedCustomer,
-            ]);
-        } catch (ValidationException $e) {
-            return response()->json([
-                'message' => 'Validation failed',
-                'errors' => $e->errors(),
-            ], 422);
+            return (new CustomerResource($customer))->response();
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'Failed to update customer',
-                'error' => $e->getMessage(),
+                'error' => 'Failed to update category',
+                'message' => $e->getMessage(),
             ], 500);
         }
     }

@@ -1240,8 +1240,8 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
             //         // Show customer
             Route::get('/', [ApiCustomerController::class, 'show'])->name('show');
 
-            //         // Update customer (full update)
-            //         Route::put('/', [ApiCustomerController::class, 'update'])->name('update');
+            // Update customer (full update)
+            Route::put('/', [ApiCustomerController::class, 'update'])->name('update');
 
             //         // Update customer (partial update)
             //         Route::patch('/', [ApiCustomerController::class, 'update'])->name('update.partial');

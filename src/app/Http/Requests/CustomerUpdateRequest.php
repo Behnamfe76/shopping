@@ -66,4 +66,18 @@ class CustomerUpdateRequest extends FormRequest
             'date_of_birth.before' => 'Date of birth must be in the past',
         ];
     }
+
+    protected function prepareForValidation(): void
+    {
+        $tags = $this->get('tags', null);
+        if (is_string($tags)) {
+            $tags = array_filter(array_map('trim', explode(',', $tags)));
+        }
+
+        $this->merge([
+            'tags' => $tags,
+            'marketing_consent' => $this->boolean('marketing_consent'),
+            'newsletter_subscription' => $this->boolean('newsletter_subscription'),
+        ]);
+    }
 }

@@ -217,7 +217,7 @@ class CustomerDTO extends Data
     public static function rules(): array
     {
         return [
-            'user_id' => ['required', 'integer', 'exists:users,id'],
+            'user_id' => ['nullable', 'integer', 'exists:users,id'],
             //            'customer_number' => ['required', 'string', 'max:50', 'unique:customers,customer_number'],
             'first_name' => ['required', 'string', 'max:100'],
             'last_name' => ['required', 'string', 'max:100'],
@@ -237,7 +237,7 @@ class CustomerDTO extends Data
             'preferred_shipping_method' => ['nullable', 'string', 'max:100'],
             'marketing_consent' => ['boolean'],
             'newsletter_subscription' => ['boolean'],
-            'notes' => ['nullable', 'array'],
+            'notes' => ['nullable', 'string'],
             'tags' => ['nullable', 'array'],
         ];
     }

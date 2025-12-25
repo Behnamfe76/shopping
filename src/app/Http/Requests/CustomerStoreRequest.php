@@ -7,6 +7,7 @@ use Fereydooni\Shopping\app\Enums\CustomerType;
 use Fereydooni\Shopping\app\Enums\Gender;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 
 class CustomerStoreRequest extends FormRequest
 {
@@ -42,6 +43,8 @@ class CustomerStoreRequest extends FormRequest
             'notes' => 'nullable|string|max:5000',
             'tags' => 'nullable|array',
             'tags.*' => 'string|max:50',
+            'password' => ['nullable', 'confirmed', Password::defaults()],
+
         ];
     }
 

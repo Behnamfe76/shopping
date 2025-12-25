@@ -262,22 +262,6 @@ class CustomerService
     }
 
     /**
-     * Override update method to handle customer-specific logic
-     */
-    public function update(Customer $customer, array $data): bool
-    {
-        $this->validateData($data, $customer->id);
-        $result = $this->repository->update($customer, $data);
-
-        if ($result) {
-            // Fire customer updated event
-            event(new \Fereydooni\Shopping\app\Events\Customer\CustomerUpdated($customer, $data));
-        }
-
-        return $result;
-    }
-
-    /**
      * Override updateDTO method to handle customer-specific logic
      */
     public function updateDTO(Customer $customer, array $data): ?CustomerDTO
