@@ -18,9 +18,9 @@ class TypesenseQueryDriver implements QueryDriverInterface
 
     public function paginate(string $model, array $filters = [], array $searchOptions = [], int $perPage = 15): LengthAwarePaginator
     {
-            $builder = $this->buildScoutQuery($model, $filters, $searchOptions);
+        $builder = $this->buildScoutQuery($model, $filters, $searchOptions);
 
-            return $builder->paginate($perPage);
+        return $builder->paginate($perPage);
     }
 
     public function simplePaginate(string $model, array $filters = [], array $searchOptions = [], int $perPage = 15): Paginator
@@ -403,7 +403,7 @@ class TypesenseQueryDriver implements QueryDriverInterface
         return $presets[$preset] ?? $presets['ecommerce'];
     }
 
-    public function applySorting($query, array $sortOptions = [])
+    public function applySorting($query, array $sortOptions = [], string $model)
     {
         if (empty($sortOptions)) {
             return $query;

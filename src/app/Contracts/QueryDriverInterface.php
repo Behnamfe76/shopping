@@ -47,7 +47,7 @@ interface QueryDriverInterface
     /**
      * Apply sorting to the query
      */
-    public function applySorting($query, array $sortOptions = []);
+    public function applySorting($query, array $sortOptions = [], string $model);
 
     /**
      * Check if this driver supports the given model

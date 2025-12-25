@@ -2,14 +2,14 @@
 
 namespace Fereydooni\Shopping\app\Drivers;
 
-use Fereydooni\Shopping\app\Contracts\QueryDriverInterface;
-use Fereydooni\Shopping\app\Traits\AppliesQueryParameters;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
-use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Fereydooni\Shopping\app\Traits\AppliesQueryParameters;
+use Fereydooni\Shopping\app\Contracts\QueryDriverInterface;
 
 class DatabaseQueryDriver implements QueryDriverInterface
 {
@@ -63,6 +63,7 @@ class DatabaseQueryDriver implements QueryDriverInterface
         }
 
         $booleanFields = ['is_active', 'is_published', 'is_featured'];
+        $dateFields = ['created_at', 'updated_at', 'deleted_at', 'published_at', 'date_of_birth'];
 
         foreach ($filters as $key => $value) {
             if ($value !== null && $value !== '') {
@@ -71,6 +72,19 @@ class DatabaseQueryDriver implements QueryDriverInterface
                     $booleanLiteral = $booleanValue ? 'TRUE' : 'FALSE';
                     $quotedColumn = $query->getGrammar()->wrap($key);
                     $query->whereRaw("{$quotedColumn} IS {$booleanLiteral}");
+                } elseif (is_array($value) && in_array($key, $dateFields)) {
+                    // Handle date range filters
+                    if (isset($value[0]) && isset($value[1])) {
+                        // Both dates provided - use whereBetween
+                        $query->whereBetween($key, [$value[0], $value[1]]);
+                    } elseif (isset($value[0])) {
+                        // Only start date provided - use where >=
+                        $query->where($key, '=', $value[0]);
+                    }
+                    // elseif (isset($value[1])) {
+                    //     // Only end date provided - use where <=
+                    //     $query->where($key, '<=', $value[1]);
+                    // }
                 } else {
                     $query->where($key, $value);
                 }
@@ -134,7 +148,7 @@ class DatabaseQueryDriver implements QueryDriverInterface
         return $query;
     }
 
-    public function applySorting($query, array $sortOptions = [])
+    public function applySorting($query, array $sortOptions = [], string $model)
     {
         if (empty($sortOptions)) {
             return $query;
@@ -142,6 +156,16 @@ class DatabaseQueryDriver implements QueryDriverInterface
 
         $sortField = $sortOptions['sort_field'] ?? 'id';
         $sortDirection = $sortOptions['sort_direction'] ?? 'asc';
+
+        if(class_exists($model)) {
+            $modelInstance = new $model();
+            if(method_exists($modelInstance, 'getTimestampEquivalentColumns')) {
+                if(in_array($sortField, $modelInstance->getTimestampEquivalentColumns())) {
+                    $sortField = $sortField . $modelInstance->getTimestampColumnSuffix();
+                }
+            }
+        }
+
 
         return $query->orderBy($sortField, $sortDirection);
     }
@@ -167,7 +191,7 @@ class DatabaseQueryDriver implements QueryDriverInterface
             $query = $this->applySearch($query, $searchOptions['search'], $searchOptions, $searchableFields);
         }
 
-        $query = $this->applySorting($query, $searchOptions);
+        $query = $this->applySorting($query, $searchOptions, $model);
 
         return $query;
     }
