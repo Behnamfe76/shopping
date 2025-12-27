@@ -129,6 +129,7 @@ class SeedRequiredDataCommand extends Command
             'ProductTagPermissionSeeder',
             'ProductVariantPermissionSeeder',
             'UserSubscriptionPermissionSeeder',
+            'UserPermissionSeeder',
             'CustomerPermissionSeeder',
             'CustomerPreferencePermissionSeeder',
             'CustomerWishlistPermissionSeeder',

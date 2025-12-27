@@ -29,6 +29,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderLocationController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ShipmentController as ApiShipmentController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ShipmentItemController as ApiShipmentItemController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\TransactionController as ApiTransactionController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\UserController as ApiUserController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\UserSubscriptionController as ApiUserSubscriptionController;
 use Fereydooni\Shopping\app\Models\ProductTag;
 use Illuminate\Routing\Middleware\SubstituteBindings;
@@ -1272,6 +1273,41 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
 
             //         // Customer preferences
             //         Route::put('/preferences', [ApiCustomerController::class, 'updatePreferences'])->name('update-preferences');
+        });
+    });
+
+    // Customer API routes
+    Route::prefix('users')->name('users.')->group(function () {
+        // List customers
+        Route::get('/', [ApiUserController::class, 'index'])->name('index');
+
+        // Get customer's type list
+        Route::get('/user-types/cursor-all', [ApiUserController::class, 'userTypes'])->name('user-types');
+
+        // Get user's status list
+        Route::get('/roles/cursor-all', [ApiUserController::class, 'roles'])->name('roles');
+
+        // Create user
+        Route::post('/', [ApiUserController::class, 'store'])->name('store');
+
+        // Customer-specific routes
+        Route::prefix('{user}')->group(function () {
+            //         // Show user
+            Route::get('/', [ApiUserController::class, 'show'])->name('show');
+
+            // Update user (full update)
+            Route::put('/', [ApiUserController::class, 'update'])->name('update');
+
+            //         // Update user (partial update)
+            //         Route::patch('/', [ApiUserController::class, 'update'])->name('update.partial');
+
+            //         // Delete user
+            //         Route::delete('/', [ApiUserController::class, 'destroy'])->name('destroy');
+
+            //         // Customer status management
+            //         Route::post('/activate', [ApiUserController::class, 'activate'])->name('activate');
+            //         Route::post('/deactivate', [ApiUserController::class, 'deactivate'])->name('deactivate');
+            //         Route::post('/suspend', [ApiUserController::class, 'suspend'])->name('suspend');
         });
     });
 

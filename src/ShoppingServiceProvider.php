@@ -83,6 +83,26 @@ class ShoppingServiceProvider extends ServiceProvider
             );
         });
 
+        // Register User Service
+        $this->app->scoped('shopping.user', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\UserService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\UserRepositoryInterface::class)
+            );
+        });
+
+        // Register User Repository
+        $this->app->bind(
+            \Fereydooni\Shopping\app\Repositories\Interfaces\UserRepositoryInterface::class,
+            \Fereydooni\Shopping\app\Repositories\UserRepository::class
+        );
+
+        // Register User Facade
+        $this->app->singleton('shopping.user.facade', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\UserService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\UserRepositoryInterface::class)
+            );
+        });
+
         // Register Customer Service
         $this->app->scoped('shopping.customer', function ($app) {
             return new \Fereydooni\Shopping\app\Services\CustomerService(
@@ -698,6 +718,7 @@ class ShoppingServiceProvider extends ServiceProvider
     {
         Gate::policy(\Fereydooni\Shopping\app\Models\Address::class, \Fereydooni\Shopping\app\Policies\AddressPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\Customer::class, \Fereydooni\Shopping\app\Policies\CustomerPolicy::class);
+        Gate::policy(\Fereydooni\Shopping\app\Models\User::class, \Fereydooni\Shopping\app\Policies\UserPolicy::class);
         // Gate::policy(\Fereydooni\Shopping\app\Models\CustomerSegment::class, \Fereydooni\Shopping\app\Policies\CustomerSegmentPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\CustomerPreference::class, \Fereydooni\Shopping\app\Policies\CustomerPreferencePolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\CustomerWishlist::class, \Fereydooni\Shopping\app\Policies\CustomerWishlistPolicy::class);
