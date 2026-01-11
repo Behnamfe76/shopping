@@ -1315,9 +1315,6 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
         // List customers
         Route::get('/', [ApiRoleController::class, 'index'])->name('index');
 
-        // Get customer's type list
-        Route::get('/role-types/cursor-all', [ApiRoleController::class, 'roleTypes'])->name('role-types');
-
         // Get role's status list
         Route::get('/roles/cursor-all', [ApiRoleController::class, 'roles'])->name('roles');
 
@@ -1350,11 +1347,8 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
         // List customers
         Route::get('/', [ApiPermissionController::class, 'index'])->name('index');
 
-        // Get customer's type list
-        Route::get('/permission-types/cursor-all', [ApiPermissionController::class, 'permissionTypes'])->name('permission-types');
-
         // Get Permission's status list
-        Route::get('/permissions/cursor-all', [ApiPermissionController::class, 'permissions'])->name('permissions');
+        Route::get('/cursor-all', [ApiPermissionController::class, 'permissions'])->name('permissions');
 
         // Create Permission
         Route::post('/', [ApiPermissionController::class, 'store'])->name('store');
