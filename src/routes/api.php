@@ -7,6 +7,8 @@ use Fereydooni\Shopping\app\Http\Controllers\Api\V1\BrandController as ApiBrandC
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CategoryController as ApiCategoryController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerCommunicationController as ApiCustomerCommunicationController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerController as ApiCustomerController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\RoleController as ApiRoleController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\PermissionController as ApiPermissionController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerNoteController as ApiCustomerNoteController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerPreferenceController as ApiCustomerPreferenceController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerSegmentController as ApiCustomerSegmentController;
@@ -1276,16 +1278,13 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
         });
     });
 
-    // Customer API routes
+    // User API routes
     Route::prefix('users')->name('users.')->group(function () {
         // List customers
         Route::get('/', [ApiUserController::class, 'index'])->name('index');
 
         // Get customer's type list
         Route::get('/user-types/cursor-all', [ApiUserController::class, 'userTypes'])->name('user-types');
-
-        // Get user's status list
-        Route::get('/roles/cursor-all', [ApiUserController::class, 'roles'])->name('roles');
 
         // Create user
         Route::post('/', [ApiUserController::class, 'store'])->name('store');
@@ -1308,6 +1307,76 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
             //         Route::post('/activate', [ApiUserController::class, 'activate'])->name('activate');
             //         Route::post('/deactivate', [ApiUserController::class, 'deactivate'])->name('deactivate');
             //         Route::post('/suspend', [ApiUserController::class, 'suspend'])->name('suspend');
+        });
+    });
+
+    // Role API routes
+    Route::prefix('roles')->name('roles.')->group(function () {
+        // List customers
+        Route::get('/', [ApiRoleController::class, 'index'])->name('index');
+
+        // Get customer's type list
+        Route::get('/role-types/cursor-all', [ApiRoleController::class, 'roleTypes'])->name('role-types');
+
+        // Get role's status list
+        Route::get('/roles/cursor-all', [ApiRoleController::class, 'roles'])->name('roles');
+
+        // Create role
+        Route::post('/', [ApiRoleController::class, 'store'])->name('store');
+
+        // Customer-specific routes
+        Route::prefix('{role}')->group(function () {
+            //         // Show role
+            Route::get('/', [ApiRoleController::class, 'show'])->name('show');
+
+            // Update role (full update)
+            Route::put('/', [ApiRoleController::class, 'update'])->name('update');
+
+            //         // Update role (partial update)
+            //         Route::patch('/', [ApiRoleController::class, 'update'])->name('update.partial');
+
+            //         // Delete role
+            //         Route::delete('/', [ApiRoleController::class, 'destroy'])->name('destroy');
+
+            //         // Customer status management
+            //         Route::post('/activate', [ApiRoleController::class, 'activate'])->name('activate');
+            //         Route::post('/deactivate', [ApiRoleController::class, 'deactivate'])->name('deactivate');
+            //         Route::post('/suspend', [ApiRoleController::class, 'suspend'])->name('suspend');
+        });
+    });
+
+    // Permission API routes
+    Route::prefix('permissions')->name('permissions.')->group(function () {
+        // List customers
+        Route::get('/', [ApiPermissionController::class, 'index'])->name('index');
+
+        // Get customer's type list
+        Route::get('/permission-types/cursor-all', [ApiPermissionController::class, 'permissionTypes'])->name('permission-types');
+
+        // Get Permission's status list
+        Route::get('/permissions/cursor-all', [ApiPermissionController::class, 'permissions'])->name('permissions');
+
+        // Create Permission
+        Route::post('/', [ApiPermissionController::class, 'store'])->name('store');
+
+        // Customer-specific routes
+        Route::prefix('{permission}')->group(function () {
+            //         // Show Permission
+            Route::get('/', [ApiPermissionController::class, 'show'])->name('show');
+
+            // Update Permission (full update)
+            Route::put('/', [ApiPermissionController::class, 'update'])->name('update');
+
+            //         // Update Permission (partial update)
+            //         Route::patch('/', [ApiPermissionController::class, 'update'])->name('update.partial');
+
+            //         // Delete Permission
+            //         Route::delete('/', [ApiPermissionController::class, 'destroy'])->name('destroy');
+
+            //         // Customer status management
+            //         Route::post('/activate', [ApiPermissionController::class, 'activate'])->name('activate');
+            //         Route::post('/deactivate', [ApiPermissionController::class, 'deactivate'])->name('deactivate');
+            //         Route::post('/suspend', [ApiPermissionController::class, 'suspend'])->name('suspend');
         });
     });
 
