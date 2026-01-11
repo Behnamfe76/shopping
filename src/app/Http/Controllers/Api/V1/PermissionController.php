@@ -51,12 +51,10 @@ class PermissionController extends Controller
     /**
      * Display a listing of category statuses.
      */
-    public function permissions(): JsonResponse
+    public function permissions(Request $request): JsonResponse
     {
         try {
-            return response()->json([
-                'data' => Permission::cursorPaginate(10),
-            ]);
+            return response()->json($this->permissionService->cursorAll(cursor: $request->get('cursor')));
         } catch (Exception $e) {
             return response()->json([
                 'error' => 'Failed to retrieve Permission Permissions',

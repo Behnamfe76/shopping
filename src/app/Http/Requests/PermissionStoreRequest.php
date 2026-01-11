@@ -21,7 +21,7 @@ class PermissionStoreRequest extends FormRequest
     {
         return [
             'name' => 'required|string|unique:permissions,name|max:64',
-            'guard_name' => 'required|string|max:255',
+            'guard_name' => 'required|string|max:255'
         ];
     }
 }
