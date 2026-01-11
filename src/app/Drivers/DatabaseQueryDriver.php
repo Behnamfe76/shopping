@@ -163,10 +163,9 @@ class DatabaseQueryDriver implements QueryDriverInterface
 
         if (class_exists($model)) {
             $modelInstance = new $model;
-            if (method_exists($modelInstance, 'getTimestampEquivalentColumns')) {
-                if (in_array($sortField, $modelInstance->getTimestampEquivalentColumns())) {
-                    $sortField = $sortField.$modelInstance->getTimestampColumnSuffix();
-                }
+            $relation = explode('_', $sortField)[0];
+            if (method_exists($modelInstance, $relation)) {
+                return $query->withCount($relation)->orderBy($sortField, $sortDirection);
             }
         }
 
