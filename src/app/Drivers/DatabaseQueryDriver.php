@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Str;
 
 class DatabaseQueryDriver implements QueryDriverInterface
 {
@@ -65,12 +66,12 @@ class DatabaseQueryDriver implements QueryDriverInterface
         if (empty($filters)) {
             return $query;
         }
-
+        $relation = $filters['relation'] ?? null;
         $booleanFields = ['is_active', 'is_published', 'is_featured'];
         $dateFields = ['created_at', 'updated_at', 'deleted_at', 'published_at', 'date_of_birth'];
 
         foreach ($filters as $key => $value) {
-            if ($value !== null && $value !== '') {
+            if ($key !== 'relation' && $value !== null && $value !== '') {
                 if (in_array($key, $booleanFields)) {
                     $booleanValue = filter_var($value, FILTER_VALIDATE_BOOLEAN);
                     $booleanLiteral = $booleanValue ? 'TRUE' : 'FALSE';
@@ -95,6 +96,30 @@ class DatabaseQueryDriver implements QueryDriverInterface
             }
         }
 
+        if ($relation) {
+            $temp = explode('.', $relation);
+            $relationName = $temp[1];
+            $firstTable = Str::singular($temp[0]);
+            $secondTable = $temp[2];
+            $modelId = $temp[3];
+
+            if($firstTable === 'role'){
+                $firstTableUpdated = $firstTable . '_has';
+            }
+            if($relationName === 'hasMany'){
+                $pivotTable = ($firstTableUpdated ?? $firstTable) . '_' . $secondTable;
+                $first = "{$secondTable}.id";
+                $second = "{$pivotTable}." . Str::singular($secondTable) . '_id';
+
+                $query->join(
+                    $pivotTable,
+                    $first,
+                    '=',
+                    $second
+                )->where("{$pivotTable}.{$firstTable}_id", $modelId);
+            }
+        }
+
         return $query;
     }
 
@@ -109,7 +134,7 @@ class DatabaseQueryDriver implements QueryDriverInterface
         $wordMatching = $searchOptions['word_matching'] ?? false;
         $multipleTermsLogic = $searchOptions['multiple_terms_logic'] ?? 'or';
 
-        $dbDriver = config('database.connections.'.config('database.default').'.driver');
+        $dbDriver = config('database.connections.' . config('database.default') . '.driver');
         $searchTerms = preg_split('/\\s+\//', $searchTerm, -1, PREG_SPLIT_NO_EMPTY);
 
         $query->where(function ($q) use ($searchTerms, $searchableFields, $matchType, $dbDriver, $caseSensitive, $wordMatching, $multipleTermsLogic) {
@@ -140,7 +165,7 @@ class DatabaseQueryDriver implements QueryDriverInterface
 
                     $whereMethod = $multipleTermsLogic === 'and' ? 'where' : 'orWhere';
 
-                    if ($dbDriver === 'sqlite' && ! $caseSensitive) {
+                    if ($dbDriver === 'sqlite' && !$caseSensitive) {
                         $q->{$whereMethod}->Raw("LOWER({$field}) {$currentOperator} LOWER(?)", [$currentTerm]);
                     } else {
                         $q->{$whereMethod}($field, $currentOperator, $currentTerm);
@@ -163,8 +188,10 @@ class DatabaseQueryDriver implements QueryDriverInterface
 
         if (class_exists($model)) {
             $modelInstance = new $model;
-            $relation = explode('_', $sortField)[0];
-            if (method_exists($modelInstance, $relation)) {
+            $temp = explode('_', $sortField);
+            $relation = $temp[0];
+            $action = count($temp) > 1 ? $temp[1] : null;
+            if ($action === 'count' && method_exists($modelInstance, $relation)) {
                 return $query->withCount($relation)->orderBy($sortField, $sortDirection);
             }
         }
@@ -188,7 +215,7 @@ class DatabaseQueryDriver implements QueryDriverInterface
 
         $query = $this->applyFilters($query, $filters);
 
-        if (! empty($searchOptions['search'])) {
+        if (!empty($searchOptions['search'])) {
             $searchableFields = $searchOptions['search_fields'] ?: $model::searchableFields();
             $query = $this->applySearch($query, $searchOptions['search'], $searchOptions, $searchableFields);
         }
