@@ -26,6 +26,7 @@ class RoleService
 
             $role->permissions()->sync($data['permissions']);
             DB::commit();
+
             return $role;
         } catch (\Exception $e) {
             DB::rollBack();
@@ -44,6 +45,7 @@ class RoleService
 
             $role->permissions()->sync($data['permissions']);
             DB::commit();
+
             return $role;
         } catch (\Exception $e) {
             DB::rollBack();

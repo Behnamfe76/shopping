@@ -2,16 +2,16 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
-use Exception;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
-use Spatie\Permission\Models\Permission;
-use Illuminate\Validation\ValidationException;
-use Fereydooni\Shopping\app\Services\PermissionService;
-use Fereydooni\Shopping\app\Http\Resources\PermissionResource;
+use Exception;
 use Fereydooni\Shopping\app\Http\Requests\PermissionStoreRequest;
 use Fereydooni\Shopping\app\Http\Requests\PermissionUpdateRequest;
+use Fereydooni\Shopping\app\Http\Resources\PermissionResource;
+use Fereydooni\Shopping\app\Services\PermissionService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use Spatie\Permission\Models\Permission;
 
 class PermissionController extends Controller
 {
@@ -19,7 +19,7 @@ class PermissionController extends Controller
         private readonly PermissionService $permissionService
     ) {
         $user = auth()->user();
-        if(!$user->hasRole('super-admin')) {
+        if (! $user->hasRole('super-admin')) {
             abort(403);
         }
     }

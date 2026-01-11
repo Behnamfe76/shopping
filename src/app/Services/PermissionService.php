@@ -10,8 +10,9 @@ class PermissionService
 {
     use HasCrudOperations;
 
-    public function __construct() {
-        $this->model =  \Spatie\Permission\Models\Permission::class;
+    public function __construct()
+    {
+        $this->model = \Spatie\Permission\Models\Permission::class;
         $this->dtoClass = PermissionDTO::class;
     }
 
@@ -23,7 +24,7 @@ class PermissionService
             $select = $columns;
         }
 
-        return (new $this->model())
+        return (new $this->model)
             ->query()->when(request()->input('search'), function ($query, $input) {
                 return $query->whereLike('name', "%$input%");
             })

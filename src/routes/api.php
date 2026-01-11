@@ -7,8 +7,6 @@ use Fereydooni\Shopping\app\Http\Controllers\Api\V1\BrandController as ApiBrandC
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CategoryController as ApiCategoryController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerCommunicationController as ApiCustomerCommunicationController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerController as ApiCustomerController;
-use Fereydooni\Shopping\app\Http\Controllers\Api\V1\RoleController as ApiRoleController;
-use Fereydooni\Shopping\app\Http\Controllers\Api\V1\PermissionController as ApiPermissionController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerNoteController as ApiCustomerNoteController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerPreferenceController as ApiCustomerPreferenceController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerSegmentController as ApiCustomerSegmentController;
@@ -17,6 +15,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Api\V1\LoyaltyTransactionController
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\OrderController as ApiOrderController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\OrderItemController as ApiOrderItemController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\OrderStatusHistoryController as ApiOrderStatusHistoryController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\PermissionController as ApiPermissionController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductAttributeController as ApiProductAttributeController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductAttributeValueController as ApiProductAttributeValueController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductController as ApiProductController;
@@ -28,6 +27,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProductVariantController as 
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderController as ApiProviderController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderInsuranceController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderLocationController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\RoleController as ApiRoleController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ShipmentController as ApiShipmentController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ShipmentItemController as ApiShipmentItemController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\TransactionController as ApiTransactionController;
