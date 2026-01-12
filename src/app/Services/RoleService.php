@@ -54,8 +54,9 @@ class RoleService
                 ]
             ];
             $role->update($data);
-
-            $role->permissions()->sync($data['permissions']);
+            if(isset($data['permissions'])) {
+                $role->permissions()->sync($data['permissions']);
+            }
             DB::commit();
 
             return $role;
