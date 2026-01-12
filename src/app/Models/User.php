@@ -6,6 +6,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class User extends \App\Models\User
 {
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'phone'
+    ];
+
     public function getRouteKeyName(): string
     {
         return 'uuid';

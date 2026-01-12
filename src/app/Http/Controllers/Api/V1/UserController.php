@@ -4,6 +4,8 @@ namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use Fereydooni\Shopping\app\Facades\User as UserFacade;
+use Fereydooni\Shopping\app\Http\Requests\StoreUserRequest;
+use Fereydooni\Shopping\app\Http\Requests\UpdateUserRequest;
 use Fereydooni\Shopping\app\Http\Resources\UserResource;
 use Fereydooni\Shopping\app\Models\User;
 use Fereydooni\Shopping\app\Services\userService;
@@ -11,7 +13,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
-use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -46,28 +47,9 @@ class UserController extends Controller
     }
 
     /**
-     * Display a listing of category statuses.
-     */
-    public function roles(): JsonResponse
-    {
-        Gate::authorize('viewRoles', User::class);
-
-        try {
-            return response()->json([
-                'data' => Role::cursorPaginate(10),
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'error' => 'Failed to retrieve User roles',
-                'message' => $e->getMessage(),
-            ], 500);
-        }
-    }
-
-    /**
      * Store a newly created User.
      */
-    public function store(UserStoreRequest $request): JsonResponse
+    public function store(StoreUserRequest $request): JsonResponse
     {
         Gate::authorize('create', User::class);
 
@@ -108,7 +90,7 @@ class UserController extends Controller
     /**
      * Update the specified User.
      */
-    public function update(UserUpdateRequest $request, User $user): JsonResponse
+    public function update(UpdateUserRequest $request, User $user): JsonResponse
     {
         Gate::authorize('update', $user);
 
