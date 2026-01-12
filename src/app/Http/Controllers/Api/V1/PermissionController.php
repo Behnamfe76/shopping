@@ -7,11 +7,11 @@ use Exception;
 use Fereydooni\Shopping\app\Http\Requests\PermissionStoreRequest;
 use Fereydooni\Shopping\app\Http\Requests\PermissionUpdateRequest;
 use Fereydooni\Shopping\app\Http\Resources\PermissionResource;
+use Fereydooni\Shopping\app\Models\Permission;
 use Fereydooni\Shopping\app\Services\PermissionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use Spatie\Permission\Models\Permission;
 
 class PermissionController extends Controller
 {
