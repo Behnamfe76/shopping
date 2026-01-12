@@ -4,6 +4,7 @@ namespace Fereydooni\Shopping\app\Services;
 
 use Fereydooni\Shopping\app\Models\Role;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Support\Facades\DB;
 
 class RoleService
@@ -64,5 +65,21 @@ class RoleService
             DB::rollBack();
             throw $e;
         }
+    }
+
+    public function cursorAll(int $perPage = 15, ?string $cursor = null): CursorPaginator
+    {
+        $select = '*';
+        $columns = request()->get('columns', []);
+        if (! empty($columns)) {
+            $select = $columns;
+        }
+
+        return (new $this->model)
+            ->query()->when(request()->input('search'), function ($query, $input) {
+                return $query->whereLike('name', "%$input%");
+            })
+            ->select($select)
+            ->cursorPaginate($perPage, [$columns], 'id', $cursor);
     }
 }
