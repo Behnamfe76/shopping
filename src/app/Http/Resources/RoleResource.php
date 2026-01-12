@@ -16,9 +16,22 @@ class RoleResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'guard_name' => $this->guard_name,
+            'description' => $this->getDescription(),
             'permissions_count' => $this->permissions?->count() ?? 0,
             'created_at' => $this->created_at?->toISOString(),
             'updated_at' => $this->updated_at?->toISOString(),
         ];
+    }
+
+    public function getDescription(): ?string
+    {
+        if (is_string($this->meta)) {
+            return json_decode($this->meta)?->{app()->getLocale()}?->description ?? null;
+        }
+        if (is_array($this->meta)) {
+            return $this->meta[app()->getLocale()]['description'] ?? null;
+        }
+
+        return null;
     }
 }

@@ -6,11 +6,11 @@ use App\Http\Controllers\Controller;
 use Fereydooni\Shopping\app\Http\Requests\RoleStoreRequest;
 use Fereydooni\Shopping\app\Http\Requests\RoleUpdateRequest;
 use Fereydooni\Shopping\app\Http\Resources\RoleResource;
+use Fereydooni\Shopping\app\Models\Role;
 use Fereydooni\Shopping\app\Services\RoleService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {

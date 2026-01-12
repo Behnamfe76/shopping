@@ -2,9 +2,9 @@
 
 namespace Fereydooni\Shopping\app\Services;
 
+use Fereydooni\Shopping\app\Models\Role;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
 use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Role;
 
 class RoleService
 {
@@ -22,6 +22,12 @@ class RoleService
     {
         try {
             DB::beginTransaction();
+            $locale = app()->getLocale();
+            $data['meta'] = [
+                "{$locale}" => [
+                    "description" => $data['description'],
+                ]
+            ];
             $role = $this->model::create($data);
 
             $role->permissions()->sync($data['permissions']);
@@ -41,6 +47,12 @@ class RoleService
     {
         try {
             DB::beginTransaction();
+            $locale = app()->getLocale();
+            $data['meta'] = [
+                "{$locale}" => [
+                    "description" => $data['description'],
+                ]
+            ];
             $role->update($data);
 
             $role->permissions()->sync($data['permissions']);
