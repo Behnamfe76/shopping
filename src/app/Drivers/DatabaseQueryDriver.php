@@ -100,17 +100,23 @@ class DatabaseQueryDriver implements QueryDriverInterface
         if ($relation) {
             $temp = explode('.', $relation);
             $relationName = $temp[1];
-            $firstTable = Str::singular($temp[0]);
+            $firstTable = $temp[0];
+            $firstTableSingular = Str::singular($temp[0]);
             $secondTable = $temp[2];
             $modelId = $temp[3];
 
-
             if ($relationName === 'hasMany') {
-                if ($firstTable === 'role') {
-                    $firstTableUpdated = $firstTable . '_has';
+                if ($firstTable === $secondTable) {
+                    $query->where('parent_id', $modelId);
+                } else {
+                    $query->where("{$firstTableSingular}_id", $modelId);
+                }
+            } else if ($relationName === 'manyToMany') {
+                if ($firstTableSingular === 'role') {
+                    $firstTableSingularUpdated = $firstTableSingular . '_has';
                 }
 
-                $pivotTable = ($firstTableUpdated ?? $firstTable) . '_' . $secondTable;
+                $pivotTable = ($firstTableSingularUpdated ?? $firstTableSingular) . '_' . $secondTable;
                 $first = "{$secondTable}.id";
                 $second = "{$pivotTable}." . Str::singular($secondTable) . '_id';
 
@@ -119,7 +125,7 @@ class DatabaseQueryDriver implements QueryDriverInterface
                     $first,
                     '=',
                     $second
-                )->where("{$pivotTable}.{$firstTable}_id", $modelId);
+                )->where("{$pivotTable}.{$firstTableSingular}_id", $modelId);
             } else if ($relationName === 'morphMany') {
                 $pivotTable = 'model_has_' . $secondTable;
                 $first = "{$secondTable}.id";
@@ -132,7 +138,7 @@ class DatabaseQueryDriver implements QueryDriverInterface
                         '=',
                         $second
                     )
-                        ->where("{$pivotTable}.model_type", $this->getTableModel(Str::plural($firstTable)))
+                        ->where("{$pivotTable}.model_type", $this->getTableModel($firstTable))
                         ->where("{$pivotTable}.model_id", $modelId);
                 } catch (Exception $e) {
                     throw $e;
