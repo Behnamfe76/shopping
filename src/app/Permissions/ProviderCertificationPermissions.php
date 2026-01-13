@@ -14,165 +14,165 @@ class ProviderCertificationPermissions
             'provider-certification.view' => [
                 'name' => 'View Provider Certifications',
                 'description' => 'Can view provider certification information',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ],
             'provider-certification.create' => [
                 'name' => 'Create Provider Certifications',
                 'description' => 'Can create new provider certifications',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ],
             'provider-certification.edit' => [
                 'name' => 'Edit Provider Certifications',
                 'description' => 'Can edit existing provider certifications',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ],
             'provider-certification.delete' => [
                 'name' => 'Delete Provider Certifications',
                 'description' => 'Can delete provider certifications',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ],
 
             // Verification permissions
             'provider-certification.verify' => [
                 'name' => 'Verify Provider Certifications',
                 'description' => 'Can verify provider certifications',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ],
             'provider-certification.reject' => [
                 'name' => 'Reject Provider Certifications',
                 'description' => 'Can reject provider certification verification',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ],
             'provider-certification.require-update' => [
                 'name' => 'Require Provider Certification Updates',
                 'description' => 'Can require updates to provider certifications',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ],
 
             // Status management permissions
             'provider-certification.activate' => [
                 'name' => 'Activate Provider Certifications',
                 'description' => 'Can activate provider certifications',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ],
             'provider-certification.suspend' => [
                 'name' => 'Suspend Provider Certifications',
                 'description' => 'Can suspend provider certifications',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ],
             'provider-certification.revoke' => [
                 'name' => 'Revoke Provider Certifications',
                 'description' => 'Can revoke provider certifications',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ],
             'provider-certification.renew' => [
                 'name' => 'Renew Provider Certifications',
                 'description' => 'Can renew provider certifications',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ],
             'provider-certification.expire' => [
                 'name' => 'Expire Provider Certifications',
                 'description' => 'Can mark provider certifications as expired',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ],
 
             // Ownership-based permissions
             'provider-certification.view-own' => [
                 'name' => 'View Own Provider Certifications',
                 'description' => 'Can view their own provider certifications',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ],
             'provider-certification.create-own' => [
                 'name' => 'Create Own Provider Certifications',
                 'description' => 'Can create their own provider certifications',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ],
             'provider-certification.edit-own' => [
                 'name' => 'Edit Own Provider Certifications',
                 'description' => 'Can edit their own provider certifications',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ],
             'provider-certification.delete-own' => [
                 'name' => 'Delete Own Provider Certifications',
                 'description' => 'Can delete their own provider certifications',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ],
 
             // Administrative permissions
             'provider-certification.view-all' => [
                 'name' => 'View All Provider Certifications',
                 'description' => 'Can view all provider certifications in the system',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ],
             'provider-certification.manage-all' => [
                 'name' => 'Manage All Provider Certifications',
                 'description' => 'Can manage all provider certifications in the system',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ],
 
             // Data management permissions
             'provider-certification.export' => [
                 'name' => 'Export Provider Certification Data',
                 'description' => 'Can export provider certification data',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ],
             'provider-certification.import' => [
                 'name' => 'Import Provider Certification Data',
                 'description' => 'Can import provider certification data',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ],
 
             // Analytics and reporting permissions
             'provider-certification.statistics' => [
                 'name' => 'View Provider Certification Statistics',
                 'description' => 'Can view provider certification statistics and reports',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ],
             'provider-certification.analytics' => [
                 'name' => 'Access Provider Certification Analytics',
                 'description' => 'Can access advanced provider certification analytics',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ],
 
             // Workflow permissions
             'provider-certification.approve' => [
                 'name' => 'Approve Provider Certifications',
                 'description' => 'Can approve provider certification workflows',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ],
             'provider-certification.review' => [
                 'name' => 'Review Provider Certifications',
                 'description' => 'Can review provider certifications for approval',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ],
             'provider-certification.escalate' => [
                 'name' => 'Escalate Provider Certifications',
                 'description' => 'Can escalate provider certification issues',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ],
 
             // Notification permissions
             'provider-certification.notify' => [
                 'name' => 'Send Provider Certification Notifications',
                 'description' => 'Can send notifications related to provider certifications',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ],
             'provider-certification.remind' => [
                 'name' => 'Send Provider Certification Reminders',
                 'description' => 'Can send reminders for expiring certifications',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ],
 
             // Audit and compliance permissions
             'provider-certification.audit' => [
                 'name' => 'Audit Provider Certifications',
                 'description' => 'Can audit provider certification records',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ],
             'provider-certification.compliance' => [
                 'name' => 'Manage Provider Certification Compliance',
                 'description' => 'Can manage compliance requirements for provider certifications',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ],
         ];
     }

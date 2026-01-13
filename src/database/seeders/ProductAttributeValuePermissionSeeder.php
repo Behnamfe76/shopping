@@ -64,7 +64,7 @@ class ProductAttributeValuePermissionSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'api']);
         }
 
         // Create roles
@@ -76,7 +76,7 @@ class ProductAttributeValuePermissionSeeder extends Seeder
 
     private function createProductAttributeValueManagerRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'product-attribute-value-manager', 'guard_name' => 'web']);
+        $role = Role::firstOrCreate(['name' => 'product-attribute-value-manager', 'guard_name' => 'api']);
 
         $permissions = [
             'product-attribute-value.view.any',
@@ -102,7 +102,7 @@ class ProductAttributeValuePermissionSeeder extends Seeder
 
     private function createProductAttributeValueEditorRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'product-attribute-value-editor', 'guard_name' => 'web']);
+        $role = Role::firstOrCreate(['name' => 'product-attribute-value-editor', 'guard_name' => 'api']);
 
         $permissions = [
             'product-attribute-value.view.any',
@@ -124,7 +124,7 @@ class ProductAttributeValuePermissionSeeder extends Seeder
 
     private function createProductAttributeValueViewerRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'product-attribute-value-viewer', 'guard_name' => 'web']);
+        $role = Role::firstOrCreate(['name' => 'product-attribute-value-viewer', 'guard_name' => 'api']);
 
         $permissions = [
             'product-attribute-value.view.any',
@@ -141,7 +141,7 @@ class ProductAttributeValuePermissionSeeder extends Seeder
 
     private function createProductAttributeValueCreatorRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'product-attribute-value-creator', 'guard_name' => 'web']);
+        $role = Role::firstOrCreate(['name' => 'product-attribute-value-creator', 'guard_name' => 'api']);
 
         $permissions = [
             'product-attribute-value.view.own',

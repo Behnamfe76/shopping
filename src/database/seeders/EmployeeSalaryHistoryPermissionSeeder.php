@@ -29,7 +29,7 @@ class EmployeeSalaryHistoryPermissionSeeder extends Seeder
         foreach ($permissions as $permission => $description) {
             Permission::firstOrCreate([
                 'name' => $permission,
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ], [
                 'description' => $description,
             ]);
@@ -41,7 +41,7 @@ class EmployeeSalaryHistoryPermissionSeeder extends Seeder
         $rolePermissions = EmployeeSalaryHistoryPermissions::getRolePermissions();
 
         foreach ($rolePermissions as $roleName => $permissions) {
-            $role = Role::firstOrCreate(['name' => $roleName, 'guard_name' => 'web']);
+            $role = Role::firstOrCreate(['name' => $roleName, 'guard_name' => 'api']);
 
             foreach ($permissions as $permission) {
                 $permissionModel = Permission::where('name', $permission)->first();
@@ -53,7 +53,7 @@ class EmployeeSalaryHistoryPermissionSeeder extends Seeder
 
         // Assign default permissions to all authenticated users
         $defaultPermissions = EmployeeSalaryHistoryPermissions::getDefaultPermissions();
-        $authenticatedRole = Role::firstOrCreate(['name' => 'authenticated', 'guard_name' => 'web']);
+        $authenticatedRole = Role::firstOrCreate(['name' => 'authenticated', 'guard_name' => 'api']);
 
         foreach ($defaultPermissions as $permission) {
             $permissionModel = Permission::where('name', $permission)->first();

@@ -22,43 +22,43 @@ class ProviderPermissionSeeder extends Seeder
             // Provider CRUD permissions
             [
                 'name' => 'providers.viewAny',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'name' => 'providers.view',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'name' => 'providers.create',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'name' => 'providers.update',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'name' => 'providers.delete',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'name' => 'providers.restore',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'name' => 'providers.forceDelete',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -66,19 +66,19 @@ class ProviderPermissionSeeder extends Seeder
             // Provider status management permissions
             [
                 'name' => 'providers.activate',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'name' => 'providers.deactivate',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'name' => 'providers.suspend',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -86,13 +86,13 @@ class ProviderPermissionSeeder extends Seeder
             // Provider rating and quality permissions
             [
                 'name' => 'providers.manageRating',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'name' => 'providers.manageQuality',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -100,7 +100,7 @@ class ProviderPermissionSeeder extends Seeder
             // Provider financial permissions
             [
                 'name' => 'providers.manageFinancial',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -108,7 +108,7 @@ class ProviderPermissionSeeder extends Seeder
             // Provider contract permissions
             [
                 'name' => 'providers.manageContract',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -116,7 +116,7 @@ class ProviderPermissionSeeder extends Seeder
             // Provider analytics permissions
             [
                 'name' => 'providers.viewAnalytics',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -124,13 +124,13 @@ class ProviderPermissionSeeder extends Seeder
             // Provider data import/export permissions
             [
                 'name' => 'providers.exportData',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'name' => 'providers.importData',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -138,7 +138,7 @@ class ProviderPermissionSeeder extends Seeder
             // Provider sensitive data permissions
             [
                 'name' => 'providers.viewSensitiveData',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -163,19 +163,19 @@ class ProviderPermissionSeeder extends Seeder
         $roles = [
             [
                 'name' => 'Provider Manager',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'name' => 'Provider Analyst',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'name' => 'Provider Quality Manager',
-                'guard_name' => 'web',
+                'guard_name' => 'api',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

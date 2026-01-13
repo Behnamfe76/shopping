@@ -158,7 +158,7 @@ class SeedRequiredDataCommand extends Command
         $this->info('Seeding roles...');
 
         // Get the guard name from the User model or use default
-        $guardName = config('auth.defaults.guard', 'web');
+        $guardName = config('auth.defaults.guard', 'staff');
 
         $roles = [
             'super-admin' => 'Super Administrator - Full access to everything',
@@ -191,7 +191,7 @@ class SeedRequiredDataCommand extends Command
         // Super Admin gets all permissions
         $superAdmin = Role::where('name', 'super-admin')->first();
         if ($superAdmin) {
-            $superAdmin->givePermissionTo(Permission::where('guard_name', 'web')->get());
+            $superAdmin->givePermissionTo(Permission::where('guard_name' , 'api')->get());
             $this->info('Assigned all permissions to super-admin');
         }
 
@@ -201,7 +201,7 @@ class SeedRequiredDataCommand extends Command
             $adminPermissions = Permission::whereNotIn('name', [
                 'manage-system-settings',
                 'manage-roles-permissions',
-            ])->where('guard_name', 'web')->get();
+            ])->where('guard_name', 'api')->get();
             $admin->givePermissionTo($adminPermissions);
             $this->info('Assigned admin permissions');
         }

@@ -77,7 +77,10 @@ class ProductAttributePermissionSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission]);
+            Permission::firstOrCreate([
+                'name' => $permission,
+                'guard_name' => 'api'
+            ]);
         }
 
         // Create roles
@@ -89,7 +92,10 @@ class ProductAttributePermissionSeeder extends Seeder
 
     private function createProductAttributeManagerRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'product-attribute-manager']);
+        $role = Role::firstOrCreate([
+            'name' => 'product-attribute-manager',
+            'guard_name' => 'api'
+        ]);
 
         $managerPermissions = [
             'product-attribute.view.any',
@@ -118,7 +124,10 @@ class ProductAttributePermissionSeeder extends Seeder
 
     private function createProductAttributeEditorRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'product-attribute-editor']);
+        $role = Role::firstOrCreate([
+            'name' => 'product-attribute-editor',
+            'guard_name' => 'api'
+        ]);
 
         $editorPermissions = [
             'product-attribute.view.any',
@@ -141,7 +150,10 @@ class ProductAttributePermissionSeeder extends Seeder
 
     private function createProductAttributeViewerRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'product-attribute-viewer']);
+        $role = Role::firstOrCreate([
+            'name' => 'product-attribute-viewer',
+            'guard_name' => 'api'
+        ]);
 
         $viewerPermissions = [
             'product-attribute.view.any',
@@ -155,7 +167,10 @@ class ProductAttributePermissionSeeder extends Seeder
 
     private function createProductAttributeCreatorRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'product-attribute-creator']);
+        $role = Role::firstOrCreate([
+            'name' => 'product-attribute-creator',
+            'guard_name' => 'api'
+        ]);
 
         $creatorPermissions = [
             'product-attribute.view.own',

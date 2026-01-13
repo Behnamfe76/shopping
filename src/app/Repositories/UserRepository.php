@@ -2,14 +2,14 @@
 
 namespace Fereydooni\Shopping\app\Repositories;
 
-use Fereydooni\Shopping\app\Enums\UserStatus;
-use Fereydooni\Shopping\app\Models\User;
-use Fereydooni\Shopping\app\Repositories\Interfaces\UserRepositoryInterface;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Pagination\CursorPaginator;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
+use App\Models\User;
 use Illuminate\Support\Str;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Database\Eloquent\Collection;
+use Fereydooni\Shopping\app\Enums\UserStatus;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Fereydooni\Shopping\app\Repositories\Interfaces\UserRepositoryInterface;
 
 class UserRepository implements UserRepositoryInterface
 {

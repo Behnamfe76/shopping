@@ -59,7 +59,7 @@ class ShipmentItemPermissionSeeder extends Seeder
 
         // Create permissions
         foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'api']);
         }
 
         // Create roles and assign permissions
@@ -74,7 +74,7 @@ class ShipmentItemPermissionSeeder extends Seeder
      */
     private function createShipmentItemManagerRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'shipment-item-manager', 'guard_name' => 'web']);
+        $role = Role::firstOrCreate(['name' => 'shipment-item-manager', 'guard_name' => 'api']);
 
         $permissions = [
             'shipment-item.view.any',
@@ -98,7 +98,7 @@ class ShipmentItemPermissionSeeder extends Seeder
      */
     private function createShipmentItemEditorRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'shipment-item-editor', 'guard_name' => 'web']);
+        $role = Role::firstOrCreate(['name' => 'shipment-item-editor', 'guard_name' => 'api']);
 
         $permissions = [
             'shipment-item.view.any',
@@ -119,7 +119,7 @@ class ShipmentItemPermissionSeeder extends Seeder
      */
     private function createShipmentItemViewerRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'shipment-item-viewer', 'guard_name' => 'web']);
+        $role = Role::firstOrCreate(['name' => 'shipment-item-viewer', 'guard_name' => 'api']);
 
         $permissions = [
             'shipment-item.view.any',
@@ -136,7 +136,7 @@ class ShipmentItemPermissionSeeder extends Seeder
      */
     private function createWarehouseManagerRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'warehouse-manager', 'guard_name' => 'web']);
+        $role = Role::firstOrCreate(['name' => 'warehouse-manager', 'guard_name' => 'api']);
 
         $permissions = [
             'shipment-item.view.own',

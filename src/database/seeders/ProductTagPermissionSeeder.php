@@ -81,7 +81,10 @@ class ProductTagPermissionSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission]);
+            Permission::firstOrCreate([
+                'name' => $permission,
+                'guard_name' => 'api'
+            ]);
         }
 
         // Create roles
@@ -93,7 +96,10 @@ class ProductTagPermissionSeeder extends Seeder
 
     private function createProductTagManagerRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'product-tag-manager']);
+        $role = Role::firstOrCreate([
+            'name' => 'product-tag-manager',
+            'guard_name' => 'api'
+        ]);
 
         $managerPermissions = [
             'product-tag.view.any',
@@ -119,7 +125,10 @@ class ProductTagPermissionSeeder extends Seeder
 
     private function createProductTagEditorRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'product-tag-editor']);
+        $role = Role::firstOrCreate([
+            'name' => 'product-tag-editor',
+            'guard_name' => 'api'
+        ]);
 
         $editorPermissions = [
             'product-tag.view.any',
@@ -140,7 +149,10 @@ class ProductTagPermissionSeeder extends Seeder
 
     private function createProductTagViewerRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'product-tag-viewer']);
+        $role = Role::firstOrCreate([
+            'name' => 'product-tag-viewer',
+            'guard_name' => 'api'
+        ]);
 
         $viewerPermissions = [
             'product-tag.view.any',
@@ -155,7 +167,10 @@ class ProductTagPermissionSeeder extends Seeder
 
     private function createProductTagCreatorRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'product-tag-creator']);
+        $role = Role::firstOrCreate([
+            'name' => 'product-tag-creator',
+            'guard_name' => 'api'
+        ]);
 
         $creatorPermissions = [
             'product-tag.view.own',

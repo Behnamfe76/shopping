@@ -311,7 +311,7 @@ class EmployeeTrainingPermissions
         foreach (self::PERMISSIONS as $permission => $description) {
             Permission::firstOrCreate([
                 'name' => $permission,
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ], [
                 'description' => $description,
             ]);

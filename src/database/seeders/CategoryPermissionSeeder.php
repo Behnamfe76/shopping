@@ -58,7 +58,7 @@ class CategoryPermissionSeeder extends Seeder
 
         // Create permissions
         foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'api']);
         }
 
         // Create roles and assign permissions
@@ -68,11 +68,11 @@ class CategoryPermissionSeeder extends Seeder
     private function createRoles(): void
     {
         // Super Admin Role - All permissions
-        $superAdmin = Role::firstOrCreate(['name' => 'super-admin', 'guard_name' => 'web']);
-        $superAdmin->givePermissionTo(Permission::where('guard_name', 'web')->get());
+        $superAdmin = Role::firstOrCreate(['name' => 'super-admin', 'guard_name' => 'api']);
+        $superAdmin->givePermissionTo(Permission::where('guard_name', 'api')->get());
 
         // Category Manager Role - Full category management
-        $categoryManager = Role::firstOrCreate(['name' => 'category-manager', 'guard_name' => 'web']);
+        $categoryManager = Role::firstOrCreate(['name' => 'category-manager', 'guard_name' => 'api']);
         $categoryManager->givePermissionTo([
             'category.view.any',
             'category.create.any',
@@ -90,7 +90,7 @@ class CategoryPermissionSeeder extends Seeder
         ]);
 
         // Category Editor Role - Can edit but not delete
-        $categoryEditor = Role::firstOrCreate(['name' => 'category-editor', 'guard_name' => 'web']);
+        $categoryEditor = Role::firstOrCreate(['name' => 'category-editor', 'guard_name' => 'api']);
         $categoryEditor->givePermissionTo([
             'category.view.any',
             'category.create.any',
@@ -103,7 +103,7 @@ class CategoryPermissionSeeder extends Seeder
         ]);
 
         // Category Viewer Role - Read-only access
-        $categoryViewer = Role::firstOrCreate(['name' => 'category-viewer', 'guard_name' => 'web']);
+        $categoryViewer = Role::firstOrCreate(['name' => 'category-viewer', 'guard_name' => 'api']);
         $categoryViewer->givePermissionTo([
             'category.view.any',
             'category.tree.view',
@@ -111,7 +111,7 @@ class CategoryPermissionSeeder extends Seeder
         ]);
 
         // Store Manager Role - Limited category management
-        $storeManager = Role::firstOrCreate(['name' => 'store-manager', 'guard_name' => 'web']);
+        $storeManager = Role::firstOrCreate(['name' => 'store-manager', 'guard_name' => 'api']);
         $storeManager->givePermissionTo([
             'category.view.any',
             'category.create.any',

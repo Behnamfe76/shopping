@@ -2,10 +2,10 @@
 
 namespace Fereydooni\Shopping\app\Repositories\Interfaces;
 
-use Fereydooni\Shopping\App\Models\User;
+use App\Models\User;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Pagination\Paginator;
 
 interface UserRepositoryInterface
 {

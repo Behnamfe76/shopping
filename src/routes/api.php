@@ -37,7 +37,7 @@ use Fereydooni\Shopping\app\Models\ProductTag;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sanctum', 'throttle:60,1', 'setlocale', SubstituteBindings::class])->group(function () {
+Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:api', 'throttle:60,1', 'setlocale', SubstituteBindings::class])->group(function () {
     // ProductTag API routes
     Route::prefix('product-tags')->name('product-tags.')->group(function () {
         // List product tags
@@ -1283,9 +1283,6 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
         // List customers
         Route::get('/', [ApiUserController::class, 'index'])->name('index');
 
-        // Get customer's type list
-        Route::get('/user-types/cursor-all', [ApiUserController::class, 'userTypes'])->name('user-types');
-
         // Create user
         Route::post('/', [ApiUserController::class, 'store'])->name('store');
 
@@ -1300,8 +1297,8 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
             //         // Update user (partial update)
             //         Route::patch('/', [ApiUserController::class, 'update'])->name('update.partial');
 
-            //         // Delete user
-            //         Route::delete('/', [ApiUserController::class, 'destroy'])->name('destroy');
+            // Delete user
+            Route::delete('/', [ApiUserController::class, 'destroy'])->name('destroy');
 
             //         // Customer status management
             //         Route::post('/activate', [ApiUserController::class, 'activate'])->name('activate');
@@ -1316,7 +1313,7 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:sa
         Route::get('/', [ApiRoleController::class, 'index'])->name('index');
 
         // Get role's status list
-        Route::get('/roles/cursor-all', [ApiRoleController::class, 'roles'])->name('roles');
+        Route::get('/cursor-all', [ApiRoleController::class, 'roles'])->name('roles');
 
         // Create role
         Route::post('/', [ApiRoleController::class, 'store'])->name('store');

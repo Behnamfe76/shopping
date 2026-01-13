@@ -172,7 +172,7 @@ class EmployeeEmergencyContactPermissions
         foreach (self::PERMISSIONS as $permission => $description) {
             Permission::firstOrCreate([
                 'name' => $permission,
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ], [
                 'display_name' => $description,
                 'description' => $description,
@@ -186,7 +186,7 @@ class EmployeeEmergencyContactPermissions
     public static function assignPermissionsToRoles(): void
     {
         foreach (self::ROLE_PERMISSIONS as $roleName => $permissions) {
-            $role = Role::firstOrCreate(['name' => $roleName, 'guard_name' => 'web']);
+            $role = Role::firstOrCreate(['name' => $roleName, 'guard_name' => 'api']);
 
             foreach ($permissions as $permission) {
                 $permissionModel = Permission::where('name', $permission)->first();

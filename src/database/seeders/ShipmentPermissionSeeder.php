@@ -147,7 +147,7 @@ class ShipmentPermissionSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'api']);
         }
 
         // Create roles
@@ -164,7 +164,7 @@ class ShipmentPermissionSeeder extends Seeder
      */
     private function createShipmentManagerRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'shipment-manager', 'guard_name' => 'web']);
+        $role = Role::firstOrCreate(['name' => 'shipment-manager', 'guard_name' => 'api']);
 
         $permissions = [
             'shipment.view.any',
@@ -231,7 +231,7 @@ class ShipmentPermissionSeeder extends Seeder
      */
     private function createShipmentDispatcherRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'shipment-dispatcher', 'guard_name' => 'web']);
+        $role = Role::firstOrCreate(['name' => 'shipment-dispatcher', 'guard_name' => 'api']);
 
         $permissions = [
             'shipment.view.any',
@@ -275,7 +275,7 @@ class ShipmentPermissionSeeder extends Seeder
      */
     private function createShipmentViewerRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'shipment-viewer', 'guard_name' => 'web']);
+        $role = Role::firstOrCreate(['name' => 'shipment-viewer', 'guard_name' => 'api']);
 
         $permissions = [
             'shipment.view.any',
@@ -297,7 +297,7 @@ class ShipmentPermissionSeeder extends Seeder
      */
     private function createShipmentCreatorRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'shipment-creator', 'guard_name' => 'web']);
+        $role = Role::firstOrCreate(['name' => 'shipment-creator', 'guard_name' => 'api']);
 
         $permissions = [
             'shipment.view.own',
@@ -323,7 +323,7 @@ class ShipmentPermissionSeeder extends Seeder
      */
     private function createShipmentTrackerRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'shipment-tracker', 'guard_name' => 'web']);
+        $role = Role::firstOrCreate(['name' => 'shipment-tracker', 'guard_name' => 'api']);
 
         $permissions = [
             'shipment.view.any',
@@ -352,7 +352,7 @@ class ShipmentPermissionSeeder extends Seeder
      */
     private function createShipmentAnalystRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'shipment-analyst', 'guard_name' => 'web']);
+        $role = Role::firstOrCreate(['name' => 'shipment-analyst', 'guard_name' => 'api']);
 
         $permissions = [
             'shipment.view.any',

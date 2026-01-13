@@ -75,7 +75,7 @@ class AddressPermissionSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'api']);
         }
 
         $this->createRoles();
@@ -84,11 +84,11 @@ class AddressPermissionSeeder extends Seeder
     private function createRoles(): void
     {
         // Super Admin - Full access to everything
-        $superAdmin = Role::firstOrCreate(['name' => 'super-admin', 'guard_name' => 'web']);
-        $superAdmin->givePermissionTo(Permission::where('guard_name', 'web')->get());
+        $superAdmin = Role::firstOrCreate(['name' => 'super-admin', 'guard_name' => 'api']);
+        $superAdmin->givePermissionTo(Permission::where('guard_name', 'api')->get());
 
         // Address Manager - Full address management for all users
-        $addressManager = Role::firstOrCreate(['name' => 'address-manager', 'guard_name' => 'web']);
+        $addressManager = Role::firstOrCreate(['name' => 'address-manager', 'guard_name' => 'api']);
         $addressManager->givePermissionTo([
             'address.view.any',
             'address.create.any',
@@ -115,7 +115,7 @@ class AddressPermissionSeeder extends Seeder
         ]);
 
         // Address Editor - Can edit addresses but not delete
-        $addressEditor = Role::firstOrCreate(['name' => 'address-editor', 'guard_name' => 'web']);
+        $addressEditor = Role::firstOrCreate(['name' => 'address-editor', 'guard_name' => 'api']);
         $addressEditor->givePermissionTo([
             'address.view.any',
             'address.create.any',
@@ -137,7 +137,7 @@ class AddressPermissionSeeder extends Seeder
         ]);
 
         // Address Viewer - Read-only access to addresses
-        $addressViewer = Role::firstOrCreate(['name' => 'address-viewer', 'guard_name' => 'web']);
+        $addressViewer = Role::firstOrCreate(['name' => 'address-viewer', 'guard_name' => 'api']);
         $addressViewer->givePermissionTo([
             'address.view.any',
             'address.search.any',
@@ -148,7 +148,7 @@ class AddressPermissionSeeder extends Seeder
         ]);
 
         // Customer - Can manage own addresses only
-        $customer = Role::firstOrCreate(['name' => 'customer', 'guard_name' => 'web']);
+        $customer = Role::firstOrCreate(['name' => 'customer', 'guard_name' => 'api']);
         $customer->givePermissionTo([
             'address.view.own',
             'address.create.own',
@@ -170,7 +170,7 @@ class AddressPermissionSeeder extends Seeder
         ]);
 
         // Billing Manager - Can manage billing addresses
-        $billingManager = Role::firstOrCreate(['name' => 'billing-manager', 'guard_name' => 'web']);
+        $billingManager = Role::firstOrCreate(['name' => 'billing-manager', 'guard_name' => 'api']);
         $billingManager->givePermissionTo([
             'address.view.any',
             'address.create.billing',
@@ -185,7 +185,7 @@ class AddressPermissionSeeder extends Seeder
         ]);
 
         // Shipping Manager - Can manage shipping addresses
-        $shippingManager = Role::firstOrCreate(['name' => 'shipping-manager', 'guard_name' => 'web']);
+        $shippingManager = Role::firstOrCreate(['name' => 'shipping-manager', 'guard_name' => 'api']);
         $shippingManager->givePermissionTo([
             'address.view.any',
             'address.create.shipping',
@@ -200,7 +200,7 @@ class AddressPermissionSeeder extends Seeder
         ]);
 
         // Store Manager - Can manage addresses for their store
-        $storeManager = Role::firstOrCreate(['name' => 'store-manager', 'guard_name' => 'web']);
+        $storeManager = Role::firstOrCreate(['name' => 'store-manager', 'guard_name' => 'api']);
         $storeManager->givePermissionTo([
             'address.view.any',
             'address.create.any',

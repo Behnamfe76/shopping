@@ -40,7 +40,7 @@ class CustomerWishlistPermissionSeeder extends Seeder
         foreach ($permissions as $permission => $description) {
             Permission::firstOrCreate([
                 'name' => $permission,
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ], [
                 // 'description' => $description,
             ]);

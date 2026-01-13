@@ -86,7 +86,7 @@ class ProviderContractPermissions
             if (! $permission) {
                 DB::table('permissions')->insert([
                     'name' => $name,
-                    'guard_name' => 'web',
+                    'guard_name' => 'api',
                     'description' => $description,
                     'created_at' => now(),
                     'updated_at' => now(),

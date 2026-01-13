@@ -78,7 +78,10 @@ class ProductMetaPermissionSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission]);
+            Permission::firstOrCreate([
+                'name' => $permission,
+                'guard_name' => 'api'
+            ]);
         }
 
         // Create roles
@@ -90,7 +93,10 @@ class ProductMetaPermissionSeeder extends Seeder
 
     private function createProductMetaManagerRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'product-meta-manager']);
+        $role = Role::firstOrCreate([
+            'name' => 'product-meta-manager',
+            'guard_name' => 'api'
+        ]);
 
         $managerPermissions = [
             'product-meta.view.any',
@@ -116,7 +122,10 @@ class ProductMetaPermissionSeeder extends Seeder
 
     private function createProductMetaEditorRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'product-meta-editor']);
+        $role = Role::firstOrCreate([
+            'name' => 'product-meta-editor',
+            'guard_name' => 'api'
+        ]);
 
         $editorPermissions = [
             'product-meta.view.any',
@@ -138,7 +147,10 @@ class ProductMetaPermissionSeeder extends Seeder
 
     private function createProductMetaViewerRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'product-meta-viewer']);
+        $role = Role::firstOrCreate([
+            'name' => 'product-meta-viewer',
+            'guard_name' => 'api'
+        ]);
 
         $viewerPermissions = [
             'product-meta.view.public',
@@ -154,7 +166,10 @@ class ProductMetaPermissionSeeder extends Seeder
 
     private function createProductMetaCreatorRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'product-meta-creator']);
+        $role = Role::firstOrCreate([
+            'name' => 'product-meta-creator',
+            'guard_name' => 'api'
+        ]);
 
         $creatorPermissions = [
             'product-meta.view.own',

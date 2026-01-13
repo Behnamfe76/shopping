@@ -2,11 +2,11 @@
 
 namespace Fereydooni\Shopping\app\Services;
 
-use Fereydooni\Shopping\App\Models\User;
-use Fereydooni\Shopping\app\Repositories\Interfaces\UserRepositoryInterface;
-use Fereydooni\Shopping\app\Traits\HasCrudOperations;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Fereydooni\Shopping\app\Traits\HasCrudOperations;
+use Fereydooni\Shopping\app\Repositories\Interfaces\UserRepositoryInterface;
 
 class UserService
 {
@@ -14,8 +14,7 @@ class UserService
 
     public function __construct(
         private readonly UserRepositoryInterface $repository
-    )
-    {
+    ) {
         $this->model = User::class;
     }
 
@@ -26,7 +25,26 @@ class UserService
             $data['password'] = Hash::make($data['password']);
             $user = $this->repository->create($data);
 
-            $user->syncRoles($data['roles']);
+            $user->assignRole(array_map(fn($item) => (int)$item, $data['roles']));
+            DB::commit();
+
+            return $user;
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            throw $exception;
+        }
+    }
+
+    public function update(User $user, array $data): User
+    {
+        try {
+            DB::beginTransaction();
+            if ($data['password']) {
+                $data['password'] = Hash::make($data['password']);
+            }
+            $user->update($data);
+
+            $user->syncRoles(array_map(fn($item) => (int)$item, $data['roles']));
             DB::commit();
 
             return $user;

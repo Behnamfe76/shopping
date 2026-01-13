@@ -53,7 +53,10 @@ class OrderStatusHistoryPermissionSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission]);
+            Permission::firstOrCreate([
+                'name' => $permission,
+                'guard_name' => 'api'
+            ]);
         }
 
         // Create roles
@@ -68,7 +71,10 @@ class OrderStatusHistoryPermissionSeeder extends Seeder
      */
     private function createOrderStatusHistoryManagerRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'order-status-history-manager']);
+        $role = Role::firstOrCreate([
+            'name' => 'order-status-history-manager',
+            'guard_name' => 'api'
+        ]);
 
         $permissions = [
             'order-status-history.view',
@@ -107,7 +113,10 @@ class OrderStatusHistoryPermissionSeeder extends Seeder
      */
     private function createOrderStatusHistoryViewerRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'order-status-history-viewer']);
+        $role = Role::firstOrCreate([
+            'name' => 'order-status-history-viewer',
+            'guard_name' => 'api'
+        ]);
 
         $permissions = [
             'order-status-history.view',
@@ -129,7 +138,10 @@ class OrderStatusHistoryPermissionSeeder extends Seeder
      */
     private function createOrderStatusHistoryAnalystRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'order-status-history-analyst']);
+        $role = Role::firstOrCreate([
+            'name' => 'order-status-history-analyst',
+            'guard_name' => 'api'
+        ]);
 
         $permissions = [
             'order-status-history.view',
@@ -156,7 +168,10 @@ class OrderStatusHistoryPermissionSeeder extends Seeder
      */
     private function createOrderManagerRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'order-manager']);
+        $role = Role::firstOrCreate([
+            'name' => 'order-manager',
+            'guard_name' => 'api'
+        ]);
 
         $permissions = [
             'order-status-history.view',

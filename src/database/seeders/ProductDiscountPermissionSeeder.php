@@ -79,7 +79,7 @@ class ProductDiscountPermissionSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'api']);
         }
 
         // Create roles
@@ -94,7 +94,7 @@ class ProductDiscountPermissionSeeder extends Seeder
      */
     private function createProductDiscountManagerRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'product-discount-manager', 'guard_name' => 'web']);
+        $role = Role::firstOrCreate(['name' => 'product-discount-manager', 'guard_name' => 'api']);
 
         $permissions = Permission::where('name', 'like', 'product-discount.%')->pluck('id');
         $role->syncPermissions($permissions);
@@ -105,7 +105,7 @@ class ProductDiscountPermissionSeeder extends Seeder
      */
     private function createProductDiscountEditorRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'product-discount-editor', 'guard_name' => 'web']);
+        $role = Role::firstOrCreate(['name' => 'product-discount-editor', 'guard_name' => 'api']);
 
         $permissions = Permission::whereIn('name', [
             'product-discount.view',
@@ -151,7 +151,7 @@ class ProductDiscountPermissionSeeder extends Seeder
      */
     private function createProductDiscountViewerRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'product-discount-viewer', 'guard_name' => 'web']);
+        $role = Role::firstOrCreate(['name' => 'product-discount-viewer', 'guard_name' => 'api']);
 
         $permissions = Permission::whereIn('name', [
             'product-discount.view',
@@ -179,7 +179,7 @@ class ProductDiscountPermissionSeeder extends Seeder
      */
     private function createProductDiscountCreatorRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'product-discount-creator', 'guard_name' => 'web']);
+        $role = Role::firstOrCreate(['name' => 'product-discount-creator', 'guard_name' => 'api']);
 
         $permissions = Permission::whereIn('name', [
             'product-discount.view',

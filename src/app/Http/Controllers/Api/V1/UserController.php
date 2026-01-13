@@ -8,7 +8,7 @@ use Fereydooni\Shopping\app\Http\Requests\StoreUserRequest;
 use Fereydooni\Shopping\app\Http\Requests\UpdateUserRequest;
 use Fereydooni\Shopping\app\Http\Resources\UserResource;
 use Fereydooni\Shopping\app\Models\User;
-use Fereydooni\Shopping\app\Services\userService;
+use Fereydooni\Shopping\app\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -17,7 +17,7 @@ use Illuminate\Validation\ValidationException;
 class UserController extends Controller
 {
     public function __construct(
-        private userService $userervice
+        private UserService $userervice
     ) {}
 
     /**
@@ -111,10 +111,10 @@ class UserController extends Controller
      */
     public function destroy(User $user): JsonResponse
     {
-        $this->authorize('delete', $user);
+        Gate::authorize('delete', $user);
 
         try {
-            $deleted = $this->userService->deleteUser($user);
+            $deleted = UserFacade::delete($user);
 
             if (! $deleted) {
                 return response()->json([

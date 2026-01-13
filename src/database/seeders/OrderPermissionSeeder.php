@@ -83,7 +83,7 @@ class OrderPermissionSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'api']);
         }
 
         // Create roles
@@ -98,7 +98,7 @@ class OrderPermissionSeeder extends Seeder
      */
     private function createOrderManagerRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'order-manager', 'guard_name' => 'web']);
+        $role = Role::firstOrCreate(['name' => 'order-manager', 'guard_name' => 'api']);
 
         $permissions = Permission::whereIn('name', [
             'order.view.any',
@@ -129,7 +129,7 @@ class OrderPermissionSeeder extends Seeder
      */
     private function createOrderProcessorRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'order-processor', 'guard_name' => 'web']);
+        $role = Role::firstOrCreate(['name' => 'order-processor', 'guard_name' => 'api']);
 
         $permissions = Permission::whereIn('name', [
             'order.view.any',
@@ -152,7 +152,7 @@ class OrderPermissionSeeder extends Seeder
      */
     private function createOrderViewerRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'order-viewer', 'guard_name' => 'web']);
+        $role = Role::firstOrCreate(['name' => 'order-viewer', 'guard_name' => 'api']);
 
         $permissions = Permission::whereIn('name', [
             'order.view.any',
@@ -169,7 +169,7 @@ class OrderPermissionSeeder extends Seeder
      */
     private function createCustomerRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'customer', 'guard_name' => 'web']);
+        $role = Role::firstOrCreate(['name' => 'customer', 'guard_name' => 'api']);
 
         $permissions = Permission::whereIn('name', [
             'order.view.own',

@@ -25,10 +25,10 @@ class UpdateUserRequest extends FormRequest
     {
         return [
             'roles' => 'nullable|array|min:1',
-            'roles.*' => 'required_if:roles|integer|exists:roles,id',
-            'phone' => ['nullable', 'string', Rule::unique('users', 'phone')->ignore($this->user()->id)],
+            'roles.*' => 'required|integer|exists:roles,id',
+            'phone' => ['nullable', 'string', Rule::unique('users', 'phone')->ignore($this->user->id)],
             'name' => 'nullable|string|max:255',
-            'email' => ['nullable', 'string', 'lowercase', 'email', 'max:255', Rule::unique('users', 'email')->ignore($this->user()->id)],
+            'email' => ['nullable', 'string', 'lowercase', 'email', 'max:255', Rule::unique('users', 'email')->ignore($this->user->id)],
             'password' => ['nullable', 'confirmed', Password::defaults()],
         ];
     }

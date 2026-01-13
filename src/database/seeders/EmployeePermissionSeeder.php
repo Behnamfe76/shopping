@@ -53,7 +53,7 @@ class EmployeePermissionSeeder extends Seeder
         foreach ($permissions as $permission => $description) {
             Permission::firstOrCreate([
                 'name' => $permission,
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ], [
                 // 'description' => $description,
             ]);
@@ -103,7 +103,7 @@ class EmployeePermissionSeeder extends Seeder
         foreach ($roles as $roleName => $rolePermissions) {
             $role = Role::firstOrCreate([
                 'name' => $roleName,
-                'guard_name' => 'web',
+                'guard_name' => 'api',
             ]);
 
             $role->syncPermissions($rolePermissions);

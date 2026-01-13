@@ -63,11 +63,17 @@ class UserPermissionSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission]);
+            Permission::firstOrCreate([
+                'name' => $permission,
+                'guard_name' => 'api'
+            ]);
         }
 
         // Create users management role
-        $usersManagerRole = Role::firstOrCreate(['name' => 'users-manager']);
+        $usersManagerRole = Role::firstOrCreate([
+            'name' => 'users-manager',
+            'guard_name' => 'api'
+        ]);
 
         // Assign permissions to users manager role
         $usersManagerRole->givePermissionTo([
@@ -94,13 +100,19 @@ class UserPermissionSeeder extends Seeder
         ]);
 
         // Create users admin role
-        $usersAdminRole = Role::firstOrCreate(['name' => 'users-admin']);
+        $usersAdminRole = Role::firstOrCreate([
+            'name' => 'users-admin',
+            'guard_name' => 'api'
+        ]);
 
         // Assign all permissions to users admin role
         $usersAdminRole->givePermissionTo($permissions);
 
         // Create users viewer role
-        $usersViewerRole = Role::firstOrCreate(['name' => 'users-viewer']);
+        $usersViewerRole = Role::firstOrCreate([
+            'name' => 'users-viewer',
+            'guard_name' => 'api'
+        ]);
 
         // Assign read-only permissions to users viewer role
         $usersViewerRole->givePermissionTo([
@@ -118,7 +130,10 @@ class UserPermissionSeeder extends Seeder
         ]);
 
         // Create users support role
-        $usersSupportRole = Role::firstOrCreate(['name' => 'users-support']);
+        $usersSupportRole = Role::firstOrCreate([
+            'name' => 'users-support',
+            'guard_name' => 'api'
+        ]);
 
         // Assign support-related permissions
         $usersSupportRole->givePermissionTo([

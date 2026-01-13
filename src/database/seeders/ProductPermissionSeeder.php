@@ -89,7 +89,10 @@ class ProductPermissionSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission]);
+            Permission::firstOrCreate([
+                'name' => $permission,
+                'guard_name' => 'api'
+            ]);
         }
 
         // Create roles
@@ -102,7 +105,10 @@ class ProductPermissionSeeder extends Seeder
 
     private function createProductManagerRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'product-manager']);
+        $role = Role::firstOrCreate([
+            'name' => 'product-manager',
+            'guard_name' => 'api'
+        ]);
 
         // Full product management for all products
         $permissions = [
@@ -136,7 +142,10 @@ class ProductPermissionSeeder extends Seeder
 
     private function createProductEditorRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'product-editor']);
+        $role = Role::firstOrCreate([
+            'name' => 'product-editor',
+            'guard_name' => 'api'
+        ]);
 
         // Can edit products but not delete
         $permissions = [
@@ -159,7 +168,10 @@ class ProductPermissionSeeder extends Seeder
 
     private function createProductViewerRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'product-viewer']);
+        $role = Role::firstOrCreate([
+            'name' => 'product-viewer',
+            'guard_name' => 'api'
+        ]);
 
         // Read-only access to products
         $permissions = [
@@ -175,7 +187,10 @@ class ProductPermissionSeeder extends Seeder
 
     private function createProductCreatorRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'product-creator']);
+        $role = Role::firstOrCreate([
+            'name' => 'product-creator',
+            'guard_name' => 'api'
+        ]);
 
         // Can create and manage own products
         $permissions = [
@@ -199,7 +214,10 @@ class ProductPermissionSeeder extends Seeder
 
     private function createInventoryManagerRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'inventory-manager']);
+        $role = Role::firstOrCreate([
+            'name' => 'inventory-manager',
+            'guard_name' => 'api'
+        ]);
 
         // Can manage product inventory and stock
         $permissions = [

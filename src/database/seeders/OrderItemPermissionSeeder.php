@@ -72,7 +72,7 @@ class OrderItemPermissionSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'api']);
         }
 
         // Create roles
@@ -87,7 +87,7 @@ class OrderItemPermissionSeeder extends Seeder
      */
     private function createOrderItemManagerRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'order-item-manager', 'guard_name' => 'web']);
+        $role = Role::firstOrCreate(['name' => 'order-item-manager', 'guard_name' => 'api']);
 
         $permissions = [
             'order-item.view.any',
@@ -115,7 +115,7 @@ class OrderItemPermissionSeeder extends Seeder
      */
     private function createOrderItemProcessorRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'order-item-processor', 'guard_name' => 'web']);
+        $role = Role::firstOrCreate(['name' => 'order-item-processor', 'guard_name' => 'api']);
 
         $permissions = [
             'order-item.view.any',
@@ -138,7 +138,7 @@ class OrderItemPermissionSeeder extends Seeder
      */
     private function createOrderItemViewerRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'order-item-viewer', 'guard_name' => 'web']);
+        $role = Role::firstOrCreate(['name' => 'order-item-viewer', 'guard_name' => 'api']);
 
         $permissions = [
             'order-item.view.any',
@@ -155,7 +155,7 @@ class OrderItemPermissionSeeder extends Seeder
      */
     private function createInventoryManagerRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'inventory-manager', 'guard_name' => 'web']);
+        $role = Role::firstOrCreate(['name' => 'inventory-manager', 'guard_name' => 'api']);
 
         $permissions = [
             'order-item.view.any',

@@ -63,7 +63,7 @@ class BrandPermissionSeeder extends Seeder
         ];
 
         foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
+            Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'api']);
         }
 
         // Create roles
@@ -78,7 +78,7 @@ class BrandPermissionSeeder extends Seeder
      */
     private function createBrandManagerRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'brand-manager', 'guard_name' => 'web']);
+        $role = Role::firstOrCreate(['name' => 'brand-manager', 'guard_name' => 'api']);
 
         $permissions = Permission::where('name', 'like', 'brand.%')->pluck('id');
         $role->syncPermissions($permissions);
@@ -89,7 +89,7 @@ class BrandPermissionSeeder extends Seeder
      */
     private function createBrandEditorRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'brand-editor', 'guard_name' => 'web']);
+        $role = Role::firstOrCreate(['name' => 'brand-editor', 'guard_name' => 'api']);
 
         $permissions = Permission::whereIn('name', [
             'brand.view',
@@ -124,7 +124,7 @@ class BrandPermissionSeeder extends Seeder
      */
     private function createBrandViewerRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'brand-viewer', 'guard_name' => 'web']);
+        $role = Role::firstOrCreate(['name' => 'brand-viewer', 'guard_name' => 'api']);
 
         $permissions = Permission::whereIn('name', [
             'brand.view',
@@ -143,7 +143,7 @@ class BrandPermissionSeeder extends Seeder
      */
     private function createBrandCreatorRole(): void
     {
-        $role = Role::firstOrCreate(['name' => 'brand-creator', 'guard_name' => 'web']);
+        $role = Role::firstOrCreate(['name' => 'brand-creator', 'guard_name' => 'api']);
 
         $permissions = Permission::whereIn('name', [
             'brand.view',
