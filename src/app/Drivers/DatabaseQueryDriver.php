@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\app\Drivers;
 
+use Exception;
 use Fereydooni\Shopping\app\Contracts\QueryDriverInterface;
 use Fereydooni\Shopping\app\Traits\AppliesQueryParameters;
 use Illuminate\Database\Eloquent\Builder;
@@ -103,10 +104,12 @@ class DatabaseQueryDriver implements QueryDriverInterface
             $secondTable = $temp[2];
             $modelId = $temp[3];
 
-            if($firstTable === 'role'){
-                $firstTableUpdated = $firstTable . '_has';
-            }
-            if($relationName === 'hasMany'){
+
+            if ($relationName === 'hasMany') {
+                if ($firstTable === 'role') {
+                    $firstTableUpdated = $firstTable . '_has';
+                }
+
                 $pivotTable = ($firstTableUpdated ?? $firstTable) . '_' . $secondTable;
                 $first = "{$secondTable}.id";
                 $second = "{$pivotTable}." . Str::singular($secondTable) . '_id';
@@ -117,6 +120,23 @@ class DatabaseQueryDriver implements QueryDriverInterface
                     '=',
                     $second
                 )->where("{$pivotTable}.{$firstTable}_id", $modelId);
+            } else if ($relationName === 'morphMany') {
+                $pivotTable = 'model_has_' . $secondTable;
+                $first = "{$secondTable}.id";
+                $second = "{$pivotTable}." . Str::singular($secondTable) . '_id';
+
+                try {
+                    $query->join(
+                        $pivotTable,
+                        $first,
+                        '=',
+                        $second
+                    )
+                        ->where("{$pivotTable}.model_type", $this->getTableModel(Str::plural($firstTable)))
+                        ->where("{$pivotTable}.model_id", $modelId);
+                } catch (Exception $e) {
+                    throw $e;
+                }
             }
         }
 
@@ -223,5 +243,16 @@ class DatabaseQueryDriver implements QueryDriverInterface
         $query = $this->applySorting($query, $searchOptions, $model);
 
         return $query;
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected function getTableModel(string $tableName): string
+    {
+        return match ($tableName) {
+            'users' => \App\Models\User::class,
+            default => throw new Exception('Table does not exist: ' . $tableName, 500),
+        };
     }
 }
