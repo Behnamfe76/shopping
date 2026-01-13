@@ -2,23 +2,20 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
-use App\Http\Controllers\Controller;
-use Fereydooni\Shopping\app\Facades\User as UserFacade;
-use Fereydooni\Shopping\app\Http\Requests\StoreUserRequest;
-use Fereydooni\Shopping\app\Http\Requests\UpdateUserRequest;
-use Fereydooni\Shopping\app\Http\Resources\UserResource;
-use Fereydooni\Shopping\app\Models\User;
-use Fereydooni\Shopping\app\Services\UserService;
-use Illuminate\Http\JsonResponse;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
+use Fereydooni\Shopping\app\Facades\User as UserFacade;
+use Fereydooni\Shopping\app\Http\Resources\UserResource;
+use Fereydooni\Shopping\app\Http\Requests\StoreUserRequest;
+use Fereydooni\Shopping\app\Http\Requests\UpdateUserRequest;
 
 class UserController extends Controller
 {
-    public function __construct(
-        private UserService $userervice
-    ) {}
+    public function __construct() {}
 
     /**
      * Display a listing of Users.
