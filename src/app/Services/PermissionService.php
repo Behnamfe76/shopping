@@ -64,20 +64,4 @@ class PermissionService
             throw $e;
         }
     }
-
-    public function cursorAll(int $perPage = 15, ?string $cursor = null): CursorPaginator
-    {
-        $select = '*';
-        $columns = request()->get('columns', []);
-        if (! empty($columns)) {
-            $select = $columns;
-        }
-
-        return (new $this->model)
-            ->query()->when(request()->input('search'), function ($query, $input) {
-                return $query->whereLike('name', "%$input%");
-            })
-            ->select($select)
-            ->cursorPaginate($perPage, [$columns], 'id', $cursor);
-    }
 }

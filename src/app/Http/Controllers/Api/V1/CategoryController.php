@@ -71,7 +71,7 @@ class CategoryController extends \App\Http\Controllers\Controller
     }
 
     /**
-     * Display a all of categories.
+     * Display all categories.
      */
     public function cursorAll(): JsonResponse
     {

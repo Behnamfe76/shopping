@@ -16,7 +16,8 @@ class EmployeePermissionSeeder extends Seeder
         // Employee permissions
         $permissions = [
             // Basic CRUD permissions
-            'employees.view' => 'View employees',
+            'employees.viewAny' => 'View employees',
+            'employees.view' => 'View employee',
             'employees.create' => 'Create employees',
             'employees.update' => 'Update employees',
             'employees.delete' => 'Delete employees',

@@ -20,15 +20,15 @@ use Illuminate\Support\Facades\Log;
 
 class EmployeeService
 {
-    use HasCrudOperations,
-        HasEmployeeAnalytics,
-        HasEmployeeBenefitsManagement,
-        HasEmployeeHierarchyManagement,
-        HasEmployeeOperations,
-        HasEmployeePerformanceManagement,
-        HasEmployeeStatusManagement,
-        HasEmployeeTimeOffManagement,
-        HasSearchOperations;
+    use HasCrudOperations;
+//        HasEmployeeAnalytics,
+//        HasEmployeeBenefitsManagement,
+//        HasEmployeeHierarchyManagement,
+//        HasEmployeeOperations,
+//        HasEmployeePerformanceManagement,
+//        HasEmployeeStatusManagement,
+//        HasEmployeeTimeOffManagement,
+//        HasSearchOperations;
 
     public function __construct(
         private EmployeeRepositoryInterface $repository

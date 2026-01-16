@@ -2,36 +2,93 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
-use Fereydooni\Shopping\app\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
+use Fereydooni\Shopping\app\Enums\CategoryStatus;
+use Fereydooni\Shopping\app\Enums\EmployeeStatus;
+use Fereydooni\Shopping\app\Enums\EmploymentType;
+use Fereydooni\Shopping\app\Facades\Employee as EmployeeFacade;
 use Fereydooni\Shopping\app\Http\Requests\SearchEmployeeRequest;
 use Fereydooni\Shopping\app\Http\Requests\StoreEmployeeRequest;
 use Fereydooni\Shopping\app\Http\Requests\UpdateEmployeeRequest;
 use Fereydooni\Shopping\app\Http\Resources\EmployeeAnalyticsResource;
-use Fereydooni\Shopping\app\Http\Resources\EmployeeCollection;
 use Fereydooni\Shopping\app\Http\Resources\EmployeeResource;
 use Fereydooni\Shopping\app\Http\Resources\EmployeeSearchResource;
+use Fereydooni\Shopping\app\Models\Category;
 use Fereydooni\Shopping\app\Models\Employee;
-use Fereydooni\Shopping\app\Services\EmployeeService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class EmployeeController extends Controller
 {
-    public function __construct(
-        private EmployeeService $employeeService
-    ) {
-        $this->authorizeResource(Employee::class, 'employee');
-    }
-
     /**
      * Display a listing of employees.
      */
-    public function index(Request $request): EmployeeCollection
+    public function index(Request $request)
     {
-        $perPage = $request->get('per_page', 15);
-        $employees = $this->employeeService->getPaginatedEmployees($perPage);
+        Gate::authorize('viewAny', Employee::class);
 
-        return new EmployeeCollection($employees);
+        try {
+            $perPage = min((int) $request->get('per_page', 15), 100);
+            $paginationType = $request->get('pagination', 'regular');
+
+            $employees = match ($paginationType) {
+                'simplePaginate' => EmployeeFacade::simplePaginate($perPage),
+                'cursorPaginate' => EmployeeFacade::cursorPaginate($perPage),
+                default => EmployeeFacade::paginate($perPage),
+            };
+
+            return EmployeeResource::collection($employees)->response()->setStatusCode(200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to retrieve employees',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Display a listing of category statuses.
+     */
+    public function statuses(): JsonResponse
+    {
+        Gate::authorize('viewAny', Employee::class);
+
+        try {
+            return response()->json([
+                'data' => array_map(fn ($status) => [
+                    'id' => $status->value,
+                    'name' => __('employees.statuses.'.$status->value),
+                ], EmployeeStatus::cases()),
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to retrieve user statuses',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Display a listing of category statuses.
+     */
+    public function employmentTypes(): JsonResponse
+    {
+        Gate::authorize('viewAny', Employee::class);
+
+        try {
+            return response()->json([
+                'data' => array_map(fn ($status) => [
+                    'id' => $status->value,
+                    'name' => __('employees.types.'.$status->value),
+                ], EmploymentType::cases()),
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to retrieve user types',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
