@@ -123,6 +123,26 @@ class ShoppingServiceProvider extends ServiceProvider
             );
         });
 
+        // Register Employee Service
+        $this->app->scoped('shopping.customer', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\EmployeeService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeRepositoryInterface::class)
+            );
+        });
+
+        // Register Employee Repository
+        $this->app->bind(
+            \Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeRepositoryInterface::class,
+            \Fereydooni\Shopping\app\Repositories\EmployeeRepository::class
+        );
+
+        // Register Employee Facade
+        $this->app->singleton('shopping.customer.facade', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\EmployeeService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeRepositoryInterface::class)
+            );
+        });
+
         // // Register Order Repository
         // $this->app->bind(
         //     \Fereydooni\Shopping\app\Repositories\Interfaces\OrderRepositoryInterface::class,
@@ -718,6 +738,7 @@ class ShoppingServiceProvider extends ServiceProvider
     {
         Gate::policy(\Fereydooni\Shopping\app\Models\Address::class, \Fereydooni\Shopping\app\Policies\AddressPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\Customer::class, \Fereydooni\Shopping\app\Policies\CustomerPolicy::class);
+        Gate::policy(\Fereydooni\Shopping\app\Models\Employee::class, \Fereydooni\Shopping\app\Policies\EmployeePolicy::class);
         Gate::policy(\App\Models\User::class, \Fereydooni\Shopping\app\Policies\UserPolicy::class);
         // Gate::policy(\Fereydooni\Shopping\app\Models\CustomerSegment::class, \Fereydooni\Shopping\app\Policies\CustomerSegmentPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\CustomerPreference::class, \Fereydooni\Shopping\app\Policies\CustomerPreferencePolicy::class);
