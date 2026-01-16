@@ -44,6 +44,27 @@ class UserController extends Controller
     }
 
     /**
+     * Display all users.
+     */
+    public function cursorAll(Request $request): JsonResponse
+    {
+        Gate::authorize('viewAny', User::class);
+
+        try {
+            return response()->json(
+                UserFacade::cursorAll(perPage: $request->get('per_page', 10),cursor: $request->get('cursor')),
+            );
+
+            // return (new CategoryCollection($users))->response();
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to retrieve users',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
      * Store a newly created User.
      */
     public function store(StoreUserRequest $request): JsonResponse
