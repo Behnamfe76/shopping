@@ -51,7 +51,10 @@ class EmployeeDepartmentPermissionSeeder extends Seeder
         ];
 
         foreach ($roles as $roleName) {
-            Role::firstOrCreate(['name' => $roleName]);
+            Role::firstOrCreate([
+                'name' => $roleName,
+                'guard_name' => 'api'
+            ]);
         }
 
         // Assign permissions to roles
