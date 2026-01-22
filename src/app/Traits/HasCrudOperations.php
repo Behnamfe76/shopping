@@ -56,14 +56,17 @@ trait HasCrudOperations
     {
         $select = '*';
         $columns = request()->get('columns', []);
+        $withIds = request()->get('withIds', []);
+
         if (! empty($columns)) {
             $select = $columns;
         }
 
-        return (new $this->model)
-            ->query()->when(request()->input('search'), function ($query, $input) {
+        return (new $this->model)->query()
+            ->when(request()->input('search'), function ($query, $input) {
                 return $query->whereLike('name', "%$input%");
             })
+            ->when(is_array($withIds) && !empty($withIds), fn($q) => $q->orWhereIn('id', $withIds))
             ->select($select)
             ->cursorPaginate($perPage, [$columns], 'id', $cursor);
     }
