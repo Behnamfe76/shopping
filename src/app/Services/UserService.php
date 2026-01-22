@@ -39,7 +39,7 @@ class UserService
     {
         try {
             DB::beginTransaction();
-            if ($data['password']) {
+            if (isset($data['password'])) {
                 $data['password'] = Hash::make($data['password']);
             }
             $user->update($data);
