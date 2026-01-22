@@ -26,5 +26,5 @@ return [
         'temporary' => 'موقتی',
         'intern' => 'کارآموز',
         'freelance' => 'فریلنسر',
-    ]
+    ],
 ];

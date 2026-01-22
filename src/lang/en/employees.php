@@ -26,5 +26,5 @@ return [
         'temporary' => 'Temporary',
         'intern' => 'Intern',
         'freelance' => 'Freelance',
-    ]
+    ],
 ];

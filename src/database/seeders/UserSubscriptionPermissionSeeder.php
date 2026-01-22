@@ -154,7 +154,7 @@ class UserSubscriptionPermissionSeeder extends Seeder
         foreach ($permissions as $permission) {
             Permission::firstOrCreate([
                 'name' => $permission,
-                'guard_name' => 'api'
+                'guard_name' => 'api',
             ]);
         }
 
@@ -267,7 +267,7 @@ class UserSubscriptionPermissionSeeder extends Seeder
         foreach ($roles as $roleName => $rolePermissions) {
             $role = Role::firstOrCreate([
                 'name' => $roleName,
-                'guard_name' => 'api'
+                'guard_name' => 'api',
             ]);
             $role->syncPermissions($rolePermissions);
         }

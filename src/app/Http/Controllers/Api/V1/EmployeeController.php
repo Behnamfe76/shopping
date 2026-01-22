@@ -3,7 +3,6 @@
 namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use Fereydooni\Shopping\app\Enums\CategoryStatus;
 use Fereydooni\Shopping\app\Enums\EmployeeStatus;
 use Fereydooni\Shopping\app\Enums\EmploymentType;
 use Fereydooni\Shopping\app\Facades\Employee as EmployeeFacade;

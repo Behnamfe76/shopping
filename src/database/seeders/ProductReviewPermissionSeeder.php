@@ -93,7 +93,7 @@ class ProductReviewPermissionSeeder extends Seeder
         foreach ($permissions as $permission) {
             Permission::firstOrCreate([
                 'name' => $permission,
-                'guard_name' => 'api'
+                'guard_name' => 'api',
             ]);
         }
 
@@ -112,7 +112,7 @@ class ProductReviewPermissionSeeder extends Seeder
     {
         $role = Role::firstOrCreate([
             'name' => 'product-review-manager',
-            'guard_name' => 'api'
+            'guard_name' => 'api',
         ]);
 
         $permissions = Permission::where('name', 'like', 'product-review.%')->get();
@@ -126,7 +126,7 @@ class ProductReviewPermissionSeeder extends Seeder
     {
         $role = Role::firstOrCreate([
             'name' => 'product-review-moderator',
-            'guard_name' => 'api'
+            'guard_name' => 'api',
         ]);
 
         $permissions = Permission::whereIn('name', [
@@ -156,7 +156,7 @@ class ProductReviewPermissionSeeder extends Seeder
     {
         $role = Role::firstOrCreate([
             'name' => 'product-review-editor',
-            'guard_name' => 'api'
+            'guard_name' => 'api',
         ]);
 
         $permissions = Permission::whereIn('name', [
@@ -180,7 +180,7 @@ class ProductReviewPermissionSeeder extends Seeder
     {
         $role = Role::firstOrCreate([
             'name' => 'product-review-viewer',
-            'guard_name' => 'api'
+            'guard_name' => 'api',
         ]);
 
         $permissions = Permission::whereIn('name', [
@@ -200,7 +200,7 @@ class ProductReviewPermissionSeeder extends Seeder
     {
         $role = Role::firstOrCreate([
             'name' => 'product-review-creator',
-            'guard_name' => 'api'
+            'guard_name' => 'api',
         ]);
 
         $permissions = Permission::whereIn('name', [

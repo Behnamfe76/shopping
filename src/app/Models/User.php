@@ -10,7 +10,7 @@ class User extends \App\Models\User
         'name',
         'email',
         'password',
-        'phone'
+        'phone',
     ];
 
     public function getRouteKeyName(): string

@@ -111,14 +111,14 @@ class DatabaseQueryDriver implements QueryDriverInterface
                 } else {
                     $query->where("{$firstTableSingular}_id", $modelId);
                 }
-            } else if ($relationName === 'manyToMany') {
+            } elseif ($relationName === 'manyToMany') {
                 if ($firstTableSingular === 'role') {
-                    $firstTableSingularUpdated = $firstTableSingular . '_has';
+                    $firstTableSingularUpdated = $firstTableSingular.'_has';
                 }
 
-                $pivotTable = ($firstTableSingularUpdated ?? $firstTableSingular) . '_' . $secondTable;
+                $pivotTable = ($firstTableSingularUpdated ?? $firstTableSingular).'_'.$secondTable;
                 $first = "{$secondTable}.id";
-                $second = "{$pivotTable}." . Str::singular($secondTable) . '_id';
+                $second = "{$pivotTable}.".Str::singular($secondTable).'_id';
 
                 $query->join(
                     $pivotTable,
@@ -126,10 +126,10 @@ class DatabaseQueryDriver implements QueryDriverInterface
                     '=',
                     $second
                 )->where("{$pivotTable}.{$firstTableSingular}_id", $modelId);
-            } else if ($relationName === 'morphMany') {
-                $pivotTable = 'model_has_' . $secondTable;
+            } elseif ($relationName === 'morphMany') {
+                $pivotTable = 'model_has_'.$secondTable;
                 $first = "{$secondTable}.id";
-                $second = "{$pivotTable}." . Str::singular($secondTable) . '_id';
+                $second = "{$pivotTable}.".Str::singular($secondTable).'_id';
 
                 try {
                     $query->join(
@@ -160,7 +160,7 @@ class DatabaseQueryDriver implements QueryDriverInterface
         $wordMatching = $searchOptions['word_matching'] ?? false;
         $multipleTermsLogic = $searchOptions['multiple_terms_logic'] ?? 'or';
 
-        $dbDriver = config('database.connections.' . config('database.default') . '.driver');
+        $dbDriver = config('database.connections.'.config('database.default').'.driver');
         $searchTerms = preg_split('/\\s+\//', $searchTerm, -1, PREG_SPLIT_NO_EMPTY);
 
         $query->where(function ($q) use ($searchTerms, $searchableFields, $matchType, $dbDriver, $caseSensitive, $wordMatching, $multipleTermsLogic) {
@@ -191,7 +191,7 @@ class DatabaseQueryDriver implements QueryDriverInterface
 
                     $whereMethod = $multipleTermsLogic === 'and' ? 'where' : 'orWhere';
 
-                    if ($dbDriver === 'sqlite' && !$caseSensitive) {
+                    if ($dbDriver === 'sqlite' && ! $caseSensitive) {
                         $q->{$whereMethod}->Raw("LOWER({$field}) {$currentOperator} LOWER(?)", [$currentTerm]);
                     } else {
                         $q->{$whereMethod}($field, $currentOperator, $currentTerm);
@@ -241,7 +241,7 @@ class DatabaseQueryDriver implements QueryDriverInterface
 
         $query = $this->applyFilters($query, $filters);
 
-        if (!empty($searchOptions['search'])) {
+        if (! empty($searchOptions['search'])) {
             $searchableFields = $searchOptions['search_fields'] ?: $model::searchableFields();
             $query = $this->applySearch($query, $searchOptions['search'], $searchOptions, $searchableFields);
         }
@@ -258,7 +258,7 @@ class DatabaseQueryDriver implements QueryDriverInterface
     {
         return match ($tableName) {
             'users' => \App\Models\User::class,
-            default => throw new Exception('Table does not exist: ' . $tableName, 500),
+            default => throw new Exception('Table does not exist: '.$tableName, 500),
         };
     }
 }

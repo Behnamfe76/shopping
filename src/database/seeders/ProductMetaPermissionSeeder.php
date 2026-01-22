@@ -80,7 +80,7 @@ class ProductMetaPermissionSeeder extends Seeder
         foreach ($permissions as $permission) {
             Permission::firstOrCreate([
                 'name' => $permission,
-                'guard_name' => 'api'
+                'guard_name' => 'api',
             ]);
         }
 
@@ -95,7 +95,7 @@ class ProductMetaPermissionSeeder extends Seeder
     {
         $role = Role::firstOrCreate([
             'name' => 'product-meta-manager',
-            'guard_name' => 'api'
+            'guard_name' => 'api',
         ]);
 
         $managerPermissions = [
@@ -124,7 +124,7 @@ class ProductMetaPermissionSeeder extends Seeder
     {
         $role = Role::firstOrCreate([
             'name' => 'product-meta-editor',
-            'guard_name' => 'api'
+            'guard_name' => 'api',
         ]);
 
         $editorPermissions = [
@@ -149,7 +149,7 @@ class ProductMetaPermissionSeeder extends Seeder
     {
         $role = Role::firstOrCreate([
             'name' => 'product-meta-viewer',
-            'guard_name' => 'api'
+            'guard_name' => 'api',
         ]);
 
         $viewerPermissions = [
@@ -168,7 +168,7 @@ class ProductMetaPermissionSeeder extends Seeder
     {
         $role = Role::firstOrCreate([
             'name' => 'product-meta-creator',
-            'guard_name' => 'api'
+            'guard_name' => 'api',
         ]);
 
         $creatorPermissions = [

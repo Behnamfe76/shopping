@@ -191,7 +191,7 @@ class SeedRequiredDataCommand extends Command
         // Super Admin gets all permissions
         $superAdmin = Role::where('name', 'super-admin')->first();
         if ($superAdmin) {
-            $superAdmin->givePermissionTo(Permission::where('guard_name' , 'api')->get());
+            $superAdmin->givePermissionTo(Permission::where('guard_name', 'api')->get());
             $this->info('Assigned all permissions to super-admin');
         }
 

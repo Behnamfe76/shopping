@@ -55,7 +55,7 @@ class OrderStatusHistoryPermissionSeeder extends Seeder
         foreach ($permissions as $permission) {
             Permission::firstOrCreate([
                 'name' => $permission,
-                'guard_name' => 'api'
+                'guard_name' => 'api',
             ]);
         }
 
@@ -73,7 +73,7 @@ class OrderStatusHistoryPermissionSeeder extends Seeder
     {
         $role = Role::firstOrCreate([
             'name' => 'order-status-history-manager',
-            'guard_name' => 'api'
+            'guard_name' => 'api',
         ]);
 
         $permissions = [
@@ -115,7 +115,7 @@ class OrderStatusHistoryPermissionSeeder extends Seeder
     {
         $role = Role::firstOrCreate([
             'name' => 'order-status-history-viewer',
-            'guard_name' => 'api'
+            'guard_name' => 'api',
         ]);
 
         $permissions = [
@@ -140,7 +140,7 @@ class OrderStatusHistoryPermissionSeeder extends Seeder
     {
         $role = Role::firstOrCreate([
             'name' => 'order-status-history-analyst',
-            'guard_name' => 'api'
+            'guard_name' => 'api',
         ]);
 
         $permissions = [
@@ -170,7 +170,7 @@ class OrderStatusHistoryPermissionSeeder extends Seeder
     {
         $role = Role::firstOrCreate([
             'name' => 'order-manager',
-            'guard_name' => 'api'
+            'guard_name' => 'api',
         ]);
 
         $permissions = [

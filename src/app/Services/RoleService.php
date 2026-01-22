@@ -4,7 +4,6 @@ namespace Fereydooni\Shopping\app\Services;
 
 use Fereydooni\Shopping\app\Models\Role;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
-use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Support\Facades\DB;
 
 class RoleService
@@ -26,8 +25,8 @@ class RoleService
             $locale = app()->getLocale();
             $data['meta'] = [
                 "{$locale}" => [
-                    "description" => $data['description'],
-                ]
+                    'description' => $data['description'],
+                ],
             ];
             $role = $this->model::create($data);
 
@@ -51,11 +50,11 @@ class RoleService
             $locale = app()->getLocale();
             $data['meta'] = [
                 "{$locale}" => [
-                    "description" => $data['description'],
-                ]
+                    'description' => $data['description'],
+                ],
             ];
             $role->update($data);
-            if(isset($data['permissions'])) {
+            if (isset($data['permissions'])) {
                 $role->permissions()->sync($data['permissions']);
             }
             DB::commit();

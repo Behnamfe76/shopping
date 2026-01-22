@@ -53,7 +53,7 @@ class RoleController extends Controller
     public function roles(Request $request): JsonResponse
     {
         try {
-            return  response()->json($this->roleService->cursorAll(cursor: $request->get('cursor')));
+            return response()->json($this->roleService->cursorAll(cursor: $request->get('cursor')));
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Failed to retrieve roles',

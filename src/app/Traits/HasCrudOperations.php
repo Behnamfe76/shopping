@@ -52,7 +52,6 @@ trait HasCrudOperations
         return $queryManager->cursorPaginate($this->model, $filters, $searchOptions, $perPage, $cursor, $driver);
     }
 
-
     public function cursorAll(int $perPage = 15, ?string $cursor = null): CursorPaginator
     {
         $select = '*';

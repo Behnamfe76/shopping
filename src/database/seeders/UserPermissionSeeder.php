@@ -65,14 +65,14 @@ class UserPermissionSeeder extends Seeder
         foreach ($permissions as $permission) {
             Permission::firstOrCreate([
                 'name' => $permission,
-                'guard_name' => 'api'
+                'guard_name' => 'api',
             ]);
         }
 
         // Create users management role
         $usersManagerRole = Role::firstOrCreate([
             'name' => 'users-manager',
-            'guard_name' => 'api'
+            'guard_name' => 'api',
         ]);
 
         // Assign permissions to users manager role
@@ -102,7 +102,7 @@ class UserPermissionSeeder extends Seeder
         // Create users admin role
         $usersAdminRole = Role::firstOrCreate([
             'name' => 'users-admin',
-            'guard_name' => 'api'
+            'guard_name' => 'api',
         ]);
 
         // Assign all permissions to users admin role
@@ -111,7 +111,7 @@ class UserPermissionSeeder extends Seeder
         // Create users viewer role
         $usersViewerRole = Role::firstOrCreate([
             'name' => 'users-viewer',
-            'guard_name' => 'api'
+            'guard_name' => 'api',
         ]);
 
         // Assign read-only permissions to users viewer role
@@ -132,7 +132,7 @@ class UserPermissionSeeder extends Seeder
         // Create users support role
         $usersSupportRole = Role::firstOrCreate([
             'name' => 'users-support',
-            'guard_name' => 'api'
+            'guard_name' => 'api',
         ]);
 
         // Assign support-related permissions

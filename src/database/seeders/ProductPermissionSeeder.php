@@ -91,7 +91,7 @@ class ProductPermissionSeeder extends Seeder
         foreach ($permissions as $permission) {
             Permission::firstOrCreate([
                 'name' => $permission,
-                'guard_name' => 'api'
+                'guard_name' => 'api',
             ]);
         }
 
@@ -107,7 +107,7 @@ class ProductPermissionSeeder extends Seeder
     {
         $role = Role::firstOrCreate([
             'name' => 'product-manager',
-            'guard_name' => 'api'
+            'guard_name' => 'api',
         ]);
 
         // Full product management for all products
@@ -144,7 +144,7 @@ class ProductPermissionSeeder extends Seeder
     {
         $role = Role::firstOrCreate([
             'name' => 'product-editor',
-            'guard_name' => 'api'
+            'guard_name' => 'api',
         ]);
 
         // Can edit products but not delete
@@ -170,7 +170,7 @@ class ProductPermissionSeeder extends Seeder
     {
         $role = Role::firstOrCreate([
             'name' => 'product-viewer',
-            'guard_name' => 'api'
+            'guard_name' => 'api',
         ]);
 
         // Read-only access to products
@@ -189,7 +189,7 @@ class ProductPermissionSeeder extends Seeder
     {
         $role = Role::firstOrCreate([
             'name' => 'product-creator',
-            'guard_name' => 'api'
+            'guard_name' => 'api',
         ]);
 
         // Can create and manage own products
@@ -216,7 +216,7 @@ class ProductPermissionSeeder extends Seeder
     {
         $role = Role::firstOrCreate([
             'name' => 'inventory-manager',
-            'guard_name' => 'api'
+            'guard_name' => 'api',
         ]);
 
         // Can manage product inventory and stock

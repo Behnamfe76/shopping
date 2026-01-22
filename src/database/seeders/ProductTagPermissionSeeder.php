@@ -83,7 +83,7 @@ class ProductTagPermissionSeeder extends Seeder
         foreach ($permissions as $permission) {
             Permission::firstOrCreate([
                 'name' => $permission,
-                'guard_name' => 'api'
+                'guard_name' => 'api',
             ]);
         }
 
@@ -98,7 +98,7 @@ class ProductTagPermissionSeeder extends Seeder
     {
         $role = Role::firstOrCreate([
             'name' => 'product-tag-manager',
-            'guard_name' => 'api'
+            'guard_name' => 'api',
         ]);
 
         $managerPermissions = [
@@ -127,7 +127,7 @@ class ProductTagPermissionSeeder extends Seeder
     {
         $role = Role::firstOrCreate([
             'name' => 'product-tag-editor',
-            'guard_name' => 'api'
+            'guard_name' => 'api',
         ]);
 
         $editorPermissions = [
@@ -151,7 +151,7 @@ class ProductTagPermissionSeeder extends Seeder
     {
         $role = Role::firstOrCreate([
             'name' => 'product-tag-viewer',
-            'guard_name' => 'api'
+            'guard_name' => 'api',
         ]);
 
         $viewerPermissions = [
@@ -169,7 +169,7 @@ class ProductTagPermissionSeeder extends Seeder
     {
         $role = Role::firstOrCreate([
             'name' => 'product-tag-creator',
-            'guard_name' => 'api'
+            'guard_name' => 'api',
         ]);
 
         $creatorPermissions = [

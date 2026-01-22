@@ -2,16 +2,16 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
-use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Validation\ValidationException;
+use App\Models\User;
 use Fereydooni\Shopping\app\Facades\User as UserFacade;
-use Fereydooni\Shopping\app\Http\Resources\UserResource;
 use Fereydooni\Shopping\app\Http\Requests\StoreUserRequest;
 use Fereydooni\Shopping\app\Http\Requests\UpdateUserRequest;
+use Fereydooni\Shopping\app\Http\Resources\UserResource;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
@@ -52,7 +52,7 @@ class UserController extends Controller
 
         try {
             return response()->json(
-                UserFacade::cursorAll(perPage: $request->get('per_page', 10),cursor: $request->get('cursor')),
+                UserFacade::cursorAll(perPage: $request->get('per_page', 10), cursor: $request->get('cursor')),
             );
 
             // return (new CategoryCollection($users))->response();

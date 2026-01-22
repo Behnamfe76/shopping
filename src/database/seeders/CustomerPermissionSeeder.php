@@ -65,14 +65,14 @@ class CustomerPermissionSeeder extends Seeder
         foreach ($permissions as $permission) {
             Permission::firstOrCreate([
                 'name' => $permission,
-                'guard_name' => 'api'
+                'guard_name' => 'api',
             ]);
         }
 
         // Create customer management role
         $customerManagerRole = Role::firstOrCreate([
             'name' => 'customer-manager',
-            'guard_name' => 'api'
+            'guard_name' => 'api',
         ]);
 
         // Assign permissions to customer manager role
@@ -102,7 +102,7 @@ class CustomerPermissionSeeder extends Seeder
         // Create customer admin role
         $customerAdminRole = Role::firstOrCreate([
             'name' => 'customer-admin',
-            'guard_name' => 'api'
+            'guard_name' => 'api',
         ]);
 
         // Assign all permissions to customer admin role
@@ -111,7 +111,7 @@ class CustomerPermissionSeeder extends Seeder
         // Create customer viewer role
         $customerViewerRole = Role::firstOrCreate([
             'name' => 'customer-viewer',
-            'guard_name' => 'api'
+            'guard_name' => 'api',
         ]);
 
         // Assign read-only permissions to customer viewer role
@@ -132,7 +132,7 @@ class CustomerPermissionSeeder extends Seeder
         // Create customer support role
         $customerSupportRole = Role::firstOrCreate([
             'name' => 'customer-support',
-            'guard_name' => 'api'
+            'guard_name' => 'api',
         ]);
 
         // Assign support-related permissions

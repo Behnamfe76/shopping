@@ -5,7 +5,6 @@ namespace Fereydooni\Shopping\app\Services;
 use Fereydooni\Shopping\app\DTOs\PermissionDTO;
 use Fereydooni\Shopping\app\Models\Permission;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
-use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Support\Facades\DB;
 use Throwable;
 
@@ -29,8 +28,8 @@ class PermissionService
             $locale = app()->getLocale();
             $data['meta'] = [
                 "{$locale}" => [
-                    "description" => $data['description'],
-                ]
+                    'description' => $data['description'],
+                ],
             ];
             $permission = $this->model::create($data);
             DB::commit();
@@ -52,8 +51,8 @@ class PermissionService
             $locale = app()->getLocale();
             $data['meta'] = [
                 "{$locale}" => [
-                    "description" => $data['description'],
-                ]
+                    'description' => $data['description'],
+                ],
             ];
             $permission->update($data);
             DB::commit();
