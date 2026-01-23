@@ -458,7 +458,7 @@ class TypesenseQueryDriver implements QueryDriverInterface
         }
 
         $builder = $this->applyFilters($builder, $filters);
-        $builder = $this->applySorting($builder, $searchOptions);
+        $builder = $this->applySorting($builder, $searchOptions, $model);
 
         return $builder;
     }

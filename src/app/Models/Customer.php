@@ -11,12 +11,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Searchable;
 
 class Customer extends Model
 {
     use HasTimestampEquivalents;
     use HasUniqueColumn;
     use SoftDeletes;
+    use Searchable;
 
     protected $uniqueColumnField = 'customer_number';
 
@@ -125,6 +127,244 @@ class Customer extends Model
         'wishlist_count' => 0,
     ];
 
+    public static function toScoutModelSettings(): array
+    {
+        return [
+            self::class => [
+                'collection-schema' => self::getTypesenseCollectionSchema(),
+                'search-parameters' => [
+                    'query_by' => implode(',', self::searchableFields()),
+                ],
+            ],
+        ];
+    }
+
+    public static function searchableFields(): array
+    {
+        return [
+            'first_name',
+            'last_name',
+            'email',
+            'phone'
+        ];
+    }
+
+    /**
+     * Get the indexable data array for the model.
+     */
+    public function toSearchableArray(): array
+    {
+        return [
+            'id' => (string) $this->id,
+            'id_numeric' => $this->id,
+            'name' => $this->full_name,
+            'email' => $this->email,
+            'phone' => (string) $this->phone,
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
+            'customer_number' => $this->customer_number,
+            'customer_type' => $this->customer_type?->value,
+            'status' => $this->status?->value,
+            'company_name' => $this->company_name,
+            'gender' => $this->gender?->value,
+            'tax_id' => $this->tax_id,
+            'loyalty_points' => $this->loyalty_points ?? 0,
+            'total_orders' => $this->total_orders ?? 0,
+            'total_spent' => (float) $this->total_spent ?? 0.0,
+            'average_order_value' => (float) $this->average_order_value ?? 0.0,
+            'date_of_birth' => $this->date_of_birth?->timestamp,
+            'last_order_date' => $this->last_order_date?->timestamp,
+            'first_order_date' => $this->first_order_date?->timestamp,
+            'preferred_payment_method' => $this->preferred_payment_method,
+            'preferred_shipping_method' => $this->preferred_shipping_method,
+            'marketing_consent' => $this->marketing_consent ?? false,
+            'newsletter_subscription' => $this->newsletter_subscription ?? false,
+            'address_count' => $this->address_count ?? 0,
+            'order_count' => $this->order_count ?? 0,
+            'review_count' => $this->review_count ?? 0,
+            'wishlist_count' => $this->wishlist_count ?? 0,
+            'created_at' => $this->created_at?->timestamp,
+            'updated_at' => $this->updated_at?->timestamp,
+        ];
+    }
+
+    /**
+     * Define the Typesense collection schema.
+     */
+    public static function getTypesenseCollectionSchema(): array
+    {
+        return [
+            'fields' => [
+                [
+                    'name' => 'id',
+                    'type' => 'string',
+                    'facet' => false,
+                ],
+                [
+                    'name' => 'id_numeric',
+                    'type' => 'int64',
+                    'facet' => false,
+                ],
+                [
+                    'name' => 'name',
+                    'type' => 'string',
+                    'facet' => true,
+                ],
+                [
+                    'name' => 'first_name',
+                    'type' => 'string',
+                    'facet' => false,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'last_name',
+                    'type' => 'string',
+                    'facet' => false,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'email',
+                    'type' => 'string',
+                    'facet' => false,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'phone',
+                    'type' => 'string',
+                    'facet' => false,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'customer_number',
+                    'type' => 'string',
+                    'facet' => false,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'customer_type',
+                    'type' => 'string',
+                    'facet' => true,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'status',
+                    'type' => 'string',
+                    'facet' => true,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'company_name',
+                    'type' => 'string',
+                    'facet' => false,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'gender',
+                    'type' => 'string',
+                    'facet' => true,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'tax_id',
+                    'type' => 'string',
+                    'facet' => false,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'loyalty_points',
+                    'type' => 'int32',
+                    'facet' => false,
+                ],
+                [
+                    'name' => 'total_orders',
+                    'type' => 'int32',
+                    'facet' => false,
+                ],
+                [
+                    'name' => 'total_spent',
+                    'type' => 'float',
+                    'facet' => false,
+                ],
+                [
+                    'name' => 'average_order_value',
+                    'type' => 'float',
+                    'facet' => false,
+                ],
+                [
+                    'name' => 'date_of_birth',
+                    'type' => 'int64',
+                    'facet' => false,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'last_order_date',
+                    'type' => 'int64',
+                    'facet' => false,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'first_order_date',
+                    'type' => 'int64',
+                    'facet' => false,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'preferred_payment_method',
+                    'type' => 'string',
+                    'facet' => true,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'preferred_shipping_method',
+                    'type' => 'string',
+                    'facet' => true,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'marketing_consent',
+                    'type' => 'bool',
+                    'facet' => true,
+                ],
+                [
+                    'name' => 'newsletter_subscription',
+                    'type' => 'bool',
+                    'facet' => true,
+                ],
+                [
+                    'name' => 'address_count',
+                    'type' => 'int32',
+                    'facet' => false,
+                ],
+                [
+                    'name' => 'order_count',
+                    'type' => 'int32',
+                    'facet' => false,
+                ],
+                [
+                    'name' => 'review_count',
+                    'type' => 'int32',
+                    'facet' => false,
+                ],
+                [
+                    'name' => 'wishlist_count',
+                    'type' => 'int32',
+                    'facet' => false,
+                ],
+                [
+                    'name' => 'created_at',
+                    'type' => 'int64',
+                    'facet' => false,
+                ],
+                [
+                    'name' => 'updated_at',
+                    'type' => 'int64',
+                    'facet' => false,
+                ]
+            ],
+            'default_sorting_field' => 'created_at',
+        ];
+    }
+
     // Relationships
     public function user(): BelongsTo
     {
@@ -154,7 +394,7 @@ class Customer extends Model
     // Accessors
     public function getFullNameAttribute(): string
     {
-        return trim($this->first_name.' '.$this->last_name);
+        return trim($this->first_name . ' ' . $this->last_name);
     }
 
     public function getDisplayNameAttribute(): string
