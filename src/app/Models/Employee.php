@@ -25,8 +25,8 @@ class Employee extends Model
     protected bool $logRequestMetadata = true;
     protected bool $logBrowserInfo = true;
     protected bool $logModelSnapshot = true;
-    protected ?string $activityLogName = 'users';
-    protected ?string $activityDescription = 'User has been {event}';
+    protected ?string $activityLogName = 'employees';
+    protected ?string $activityDescription = 'Employee has been {event}';
 
     protected $table = 'employees';
 
