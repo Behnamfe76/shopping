@@ -90,6 +90,7 @@ return new class extends Migration
 
             // Timestamps
             $table->timestamps();
+            $table->timestampEquivalents();
             $table->softDeletes();
 
             // Indexes

@@ -2,17 +2,31 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
+use Laravel\Scout\Searchable;
+use Illuminate\Database\Eloquent\Model;
+use Fereydooni\Shopping\app\Enums\Gender;
+use Modules\Core\Traits\HasEnhancedActivityLog;
+use Fereydooni\Unixtime\HasTimestampEquivalents;
 use Fereydooni\Shopping\app\Enums\EmployeeStatus;
 use Fereydooni\Shopping\app\Enums\EmploymentType;
-use Fereydooni\Shopping\app\Enums\Gender;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Employee extends Model
 {
     use HasFactory;
+    use Searchable;
+    use HasTimestampEquivalents;
+    use HasEnhancedActivityLog;
+
+    // Activity log configuration flags
+    protected bool $logUserInfo = true;
+    protected bool $logRequestMetadata = true;
+    protected bool $logBrowserInfo = true;
+    protected bool $logModelSnapshot = true;
+    protected ?string $activityLogName = 'users';
+    protected ?string $activityDescription = 'User has been {event}';
 
     protected $table = 'employees';
 
@@ -86,6 +100,295 @@ class Employee extends Model
         'bank_routing_number',
         'tax_id',
     ];
+
+
+    public static function toScoutModelSettings(): array
+    {
+        return [
+            self::class => [
+                'collection-schema' => self::getTypesenseCollectionSchema(),
+                'search-parameters' => [
+                    'query_by' => implode(',', self::searchableFields()),
+                ],
+            ],
+        ];
+    }
+
+    public static function searchableFields(): array
+    {
+        return [
+            'first_name',
+            'last_name',
+            'email'
+        ];
+    }
+
+    /**
+     * Get the indexable data array for the model.
+     */
+    public function toSearchableArray(): array
+    {
+        return [
+            'id' => (string) $this->id,
+            'id_numeric' => $this->id,
+            'name' => $this->full_name,
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
+            'email' => $this->email,
+            'phone' => (string) $this->phone,
+            'employee_number' => $this->employee_number,
+            'position' => $this->position,
+            'department' => $this->department,
+            'manager_id' => $this->manager_id,
+            'employment_type' => $this->employment_type?->value,
+            'status' => $this->status?->value,
+            'gender' => $this->gender?->value,
+            'salary' => (float) $this->salary ?? 0.0,
+            'hourly_rate' => (float) $this->hourly_rate ?? 0.0,
+            'hire_date' => $this->hire_date?->timestamp,
+            'termination_date' => $this->termination_date?->timestamp,
+            'date_of_birth' => $this->date_of_birth?->timestamp,
+            'address' => $this->address,
+            'city' => $this->city,
+            'state' => $this->state,
+            'postal_code' => $this->postal_code,
+            'country' => $this->country,
+            'benefits_enrolled' => $this->benefits_enrolled ?? false,
+            'vacation_days_used' => $this->vacation_days_used ?? 0,
+            'vacation_days_total' => $this->vacation_days_total ?? 0,
+            'sick_days_used' => $this->sick_days_used ?? 0,
+            'sick_days_total' => $this->sick_days_total ?? 0,
+            'performance_rating' => (float) $this->performance_rating ?? 0.0,
+            'last_review_date' => $this->last_review_date?->timestamp,
+            'next_review_date' => $this->next_review_date?->timestamp,
+            'training_completed' => $this->training_completed ?? [],
+            'certifications' => $this->certifications ?? [],
+            'skills' => $this->skills ?? [],
+            'created_at' => $this->created_at?->timestamp,
+            'updated_at' => $this->updated_at?->timestamp,
+        ];
+    }
+
+    /**
+     * Define the Typesense collection schema.
+     */
+    public static function getTypesenseCollectionSchema(): array
+    {
+        return [
+            'fields' => [
+                [
+                    'name' => 'id',
+                    'type' => 'string',
+                    'facet' => false,
+                ],
+                [
+                    'name' => 'id_numeric',
+                    'type' => 'int64',
+                    'facet' => false,
+                ],
+                [
+                    'name' => 'name',
+                    'type' => 'string',
+                    'facet' => true,
+                ],
+                [
+                    'name' => 'first_name',
+                    'type' => 'string',
+                    'facet' => false,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'last_name',
+                    'type' => 'string',
+                    'facet' => false,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'email',
+                    'type' => 'string',
+                    'facet' => false,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'phone',
+                    'type' => 'string',
+                    'facet' => false,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'employee_number',
+                    'type' => 'string',
+                    'facet' => false,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'position',
+                    'type' => 'string',
+                    'facet' => true,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'department',
+                    'type' => 'string',
+                    'facet' => true,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'manager_id',
+                    'type' => 'int64',
+                    'facet' => false,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'employment_type',
+                    'type' => 'string',
+                    'facet' => true,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'status',
+                    'type' => 'string',
+                    'facet' => true,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'gender',
+                    'type' => 'string',
+                    'facet' => true,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'salary',
+                    'type' => 'float',
+                    'facet' => false,
+                ],
+                [
+                    'name' => 'hourly_rate',
+                    'type' => 'float',
+                    'facet' => false,
+                ],
+                [
+                    'name' => 'hire_date',
+                    'type' => 'int64',
+                    'facet' => false,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'termination_date',
+                    'type' => 'int64',
+                    'facet' => false,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'date_of_birth',
+                    'type' => 'int64',
+                    'facet' => false,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'address',
+                    'type' => 'string',
+                    'facet' => false,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'city',
+                    'type' => 'string',
+                    'facet' => true,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'state',
+                    'type' => 'string',
+                    'facet' => true,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'postal_code',
+                    'type' => 'string',
+                    'facet' => false,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'country',
+                    'type' => 'string',
+                    'facet' => true,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'benefits_enrolled',
+                    'type' => 'bool',
+                    'facet' => true,
+                ],
+                [
+                    'name' => 'vacation_days_used',
+                    'type' => 'int32',
+                    'facet' => false,
+                ],
+                [
+                    'name' => 'vacation_days_total',
+                    'type' => 'int32',
+                    'facet' => false,
+                ],
+                [
+                    'name' => 'sick_days_used',
+                    'type' => 'int32',
+                    'facet' => false,
+                ],
+                [
+                    'name' => 'sick_days_total',
+                    'type' => 'int32',
+                    'facet' => false,
+                ],
+                [
+                    'name' => 'performance_rating',
+                    'type' => 'float',
+                    'facet' => false,
+                ],
+                [
+                    'name' => 'last_review_date',
+                    'type' => 'int64',
+                    'facet' => false,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'next_review_date',
+                    'type' => 'int64',
+                    'facet' => false,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'training_completed',
+                    'type' => 'string[]',
+                    'facet' => true,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'certifications',
+                    'type' => 'string[]',
+                    'facet' => true,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'skills',
+                    'type' => 'string[]',
+                    'facet' => true,
+                    'optional' => true,
+                ],
+                [
+                    'name' => 'created_at',
+                    'type' => 'int64',
+                    'facet' => false,
+                ],
+                [
+                    'name' => 'updated_at',
+                    'type' => 'int64',
+                    'facet' => false,
+                ]
+            ],
+            'default_sorting_field' => 'created_at',
+        ];
+    }
 
     // Relationships
     public function user(): BelongsTo
@@ -289,8 +592,8 @@ class Employee extends Model
     public function hasUpcomingReview(int $daysAhead = 30): bool
     {
         return $this->next_review_date &&
-               $this->next_review_date->isFuture() &&
-               $this->next_review_date->diffInDays(now()) <= $daysAhead;
+            $this->next_review_date->isFuture() &&
+            $this->next_review_date->diffInDays(now()) <= $daysAhead;
     }
 
     // Time-off methods

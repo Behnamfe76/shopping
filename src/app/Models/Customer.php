@@ -2,16 +2,17 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
-use Fereydooni\Shopping\app\Enums\CustomerStatus;
-use Fereydooni\Shopping\app\Enums\CustomerType;
-use Fereydooni\Shopping\app\Enums\Gender;
-use Fereydooni\Shopping\app\Traits\HasUniqueColumn;
-use Fereydooni\Unixtime\HasTimestampEquivalents;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
+use Illuminate\Database\Eloquent\Model;
+use Fereydooni\Shopping\app\Enums\Gender;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Fereydooni\Shopping\app\Enums\CustomerType;
+use Modules\Core\Traits\HasEnhancedActivityLog;
+use Fereydooni\Unixtime\HasTimestampEquivalents;
+use Fereydooni\Shopping\app\Enums\CustomerStatus;
+use Fereydooni\Shopping\app\Traits\HasUniqueColumn;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Customer extends Model
 {
@@ -19,6 +20,15 @@ class Customer extends Model
     use HasUniqueColumn;
     use SoftDeletes;
     use Searchable;
+    use HasEnhancedActivityLog;
+
+    // Activity log configuration flags
+    protected bool $logUserInfo = true;
+    protected bool $logRequestMetadata = true;
+    protected bool $logBrowserInfo = true;
+    protected bool $logModelSnapshot = true;
+    protected ?string $activityLogName = 'users';
+    protected ?string $activityDescription = 'User has been {event}';
 
     protected $uniqueColumnField = 'customer_number';
 
@@ -105,7 +115,6 @@ class Customer extends Model
         'first_order_date' => 'datetime',
         'marketing_consent' => 'boolean',
         'newsletter_subscription' => 'boolean',
-        'tags' => 'array',
         'address_count' => 'integer',
         'order_count' => 'integer',
         'review_count' => 'integer',
@@ -179,6 +188,7 @@ class Customer extends Model
             'preferred_shipping_method' => $this->preferred_shipping_method,
             'marketing_consent' => $this->marketing_consent ?? false,
             'newsletter_subscription' => $this->newsletter_subscription ?? false,
+            'tags' => $this->tags ?? [],
             'address_count' => $this->address_count ?? 0,
             'order_count' => $this->order_count ?? 0,
             'review_count' => $this->review_count ?? 0,
@@ -331,6 +341,11 @@ class Customer extends Model
                     'facet' => true,
                 ],
                 [
+                    'name' => 'tags',
+                    'type' => 'string[]',
+                    'facet' => false,
+                ],
+                [
                     'name' => 'address_count',
                     'type' => 'int32',
                     'facet' => false,
@@ -392,6 +407,17 @@ class Customer extends Model
     }
 
     // Accessors
+    public function getTagsAttribute(): array
+    {
+        $tags = $this->attributes['tags'] ?? null;
+
+        if (is_string($tags)) {
+            return str_getcsv(trim($tags, '"')) ?? [];
+        }
+
+        return [];
+    }
+
     public function getFullNameAttribute(): string
     {
         return trim($this->first_name . ' ' . $this->last_name);
