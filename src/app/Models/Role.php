@@ -7,15 +7,20 @@ use Modules\Core\Traits\HasEnhancedActivityLog;
 
 class Role extends \Spatie\Permission\Models\Role
 {
-    use Searchable;
     use HasEnhancedActivityLog;
+    use Searchable;
 
     // Activity log configuration flags
     protected bool $logUserInfo = true;
+
     protected bool $logRequestMetadata = true;
+
     protected bool $logBrowserInfo = true;
+
     protected bool $logModelSnapshot = true;
+
     protected ?string $activityLogName = 'roles';
+
     protected ?string $activityDescription = 'Role has been {event}';
 
     public static function toScoutModelSettings(): array
@@ -34,7 +39,7 @@ class Role extends \Spatie\Permission\Models\Role
     {
         return [
             'name',
-            'guard_name'
+            'guard_name',
         ];
     }
 
@@ -96,7 +101,7 @@ class Role extends \Spatie\Permission\Models\Role
                     'name' => 'updated_at',
                     'type' => 'int64',
                     'facet' => false,
-                ]
+                ],
             ],
             'default_sorting_field' => 'created_at',
         ];

@@ -4,7 +4,7 @@ namespace Fereydooni\Shopping\database\factories;
 
 use Fereydooni\Shopping\app\Enums\PositionLevel;
 use Fereydooni\Shopping\app\Enums\PositionStatus;
-use Fereydooni\Shopping\app\Models\EmployeeDepartment;
+use Fereydooni\Shopping\app\Models\Department;
 use Fereydooni\Shopping\app\Models\EmployeePosition;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -44,7 +44,7 @@ class EmployeePositionFactory extends Factory
             'title' => $this->faker->jobTitle(),
             'code' => $this->faker->unique()->regexify('[A-Z]{2}[0-9]{3}'),
             'description' => $this->faker->paragraph(3),
-            'department_id' => EmployeeDepartment::factory(),
+            'department_id' => Department::factory(),
             'level' => $level,
             'salary_min' => $salaryRanges['min'],
             'salary_max' => $salaryRanges['max'],

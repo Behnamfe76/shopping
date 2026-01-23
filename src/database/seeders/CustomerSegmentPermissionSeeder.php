@@ -65,7 +65,7 @@ class CustomerSegmentPermissionSeeder extends Seeder
         // Manager role - most permissions except delete and force delete
         $managerRole = Role::firstOrCreate([
             'name' => 'manager',
-            'guard_name' => 'api'
+            'guard_name' => 'api',
         ]);
         $managerPermissions = Permission::where('name', 'like', 'customer-segments.%')
             ->whereNotIn('name', ['customer-segments.delete', 'customer-segments.forceDelete'])

@@ -2,12 +2,12 @@
 
 namespace App\Traits;
 
-use App\Models\EmployeeDepartment;
+use App\Models\Department;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
-trait HasEmployeeDepartmentBudgetManagement
+trait HasDepartmentBudgetManagement
 {
     /**
      * Get department budget
@@ -291,7 +291,7 @@ trait HasEmployeeDepartmentBudgetManagement
     {
         try {
             return Cache::remember('total_department_budget', 3600, function () {
-                return EmployeeDepartment::sum('budget');
+                return Department::sum('budget');
             });
         } catch (\Exception $e) {
             Log::error('Error getting total budget', [
@@ -308,7 +308,7 @@ trait HasEmployeeDepartmentBudgetManagement
     public function getOverallBudgetUtilization(): array
     {
         try {
-            $departments = EmployeeDepartment::all();
+            $departments = Department::all();
             $totalBudget = 0.0;
             $totalUtilized = 0.0;
 

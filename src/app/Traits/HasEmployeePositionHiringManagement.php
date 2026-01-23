@@ -150,9 +150,9 @@ trait HasEmployeePositionHiringManagement
             $urgentHiring = $this->getUrgentHiringPositions()->count();
 
             $hiringByDepartment = EmployeePosition::where('status', PositionStatus::HIRING)
-                ->join('employee_departments', 'employee_positions.department_id', '=', 'employee_departments.id')
-                ->select('employee_departments.name', DB::raw('count(*) as count'))
-                ->groupBy('employee_departments.id', 'employee_departments.name')
+                ->join('departments', 'employee_positions.department_id', '=', 'departments.id')
+                ->select('departments.name', DB::raw('count(*) as count'))
+                ->groupBy('departments.id', 'departments.name')
                 ->get()
                 ->pluck('count', 'name')
                 ->toArray();

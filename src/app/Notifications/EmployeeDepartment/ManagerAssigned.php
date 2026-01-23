@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Notifications\EmployeeDepartment;
+namespace App\Notifications\Department;
 
-use App\Models\EmployeeDepartment;
+use Fereydooni\Shopping\app\Models\Department;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\BroadcastMessage;
@@ -20,7 +20,7 @@ class ManagerAssigned extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      */
-    public function __construct(EmployeeDepartment $department, string $assignmentType = 'assigned')
+    public function __construct(Department $department, string $assignmentType = 'assigned')
     {
         $this->department = $department;
         $this->assignmentType = $assignmentType;
@@ -132,7 +132,7 @@ class ManagerAssigned extends Notification implements ShouldQueue
     {
         try {
             if ($this->department->parent_id) {
-                $parent = EmployeeDepartment::find($this->department->parent_id);
+                $parent = Department::find($this->department->parent_id);
 
                 return $parent ? $parent->name : 'Unknown';
             }

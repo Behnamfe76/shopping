@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Events\EmployeeDepartment;
+namespace App\Events\Department;
 
-use App\Models\EmployeeDepartment;
+use Fereydooni\Shopping\app\Models\Department;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class EmployeeDepartmentUpdated
+class DepartmentUpdated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -24,7 +24,7 @@ class EmployeeDepartmentUpdated
     /**
      * Create a new event instance.
      */
-    public function __construct(EmployeeDepartment $department, array $changes = [], $updatedBy = null)
+    public function __construct(Department $department, array $changes = [], $updatedBy = null)
     {
         $this->department = $department;
         $this->changes = $changes;

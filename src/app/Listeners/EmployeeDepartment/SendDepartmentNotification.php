@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Listeners\EmployeeDepartment;
+namespace App\Listeners\Department;
 
-use App\Events\EmployeeDepartment\EmployeeDepartmentArchived;
-use App\Events\EmployeeDepartment\EmployeeDepartmentCreated;
-use App\Events\EmployeeDepartment\EmployeeDepartmentManagerAssigned;
-use App\Events\EmployeeDepartment\EmployeeDepartmentMoved;
-use App\Events\EmployeeDepartment\EmployeeDepartmentUpdated;
-use App\Notifications\EmployeeDepartment\DepartmentArchived;
-use App\Notifications\EmployeeDepartment\DepartmentCreated;
-use App\Notifications\EmployeeDepartment\DepartmentMoved;
-use App\Notifications\EmployeeDepartment\ManagerAssigned;
+use App\Events\Department\DepartmentArchived;
+use App\Events\Department\DepartmentCreated;
+use App\Events\Department\DepartmentManagerAssigned;
+use App\Events\Department\DepartmentMoved;
+use App\Events\Department\DepartmentUpdated;
+use App\Notifications\Department\DepartmentArchived;
+use App\Notifications\Department\DepartmentCreated;
+use App\Notifications\Department\DepartmentMoved;
+use App\Notifications\Department\ManagerAssigned;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
@@ -39,15 +39,15 @@ class SendDepartmentNotification implements ShouldQueue
     public function handle($event): void
     {
         try {
-            if ($event instanceof EmployeeDepartmentCreated) {
+            if ($event instanceof DepartmentCreated) {
                 $this->handleDepartmentCreated($event);
-            } elseif ($event instanceof EmployeeDepartmentUpdated) {
+            } elseif ($event instanceof DepartmentUpdated) {
                 $this->handleDepartmentUpdated($event);
-            } elseif ($event instanceof EmployeeDepartmentManagerAssigned) {
+            } elseif ($event instanceof DepartmentManagerAssigned) {
                 $this->handleManagerAssigned($event);
-            } elseif ($event instanceof EmployeeDepartmentMoved) {
+            } elseif ($event instanceof DepartmentMoved) {
                 $this->handleDepartmentMoved($event);
-            } elseif ($event instanceof EmployeeDepartmentArchived) {
+            } elseif ($event instanceof DepartmentArchived) {
                 $this->handleDepartmentArchived($event);
             }
         } catch (\Exception $e) {
@@ -61,7 +61,7 @@ class SendDepartmentNotification implements ShouldQueue
     /**
      * Handle department created event
      */
-    protected function handleDepartmentCreated(EmployeeDepartmentCreated $event): void
+    protected function handleDepartmentCreated(DepartmentCreated $event): void
     {
         try {
             // Notify relevant stakeholders
@@ -82,7 +82,7 @@ class SendDepartmentNotification implements ShouldQueue
     /**
      * Handle department updated event
      */
-    protected function handleDepartmentUpdated(EmployeeDepartmentUpdated $event): void
+    protected function handleDepartmentUpdated(DepartmentUpdated $event): void
     {
         try {
             // Check if important fields were changed
@@ -108,7 +108,7 @@ class SendDepartmentNotification implements ShouldQueue
     /**
      * Handle manager assigned event
      */
-    protected function handleManagerAssigned(EmployeeDepartmentManagerAssigned $event): void
+    protected function handleManagerAssigned(DepartmentManagerAssigned $event): void
     {
         try {
             // Notify the new manager
@@ -135,7 +135,7 @@ class SendDepartmentNotification implements ShouldQueue
     /**
      * Handle department moved event
      */
-    protected function handleDepartmentMoved(EmployeeDepartmentMoved $event): void
+    protected function handleDepartmentMoved(DepartmentMoved $event): void
     {
         try {
             // Notify relevant stakeholders about the move
@@ -157,7 +157,7 @@ class SendDepartmentNotification implements ShouldQueue
     /**
      * Handle department archived event
      */
-    protected function handleDepartmentArchived(EmployeeDepartmentArchived $event): void
+    protected function handleDepartmentArchived(DepartmentArchived $event): void
     {
         try {
             // Notify relevant stakeholders about the archive

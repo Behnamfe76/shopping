@@ -2,14 +2,14 @@
 
 namespace Fereydooni\Shopping\app\Repositories\Interfaces;
 
-use Fereydooni\Shopping\app\DTOs\EmployeeDepartmentDTO;
-use Fereydooni\Shopping\app\Models\EmployeeDepartment;
+use Fereydooni\Shopping\app\DTOs\DepartmentDTO;
+use Fereydooni\Shopping\app\Models\Department;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 
-interface EmployeeDepartmentRepositoryInterface
+interface DepartmentRepositoryInterface
 {
     // Basic CRUD operations
     public function all(): Collection;
@@ -21,17 +21,17 @@ interface EmployeeDepartmentRepositoryInterface
     public function cursorPaginate(int $perPage = 15, ?string $cursor = null): CursorPaginator;
 
     // Find operations
-    public function find(int $id): ?EmployeeDepartment;
+    public function find(int $id): ?Department;
 
-    public function findDTO(int $id): ?EmployeeDepartmentDTO;
+    public function findDTO(int $id): ?DepartmentDTO;
 
-    public function findByName(string $name): ?EmployeeDepartment;
+    public function findByName(string $name): ?Department;
 
-    public function findByNameDTO(string $name): ?EmployeeDepartmentDTO;
+    public function findByNameDTO(string $name): ?DepartmentDTO;
 
-    public function findByCode(string $code): ?EmployeeDepartment;
+    public function findByCode(string $code): ?Department;
 
-    public function findByCodeDTO(string $code): ?EmployeeDepartmentDTO;
+    public function findByCodeDTO(string $code): ?DepartmentDTO;
 
     // Find by relationships
     public function findByManagerId(int $managerId): Collection;
@@ -78,31 +78,31 @@ interface EmployeeDepartmentRepositoryInterface
     public function findAncestorsDTO(int $departmentId): Collection;
 
     // Create and update operations
-    public function create(array $data): EmployeeDepartment;
+    public function create(array $data): Department;
 
-    public function createAndReturnDTO(array $data): EmployeeDepartmentDTO;
+    public function createAndReturnDTO(array $data): DepartmentDTO;
 
-    public function update(EmployeeDepartment $department, array $data): bool;
+    public function update(Department $department, array $data): bool;
 
-    public function updateAndReturnDTO(EmployeeDepartment $department, array $data): ?EmployeeDepartmentDTO;
+    public function updateAndReturnDTO(Department $department, array $data): ?DepartmentDTO;
 
     // Delete operations
-    public function delete(EmployeeDepartment $department): bool;
+    public function delete(Department $department): bool;
 
     // Status management
-    public function activate(EmployeeDepartment $department): bool;
+    public function activate(Department $department): bool;
 
-    public function deactivate(EmployeeDepartment $department): bool;
+    public function deactivate(Department $department): bool;
 
-    public function archive(EmployeeDepartment $department): bool;
+    public function archive(Department $department): bool;
 
     // Manager operations
-    public function assignManager(EmployeeDepartment $department, int $managerId): bool;
+    public function assignManager(Department $department, int $managerId): bool;
 
-    public function removeManager(EmployeeDepartment $department): bool;
+    public function removeManager(Department $department): bool;
 
     // Hierarchy operations
-    public function moveToParent(EmployeeDepartment $department, int $newParentId): bool;
+    public function moveToParent(Department $department, int $newParentId): bool;
 
     // Analytics and metrics
     public function getDepartmentEmployeeCount(int $departmentId): int;

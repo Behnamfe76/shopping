@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Listeners\EmployeeDepartment;
+namespace App\Listeners\Department;
 
-use App\Events\EmployeeDepartment\EmployeeDepartmentArchived;
-use App\Events\EmployeeDepartment\EmployeeDepartmentMoved;
-use App\Events\EmployeeDepartment\EmployeeDepartmentUpdated;
+use App\Events\Department\DepartmentArchived;
+use App\Events\Department\DepartmentMoved;
+use App\Events\Department\DepartmentUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class UpdateEmployeeDepartmentRecords implements ShouldQueue
+class UpdateDepartmentRecords implements ShouldQueue
 {
     use InteractsWithQueue;
 
@@ -32,11 +32,11 @@ class UpdateEmployeeDepartmentRecords implements ShouldQueue
     public function handle($event): void
     {
         try {
-            if ($event instanceof EmployeeDepartmentUpdated) {
+            if ($event instanceof DepartmentUpdated) {
                 $this->handleDepartmentUpdated($event);
-            } elseif ($event instanceof EmployeeDepartmentMoved) {
+            } elseif ($event instanceof DepartmentMoved) {
                 $this->handleDepartmentMoved($event);
-            } elseif ($event instanceof EmployeeDepartmentArchived) {
+            } elseif ($event instanceof DepartmentArchived) {
                 $this->handleDepartmentArchived($event);
             }
         } catch (\Exception $e) {
@@ -47,7 +47,7 @@ class UpdateEmployeeDepartmentRecords implements ShouldQueue
     /**
      * Handle department updated event
      */
-    protected function handleDepartmentUpdated(EmployeeDepartmentUpdated $event): void
+    protected function handleDepartmentUpdated(DepartmentUpdated $event): void
     {
         try {
             $department = $event->department;
@@ -55,7 +55,7 @@ class UpdateEmployeeDepartmentRecords implements ShouldQueue
 
             // Update employee records if department name or code changed
             if (isset($changes['name']) || isset($changes['code'])) {
-                $this->updateEmployeeDepartmentInfo($department->id, $changes);
+                $this->updateDepartmentInfo($department->id, $changes);
             }
 
             // Update manager records if manager changed
@@ -70,7 +70,7 @@ class UpdateEmployeeDepartmentRecords implements ShouldQueue
     /**
      * Handle department moved event
      */
-    protected function handleDepartmentMoved(EmployeeDepartmentMoved $event): void
+    protected function handleDepartmentMoved(DepartmentMoved $event): void
     {
         try {
             $department = $event->department;
@@ -88,13 +88,13 @@ class UpdateEmployeeDepartmentRecords implements ShouldQueue
     /**
      * Handle department archived event
      */
-    protected function handleDepartmentArchived(EmployeeDepartmentArchived $event): void
+    protected function handleDepartmentArchived(DepartmentArchived $event): void
     {
         try {
             $department = $event->department;
 
             // Mark employee department records as inactive
-            $this->deactivateEmployeeDepartmentRecords($department->id);
+            $this->deactivateDepartmentRecords($department->id);
 
             // Update employee status if needed
             $this->updateEmployeeStatus($department->id);
@@ -106,7 +106,7 @@ class UpdateEmployeeDepartmentRecords implements ShouldQueue
     /**
      * Update employee department information
      */
-    protected function updateEmployeeDepartmentInfo(int $departmentId, array $changes): void
+    protected function updateDepartmentInfo(int $departmentId, array $changes): void
     {
         // This would update employee records with new department info
     }
@@ -138,7 +138,7 @@ class UpdateEmployeeDepartmentRecords implements ShouldQueue
     /**
      * Deactivate employee department records
      */
-    protected function deactivateEmployeeDepartmentRecords(int $departmentId): void
+    protected function deactivateDepartmentRecords(int $departmentId): void
     {
         // This would mark employee department records as inactive
     }

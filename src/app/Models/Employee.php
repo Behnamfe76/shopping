@@ -2,30 +2,35 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
-use Laravel\Scout\Searchable;
-use Illuminate\Database\Eloquent\Model;
-use Fereydooni\Shopping\app\Enums\Gender;
-use Modules\Core\Traits\HasEnhancedActivityLog;
-use Fereydooni\Unixtime\HasTimestampEquivalents;
 use Fereydooni\Shopping\app\Enums\EmployeeStatus;
 use Fereydooni\Shopping\app\Enums\EmploymentType;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Fereydooni\Shopping\app\Enums\Gender;
+use Fereydooni\Unixtime\HasTimestampEquivalents;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Laravel\Scout\Searchable;
+use Modules\Core\Traits\HasEnhancedActivityLog;
 
 class Employee extends Model
 {
-    use HasFactory;
-    use Searchable;
-    use HasTimestampEquivalents;
     use HasEnhancedActivityLog;
+    use HasFactory;
+    use HasTimestampEquivalents;
+    use Searchable;
 
     // Activity log configuration flags
     protected bool $logUserInfo = true;
+
     protected bool $logRequestMetadata = true;
+
     protected bool $logBrowserInfo = true;
+
     protected bool $logModelSnapshot = true;
+
     protected ?string $activityLogName = 'employees';
+
     protected ?string $activityDescription = 'Employee has been {event}';
 
     protected $table = 'employees';
@@ -101,7 +106,6 @@ class Employee extends Model
         'tax_id',
     ];
 
-
     public static function toScoutModelSettings(): array
     {
         return [
@@ -119,7 +123,7 @@ class Employee extends Model
         return [
             'first_name',
             'last_name',
-            'email'
+            'email',
         ];
     }
 
@@ -384,7 +388,7 @@ class Employee extends Model
                     'name' => 'updated_at',
                     'type' => 'int64',
                     'facet' => false,
-                ]
+                ],
             ],
             'default_sorting_field' => 'created_at',
         ];

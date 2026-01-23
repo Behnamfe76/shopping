@@ -2,9 +2,9 @@
 
 namespace App\Traits;
 
-use App\Models\EmployeeDepartment;
+use App\Models\Department;
 
-trait HasEmployeeDepartmentAnalytics
+trait HasDepartmentAnalytics
 {
     /**
      * Get department statistics
@@ -12,14 +12,14 @@ trait HasEmployeeDepartmentAnalytics
     public function getDepartmentStatistics(): array
     {
         try {
-            $totalDepartments = EmployeeDepartment::count();
-            $activeDepartments = EmployeeDepartment::where('is_active', true)->count();
-            $inactiveDepartments = EmployeeDepartment::where('is_active', false)->count();
+            $totalDepartments = Department::count();
+            $activeDepartments = Department::where('is_active', true)->count();
+            $inactiveDepartments = Department::where('is_active', false)->count();
 
-            $departmentsWithManagers = EmployeeDepartment::whereNotNull('manager_id')->count();
+            $departmentsWithManagers = Department::whereNotNull('manager_id')->count();
             $departmentsWithoutManagers = $totalDepartments - $departmentsWithManagers;
 
-            $rootDepartments = EmployeeDepartment::whereNull('parent_id')->count();
+            $rootDepartments = Department::whereNull('parent_id')->count();
             $childDepartments = $totalDepartments - $rootDepartments;
 
             return [
@@ -113,7 +113,7 @@ trait HasEmployeeDepartmentAnalytics
     {
         try {
             $maxDepth = 0;
-            $departments = EmployeeDepartment::all();
+            $departments = Department::all();
 
             foreach ($departments as $department) {
                 $depth = $this->calculateDepartmentDepth($department->id);
@@ -153,7 +153,7 @@ trait HasEmployeeDepartmentAnalytics
     {
         try {
             $totalEmployees = $this->getTotalEmployeeCount();
-            $totalDepartments = EmployeeDepartment::count();
+            $totalDepartments = Department::count();
 
             return $totalDepartments > 0 ? round($totalEmployees / $totalDepartments, 2) : 0;
         } catch (\Exception $e) {
@@ -303,7 +303,7 @@ trait HasEmployeeDepartmentAnalytics
     protected function getDepartmentCreationTrend(string $startDate, string $endDate): array
     {
         try {
-            $departments = EmployeeDepartment::whereBetween('created_at', [$startDate, $endDate])
+            $departments = Department::whereBetween('created_at', [$startDate, $endDate])
                 ->selectRaw('DATE(created_at) as date, COUNT(*) as count')
                 ->groupBy('date')
                 ->orderBy('date')
@@ -406,7 +406,7 @@ trait HasEmployeeDepartmentAnalytics
                 'exported_at' => now()->toISOString(),
             ];
 
-            $departments = EmployeeDepartment::all();
+            $departments = Department::all();
             foreach ($departments as $department) {
                 $data['departments'][] = $this->generateDepartmentReport($department->id);
             }

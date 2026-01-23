@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Events\EmployeeDepartment;
+namespace App\Events\Department;
 
-use App\Models\EmployeeDepartment;
+use Fereydooni\Shopping\app\Models\Department;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class EmployeeDepartmentArchived
+class DepartmentArchived
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -24,7 +24,7 @@ class EmployeeDepartmentArchived
     /**
      * Create a new event instance.
      */
-    public function __construct(EmployeeDepartment $department, string $reason = '', $archivedBy = null)
+    public function __construct(Department $department, string $reason = '', $archivedBy = null)
     {
         $this->department = $department;
         $this->reason = $reason;

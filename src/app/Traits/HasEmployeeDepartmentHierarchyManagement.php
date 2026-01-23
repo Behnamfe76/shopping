@@ -2,14 +2,14 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
-use Fereydooni\Shopping\app\DTOs\EmployeeDepartmentDTO;
-use Fereydooni\Shopping\app\Models\EmployeeDepartment;
-use Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeDepartmentRepositoryInterface;
+use Fereydooni\Shopping\app\DTOs\DepartmentDTO;
+use Fereydooni\Shopping\app\Models\Department;
+use Fereydooni\Shopping\app\Repositories\Interfaces\DepartmentRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 
-trait HasEmployeeDepartmentHierarchyManagement
+trait HasDepartmentHierarchyManagement
 {
-    protected EmployeeDepartmentRepositoryInterface $departmentRepository;
+    protected DepartmentRepositoryInterface $departmentRepository;
 
     /**
      * Get root departments (no parent)
@@ -78,7 +78,7 @@ trait HasEmployeeDepartmentHierarchyManagement
     /**
      * Move department to new parent
      */
-    public function moveDepartmentToParent(EmployeeDepartment $department, int $newParentId): bool
+    public function moveDepartmentToParent(Department $department, int $newParentId): bool
     {
         return $this->departmentRepository->moveToParent($department, $newParentId);
     }
@@ -102,7 +102,7 @@ trait HasEmployeeDepartmentHierarchyManagement
     /**
      * Check if department is root
      */
-    public function isDepartmentRoot(EmployeeDepartment $department): bool
+    public function isDepartmentRoot(Department $department): bool
     {
         return $department->isRoot();
     }
@@ -110,7 +110,7 @@ trait HasEmployeeDepartmentHierarchyManagement
     /**
      * Check if department is leaf
      */
-    public function isDepartmentLeaf(EmployeeDepartment $department): bool
+    public function isDepartmentLeaf(Department $department): bool
     {
         return $department->isLeaf();
     }
@@ -118,7 +118,7 @@ trait HasEmployeeDepartmentHierarchyManagement
     /**
      * Check if department has children
      */
-    public function departmentHasChildren(EmployeeDepartment $department): bool
+    public function departmentHasChildren(Department $department): bool
     {
         return $department->hasChildren();
     }
@@ -126,7 +126,7 @@ trait HasEmployeeDepartmentHierarchyManagement
     /**
      * Check if department has parent
      */
-    public function departmentHasParent(EmployeeDepartment $department): bool
+    public function departmentHasParent(Department $department): bool
     {
         return $department->hasParent();
     }
@@ -134,7 +134,7 @@ trait HasEmployeeDepartmentHierarchyManagement
     /**
      * Get department depth
      */
-    public function getDepartmentDepth(EmployeeDepartment $department): int
+    public function getDepartmentDepth(Department $department): int
     {
         return $department->getDepth();
     }
@@ -142,7 +142,7 @@ trait HasEmployeeDepartmentHierarchyManagement
     /**
      * Get department level
      */
-    public function getDepartmentLevel(EmployeeDepartment $department): int
+    public function getDepartmentLevel(Department $department): int
     {
         return $department->getLevel();
     }
@@ -150,7 +150,7 @@ trait HasEmployeeDepartmentHierarchyManagement
     /**
      * Get department full name (with hierarchy)
      */
-    public function getDepartmentFullName(EmployeeDepartment $department): string
+    public function getDepartmentFullName(Department $department): string
     {
         return $department->full_name;
     }
@@ -174,7 +174,7 @@ trait HasEmployeeDepartmentHierarchyManagement
     {
         $departments = $this->getDepartmentsByLevel($level);
 
-        return $departments->map(fn ($dept) => EmployeeDepartmentDTO::fromModel($dept));
+        return $departments->map(fn ($dept) => DepartmentDTO::fromModel($dept));
     }
 
     /**
@@ -198,7 +198,7 @@ trait HasEmployeeDepartmentHierarchyManagement
     /**
      * Get department siblings
      */
-    public function getDepartmentSiblings(EmployeeDepartment $department): Collection
+    public function getDepartmentSiblings(Department $department): Collection
     {
         if (! $department->hasParent()) {
             return collect();
@@ -213,11 +213,11 @@ trait HasEmployeeDepartmentHierarchyManagement
     /**
      * Get department siblings as DTOs
      */
-    public function getDepartmentSiblingsDTO(EmployeeDepartment $department): Collection
+    public function getDepartmentSiblingsDTO(Department $department): Collection
     {
         $siblings = $this->getDepartmentSiblings($department);
 
-        return $siblings->map(fn ($sibling) => EmployeeDepartmentDTO::fromModel($sibling));
+        return $siblings->map(fn ($sibling) => DepartmentDTO::fromModel($sibling));
     }
 
     /**
@@ -243,7 +243,7 @@ trait HasEmployeeDepartmentHierarchyManagement
     /**
      * Get common ancestor of two departments
      */
-    public function getCommonAncestor(int $department1Id, int $department2Id): ?EmployeeDepartment
+    public function getCommonAncestor(int $department1Id, int $department2Id): ?Department
     {
         $ancestors1 = $this->getDepartmentAncestors($department1Id);
         $ancestors2 = $this->getDepartmentAncestors($department2Id);
@@ -261,7 +261,7 @@ trait HasEmployeeDepartmentHierarchyManagement
     /**
      * Get departments at same level
      */
-    public function getDepartmentsAtSameLevel(EmployeeDepartment $department): Collection
+    public function getDepartmentsAtSameLevel(Department $department): Collection
     {
         $level = $department->getLevel();
 
@@ -271,11 +271,11 @@ trait HasEmployeeDepartmentHierarchyManagement
     /**
      * Get departments at same level as DTOs
      */
-    public function getDepartmentsAtSameLevelDTO(EmployeeDepartment $department): Collection
+    public function getDepartmentsAtSameLevelDTO(Department $department): Collection
     {
         $departments = $this->getDepartmentsAtSameLevel($department);
 
-        return $departments->map(fn ($dept) => EmployeeDepartmentDTO::fromModel($dept));
+        return $departments->map(fn ($dept) => DepartmentDTO::fromModel($dept));
     }
 
     /**

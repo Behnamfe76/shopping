@@ -10,11 +10,11 @@ use Fereydooni\Shopping\app\Events\Customer\CustomerSuspended;
 use Fereydooni\Shopping\app\Events\Customer\CustomerUpdated;
 use Fereydooni\Shopping\app\Events\Customer\LoyaltyPointsAdded;
 use Fereydooni\Shopping\app\Events\Customer\LoyaltyPointsDeducted;
-use Fereydooni\Shopping\app\Events\EmployeeDepartment\EmployeeDepartmentArchived;
-use Fereydooni\Shopping\app\Events\EmployeeDepartment\EmployeeDepartmentCreated;
-use Fereydooni\Shopping\app\Events\EmployeeDepartment\EmployeeDepartmentManagerAssigned;
-use Fereydooni\Shopping\app\Events\EmployeeDepartment\EmployeeDepartmentMoved;
-use Fereydooni\Shopping\app\Events\EmployeeDepartment\EmployeeDepartmentUpdated;
+use Fereydooni\Shopping\app\Events\Department\DepartmentArchived;
+use Fereydooni\Shopping\app\Events\Department\DepartmentCreated;
+use Fereydooni\Shopping\app\Events\Department\DepartmentManagerAssigned;
+use Fereydooni\Shopping\app\Events\Department\DepartmentMoved;
+use Fereydooni\Shopping\app\Events\Department\DepartmentUpdated;
 use Fereydooni\Shopping\app\Events\EmployeePosition\EmployeePositionArchived;
 use Fereydooni\Shopping\app\Events\EmployeePosition\EmployeePositionCreated;
 use Fereydooni\Shopping\app\Events\EmployeePosition\EmployeePositionSalaryUpdated;
@@ -44,13 +44,13 @@ use Fereydooni\Shopping\app\Events\Provider\ProviderActivated;
 use Fereydooni\Shopping\app\Events\Provider\ProviderCommissionRateUpdated;
 use Fereydooni\Shopping\app\Events\Provider\ProviderCommunicationRatingUpdated;
 use Fereydooni\Shopping\app\Events\Provider\ProviderContractCreated;
-// EmployeeDepartment Events
+// Department Events
 use Fereydooni\Shopping\app\Events\Provider\ProviderContractExpiring;
 use Fereydooni\Shopping\app\Events\Provider\ProviderContractExtended;
 use Fereydooni\Shopping\app\Events\Provider\ProviderContractRenewed;
 use Fereydooni\Shopping\app\Events\Provider\ProviderContractSigned;
 use Fereydooni\Shopping\app\Events\Provider\ProviderContractTerminated;
-// EmployeeDepartment Listeners
+// Department Listeners
 use Fereydooni\Shopping\app\Events\Provider\ProviderContractUpdated;
 use Fereydooni\Shopping\app\Events\Provider\ProviderCreated;
 use Fereydooni\Shopping\app\Events\Provider\ProviderCreditLimitUpdated;
@@ -80,11 +80,11 @@ use Fereydooni\Shopping\app\Listeners\Customer\LogCustomerActivity;
 use Fereydooni\Shopping\app\Listeners\Customer\NotifyCustomerStatusChange;
 use Fereydooni\Shopping\app\Listeners\Customer\UpdateCustomerAnalytics;
 use Fereydooni\Shopping\app\Listeners\Customer\UpdateLoyaltyProgram;
-use Fereydooni\Shopping\app\Listeners\EmployeeDepartment\LogDepartmentActivity;
-use Fereydooni\Shopping\app\Listeners\EmployeeDepartment\SendDepartmentNotification;
-use Fereydooni\Shopping\app\Listeners\EmployeeDepartment\UpdateDepartmentHierarchy;
-use Fereydooni\Shopping\app\Listeners\EmployeeDepartment\UpdateDepartmentMetrics;
-use Fereydooni\Shopping\app\Listeners\EmployeeDepartment\UpdateEmployeeDepartmentRecords;
+use Fereydooni\Shopping\app\Listeners\Department\LogDepartmentActivity;
+use Fereydooni\Shopping\app\Listeners\Department\SendDepartmentNotification;
+use Fereydooni\Shopping\app\Listeners\Department\UpdateDepartmentHierarchy;
+use Fereydooni\Shopping\app\Listeners\Department\UpdateDepartmentMetrics;
+use Fereydooni\Shopping\app\Listeners\Department\UpdateDepartmentRecords;
 use Fereydooni\Shopping\app\Listeners\EmployeePosition\CreateJobPosting;
 use Fereydooni\Shopping\app\Listeners\EmployeePosition\LogPositionActivity;
 use Fereydooni\Shopping\app\Listeners\EmployeePosition\SendPositionNotification;
@@ -287,40 +287,40 @@ class EventServiceProvider extends ServiceProvider
             LogCustomerActivity::class,
         ],
 
-        // EmployeeDepartment Events
-        EmployeeDepartmentCreated::class => [
+        // Department Events
+        DepartmentCreated::class => [
             SendDepartmentNotification::class,
             UpdateDepartmentHierarchy::class,
             LogDepartmentActivity::class,
-            UpdateEmployeeDepartmentRecords::class,
+            UpdateDepartmentRecords::class,
             UpdateDepartmentMetrics::class,
         ],
-        EmployeeDepartmentUpdated::class => [
+        DepartmentUpdated::class => [
             SendDepartmentNotification::class,
             UpdateDepartmentHierarchy::class,
             LogDepartmentActivity::class,
-            UpdateEmployeeDepartmentRecords::class,
+            UpdateDepartmentRecords::class,
             UpdateDepartmentMetrics::class,
         ],
-        EmployeeDepartmentManagerAssigned::class => [
+        DepartmentManagerAssigned::class => [
             SendDepartmentNotification::class,
             UpdateDepartmentHierarchy::class,
             LogDepartmentActivity::class,
-            UpdateEmployeeDepartmentRecords::class,
+            UpdateDepartmentRecords::class,
             UpdateDepartmentMetrics::class,
         ],
-        EmployeeDepartmentMoved::class => [
+        DepartmentMoved::class => [
             SendDepartmentNotification::class,
             UpdateDepartmentHierarchy::class,
             LogDepartmentActivity::class,
-            UpdateEmployeeDepartmentRecords::class,
+            UpdateDepartmentRecords::class,
             UpdateDepartmentMetrics::class,
         ],
-        EmployeeDepartmentArchived::class => [
+        DepartmentArchived::class => [
             SendDepartmentNotification::class,
             UpdateDepartmentHierarchy::class,
             LogDepartmentActivity::class,
-            UpdateEmployeeDepartmentRecords::class,
+            UpdateDepartmentRecords::class,
             UpdateDepartmentMetrics::class,
         ],
 

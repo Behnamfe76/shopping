@@ -2,10 +2,10 @@
 
 namespace Fereydooni\Shopping\app\Repositories;
 
-use Fereydooni\Shopping\app\DTOs\EmployeeDepartmentDTO;
+use Fereydooni\Shopping\app\DTOs\DepartmentDTO;
 use Fereydooni\Shopping\app\Enums\DepartmentStatus;
-use Fereydooni\Shopping\app\Models\EmployeeDepartment;
-use Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeDepartmentRepositoryInterface;
+use Fereydooni\Shopping\app\Models\Department;
+use Fereydooni\Shopping\app\Repositories\Interfaces\DepartmentRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class EmployeeDepartmentRepository implements EmployeeDepartmentRepositoryInterface
+class DepartmentRepository implements DepartmentRepositoryInterface
 {
     protected $model;
 
@@ -22,7 +22,7 @@ class EmployeeDepartmentRepository implements EmployeeDepartmentRepositoryInterf
 
     protected $cacheTtl = 3600; // 1 hour
 
-    public function __construct(EmployeeDepartment $model)
+    public function __construct(Department $model)
     {
         $this->model = $model;
     }
@@ -57,47 +57,47 @@ class EmployeeDepartmentRepository implements EmployeeDepartmentRepositoryInterf
     }
 
     // Find operations
-    public function find(int $id): ?EmployeeDepartment
+    public function find(int $id): ?Department
     {
         return Cache::remember($this->cachePrefix.'find_'.$id, $this->cacheTtl, function () use ($id) {
             return $this->model->with(['parent', 'manager', 'children', 'employees'])->find($id);
         });
     }
 
-    public function findDTO(int $id): ?EmployeeDepartmentDTO
+    public function findDTO(int $id): ?DepartmentDTO
     {
         $department = $this->find($id);
 
-        return $department ? EmployeeDepartmentDTO::fromModel($department) : null;
+        return $department ? DepartmentDTO::fromModel($department) : null;
     }
 
     // Find by name and code
-    public function findByName(string $name): ?EmployeeDepartment
+    public function findByName(string $name): ?Department
     {
         return Cache::remember($this->cachePrefix.'find_by_name_'.md5($name), $this->cacheTtl, function () use ($name) {
             return $this->model->where('name', $name)->first();
         });
     }
 
-    public function findByNameDTO(string $name): ?EmployeeDepartmentDTO
+    public function findByNameDTO(string $name): ?DepartmentDTO
     {
         $department = $this->findByName($name);
 
-        return $department ? EmployeeDepartmentDTO::fromModel($department) : null;
+        return $department ? DepartmentDTO::fromModel($department) : null;
     }
 
-    public function findByCode(string $code): ?EmployeeDepartment
+    public function findByCode(string $code): ?Department
     {
         return Cache::remember($this->cachePrefix.'find_by_code_'.md5($code), $this->cacheTtl, function () use ($code) {
             return $this->model->where('code', $code)->first();
         });
     }
 
-    public function findByCodeDTO(string $code): ?EmployeeDepartmentDTO
+    public function findByCodeDTO(string $code): ?DepartmentDTO
     {
         $department = $this->findByCode($code);
 
-        return $department ? EmployeeDepartmentDTO::fromModel($department) : null;
+        return $department ? DepartmentDTO::fromModel($department) : null;
     }
 
     // Find by relationships
@@ -112,7 +112,7 @@ class EmployeeDepartmentRepository implements EmployeeDepartmentRepositoryInterf
     {
         $departments = $this->findByManagerId($managerId);
 
-        return $departments->map(fn ($dept) => EmployeeDepartmentDTO::fromModel($dept));
+        return $departments->map(fn ($dept) => DepartmentDTO::fromModel($dept));
     }
 
     public function findByParentId(int $parentId): Collection
@@ -126,7 +126,7 @@ class EmployeeDepartmentRepository implements EmployeeDepartmentRepositoryInterf
     {
         $departments = $this->findByParentId($parentId);
 
-        return $departments->map(fn ($dept) => EmployeeDepartmentDTO::fromModel($dept));
+        return $departments->map(fn ($dept) => DepartmentDTO::fromModel($dept));
     }
 
     // Find by status and filters
@@ -141,7 +141,7 @@ class EmployeeDepartmentRepository implements EmployeeDepartmentRepositoryInterf
     {
         $departments = $this->findByStatus($status);
 
-        return $departments->map(fn ($dept) => EmployeeDepartmentDTO::fromModel($dept));
+        return $departments->map(fn ($dept) => DepartmentDTO::fromModel($dept));
     }
 
     public function findByLocation(string $location): Collection
@@ -155,7 +155,7 @@ class EmployeeDepartmentRepository implements EmployeeDepartmentRepositoryInterf
     {
         $departments = $this->findByLocation($location);
 
-        return $departments->map(fn ($dept) => EmployeeDepartmentDTO::fromModel($dept));
+        return $departments->map(fn ($dept) => DepartmentDTO::fromModel($dept));
     }
 
     // Status-based queries
@@ -170,7 +170,7 @@ class EmployeeDepartmentRepository implements EmployeeDepartmentRepositoryInterf
     {
         $departments = $this->findActive();
 
-        return $departments->map(fn ($dept) => EmployeeDepartmentDTO::fromModel($dept));
+        return $departments->map(fn ($dept) => DepartmentDTO::fromModel($dept));
     }
 
     public function findInactive(): Collection
@@ -184,7 +184,7 @@ class EmployeeDepartmentRepository implements EmployeeDepartmentRepositoryInterf
     {
         $departments = $this->findInactive();
 
-        return $departments->map(fn ($dept) => EmployeeDepartmentDTO::fromModel($dept));
+        return $departments->map(fn ($dept) => DepartmentDTO::fromModel($dept));
     }
 
     // Hierarchy queries
@@ -199,7 +199,7 @@ class EmployeeDepartmentRepository implements EmployeeDepartmentRepositoryInterf
     {
         $departments = $this->findRoot();
 
-        return $departments->map(fn ($dept) => EmployeeDepartmentDTO::fromModel($dept));
+        return $departments->map(fn ($dept) => DepartmentDTO::fromModel($dept));
     }
 
     public function findChildren(int $parentId): Collection
@@ -213,7 +213,7 @@ class EmployeeDepartmentRepository implements EmployeeDepartmentRepositoryInterf
     {
         $departments = $this->findChildren($parentId);
 
-        return $departments->map(fn ($dept) => EmployeeDepartmentDTO::fromModel($dept));
+        return $departments->map(fn ($dept) => DepartmentDTO::fromModel($dept));
     }
 
     public function findDescendants(int $parentId): Collection
@@ -229,7 +229,7 @@ class EmployeeDepartmentRepository implements EmployeeDepartmentRepositoryInterf
     {
         $departments = $this->findDescendants($parentId);
 
-        return $departments->map(fn ($dept) => EmployeeDepartmentDTO::fromModel($dept));
+        return $departments->map(fn ($dept) => DepartmentDTO::fromModel($dept));
     }
 
     public function findAncestors(int $departmentId): Collection
@@ -245,11 +245,11 @@ class EmployeeDepartmentRepository implements EmployeeDepartmentRepositoryInterf
     {
         $departments = $this->findAncestors($departmentId);
 
-        return $departments->map(fn ($dept) => EmployeeDepartmentDTO::fromModel($dept));
+        return $departments->map(fn ($dept) => DepartmentDTO::fromModel($dept));
     }
 
     // Create and update operations
-    public function create(array $data): EmployeeDepartment
+    public function create(array $data): Department
     {
         try {
             DB::beginTransaction();
@@ -260,24 +260,24 @@ class EmployeeDepartmentRepository implements EmployeeDepartmentRepositoryInterf
 
             DB::commit();
 
-            Log::info('EmployeeDepartment created', ['id' => $department->id, 'name' => $department->name]);
+            Log::info('Department created', ['id' => $department->id, 'name' => $department->name]);
 
             return $department;
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Failed to create EmployeeDepartment', ['error' => $e->getMessage(), 'data' => $data]);
+            Log::error('Failed to create Department', ['error' => $e->getMessage(), 'data' => $data]);
             throw $e;
         }
     }
 
-    public function createAndReturnDTO(array $data): EmployeeDepartmentDTO
+    public function createAndReturnDTO(array $data): DepartmentDTO
     {
         $department = $this->create($data);
 
-        return EmployeeDepartmentDTO::fromModel($department);
+        return DepartmentDTO::fromModel($department);
     }
 
-    public function update(EmployeeDepartment $department, array $data): bool
+    public function update(Department $department, array $data): bool
     {
         try {
             DB::beginTransaction();
@@ -289,26 +289,26 @@ class EmployeeDepartmentRepository implements EmployeeDepartmentRepositoryInterf
             DB::commit();
 
             if ($result) {
-                Log::info('EmployeeDepartment updated', ['id' => $department->id, 'name' => $department->name]);
+                Log::info('Department updated', ['id' => $department->id, 'name' => $department->name]);
             }
 
             return $result;
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Failed to update EmployeeDepartment', ['error' => $e->getMessage(), 'id' => $department->id]);
+            Log::error('Failed to update Department', ['error' => $e->getMessage(), 'id' => $department->id]);
             throw $e;
         }
     }
 
-    public function updateAndReturnDTO(EmployeeDepartment $department, array $data): ?EmployeeDepartmentDTO
+    public function updateAndReturnDTO(Department $department, array $data): ?DepartmentDTO
     {
         $result = $this->update($department, $data);
 
-        return $result ? EmployeeDepartmentDTO::fromModel($department->fresh()) : null;
+        return $result ? DepartmentDTO::fromModel($department->fresh()) : null;
     }
 
     // Delete operations
-    public function delete(EmployeeDepartment $department): bool
+    public function delete(Department $department): bool
     {
         try {
             DB::beginTransaction();
@@ -320,19 +320,19 @@ class EmployeeDepartmentRepository implements EmployeeDepartmentRepositoryInterf
             DB::commit();
 
             if ($result) {
-                Log::info('EmployeeDepartment deleted', ['id' => $department->id, 'name' => $department->name]);
+                Log::info('Department deleted', ['id' => $department->id, 'name' => $department->name]);
             }
 
             return $result;
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Failed to delete EmployeeDepartment', ['error' => $e->getMessage(), 'id' => $department->id]);
+            Log::error('Failed to delete Department', ['error' => $e->getMessage(), 'id' => $department->id]);
             throw $e;
         }
     }
 
     // Status management
-    public function activate(EmployeeDepartment $department): bool
+    public function activate(Department $department): bool
     {
         return $this->update($department, [
             'is_active' => true,
@@ -340,7 +340,7 @@ class EmployeeDepartmentRepository implements EmployeeDepartmentRepositoryInterf
         ]);
     }
 
-    public function deactivate(EmployeeDepartment $department): bool
+    public function deactivate(Department $department): bool
     {
         return $this->update($department, [
             'is_active' => false,
@@ -348,7 +348,7 @@ class EmployeeDepartmentRepository implements EmployeeDepartmentRepositoryInterf
         ]);
     }
 
-    public function archive(EmployeeDepartment $department): bool
+    public function archive(Department $department): bool
     {
         return $this->update($department, [
             'is_active' => false,
@@ -357,18 +357,18 @@ class EmployeeDepartmentRepository implements EmployeeDepartmentRepositoryInterf
     }
 
     // Manager operations
-    public function assignManager(EmployeeDepartment $department, int $managerId): bool
+    public function assignManager(Department $department, int $managerId): bool
     {
         return $this->update($department, ['manager_id' => $managerId]);
     }
 
-    public function removeManager(EmployeeDepartment $department): bool
+    public function removeManager(Department $department): bool
     {
         return $this->update($department, ['manager_id' => null]);
     }
 
     // Hierarchy operations
-    public function moveToParent(EmployeeDepartment $department, int $newParentId): bool
+    public function moveToParent(Department $department, int $newParentId): bool
     {
         return $this->update($department, ['parent_id' => $newParentId]);
     }
@@ -475,7 +475,7 @@ class EmployeeDepartmentRepository implements EmployeeDepartmentRepositoryInterf
     {
         $departments = $this->searchDepartments($query);
 
-        return $departments->map(fn ($dept) => EmployeeDepartmentDTO::fromModel($dept));
+        return $departments->map(fn ($dept) => DepartmentDTO::fromModel($dept));
     }
 
     // Import/Export operations
@@ -560,7 +560,7 @@ class EmployeeDepartmentRepository implements EmployeeDepartmentRepositoryInterf
     }
 
     // Helper methods
-    protected function buildHierarchyNode(EmployeeDepartment $department): array
+    protected function buildHierarchyNode(Department $department): array
     {
         $node = [
             'id' => $department->id,

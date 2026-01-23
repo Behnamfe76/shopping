@@ -12,7 +12,6 @@ use Fereydooni\Shopping\app\Http\Requests\UpdateEmployeeRequest;
 use Fereydooni\Shopping\app\Http\Resources\EmployeeAnalyticsResource;
 use Fereydooni\Shopping\app\Http\Resources\EmployeeResource;
 use Fereydooni\Shopping\app\Http\Resources\EmployeeSearchResource;
-use Fereydooni\Shopping\app\Models\Category;
 use Fereydooni\Shopping\app\Models\Employee;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -38,6 +37,26 @@ class EmployeeController extends Controller
             };
 
             return EmployeeResource::collection($employees)->response()->setStatusCode(200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to retrieve employees',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Display all categories.
+     */
+    public function cursorAll(Request $request): JsonResponse
+    {
+        Gate::authorize('viewAny', Employee::class);
+
+        try {
+            return response()->json(
+                EmployeeFacade::cursorAll(cursor: $request->get('cursor')),
+                200
+            );
         } catch (\Exception $e) {
             return response()->json([
                 'error' => 'Failed to retrieve employees',
@@ -96,7 +115,7 @@ class EmployeeController extends Controller
     public function store(StoreEmployeeRequest $request): JsonResponse
     {
         try {
-            $employee = $this->employeeService->onboardEmployee($request->validated());
+            $employee = EmployeeFacade::onboardEmployee($request->validated());
 
             return response()->json([
                 'message' => 'Employee created successfully',
@@ -126,7 +145,7 @@ class EmployeeController extends Controller
     public function update(UpdateEmployeeRequest $request, Employee $employee): JsonResponse
     {
         try {
-            $updatedEmployee = $this->employeeService->updateEmployeeProfile($employee, $request->validated());
+            $updatedEmployee = EmployeeFacade::updateEmployeeProfile($employee, $request->validated());
 
             return response()->json([
                 'message' => 'Employee updated successfully',
@@ -146,7 +165,7 @@ class EmployeeController extends Controller
     public function destroy(Employee $employee): JsonResponse
     {
         try {
-            $this->employeeService->deleteEmployee($employee);
+            EmployeeFacade::deleteEmployee($employee);
 
             return response()->json([
                 'message' => 'Employee deleted successfully',
@@ -170,7 +189,7 @@ class EmployeeController extends Controller
         $status = $request->get('status');
         $employmentType = $request->get('employment_type');
 
-        $employees = $this->employeeService->search($query);
+        $employees = EmployeeFacade::search($query);
 
         return new EmployeeSearchResource($employees, $query, $department, $position, $status, $employmentType);
     }
@@ -183,7 +202,7 @@ class EmployeeController extends Controller
         $this->authorize('activate', $employee);
 
         try {
-            $success = $this->employeeService->activateEmployee($employee);
+            $success = EmployeeFacade::activateEmployee($employee);
 
             if ($success) {
                 return response()->json([
@@ -211,7 +230,7 @@ class EmployeeController extends Controller
         $this->authorize('deactivate', $employee);
 
         try {
-            $success = $this->employeeService->deactivateEmployee($employee);
+            $success = EmployeeFacade::deactivateEmployee($employee);
 
             if ($success) {
                 return response()->json([
@@ -244,7 +263,7 @@ class EmployeeController extends Controller
         ]);
 
         try {
-            $success = $this->employeeService->terminateEmployee(
+            $success = EmployeeFacade::terminateEmployee(
                 $employee,
                 $request->get('reason'),
                 $request->get('termination_date')
@@ -280,7 +299,7 @@ class EmployeeController extends Controller
         ]);
 
         try {
-            $success = $this->employeeService->rehireEmployee(
+            $success = EmployeeFacade::rehireEmployee(
                 $employee,
                 $request->get('hire_date')
             );
@@ -316,7 +335,7 @@ class EmployeeController extends Controller
         ]);
 
         try {
-            $success = $this->employeeService->updateSalary(
+            $success = EmployeeFacade::updateSalary(
                 $employee,
                 $request->get('salary'),
                 $request->get('effective_date')
@@ -353,7 +372,7 @@ class EmployeeController extends Controller
         ]);
 
         try {
-            $success = $this->employeeService->updatePosition(
+            $success = EmployeeFacade::updatePosition(
                 $employee,
                 $request->get('position'),
                 $request->get('effective_date')
@@ -390,7 +409,7 @@ class EmployeeController extends Controller
         ]);
 
         try {
-            $success = $this->employeeService->updateDepartment(
+            $success = EmployeeFacade::updateDepartment(
                 $employee,
                 $request->get('department'),
                 $request->get('effective_date')
@@ -427,7 +446,7 @@ class EmployeeController extends Controller
         ]);
 
         try {
-            $success = $this->employeeService->updatePerformanceRating(
+            $success = EmployeeFacade::updatePerformanceRating(
                 $employee,
                 $request->get('performance_rating'),
                 $request->get('review_date')
@@ -463,7 +482,7 @@ class EmployeeController extends Controller
         ]);
 
         try {
-            $success = $this->employeeService->schedulePerformanceReview(
+            $success = EmployeeFacade::schedulePerformanceReview(
                 $employee,
                 $request->get('review_date')
             );
@@ -502,7 +521,7 @@ class EmployeeController extends Controller
         ]);
 
         try {
-            $success = $this->employeeService->requestTimeOff(
+            $success = EmployeeFacade::requestTimeOff(
                 $employee,
                 $request->get('type'),
                 $request->get('days'),
@@ -537,7 +556,7 @@ class EmployeeController extends Controller
         $this->authorize('manageBenefits', $employee);
 
         try {
-            $result = $this->employeeService->enrollInBenefits($employee);
+            $result = EmployeeFacade::enrollInBenefits($employee);
 
             if ($result['success']) {
                 return response()->json([
@@ -567,7 +586,7 @@ class EmployeeController extends Controller
         $this->authorize('manageBenefits', $employee);
 
         try {
-            $result = $this->employeeService->unenrollFromBenefits($employee);
+            $result = EmployeeFacade::unenrollFromBenefits($employee);
 
             if ($result['success']) {
                 return response()->json([
@@ -600,7 +619,7 @@ class EmployeeController extends Controller
         ]);
 
         try {
-            $success = $this->employeeService->assignManager(
+            $success = EmployeeFacade::assignManager(
                 $employee,
                 $request->get('manager_id')
             );
@@ -631,7 +650,7 @@ class EmployeeController extends Controller
         $this->authorize('manageHierarchy', $employee);
 
         try {
-            $success = $this->employeeService->removeManager($employee);
+            $success = EmployeeFacade::removeManager($employee);
 
             if ($success) {
                 return response()->json([
@@ -658,7 +677,7 @@ class EmployeeController extends Controller
     {
         $this->authorize('view', $employee);
 
-        $subordinates = $this->employeeService->getEmployeeSubordinates($employee->id);
+        $subordinates = EmployeeFacade::getEmployeeSubordinates($employee->id);
 
         return response()->json([
             'data' => EmployeeResource::collection($subordinates),
@@ -672,7 +691,7 @@ class EmployeeController extends Controller
     {
         $this->authorize('view', $employee);
 
-        $managers = $this->employeeService->getEmployeeManagers($employee->id);
+        $managers = EmployeeFacade::getEmployeeManagers($employee->id);
 
         return response()->json([
             'data' => EmployeeResource::collection($managers),
@@ -686,7 +705,7 @@ class EmployeeController extends Controller
     {
         $this->authorize('viewOrganizationalChart');
 
-        $hierarchy = $this->employeeService->getEmployeeHierarchy($employee->id);
+        $hierarchy = EmployeeFacade::getEmployeeHierarchy($employee->id);
 
         return response()->json([
             'data' => $hierarchy,
@@ -703,7 +722,7 @@ class EmployeeController extends Controller
         $department = $request->get('department');
         $period = $request->get('period', 'current');
 
-        $analytics = $this->employeeService->generateEmployeeReport($department, $period);
+        $analytics = EmployeeFacade::generateEmployeeReport($department, $period);
 
         return response()->json([
             'data' => new EmployeeAnalyticsResource($analytics),
@@ -717,7 +736,7 @@ class EmployeeController extends Controller
     {
         $this->authorize('viewDashboard');
 
-        $dashboardData = $this->employeeService->getEmployeeDashboardData();
+        $dashboardData = EmployeeFacade::getEmployeeDashboardData();
 
         return response()->json([
             'data' => $dashboardData,
@@ -737,7 +756,7 @@ class EmployeeController extends Controller
         ]);
 
         try {
-            $success = $this->employeeService->updateSkills(
+            $success = EmployeeFacade::updateSkills(
                 $employee,
                 $request->get('skills')
             );
@@ -773,7 +792,7 @@ class EmployeeController extends Controller
         ]);
 
         try {
-            $success = $this->employeeService->updateCertifications(
+            $success = EmployeeFacade::updateCertifications(
                 $employee,
                 $request->get('certifications')
             );
@@ -809,7 +828,7 @@ class EmployeeController extends Controller
         ]);
 
         try {
-            $success = $this->employeeService->updateTrainingRecords(
+            $success = EmployeeFacade::updateTrainingRecords(
                 $employee,
                 $request->get('training_completed')
             );

@@ -2,32 +2,37 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
-use Laravel\Scout\Searchable;
-use Illuminate\Database\Eloquent\Model;
-use Fereydooni\Shopping\app\Enums\Gender;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Fereydooni\Shopping\app\Enums\CustomerType;
-use Modules\Core\Traits\HasEnhancedActivityLog;
-use Fereydooni\Unixtime\HasTimestampEquivalents;
 use Fereydooni\Shopping\app\Enums\CustomerStatus;
+use Fereydooni\Shopping\app\Enums\CustomerType;
+use Fereydooni\Shopping\app\Enums\Gender;
 use Fereydooni\Shopping\app\Traits\HasUniqueColumn;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Fereydooni\Unixtime\HasTimestampEquivalents;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Searchable;
+use Modules\Core\Traits\HasEnhancedActivityLog;
 
 class Customer extends Model
 {
+    use HasEnhancedActivityLog;
     use HasTimestampEquivalents;
     use HasUniqueColumn;
-    use SoftDeletes;
     use Searchable;
-    use HasEnhancedActivityLog;
+    use SoftDeletes;
 
     // Activity log configuration flags
     protected bool $logUserInfo = true;
+
     protected bool $logRequestMetadata = true;
+
     protected bool $logBrowserInfo = true;
+
     protected bool $logModelSnapshot = true;
+
     protected ?string $activityLogName = 'users';
+
     protected ?string $activityDescription = 'User has been {event}';
 
     protected $uniqueColumnField = 'customer_number';
@@ -154,7 +159,7 @@ class Customer extends Model
             'first_name',
             'last_name',
             'email',
-            'phone'
+            'phone',
         ];
     }
 
@@ -374,7 +379,7 @@ class Customer extends Model
                     'name' => 'updated_at',
                     'type' => 'int64',
                     'facet' => false,
-                ]
+                ],
             ],
             'default_sorting_field' => 'created_at',
         ];
@@ -420,7 +425,7 @@ class Customer extends Model
 
     public function getFullNameAttribute(): string
     {
-        return trim($this->first_name . ' ' . $this->last_name);
+        return trim($this->first_name.' '.$this->last_name);
     }
 
     public function getDisplayNameAttribute(): string

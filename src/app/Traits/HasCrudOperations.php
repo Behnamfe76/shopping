@@ -66,7 +66,7 @@ trait HasCrudOperations
             ->when(request()->input('search'), function ($query, $input) {
                 return $query->whereLike('name', "%$input%");
             })
-            ->when(is_array($withIds) && !empty($withIds), fn($q) => $q->orWhereIn('id', $withIds))
+            ->when(is_array($withIds) && ! empty($withIds), fn ($q) => $q->orWhereIn('id', $withIds))
             ->select($select)
             ->cursorPaginate($perPage, [$columns], 'id', $cursor);
     }

@@ -2,15 +2,15 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
-use Fereydooni\Shopping\app\DTOs\EmployeeDepartmentDTO;
-use Fereydooni\Shopping\app\Models\EmployeeDepartment;
-use Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeDepartmentRepositoryInterface;
+use Fereydooni\Shopping\app\DTOs\DepartmentDTO;
+use Fereydooni\Shopping\app\Models\Department;
+use Fereydooni\Shopping\app\Repositories\Interfaces\DepartmentRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
-trait HasEmployeeDepartmentOperations
+trait HasDepartmentOperations
 {
-    protected EmployeeDepartmentRepositoryInterface $departmentRepository;
+    protected DepartmentRepositoryInterface $departmentRepository;
 
     /**
      * Get all departments
@@ -25,7 +25,7 @@ trait HasEmployeeDepartmentOperations
      */
     public function getAllDepartmentsDTO(): Collection
     {
-        return $this->getAllDepartments()->map(fn ($dept) => EmployeeDepartmentDTO::fromModel($dept));
+        return $this->getAllDepartments()->map(fn ($dept) => DepartmentDTO::fromModel($dept));
     }
 
     /**
@@ -39,7 +39,7 @@ trait HasEmployeeDepartmentOperations
     /**
      * Find department by ID
      */
-    public function findDepartment(int $id): ?EmployeeDepartment
+    public function findDepartment(int $id): ?Department
     {
         return $this->departmentRepository->find($id);
     }
@@ -47,7 +47,7 @@ trait HasEmployeeDepartmentOperations
     /**
      * Find department by ID as DTO
      */
-    public function findDepartmentDTO(int $id): ?EmployeeDepartmentDTO
+    public function findDepartmentDTO(int $id): ?DepartmentDTO
     {
         return $this->departmentRepository->findDTO($id);
     }
@@ -55,7 +55,7 @@ trait HasEmployeeDepartmentOperations
     /**
      * Find department by name
      */
-    public function findDepartmentByName(string $name): ?EmployeeDepartment
+    public function findDepartmentByName(string $name): ?Department
     {
         return $this->departmentRepository->findByName($name);
     }
@@ -63,7 +63,7 @@ trait HasEmployeeDepartmentOperations
     /**
      * Find department by name as DTO
      */
-    public function findDepartmentByNameDTO(string $name): ?EmployeeDepartmentDTO
+    public function findDepartmentByNameDTO(string $name): ?DepartmentDTO
     {
         return $this->departmentRepository->findByNameDTO($name);
     }
@@ -71,7 +71,7 @@ trait HasEmployeeDepartmentOperations
     /**
      * Find department by code
      */
-    public function findDepartmentByCode(string $code): ?EmployeeDepartment
+    public function findDepartmentByCode(string $code): ?Department
     {
         return $this->departmentRepository->findByCode($code);
     }
@@ -79,7 +79,7 @@ trait HasEmployeeDepartmentOperations
     /**
      * Find department by code as DTO
      */
-    public function findDepartmentByCodeDTO(string $code): ?EmployeeDepartmentDTO
+    public function findDepartmentByCodeDTO(string $code): ?DepartmentDTO
     {
         return $this->departmentRepository->findByCodeDTO($code);
     }
@@ -87,7 +87,7 @@ trait HasEmployeeDepartmentOperations
     /**
      * Create new department
      */
-    public function createDepartment(array $data): EmployeeDepartment
+    public function createDepartment(array $data): Department
     {
         return $this->departmentRepository->create($data);
     }
@@ -95,7 +95,7 @@ trait HasEmployeeDepartmentOperations
     /**
      * Create new department and return DTO
      */
-    public function createDepartmentDTO(array $data): EmployeeDepartmentDTO
+    public function createDepartmentDTO(array $data): DepartmentDTO
     {
         return $this->departmentRepository->createAndReturnDTO($data);
     }
@@ -103,7 +103,7 @@ trait HasEmployeeDepartmentOperations
     /**
      * Update department
      */
-    public function updateDepartment(EmployeeDepartment $department, array $data): bool
+    public function updateDepartment(Department $department, array $data): bool
     {
         return $this->departmentRepository->update($department, $data);
     }
@@ -111,7 +111,7 @@ trait HasEmployeeDepartmentOperations
     /**
      * Update department and return DTO
      */
-    public function updateDepartmentDTO(EmployeeDepartment $department, array $data): ?EmployeeDepartmentDTO
+    public function updateDepartmentDTO(Department $department, array $data): ?DepartmentDTO
     {
         return $this->departmentRepository->updateAndReturnDTO($department, $data);
     }
@@ -119,7 +119,7 @@ trait HasEmployeeDepartmentOperations
     /**
      * Delete department
      */
-    public function deleteDepartment(EmployeeDepartment $department): bool
+    public function deleteDepartment(Department $department): bool
     {
         return $this->departmentRepository->delete($department);
     }

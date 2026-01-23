@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class EmployeeDepartment extends Model
+class Department extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -47,12 +47,12 @@ class EmployeeDepartment extends Model
     // Relationships
     public function parent(): BelongsTo
     {
-        return $this->belongsTo(EmployeeDepartment::class, 'parent_id');
+        return $this->belongsTo(Department::class, 'parent_id');
     }
 
     public function children(): HasMany
     {
-        return $this->hasMany(EmployeeDepartment::class, 'parent_id');
+        return $this->hasMany(Department::class, 'parent_id');
     }
 
     public function manager(): BelongsTo

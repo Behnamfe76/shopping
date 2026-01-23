@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Notifications\EmployeeDepartment;
+namespace App\Notifications\Department;
 
-use App\Models\EmployeeDepartment;
+use Fereydooni\Shopping\app\Models\Department;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\BroadcastMessage;
@@ -22,7 +22,7 @@ class BudgetThresholdReached extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      */
-    public function __construct(EmployeeDepartment $department, float $threshold, float $currentUtilization)
+    public function __construct(Department $department, float $threshold, float $currentUtilization)
     {
         $this->department = $department;
         $this->threshold = $threshold;

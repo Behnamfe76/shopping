@@ -51,7 +51,7 @@ class UpdateEmployeePositionRecords implements ShouldQueue
 
         // If department changed, update employee department records
         if (isset($changes['department_id'])) {
-            $this->updateEmployeeDepartmentRecords($position->id, $changes['department_id'], $position->department_id);
+            $this->updateDepartmentRecords($position->id, $changes['department_id'], $position->department_id);
         }
 
         Log::info('Employee position records updated for position update', [
@@ -260,7 +260,7 @@ class UpdateEmployeePositionRecords implements ShouldQueue
     /**
      * Update employee department records
      */
-    protected function updateEmployeeDepartmentRecords(int $positionId, int $oldDepartmentId, int $newDepartmentId): void
+    protected function updateDepartmentRecords(int $positionId, int $oldDepartmentId, int $newDepartmentId): void
     {
         try {
             // Update all employees in this position to the new department

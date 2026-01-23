@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Notifications\EmployeeDepartment;
+namespace App\Notifications\Department;
 
-use App\Models\EmployeeDepartment;
+use Fereydooni\Shopping\app\Models\Department;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\BroadcastMessage;
@@ -22,7 +22,7 @@ class DepartmentMoved extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      */
-    public function __construct(EmployeeDepartment $department, int $previousParentId, int $newParentId)
+    public function __construct(Department $department, int $previousParentId, int $newParentId)
     {
         $this->department = $department;
         $this->previousParentId = $previousParentId;
@@ -99,7 +99,7 @@ class DepartmentMoved extends Notification implements ShouldQueue
     {
         try {
             if ($parentId) {
-                $parent = EmployeeDepartment::find($parentId);
+                $parent = Department::find($parentId);
 
                 return $parent ? $parent->name : 'Unknown';
             }

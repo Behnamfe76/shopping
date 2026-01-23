@@ -5,7 +5,7 @@ namespace App\Permissions;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 
-class EmployeeDepartmentPermissions
+class DepartmentPermissions
 {
     /**
      * Register all employee department permissions
@@ -13,92 +13,92 @@ class EmployeeDepartmentPermissions
     public static function register(): void
     {
         // Basic CRUD permissions
-        Gate::define('employee-department.view', function ($user) {
-            return $user->hasPermissionTo('employee-department.view');
+        Gate::define('department.view', function ($user) {
+            return $user->hasPermissionTo('department.view');
         });
 
-        Gate::define('employee-department.create', function ($user) {
-            return $user->hasPermissionTo('employee-department.create');
+        Gate::define('department.create', function ($user) {
+            return $user->hasPermissionTo('department.create');
         });
 
-        Gate::define('employee-department.edit', function ($user) {
-            return $user->hasPermissionTo('employee-department.edit');
+        Gate::define('department.edit', function ($user) {
+            return $user->hasPermissionTo('department.edit');
         });
 
-        Gate::define('employee-department.delete', function ($user) {
-            return $user->hasPermissionTo('employee-department.delete');
+        Gate::define('department.delete', function ($user) {
+            return $user->hasPermissionTo('department.delete');
         });
 
         // Manager assignment permissions
-        Gate::define('employee-department.assign-manager', function ($user) {
-            return $user->hasPermissionTo('employee-department.assign-manager');
+        Gate::define('department.assign-manager', function ($user) {
+            return $user->hasPermissionTo('department.assign-manager');
         });
 
         // Department movement permissions
-        Gate::define('employee-department.move', function ($user) {
-            return $user->hasPermissionTo('employee-department.move');
+        Gate::define('department.move', function ($user) {
+            return $user->hasPermissionTo('department.move');
         });
 
         // View permissions with different scopes
-        Gate::define('employee-department.view-own', function ($user) {
-            return $user->hasPermissionTo('employee-department.view-own');
+        Gate::define('department.view-own', function ($user) {
+            return $user->hasPermissionTo('department.view-own');
         });
 
-        Gate::define('employee-department.view-team', function ($user) {
-            return $user->hasPermissionTo('employee-department.view-team');
+        Gate::define('department.view-team', function ($user) {
+            return $user->hasPermissionTo('department.view-team');
         });
 
-        Gate::define('employee-department.view-all', function ($user) {
-            return $user->hasPermissionTo('employee-department.view-all');
+        Gate::define('department.view-all', function ($user) {
+            return $user->hasPermissionTo('department.view-all');
         });
 
         // Management permissions
-        Gate::define('employee-department.manage-all', function ($user) {
-            return $user->hasPermissionTo('employee-department.manage-all');
+        Gate::define('department.manage-all', function ($user) {
+            return $user->hasPermissionTo('department.manage-all');
         });
 
         // Export/Import permissions
-        Gate::define('employee-department.export', function ($user) {
-            return $user->hasPermissionTo('employee-department.export');
+        Gate::define('department.export', function ($user) {
+            return $user->hasPermissionTo('department.export');
         });
 
-        Gate::define('employee-department.import', function ($user) {
-            return $user->hasPermissionTo('employee-department.import');
+        Gate::define('department.import', function ($user) {
+            return $user->hasPermissionTo('department.import');
         });
 
         // Analytics and statistics permissions
-        Gate::define('employee-department.statistics', function ($user) {
-            return $user->hasPermissionTo('employee-department.statistics');
+        Gate::define('department.statistics', function ($user) {
+            return $user->hasPermissionTo('department.statistics');
         });
 
         // Budget management permissions
-        Gate::define('employee-department.budget-management', function ($user) {
-            return $user->hasPermissionTo('employee-department.budget-management');
+        Gate::define('department.budget-management', function ($user) {
+            return $user->hasPermissionTo('department.budget-management');
         });
 
         // Hierarchy management permissions
-        Gate::define('employee-department.hierarchy-management', function ($user) {
-            return $user->hasPermissionTo('employee-department.hierarchy-management');
+        Gate::define('department.hierarchy-management', function ($user) {
+            return $user->hasPermissionTo('department.hierarchy-management');
         });
 
         // Advanced permissions with business logic
-        Gate::define('employee-department.view-sensitive', function ($user) {
-            return $user->hasPermissionTo('employee-department.view-sensitive') ||
+        Gate::define('department.view-sensitive', function ($user) {
+            return $user->hasPermissionTo('department.view-sensitive') ||
                    $user->hasRole(['admin', 'hr-manager', 'finance-manager']);
         });
 
-        Gate::define('employee-department.manage-budget', function ($user) {
-            return $user->hasPermissionTo('employee-department.manage-budget') ||
+        Gate::define('department.manage-budget', function ($user) {
+            return $user->hasPermissionTo('department.manage-budget') ||
                    $user->hasRole(['admin', 'finance-manager']);
         });
 
-        Gate::define('employee-department.manage-hierarchy', function ($user) {
-            return $user->hasPermissionTo('employee-department.manage-hierarchy') ||
+        Gate::define('department.manage-hierarchy', function ($user) {
+            return $user->hasPermissionTo('department.manage-hierarchy') ||
                    $user->hasRole(['admin', 'hr-manager']);
         });
 
-        Gate::define('employee-department.audit', function ($user) {
-            return $user->hasPermissionTo('employee-department.audit') ||
+        Gate::define('department.audit', function ($user) {
+            return $user->hasPermissionTo('department.audit') ||
                    $user->hasRole(['admin', 'auditor']);
         });
     }
@@ -109,25 +109,25 @@ class EmployeeDepartmentPermissions
     public static function getAllPermissions(): array
     {
         return [
-            'employee-department.view',
-            'employee-department.create',
-            'employee-department.edit',
-            'employee-department.delete',
-            'employee-department.assign-manager',
-            'employee-department.move',
-            'employee-department.view-own',
-            'employee-department.view-team',
-            'employee-department.view-all',
-            'employee-department.manage-all',
-            'employee-department.export',
-            'employee-department.import',
-            'employee-department.statistics',
-            'employee-department.budget-management',
-            'employee-department.hierarchy-management',
-            'employee-department.view-sensitive',
-            'employee-department.manage-budget',
-            'employee-department.manage-hierarchy',
-            'employee-department.audit',
+            'department.view',
+            'department.create',
+            'department.edit',
+            'department.delete',
+            'department.assign-manager',
+            'department.move',
+            'department.view-own',
+            'department.view-team',
+            'department.view-all',
+            'department.manage-all',
+            'department.export',
+            'department.import',
+            'department.statistics',
+            'department.budget-management',
+            'department.hierarchy-management',
+            'department.view-sensitive',
+            'department.manage-budget',
+            'department.manage-hierarchy',
+            'department.audit',
         ];
     }
 
@@ -138,39 +138,39 @@ class EmployeeDepartmentPermissions
     {
         return [
             'Basic Operations' => [
-                'employee-department.view',
-                'employee-department.create',
-                'employee-department.edit',
-                'employee-department.delete',
+                'department.view',
+                'department.create',
+                'department.edit',
+                'department.delete',
             ],
             'Manager Management' => [
-                'employee-department.assign-manager',
+                'department.assign-manager',
             ],
             'Structure Management' => [
-                'employee-department.move',
-                'employee-department.hierarchy-management',
+                'department.move',
+                'department.hierarchy-management',
             ],
             'Access Control' => [
-                'employee-department.view-own',
-                'employee-department.view-team',
-                'employee-department.view-all',
-                'employee-department.view-sensitive',
+                'department.view-own',
+                'department.view-team',
+                'department.view-all',
+                'department.view-sensitive',
             ],
             'Administration' => [
-                'employee-department.manage-all',
-                'employee-department.manage-budget',
-                'employee-department.manage-hierarchy',
+                'department.manage-all',
+                'department.manage-budget',
+                'department.manage-hierarchy',
             ],
             'Data Management' => [
-                'employee-department.export',
-                'employee-department.import',
+                'department.export',
+                'department.import',
             ],
             'Analytics' => [
-                'employee-department.statistics',
-                'employee-department.audit',
+                'department.statistics',
+                'department.audit',
             ],
             'Financial' => [
-                'employee-department.budget-management',
+                'department.budget-management',
             ],
         ];
     }
@@ -183,38 +183,38 @@ class EmployeeDepartmentPermissions
         return [
             'admin' => self::getAllPermissions(),
             'hr-manager' => [
-                'employee-department.view',
-                'employee-department.create',
-                'employee-department.edit',
-                'employee-department.assign-manager',
-                'employee-department.move',
-                'employee-department.view-all',
-                'employee-department.hierarchy-management',
-                'employee-department.statistics',
-                'employee-department.export',
-                'employee-department.import',
+                'department.view',
+                'department.create',
+                'department.edit',
+                'department.assign-manager',
+                'department.move',
+                'department.view-all',
+                'department.hierarchy-management',
+                'department.statistics',
+                'department.export',
+                'department.import',
             ],
             'department-manager' => [
-                'employee-department.view',
-                'employee-department.view-own',
-                'employee-department.view-team',
-                'employee-department.statistics',
+                'department.view',
+                'department.view-own',
+                'department.view-team',
+                'department.statistics',
             ],
             'finance-manager' => [
-                'employee-department.view',
-                'employee-department.view-all',
-                'employee-department.budget-management',
-                'employee-department.statistics',
-                'employee-department.export',
+                'department.view',
+                'department.view-all',
+                'department.budget-management',
+                'department.statistics',
+                'department.export',
             ],
             'employee' => [
-                'employee-department.view-own',
+                'department.view-own',
             ],
             'auditor' => [
-                'employee-department.view',
-                'employee-department.view-all',
-                'employee-department.audit',
-                'employee-department.export',
+                'department.view',
+                'department.view-all',
+                'department.audit',
+                'department.export',
             ],
         ];
     }
@@ -227,48 +227,48 @@ class EmployeeDepartmentPermissions
         try {
             switch ($action) {
                 case 'view':
-                    return Gate::allows('employee-department.view', $department);
+                    return Gate::allows('department.view', $department);
 
                 case 'create':
-                    return Gate::allows('employee-department.create');
+                    return Gate::allows('department.create');
 
                 case 'edit':
-                    return Gate::allows('employee-department.edit', $department);
+                    return Gate::allows('department.edit', $department);
 
                 case 'delete':
-                    return Gate::allows('employee-department.delete', $department);
+                    return Gate::allows('department.delete', $department);
 
                 case 'assign-manager':
-                    return Gate::allows('employee-department.assign-manager', $department);
+                    return Gate::allows('department.assign-manager', $department);
 
                 case 'move':
-                    return Gate::allows('employee-department.move', $department);
+                    return Gate::allows('department.move', $department);
 
                 case 'view-budget':
-                    return Gate::allows('employee-department.budget-management') ||
-                           Gate::allows('employee-department.view-sensitive');
+                    return Gate::allows('department.budget-management') ||
+                           Gate::allows('department.view-sensitive');
 
                 case 'manage-budget':
-                    return Gate::allows('employee-department.manage-budget');
+                    return Gate::allows('department.manage-budget');
 
                 case 'view-hierarchy':
-                    return Gate::allows('employee-department.hierarchy-management') ||
-                           Gate::allows('employee-department.view-all');
+                    return Gate::allows('department.hierarchy-management') ||
+                           Gate::allows('department.view-all');
 
                 case 'manage-hierarchy':
-                    return Gate::allows('employee-department.manage-hierarchy');
+                    return Gate::allows('department.manage-hierarchy');
 
                 case 'export':
-                    return Gate::allows('employee-department.export');
+                    return Gate::allows('department.export');
 
                 case 'import':
-                    return Gate::allows('employee-department.import');
+                    return Gate::allows('department.import');
 
                 case 'view-statistics':
-                    return Gate::allows('employee-department.statistics');
+                    return Gate::allows('department.statistics');
 
                 case 'audit':
-                    return Gate::allows('employee-department.audit');
+                    return Gate::allows('department.audit');
 
                 default:
                     Log::warning('Unknown permission action', [
@@ -321,11 +321,11 @@ class EmployeeDepartmentPermissions
     {
         try {
             $permissions = [
-                'employee-department.view',
-                'employee-department.create',
-                'employee-department.edit',
-                'employee-department.delete',
-                'employee-department.manage-all',
+                'department.view',
+                'department.create',
+                'department.edit',
+                'department.delete',
+                'department.manage-all',
             ];
 
             foreach ($permissions as $permission) {
@@ -351,25 +351,25 @@ class EmployeeDepartmentPermissions
     public static function getPermissionDescription(string $permission): string
     {
         $descriptions = [
-            'employee-department.view' => 'View department information',
-            'employee-department.create' => 'Create new departments',
-            'employee-department.edit' => 'Edit department details',
-            'employee-department.delete' => 'Delete departments',
-            'employee-department.assign-manager' => 'Assign managers to departments',
-            'employee-department.move' => 'Move departments in hierarchy',
-            'employee-department.view-own' => 'View own department information',
-            'employee-department.view-team' => 'View team department information',
-            'employee-department.view-all' => 'View all department information',
-            'employee-department.manage-all' => 'Full department management access',
-            'employee-department.export' => 'Export department data',
-            'employee-department.import' => 'Import department data',
-            'employee-department.statistics' => 'View department statistics and analytics',
-            'employee-department.budget-management' => 'Manage department budgets',
-            'employee-department.hierarchy-management' => 'Manage department hierarchy',
-            'employee-department.view-sensitive' => 'View sensitive department information',
-            'employee-department.manage-budget' => 'Full budget management access',
-            'employee-department.manage-hierarchy' => 'Full hierarchy management access',
-            'employee-department.audit' => 'Audit department activities and changes',
+            'department.view' => 'View department information',
+            'department.create' => 'Create new departments',
+            'department.edit' => 'Edit department details',
+            'department.delete' => 'Delete departments',
+            'department.assign-manager' => 'Assign managers to departments',
+            'department.move' => 'Move departments in hierarchy',
+            'department.view-own' => 'View own department information',
+            'department.view-team' => 'View team department information',
+            'department.view-all' => 'View all department information',
+            'department.manage-all' => 'Full department management access',
+            'department.export' => 'Export department data',
+            'department.import' => 'Import department data',
+            'department.statistics' => 'View department statistics and analytics',
+            'department.budget-management' => 'Manage department budgets',
+            'department.hierarchy-management' => 'Manage department hierarchy',
+            'department.view-sensitive' => 'View sensitive department information',
+            'department.manage-budget' => 'Full budget management access',
+            'department.manage-hierarchy' => 'Full hierarchy management access',
+            'department.audit' => 'Audit department activities and changes',
         ];
 
         return $descriptions[$permission] ?? 'Unknown permission';

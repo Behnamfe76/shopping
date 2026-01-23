@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('title', 255);
             $table->string('code', 50)->unique();
             $table->text('description')->nullable();
-            $table->foreignId('department_id')->constrained('employee_departments')->onDelete('cascade');
+            $table->foreignId('department_id')->constrained('departments')->onDelete('cascade');
             $table->enum('level', ['entry', 'junior', 'mid', 'senior', 'lead', 'manager', 'director', 'executive']);
             $table->decimal('salary_min', 10, 2)->nullable();
             $table->decimal('salary_max', 10, 2)->nullable();

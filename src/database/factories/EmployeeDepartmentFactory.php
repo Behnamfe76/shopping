@@ -2,21 +2,21 @@
 
 namespace Database\Factories;
 
-use App\Models\Employee;
-use App\Models\EmployeeDepartment;
+use Fereydooni\Shopping\app\Models\Department;
+use Fereydooni\Shopping\app\Models\Employee;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\EmployeeDepartment>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Department>
  */
-class EmployeeDepartmentFactory extends Factory
+class DepartmentFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = EmployeeDepartment::class;
+    protected $model = Department::class;
 
     /**
      * Define the model's default state.
@@ -115,10 +115,10 @@ class EmployeeDepartmentFactory extends Factory
     /**
      * Indicate that the department has a parent.
      */
-    public function withParent(?EmployeeDepartment $parent = null): static
+    public function withParent(?Department $parent = null): static
     {
         return $this->state(fn (array $attributes) => [
-            'parent_id' => $parent ? $parent->id : EmployeeDepartment::factory()->create()->id,
+            'parent_id' => $parent ? $parent->id : Department::factory()->create()->id,
         ]);
     }
 

@@ -10,6 +10,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerController as ApiCus
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerNoteController as ApiCustomerNoteController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerPreferenceController as ApiCustomerPreferenceController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\CustomerSegmentController as ApiCustomerSegmentController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\DepartmentController as ApiDepartmentController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\EmployeeController as ApiEmployeeController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\LoyaltyTransactionController as ApiLoyaltyTransactionController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\OrderController as ApiOrderController;
@@ -1358,17 +1359,34 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:ap
 
             // Update Permission (full update)
             Route::put('/', [ApiPermissionController::class, 'update'])->name('update');
+        });
+    });
 
-            //         // Update Permission (partial update)
-            //         Route::patch('/', [ApiPermissionController::class, 'update'])->name('update.partial');
+    // Departments API routes
+    Route::prefix('departments')->name('departments.')->group(function () {
+        // List departments
+        Route::get('/', [ApiDepartmentController::class, 'index'])->name('index');
 
-            //         // Delete Permission
-            //         Route::delete('/', [ApiPermissionController::class, 'destroy'])->name('destroy');
+        Route::get('/cursor-all', [ApiDepartmentController::class, 'cursorAll'])->name('cursor-all');
 
-            //         // Customer status management
-            //         Route::post('/activate', [ApiPermissionController::class, 'activate'])->name('activate');
-            //         Route::post('/deactivate', [ApiPermissionController::class, 'deactivate'])->name('deactivate');
-            //         Route::post('/suspend', [ApiPermissionController::class, 'suspend'])->name('suspend');
+        Route::get('/statuses/cursor-all', [ApiDepartmentController::class, 'statuses'])->name('statuses');
+
+        Route::delete('/destroy-some', [ApiDepartmentController::class, 'destroySome'])->name('destroySome');
+        Route::delete('/destroy-all', [ApiDepartmentController::class, 'destroyAll'])->name('destroyAll');
+
+        // Create department
+        Route::post('/', [ApiDepartmentController::class, 'store'])->name('store');
+
+        // Department-specific routes
+        Route::prefix('{department}')->group(function () {
+            // Show department
+            Route::get('/', [ApiDepartmentController::class, 'show'])->name('show');
+
+            // Update department (full update)
+            Route::put('/', [ApiDepartmentController::class, 'update'])->name('update');
+
+            // Delete department
+            Route::delete('/', [ApiDepartmentController::class, 'destroy'])->name('destroy');
         });
     });
 
@@ -1728,6 +1746,7 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:ap
         // List employees
         Route::get('/', [ApiEmployeeController::class, 'index'])->name('index');
 
+        Route::get('/cursor-all', [ApiEmployeeController::class, 'cursorAll'])->name('types');
         Route::get('/statuses/cursor-all', [ApiEmployeeController::class, 'statuses'])->name('statuses');
         Route::get('/types/cursor-all', [ApiEmployeeController::class, 'employmentTypes'])->name('types');
 

@@ -69,7 +69,7 @@ class EmployeePosition extends Model
     // Relationships
     public function department(): BelongsTo
     {
-        return $this->belongsTo(EmployeeDepartment::class, 'department_id');
+        return $this->belongsTo(Department::class, 'department_id');
     }
 
     public function employees(): HasMany

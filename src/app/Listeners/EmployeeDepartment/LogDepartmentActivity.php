@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Listeners\EmployeeDepartment;
+namespace App\Listeners\Department;
 
-use App\Events\EmployeeDepartment\EmployeeDepartmentArchived;
-use App\Events\EmployeeDepartment\EmployeeDepartmentCreated;
-use App\Events\EmployeeDepartment\EmployeeDepartmentManagerAssigned;
-use App\Events\EmployeeDepartment\EmployeeDepartmentMoved;
-use App\Events\EmployeeDepartment\EmployeeDepartmentUpdated;
+use App\Events\Department\DepartmentArchived;
+use App\Events\Department\DepartmentCreated;
+use App\Events\Department\DepartmentManagerAssigned;
+use App\Events\Department\DepartmentMoved;
+use App\Events\Department\DepartmentUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
@@ -35,15 +35,15 @@ class LogDepartmentActivity implements ShouldQueue
     public function handle($event): void
     {
         try {
-            if ($event instanceof EmployeeDepartmentCreated) {
+            if ($event instanceof DepartmentCreated) {
                 $this->logDepartmentCreated($event);
-            } elseif ($event instanceof EmployeeDepartmentUpdated) {
+            } elseif ($event instanceof DepartmentUpdated) {
                 $this->logDepartmentUpdated($event);
-            } elseif ($event instanceof EmployeeDepartmentManagerAssigned) {
+            } elseif ($event instanceof DepartmentManagerAssigned) {
                 $this->logManagerAssigned($event);
-            } elseif ($event instanceof EmployeeDepartmentMoved) {
+            } elseif ($event instanceof DepartmentMoved) {
                 $this->logDepartmentMoved($event);
-            } elseif ($event instanceof EmployeeDepartmentArchived) {
+            } elseif ($event instanceof DepartmentArchived) {
                 $this->logDepartmentArchived($event);
             }
         } catch (\Exception $e) {
@@ -57,7 +57,7 @@ class LogDepartmentActivity implements ShouldQueue
     /**
      * Log department created activity
      */
-    protected function logDepartmentCreated(EmployeeDepartmentCreated $event): void
+    protected function logDepartmentCreated(DepartmentCreated $event): void
     {
         try {
             $this->logActivity([
@@ -87,7 +87,7 @@ class LogDepartmentActivity implements ShouldQueue
     /**
      * Log department updated activity
      */
-    protected function logDepartmentUpdated(EmployeeDepartmentUpdated $event): void
+    protected function logDepartmentUpdated(DepartmentUpdated $event): void
     {
         try {
             $this->logActivity([
@@ -113,7 +113,7 @@ class LogDepartmentActivity implements ShouldQueue
     /**
      * Log manager assigned activity
      */
-    protected function logManagerAssigned(EmployeeDepartmentManagerAssigned $event): void
+    protected function logManagerAssigned(DepartmentManagerAssigned $event): void
     {
         try {
             $this->logActivity([
@@ -140,7 +140,7 @@ class LogDepartmentActivity implements ShouldQueue
     /**
      * Log department moved activity
      */
-    protected function logDepartmentMoved(EmployeeDepartmentMoved $event): void
+    protected function logDepartmentMoved(DepartmentMoved $event): void
     {
         try {
             $this->logActivity([
@@ -167,7 +167,7 @@ class LogDepartmentActivity implements ShouldQueue
     /**
      * Log department archived activity
      */
-    protected function logDepartmentArchived(EmployeeDepartmentArchived $event): void
+    protected function logDepartmentArchived(DepartmentArchived $event): void
     {
         try {
             $this->logActivity([

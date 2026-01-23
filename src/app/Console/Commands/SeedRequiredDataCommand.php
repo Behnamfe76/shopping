@@ -114,6 +114,7 @@ class SeedRequiredDataCommand extends Command
             'CategoryPermissionSeeder',
             'BrandPermissionSeeder',
             'AddressPermissionSeeder',
+            'DepartmentPermissionSeeder',
             'OrderPermissionSeeder',
             'OrderItemPermissionSeeder',
             'OrderStatusHistoryPermissionSeeder',

@@ -4,7 +4,7 @@ namespace Fereydooni\Shopping\database\seeders;
 
 use Fereydooni\Shopping\app\Enums\PositionLevel;
 use Fereydooni\Shopping\app\Enums\PositionStatus;
-use Fereydooni\Shopping\app\Models\EmployeeDepartment;
+use Fereydooni\Shopping\app\Models\Department;
 use Fereydooni\Shopping\app\Models\EmployeePosition;
 use Illuminate\Database\Seeder;
 
@@ -16,10 +16,10 @@ class EmployeePositionSeeder extends Seeder
     public function run(): void
     {
         // Get existing departments or create default ones
-        $departments = EmployeeDepartment::all();
+        $departments = Department::all();
 
         if ($departments->isEmpty()) {
-            $departments = EmployeeDepartment::factory(5)->create();
+            $departments = Department::factory(5)->create();
         }
 
         // Create sample positions for each department
@@ -36,7 +36,7 @@ class EmployeePositionSeeder extends Seeder
     /**
      * Create positions for a specific department.
      */
-    protected function createPositionsForDepartment(EmployeeDepartment $department): void
+    protected function createPositionsForDepartment(Department $department): void
     {
         $positions = [
             // Entry Level Positions

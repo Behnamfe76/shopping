@@ -43,6 +43,26 @@ class ShoppingServiceProvider extends ServiceProvider
             );
         });
 
+        // Register Department Repository
+        $this->app->bind(
+            \Fereydooni\Shopping\app\Repositories\Interfaces\DepartmentRepositoryInterface::class,
+            \Fereydooni\Shopping\app\Repositories\DepartmentRepository::class
+        );
+
+        // Register Department Service
+        $this->app->scoped('shopping.department', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\DepartmentService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\DepartmentRepositoryInterface::class)
+            );
+        });
+
+        // Register Department Facade
+        $this->app->singleton('shopping.department.facade', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\DepartmentService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\DepartmentRepositoryInterface::class)
+            );
+        });
+
         // Register Brand Repository
         $this->app->bind(
             \Fereydooni\Shopping\app\Repositories\Interfaces\BrandRepositoryInterface::class,
@@ -630,23 +650,23 @@ class ShoppingServiceProvider extends ServiceProvider
         //     );
         // });
 
-        // // Register EmployeeDepartment Repository
+        // // Register Department Repository
         // $this->app->bind(
-        //     \Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeDepartmentRepositoryInterface::class,
-        //     \Fereydooni\Shopping\app\Repositories\EmployeeDepartmentRepository::class
+        //     \Fereydooni\Shopping\app\Repositories\Interfaces\DepartmentRepositoryInterface::class,
+        //     \Fereydooni\Shopping\app\Repositories\DepartmentRepository::class
         // );
 
-        // // Register EmployeeDepartment Service
+        // // Register Department Service
         // $this->app->scoped('shopping.employee-department', function ($app) {
-        //     return new \Fereydooni\Shopping\app\Repositories\EmployeeDepartmentRepository(
-        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeDepartmentRepositoryInterface::class)
+        //     return new \Fereydooni\Shopping\app\Repositories\DepartmentRepository(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\DepartmentRepositoryInterface::class)
         //     );
         // });
 
-        // // Register EmployeeDepartment Facade
+        // // Register Department Facade
         // $this->app->singleton('shopping.employee-department.facade', function ($app) {
-        //     return new \Fereydooni\Shopping\app\Repositories\EmployeeDepartmentRepository(
-        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeDepartmentRepositoryInterface::class)
+        //     return new \Fereydooni\Shopping\app\Repositories\DepartmentRepository(
+        //         $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\DepartmentRepositoryInterface::class)
         //     );
         // });
 
@@ -764,7 +784,7 @@ class ShoppingServiceProvider extends ServiceProvider
         Gate::policy(\Fereydooni\Shopping\app\Models\Transaction::class, \Fereydooni\Shopping\app\Policies\TransactionPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\Subscription::class, \Fereydooni\Shopping\app\Policies\SubscriptionPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\UserSubscription::class, \Fereydooni\Shopping\app\Policies\UserSubscriptionPolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\EmployeeDepartment::class, \Fereydooni\Shopping\app\Policies\EmployeeDepartmentPolicy::class);
+        Gate::policy(\Fereydooni\Shopping\app\Models\Department::class, \Fereydooni\Shopping\app\Policies\DepartmentPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\EmployeePosition::class, \Fereydooni\Shopping\app\Policies\EmployeePositionPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\ProviderLocation::class, \Fereydooni\Shopping\app\Policies\ProviderLocationPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\ProviderInsurance::class, \Fereydooni\Shopping\app\Policies\ProviderInsurancePolicy::class);

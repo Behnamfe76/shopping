@@ -2,20 +2,20 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
-use Fereydooni\Shopping\app\DTOs\EmployeeDepartmentDTO;
+use Fereydooni\Shopping\app\DTOs\DepartmentDTO;
 use Fereydooni\Shopping\app\Enums\DepartmentStatus;
-use Fereydooni\Shopping\app\Models\EmployeeDepartment;
-use Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeDepartmentRepositoryInterface;
+use Fereydooni\Shopping\app\Models\Department;
+use Fereydooni\Shopping\app\Repositories\Interfaces\DepartmentRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 
-trait HasEmployeeDepartmentStatusManagement
+trait HasDepartmentStatusManagement
 {
-    protected EmployeeDepartmentRepositoryInterface $departmentRepository;
+    protected DepartmentRepositoryInterface $departmentRepository;
 
     /**
      * Activate a department
      */
-    public function activateDepartment(EmployeeDepartment $department): bool
+    public function activateDepartment(Department $department): bool
     {
         return $this->departmentRepository->activate($department);
     }
@@ -23,7 +23,7 @@ trait HasEmployeeDepartmentStatusManagement
     /**
      * Deactivate a department
      */
-    public function deactivateDepartment(EmployeeDepartment $department): bool
+    public function deactivateDepartment(Department $department): bool
     {
         return $this->departmentRepository->deactivate($department);
     }
@@ -31,7 +31,7 @@ trait HasEmployeeDepartmentStatusManagement
     /**
      * Archive a department
      */
-    public function archiveDepartment(EmployeeDepartment $department): bool
+    public function archiveDepartment(Department $department): bool
     {
         return $this->departmentRepository->archive($department);
     }
@@ -127,7 +127,7 @@ trait HasEmployeeDepartmentStatusManagement
     /**
      * Check if department is active
      */
-    public function isDepartmentActive(EmployeeDepartment $department): bool
+    public function isDepartmentActive(Department $department): bool
     {
         return $department->status->isActive();
     }
@@ -135,7 +135,7 @@ trait HasEmployeeDepartmentStatusManagement
     /**
      * Check if department is inactive
      */
-    public function isDepartmentInactive(EmployeeDepartment $department): bool
+    public function isDepartmentInactive(Department $department): bool
     {
         return $department->status->isInactive();
     }
@@ -143,7 +143,7 @@ trait HasEmployeeDepartmentStatusManagement
     /**
      * Check if department is archived
      */
-    public function isDepartmentArchived(EmployeeDepartment $department): bool
+    public function isDepartmentArchived(Department $department): bool
     {
         return $department->status->isArchived();
     }
@@ -151,7 +151,7 @@ trait HasEmployeeDepartmentStatusManagement
     /**
      * Check if department can operate
      */
-    public function canDepartmentOperate(EmployeeDepartment $department): bool
+    public function canDepartmentOperate(Department $department): bool
     {
         return $department->status->canOperate();
     }
@@ -159,7 +159,7 @@ trait HasEmployeeDepartmentStatusManagement
     /**
      * Check if department is visible
      */
-    public function isDepartmentVisible(EmployeeDepartment $department): bool
+    public function isDepartmentVisible(Department $department): bool
     {
         return $department->status->isVisible();
     }
@@ -167,7 +167,7 @@ trait HasEmployeeDepartmentStatusManagement
     /**
      * Get department status label
      */
-    public function getDepartmentStatusLabel(EmployeeDepartment $department): string
+    public function getDepartmentStatusLabel(Department $department): string
     {
         return $department->status->label();
     }
@@ -175,7 +175,7 @@ trait HasEmployeeDepartmentStatusManagement
     /**
      * Get department status color
      */
-    public function getDepartmentStatusColor(EmployeeDepartment $department): string
+    public function getDepartmentStatusColor(Department $department): string
     {
         return $department->status->color();
     }
@@ -183,7 +183,7 @@ trait HasEmployeeDepartmentStatusManagement
     /**
      * Get department status short label
      */
-    public function getDepartmentStatusShortLabel(EmployeeDepartment $department): string
+    public function getDepartmentStatusShortLabel(Department $department): string
     {
         return $department->status->shortLabel();
     }
@@ -275,6 +275,6 @@ trait HasEmployeeDepartmentStatusManagement
      */
     public function getOperationalDepartmentsDTO(): Collection
     {
-        return $this->getOperationalDepartments()->map(fn ($dept) => EmployeeDepartmentDTO::fromModel($dept));
+        return $this->getOperationalDepartments()->map(fn ($dept) => DepartmentDTO::fromModel($dept));
     }
 }

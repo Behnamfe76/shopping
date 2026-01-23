@@ -7,15 +7,8 @@ use Fereydooni\Shopping\app\Enums\EmployeeStatus;
 use Fereydooni\Shopping\app\Models\Employee;
 use Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeRepositoryInterface;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
-use Fereydooni\Shopping\app\Traits\HasEmployeeAnalytics;
-use Fereydooni\Shopping\app\Traits\HasEmployeeBenefitsManagement;
-use Fereydooni\Shopping\app\Traits\HasEmployeeHierarchyManagement;
-use Fereydooni\Shopping\app\Traits\HasEmployeeOperations;
-use Fereydooni\Shopping\app\Traits\HasEmployeePerformanceManagement;
-use Fereydooni\Shopping\app\Traits\HasEmployeeStatusManagement;
-use Fereydooni\Shopping\app\Traits\HasEmployeeTimeOffManagement;
-use Fereydooni\Shopping\app\Traits\HasSearchOperations;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Support\Facades\Log;
 
 class EmployeeService
@@ -35,6 +28,20 @@ class EmployeeService
     ) {
         $this->model = Employee::class;
         $this->dtoClass = EmployeeDTO::class;
+    }
+
+    public function cursorAll(int $perPage = 15, ?string $cursor = null): CursorPaginator
+    {
+        $withIds = request()->get('withIds', []);
+
+        return (new $this->model)->query()
+            ->when(request()->input('search'), function ($query, $input) {
+                return $query->whereLike('first_name', "%$input%")
+                    ->orWhereLike('last_name', "%$input%");
+            })
+            ->when(is_array($withIds) && ! empty($withIds), fn ($q) => $q->orWhereIn('id', $withIds))
+            ->selectRaw('CONCAT(first_name, \' \', last_name) as name')
+            ->cursorPaginate($perPage, [], 'id', $cursor);
     }
 
     // Employee onboarding and offboarding

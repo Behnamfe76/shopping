@@ -1,13 +1,12 @@
 <?php
 
-namespace Database\Seeders;
+namespace Fereydooni\Shopping\database\seeders;
 
-use App\Models\Employee;
-use App\Models\EmployeeDepartment;
+use Fereydooni\Shopping\app\Models\Department;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class EmployeeDepartmentSeeder extends Seeder
+class DepartmentSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,7 +14,7 @@ class EmployeeDepartmentSeeder extends Seeder
     public function run(): void
     {
         // Clear existing data
-        DB::table('employee_departments')->truncate();
+        DB::table('departments')->truncate();
 
         // Create root departments
         $this->createRootDepartments();
@@ -127,7 +126,7 @@ class EmployeeDepartmentSeeder extends Seeder
         ];
 
         foreach ($rootDepartments as $department) {
-            EmployeeDepartment::create($department);
+            Department::create($department);
         }
     }
 
@@ -137,9 +136,9 @@ class EmployeeDepartmentSeeder extends Seeder
     protected function createChildDepartments(): void
     {
         // Get root departments
-        $engineering = EmployeeDepartment::where('code', 'ENG')->first();
-        $sales = EmployeeDepartment::where('code', 'SALES')->first();
-        $marketing = EmployeeDepartment::where('code', 'MKTG')->first();
+        $engineering = Department::where('code', 'ENG')->first();
+        $sales = Department::where('code', 'SALES')->first();
+        $marketing = Department::where('code', 'MKTG')->first();
 
         // Engineering sub-departments
         if ($engineering) {
@@ -202,7 +201,7 @@ class EmployeeDepartmentSeeder extends Seeder
         ];
 
         foreach ($subDepartments as $department) {
-            EmployeeDepartment::create($department);
+            Department::create($department);
         }
     }
 
@@ -242,7 +241,7 @@ class EmployeeDepartmentSeeder extends Seeder
         ];
 
         foreach ($subDepartments as $department) {
-            EmployeeDepartment::create($department);
+            Department::create($department);
         }
     }
 
@@ -282,7 +281,7 @@ class EmployeeDepartmentSeeder extends Seeder
         ];
 
         foreach ($subDepartments as $department) {
-            EmployeeDepartment::create($department);
+            Department::create($department);
         }
     }
 
@@ -294,7 +293,7 @@ class EmployeeDepartmentSeeder extends Seeder
         // This would typically assign managers from existing employees
         // For now, we'll just update some departments with placeholder manager IDs
 
-        $departments = EmployeeDepartment::all();
+        $departments = Department::all();
         foreach ($departments as $department) {
             if ($department->code === 'ENG' || $department->code === 'SALES' || $department->code === 'MKTG') {
                 // Assign manager ID 1 to root departments (assuming employee ID 1 exists)
@@ -342,7 +341,7 @@ class EmployeeDepartmentSeeder extends Seeder
         ];
 
         foreach ($sampleDepartments as $department) {
-            EmployeeDepartment::create($department);
+            Department::create($department);
         }
     }
 }

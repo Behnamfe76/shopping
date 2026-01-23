@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Notifications\EmployeeDepartment;
+namespace App\Notifications\Department;
 
-use App\Models\EmployeeDepartment;
+use App\Models\Department;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\BroadcastMessage;
@@ -20,7 +20,7 @@ class DepartmentArchived extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      */
-    public function __construct(EmployeeDepartment $department, string $reason = '')
+    public function __construct(Department $department, string $reason = '')
     {
         $this->department = $department;
         $this->reason = $reason;

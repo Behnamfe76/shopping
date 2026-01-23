@@ -92,7 +92,7 @@ class EmployeePositionDTO extends Data
 
         // Relationships
         #[Nullable]
-        public ?EmployeeDepartmentDTO $department,
+        public ?DepartmentDTO $department,
 
         #[Nullable]
         public ?array $employees,
@@ -127,7 +127,7 @@ class EmployeePositionDTO extends Data
             metadata: $position->metadata,
             created_at: $position->created_at,
             updated_at: $position->updated_at,
-            department: $position->department ? EmployeeDepartmentDTO::fromModel($position->department) : null,
+            department: $position->department ? DepartmentDTO::fromModel($position->department) : null,
             employees: $position->employees ? $position->employees->map(fn ($employee) => EmployeeDTO::fromModel($employee))->toArray() : null,
             manager: $position->manager ? EmployeeDTO::fromModel($position->manager) : null
         );
@@ -139,7 +139,7 @@ class EmployeePositionDTO extends Data
             'title' => ['required', 'string', 'max:255'],
             'code' => ['required', 'string', 'max:50', 'unique:employee_positions,code'],
             'description' => ['nullable', 'string', 'max:1000'],
-            'department_id' => ['required', 'integer', 'exists:employee_departments,id'],
+            'department_id' => ['required', 'integer', 'exists:departments,id'],
             'level' => ['required', 'string', 'in:'.implode(',', array_column(PositionLevel::cases(), 'value'))],
             'salary_min' => ['nullable', 'numeric', 'min:0'],
             'salary_max' => ['nullable', 'numeric', 'min:0', 'gte:salary_min'],

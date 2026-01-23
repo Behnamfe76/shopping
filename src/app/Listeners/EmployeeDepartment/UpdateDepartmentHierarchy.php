@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Listeners\EmployeeDepartment;
+namespace App\Listeners\Department;
 
-use App\Events\EmployeeDepartment\EmployeeDepartmentArchived;
-use App\Events\EmployeeDepartment\EmployeeDepartmentCreated;
-use App\Events\EmployeeDepartment\EmployeeDepartmentMoved;
-use App\Events\EmployeeDepartment\EmployeeDepartmentUpdated;
+use App\Events\Department\DepartmentArchived;
+use App\Events\Department\DepartmentCreated;
+use App\Events\Department\DepartmentMoved;
+use App\Events\Department\DepartmentUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Cache;
@@ -35,13 +35,13 @@ class UpdateDepartmentHierarchy implements ShouldQueue
     public function handle($event): void
     {
         try {
-            if ($event instanceof EmployeeDepartmentCreated) {
+            if ($event instanceof DepartmentCreated) {
                 $this->handleDepartmentCreated($event);
-            } elseif ($event instanceof EmployeeDepartmentUpdated) {
+            } elseif ($event instanceof DepartmentUpdated) {
                 $this->handleDepartmentUpdated($event);
-            } elseif ($event instanceof EmployeeDepartmentMoved) {
+            } elseif ($event instanceof DepartmentMoved) {
                 $this->handleDepartmentMoved($event);
-            } elseif ($event instanceof EmployeeDepartmentArchived) {
+            } elseif ($event instanceof DepartmentArchived) {
                 $this->handleDepartmentArchived($event);
             }
         } catch (\Exception $e) {
@@ -55,7 +55,7 @@ class UpdateDepartmentHierarchy implements ShouldQueue
     /**
      * Handle department created event
      */
-    protected function handleDepartmentCreated(EmployeeDepartmentCreated $event): void
+    protected function handleDepartmentCreated(DepartmentCreated $event): void
     {
         try {
             $department = $event->department;
@@ -86,7 +86,7 @@ class UpdateDepartmentHierarchy implements ShouldQueue
     /**
      * Handle department updated event
      */
-    protected function handleDepartmentUpdated(EmployeeDepartmentUpdated $event): void
+    protected function handleDepartmentUpdated(DepartmentUpdated $event): void
     {
         try {
             $department = $event->department;
@@ -113,7 +113,7 @@ class UpdateDepartmentHierarchy implements ShouldQueue
     /**
      * Handle department moved event
      */
-    protected function handleDepartmentMoved(EmployeeDepartmentMoved $event): void
+    protected function handleDepartmentMoved(DepartmentMoved $event): void
     {
         try {
             $department = $event->department;
@@ -155,7 +155,7 @@ class UpdateDepartmentHierarchy implements ShouldQueue
     /**
      * Handle department archived event
      */
-    protected function handleDepartmentArchived(EmployeeDepartmentArchived $event): void
+    protected function handleDepartmentArchived(DepartmentArchived $event): void
     {
         try {
             $department = $event->department;

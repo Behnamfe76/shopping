@@ -325,10 +325,10 @@ class UpdatePositionMetrics implements ShouldQueue
                     ->where('status', 'hiring')
                     ->count(),
                 'hiring_by_department' => DB::table('employee_positions')
-                    ->join('employee_departments', 'employee_positions.department_id', '=', 'employee_departments.id')
+                    ->join('departments', 'employee_positions.department_id', '=', 'departments.id')
                     ->where('employee_positions.status', 'hiring')
-                    ->select('employee_departments.name', DB::raw('count(*) as count'))
-                    ->groupBy('employee_departments.id', 'employee_departments.name')
+                    ->select('departments.name', DB::raw('count(*) as count'))
+                    ->groupBy('departments.id', 'departments.name')
                     ->pluck('count', 'name')
                     ->toArray(),
                 'hiring_by_level' => DB::table('employee_positions')
@@ -356,10 +356,10 @@ class UpdatePositionMetrics implements ShouldQueue
                     ->where('status', 'archived')
                     ->count(),
                 'archived_by_department' => DB::table('employee_positions')
-                    ->join('employee_departments', 'employee_positions.department_id', '=', 'employee_departments.id')
+                    ->join('departments', 'employee_positions.department_id', '=', 'departments.id')
                     ->where('employee_positions.status', 'archived')
-                    ->select('employee_departments.name', DB::raw('count(*) as count'))
-                    ->groupBy('employee_departments.id', 'employee_departments.name')
+                    ->select('departments.name', DB::raw('count(*) as count'))
+                    ->groupBy('departments.id', 'departments.name')
                     ->pluck('count', 'name')
                     ->toArray(),
                 'archived_by_level' => DB::table('employee_positions')
