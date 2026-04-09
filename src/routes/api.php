@@ -31,6 +31,7 @@ use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ProviderLocationController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\RoleController as ApiRoleController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ShipmentController as ApiShipmentController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\ShipmentItemController as ApiShipmentItemController;
+use Fereydooni\Shopping\app\Http\Controllers\Api\V1\TeamController as ApiTeamController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\TransactionController as ApiTransactionController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\UserController as ApiUserController;
 use Fereydooni\Shopping\app\Http\Controllers\Api\V1\UserSubscriptionController as ApiUserSubscriptionController;
@@ -1387,6 +1388,51 @@ Route::prefix('api/v1/shopping')->name('api.v1.shopping.')->middleware(['auth:ap
 
             // Delete department
             Route::delete('/', [ApiDepartmentController::class, 'destroy'])->name('destroy');
+        });
+    });
+
+    // Teams API routes
+    Route::prefix('teams')->name('teams.')->group(function () {
+        // List teams
+        Route::get('/', [ApiTeamController::class, 'index'])->name('index');
+
+        Route::get('/cursor-all', [ApiTeamController::class, 'cursorAll'])->name('cursor-all');
+
+        Route::get('/statuses/cursor-all', [ApiTeamController::class, 'statuses'])->name('statuses');
+
+        Route::get('/by-department/{departmentId}', [ApiTeamController::class, 'getByDepartment'])->name('by-department');
+
+        Route::get('/count', [ApiTeamController::class, 'getCount'])->name('count');
+
+        Route::get('/stats', [ApiTeamController::class, 'getStats'])->name('stats');
+
+        Route::delete('/destroy-some', [ApiTeamController::class, 'destroySome'])->name('destroySome');
+        Route::delete('/destroy-all', [ApiTeamController::class, 'destroyAll'])->name('destroyAll');
+
+        // Create team
+        Route::post('/', [ApiTeamController::class, 'store'])->name('store');
+
+        // Team-specific routes
+        Route::prefix('{team}')->group(function () {
+            // Show team
+            Route::get('/', [ApiTeamController::class, 'show'])->name('show');
+
+            // Update team (full update)
+            Route::put('/', [ApiTeamController::class, 'update'])->name('update');
+
+            // Delete team
+            Route::delete('/', [ApiTeamController::class, 'destroy'])->name('destroy');
+
+            // Member management
+            Route::post('/members/add', [ApiTeamController::class, 'addMember'])->name('add-member');
+            Route::post('/members/remove', [ApiTeamController::class, 'removeMember'])->name('remove-member');
+            Route::get('/members', [ApiTeamController::class, 'getMembers'])->name('members');
+
+            // Manager management
+            Route::post('/managers/promote', [ApiTeamController::class, 'promoteToManager'])->name('promote-manager');
+            Route::post('/managers/demote', [ApiTeamController::class, 'demoteFromManager'])->name('demote-manager');
+            Route::post('/managers/change', [ApiTeamController::class, 'changeManager'])->name('change-manager');
+            Route::get('/managers', [ApiTeamController::class, 'getManagers'])->name('managers');
         });
     });
 

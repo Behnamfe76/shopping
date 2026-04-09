@@ -63,6 +63,26 @@ class ShoppingServiceProvider extends ServiceProvider
             );
         });
 
+        // Register Team Repository
+        $this->app->bind(
+            \Fereydooni\Shopping\app\Repositories\Interfaces\TeamRepositoryInterface::class,
+            \Fereydooni\Shopping\app\Repositories\TeamRepository::class
+        );
+
+        // Register Team Service
+        $this->app->scoped('shopping.team', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\TeamService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\TeamRepositoryInterface::class)
+            );
+        });
+
+        // Register Team Facade
+        $this->app->singleton('shopping.team.facade', function ($app) {
+            return new \Fereydooni\Shopping\app\Services\TeamService(
+                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\TeamRepositoryInterface::class)
+            );
+        });
+
         // Register Brand Repository
         $this->app->bind(
             \Fereydooni\Shopping\app\Repositories\Interfaces\BrandRepositoryInterface::class,
@@ -756,6 +776,7 @@ class ShoppingServiceProvider extends ServiceProvider
      */
     protected function registerPolicies(): void
     {
+        Gate::policy(\Fereydooni\Shopping\app\Models\Team::class, \Fereydooni\Shopping\app\Policies\TeamPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\Address::class, \Fereydooni\Shopping\app\Policies\AddressPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\Customer::class, \Fereydooni\Shopping\app\Policies\CustomerPolicy::class);
         Gate::policy(\Fereydooni\Shopping\app\Models\Employee::class, \Fereydooni\Shopping\app\Policies\EmployeePolicy::class);

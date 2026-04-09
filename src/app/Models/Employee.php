@@ -9,6 +9,7 @@ use Fereydooni\Unixtime\HasTimestampEquivalents;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Scout\Searchable;
 use Modules\Core\Traits\HasEnhancedActivityLog;
@@ -408,6 +409,26 @@ class Employee extends Model
     public function subordinates(): HasMany
     {
         return $this->hasMany(Employee::class, 'manager_id');
+    }
+
+    public function teams(): BelongsToMany
+    {
+        return $this->belongsToMany(Team::class, 'team_members', 'employee_id', 'team_id')
+            ->withPivot(['is_manager', 'joined_at', 'left_at', 'metadata'])
+            ->withTimestamps();
+    }
+
+    public function managedTeams(): BelongsToMany
+    {
+        return $this->belongsToMany(Team::class, 'team_members', 'employee_id', 'team_id')
+            ->withPivot(['is_manager', 'joined_at', 'left_at', 'metadata'])
+            ->wherePivot('is_manager', true)
+            ->withTimestamps();
+    }
+
+    public function activeTeams(): BelongsToMany
+    {
+        return $this->teams()->whereNull('team_members.left_at');
     }
 
     // Accessors

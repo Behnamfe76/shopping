@@ -53,8 +53,8 @@ class EmployeeSeeder extends Seeder
 
         $employees = [
             [
-                'user_id' => 1,
-                'employee_number' => 'EMP001',
+                'user_id' => 10,
+                'employee_number' => 'EMP005',
                 'first_name' => 'John',
                 'last_name' => 'Doe',
                 'email' => 'john.doe@company.com',
@@ -95,8 +95,8 @@ class EmployeeSeeder extends Seeder
                 'notes' => 'Excellent team player with strong technical skills.',
             ],
             [
-                'user_id' => 2,
-                'employee_number' => 'EMP002',
+                'user_id' => 20,
+                'employee_number' => 'EMP006',
                 'first_name' => 'Jane',
                 'last_name' => 'Smith',
                 'email' => 'jane.smith@company.com',
@@ -137,8 +137,8 @@ class EmployeeSeeder extends Seeder
                 'notes' => 'Creative and results-driven marketing professional.',
             ],
             [
-                'user_id' => 3,
-                'employee_number' => 'EMP003',
+                'user_id' => 30,
+                'employee_number' => 'EMP007',
                 'first_name' => 'Mike',
                 'last_name' => 'Johnson',
                 'email' => 'mike.johnson@company.com',
@@ -179,8 +179,8 @@ class EmployeeSeeder extends Seeder
                 'notes' => 'Motivated sales professional with strong closing skills.',
             ],
             [
-                'user_id' => 4,
-                'employee_number' => 'EMP004',
+                'user_id' => 40,
+                'employee_number' => 'EMP008',
                 'first_name' => 'Sarah',
                 'last_name' => 'Wilson',
                 'email' => 'sarah.wilson@company.com',
@@ -221,8 +221,8 @@ class EmployeeSeeder extends Seeder
                 'notes' => 'Experienced HR professional with strong interpersonal skills.',
             ],
             [
-                'user_id' => 5,
-                'employee_number' => 'EMP005',
+                'user_id' => 50,
+                'employee_number' => 'EMP009',
                 'first_name' => 'David',
                 'last_name' => 'Brown',
                 'email' => 'david.brown@company.com',
@@ -265,7 +265,13 @@ class EmployeeSeeder extends Seeder
         ];
 
         foreach ($employees as $employeeData) {
-            Employee::create($employeeData);
+            Employee::updateOrCreate(
+                [
+                    'employee_number' => $employeeData['employee_number'],
+                    'email' => $employeeData['email'],
+                ],
+                $employeeData
+            );
         }
 
         $this->command->info('Employee data seeded successfully!');

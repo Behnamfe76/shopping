@@ -136,6 +136,7 @@ class SeedRequiredDataCommand extends Command
             'CustomerWishlistPermissionSeeder',
             'CustomerCommunicationPermissionSeeder',
             'EmployeePermissionSeeder',
+            'TeamPermissionSeeder',
         ];
 
         foreach ($permissionSeeders as $seeder) {
@@ -211,12 +212,28 @@ class SeedRequiredDataCommand extends Command
         $manager = Role::where('name', 'manager')->first();
         if ($manager) {
             $managerPermissions = Permission::whereIn('name', [
-                'view-products', 'create-products', 'edit-products', 'delete-products',
-                'view-orders', 'create-orders', 'edit-orders', 'delete-orders',
-                'view-customers', 'create-customers', 'edit-customers', 'delete-customers',
-                'view-categories', 'create-categories', 'edit-categories', 'delete-categories',
-                'view-brands', 'create-brands', 'edit-brands', 'delete-brands',
-                'view-reports', 'export-data',
+                'view-products',
+                'create-products',
+                'edit-products',
+                'delete-products',
+                'view-orders',
+                'create-orders',
+                'edit-orders',
+                'delete-orders',
+                'view-customers',
+                'create-customers',
+                'edit-customers',
+                'delete-customers',
+                'view-categories',
+                'create-categories',
+                'edit-categories',
+                'delete-categories',
+                'view-brands',
+                'create-brands',
+                'edit-brands',
+                'delete-brands',
+                'view-reports',
+                'export-data',
             ])->get();
             $manager->givePermissionTo($managerPermissions);
             $this->info('Assigned manager permissions');
@@ -226,8 +243,11 @@ class SeedRequiredDataCommand extends Command
         $employee = Role::where('name', 'employee')->first();
         if ($employee) {
             $employeePermissions = Permission::whereIn('name', [
-                'view-products', 'view-orders', 'view-customers',
-                'create-orders', 'edit-orders',
+                'view-products',
+                'view-orders',
+                'view-customers',
+                'create-orders',
+                'edit-orders',
                 'view-reports',
             ])->get();
             $employee->givePermissionTo($employeePermissions);
@@ -238,10 +258,14 @@ class SeedRequiredDataCommand extends Command
         $customer = Role::where('name', 'customer')->first();
         if ($customer) {
             $customerPermissions = Permission::whereIn('name', [
-                'view-own-profile', 'edit-own-profile',
-                'view-own-orders', 'create-orders',
-                'view-own-wishlist', 'manage-own-wishlist',
-                'view-own-preferences', 'manage-own-preferences',
+                'view-own-profile',
+                'edit-own-profile',
+                'view-own-orders',
+                'create-orders',
+                'view-own-wishlist',
+                'manage-own-wishlist',
+                'view-own-preferences',
+                'manage-own-preferences',
             ])->get();
             $customer->givePermissionTo($customerPermissions);
             $this->info('Assigned customer permissions');

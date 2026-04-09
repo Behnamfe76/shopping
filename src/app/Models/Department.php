@@ -65,6 +65,11 @@ class Department extends Model
         return $this->hasMany(Employee::class, 'department_id');
     }
 
+    public function teams(): HasMany
+    {
+        return $this->hasMany(Team::class, 'department_id');
+    }
+
     public function allChildren(): HasMany
     {
         return $this->children()->with('allChildren');
