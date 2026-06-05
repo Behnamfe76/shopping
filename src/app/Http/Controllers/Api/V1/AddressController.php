@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
+use App\Http\Controllers\Controller;
 use Fereydooni\Shopping\app\Enums\AddressType;
 use Fereydooni\Shopping\app\Facades\Address as AddressFacade;
 use Fereydooni\Shopping\app\Http\Requests\SearchAddressRequest;
@@ -15,7 +16,7 @@ use Fereydooni\Shopping\app\Models\Address;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class AddressController extends \App\Http\Controllers\Controller
+class AddressController extends Controller
 {
     /**
      * Display a listing of addresses.

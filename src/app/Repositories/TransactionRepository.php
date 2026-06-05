@@ -11,6 +11,7 @@ use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class TransactionRepository implements TransactionRepositoryInterface
 {
@@ -477,7 +478,7 @@ class TransactionRepository implements TransactionRepositoryInterface
         $validator = Validator::make($data, $rules, TransactionDTO::messages());
 
         if ($validator->fails()) {
-            throw new \Illuminate\Validation\ValidationException($validator);
+            throw new ValidationException($validator);
         }
 
         return $validator->validated();

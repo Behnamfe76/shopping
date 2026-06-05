@@ -11,6 +11,7 @@ use Fereydooni\Shopping\app\Services\LoyaltyTransactionService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\Response;
 
 class LoyaltyTransactionController extends Controller
 {
@@ -361,7 +362,7 @@ class LoyaltyTransactionController extends Controller
     /**
      * Export customer loyalty history.
      */
-    public function exportHistory(Request $request): \Symfony\Component\HttpFoundation\Response
+    public function exportHistory(Request $request): Response
     {
         $validated = $request->validate([
             'customer_id' => 'required|integer|exists:customers,id',
@@ -423,7 +424,7 @@ class LoyaltyTransactionController extends Controller
     /**
      * Export data to CSV format.
      */
-    protected function exportToCsv(array $data, string $filename): \Symfony\Component\HttpFoundation\Response
+    protected function exportToCsv(array $data, string $filename): Response
     {
         $headers = [
             'Content-Type' => 'text/csv',
@@ -450,7 +451,7 @@ class LoyaltyTransactionController extends Controller
     /**
      * Export data to XML format.
      */
-    protected function exportToXml(array $data, string $filename): \Symfony\Component\HttpFoundation\Response
+    protected function exportToXml(array $data, string $filename): Response
     {
         $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><loyalty_history></loyalty_history>');
 

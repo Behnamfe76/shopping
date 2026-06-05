@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
+use Fereydooni\Shopping\app\Models\Transaction;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -12,7 +13,7 @@ class StoreTransactionRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', \Fereydooni\Shopping\app\Models\Transaction::class);
+        return $this->user()->can('create', Transaction::class);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
+use App\Http\Controllers\Controller;
 use Fereydooni\Shopping\app\Enums\TeamStatus;
 use Fereydooni\Shopping\app\Facades\Team as TeamFacade;
 use Fereydooni\Shopping\app\Http\Requests\StoreTeamRequest;
@@ -12,7 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
-class TeamController extends \App\Http\Controllers\Controller
+class TeamController extends Controller
 {
     /**
      * Display a listing of teams.

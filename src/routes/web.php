@@ -10,6 +10,8 @@ use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerNoteController as WebCu
 use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerPreferenceController as WebCustomerPreferenceController;
 use Fereydooni\Shopping\app\Http\Controllers\Web\CustomerSegmentController as WebCustomerSegmentController;
 use Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeController as WebEmployeeController;
+use Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeNoteController;
+use Fereydooni\Shopping\app\Http\Controllers\Web\EmployeePerformanceReviewController;
 use Fereydooni\Shopping\app\Http\Controllers\Web\LoyaltyTransactionController as WebLoyaltyTransactionController;
 use Fereydooni\Shopping\app\Http\Controllers\Web\OrderController as WebOrderController;
 use Fereydooni\Shopping\app\Http\Controllers\Web\ProductController as WebProductController;
@@ -351,47 +353,47 @@ Route::prefix('shopping')->name('shopping.')->middleware(['web'])->group(functio
     // Employee Performance Review management routes (authenticated)
     Route::prefix('employee-performance-reviews')->name('employee-performance-reviews.')->middleware(['auth', 'permission:employee-performance-reviews.*'])->group(function () {
         // Performance review dashboard
-        Route::get('/dashboard', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeePerformanceReviewController::class, 'index'])->name('dashboard');
+        Route::get('/dashboard', [EmployeePerformanceReviewController::class, 'index'])->name('dashboard');
 
         // Performance review CRUD
-        Route::get('/', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeePerformanceReviewController::class, 'index'])->name('index');
-        Route::get('/create', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeePerformanceReviewController::class, 'create'])->name('create');
-        Route::post('/', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeePerformanceReviewController::class, 'store'])->name('store');
-        Route::get('/{id}', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeePerformanceReviewController::class, 'show'])->name('show');
-        Route::get('/{id}/edit', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeePerformanceReviewController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeePerformanceReviewController::class, 'update'])->name('update');
-        Route::delete('/{id}', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeePerformanceReviewController::class, 'destroy'])->name('destroy');
+        Route::get('/', [EmployeePerformanceReviewController::class, 'index'])->name('index');
+        Route::get('/create', [EmployeePerformanceReviewController::class, 'create'])->name('create');
+        Route::post('/', [EmployeePerformanceReviewController::class, 'store'])->name('store');
+        Route::get('/{id}', [EmployeePerformanceReviewController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [EmployeePerformanceReviewController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [EmployeePerformanceReviewController::class, 'update'])->name('update');
+        Route::delete('/{id}', [EmployeePerformanceReviewController::class, 'destroy'])->name('destroy');
 
         // Performance review workflow
-        Route::post('/{id}/submit', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeePerformanceReviewController::class, 'submit'])->name('submit');
-        Route::post('/{id}/approve', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeePerformanceReviewController::class, 'approve'])->name('approve');
-        Route::post('/{id}/reject', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeePerformanceReviewController::class, 'reject'])->name('reject');
-        Route::post('/{id}/assign-reviewer', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeePerformanceReviewController::class, 'assignReviewer'])->name('assign-reviewer');
-        Route::post('/{id}/schedule', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeePerformanceReviewController::class, 'schedule'])->name('schedule');
+        Route::post('/{id}/submit', [EmployeePerformanceReviewController::class, 'submit'])->name('submit');
+        Route::post('/{id}/approve', [EmployeePerformanceReviewController::class, 'approve'])->name('approve');
+        Route::post('/{id}/reject', [EmployeePerformanceReviewController::class, 'reject'])->name('reject');
+        Route::post('/{id}/assign-reviewer', [EmployeePerformanceReviewController::class, 'assignReviewer'])->name('assign-reviewer');
+        Route::post('/{id}/schedule', [EmployeePerformanceReviewController::class, 'schedule'])->name('schedule');
 
         // Performance review management
-        Route::get('/pending-approval', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeePerformanceReviewController::class, 'pendingApproval'])->name('pending-approval');
-        Route::get('/overdue', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeePerformanceReviewController::class, 'overdue'])->name('overdue');
-        Route::get('/upcoming', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeePerformanceReviewController::class, 'upcoming'])->name('upcoming');
+        Route::get('/pending-approval', [EmployeePerformanceReviewController::class, 'pendingApproval'])->name('pending-approval');
+        Route::get('/overdue', [EmployeePerformanceReviewController::class, 'overdue'])->name('overdue');
+        Route::get('/upcoming', [EmployeePerformanceReviewController::class, 'upcoming'])->name('upcoming');
 
         // Performance review analytics and reporting
-        Route::get('/statistics', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeePerformanceReviewController::class, 'statistics'])->name('statistics');
-        Route::get('/reports', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeePerformanceReviewController::class, 'reports'])->name('reports');
+        Route::get('/statistics', [EmployeePerformanceReviewController::class, 'statistics'])->name('statistics');
+        Route::get('/reports', [EmployeePerformanceReviewController::class, 'reports'])->name('reports');
 
         // Import/Export
-        Route::get('/import-export', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeePerformanceReviewController::class, 'index'])->name('import-export');
-        Route::post('/export', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeePerformanceReviewController::class, 'export'])->name('export');
-        Route::post('/import', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeePerformanceReviewController::class, 'import'])->name('import');
+        Route::get('/import-export', [EmployeePerformanceReviewController::class, 'index'])->name('import-export');
+        Route::post('/export', [EmployeePerformanceReviewController::class, 'export'])->name('export');
+        Route::post('/import', [EmployeePerformanceReviewController::class, 'import'])->name('import');
 
         // Bulk operations
-        Route::post('/bulk-approve', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeePerformanceReviewController::class, 'bulkApprove'])->name('bulk-approve');
-        Route::post('/bulk-reject', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeePerformanceReviewController::class, 'bulkReject'])->name('bulk-reject');
+        Route::post('/bulk-approve', [EmployeePerformanceReviewController::class, 'bulkApprove'])->name('bulk-approve');
+        Route::post('/bulk-reject', [EmployeePerformanceReviewController::class, 'bulkReject'])->name('bulk-reject');
 
         // Review reminders
-        Route::post('/send-reminders', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeePerformanceReviewController::class, 'sendReminders'])->name('send-reminders');
+        Route::post('/send-reminders', [EmployeePerformanceReviewController::class, 'sendReminders'])->name('send-reminders');
 
         // Search functionality
-        Route::get('/search', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeePerformanceReviewController::class, 'search'])->name('search');
+        Route::get('/search', [EmployeePerformanceReviewController::class, 'search'])->name('search');
     });
 
     // Provider management routes (authenticated)
@@ -455,65 +457,65 @@ Route::prefix('shopping')->name('shopping.')->middleware(['web'])->group(functio
     // Employee-specific performance review routes
     Route::prefix('employees/{employee}')->name('employees.')->middleware(['auth', 'permission:employees.*'])->group(function () {
         // Employee performance reviews
-        Route::get('/performance-reviews', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeePerformanceReviewController::class, 'employeeReviews'])->name('performance-reviews');
-        Route::get('/performance-reviews/create', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeePerformanceReviewController::class, 'createForEmployee'])->name('performance-reviews.create');
-        Route::post('/performance-reviews', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeePerformanceReviewController::class, 'storeForEmployee'])->name('performance-reviews.store');
-        Route::get('/performance-reviews/statistics', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeePerformanceReviewController::class, 'employeeStatistics'])->name('performance-reviews.statistics');
+        Route::get('/performance-reviews', [EmployeePerformanceReviewController::class, 'employeeReviews'])->name('performance-reviews');
+        Route::get('/performance-reviews/create', [EmployeePerformanceReviewController::class, 'createForEmployee'])->name('performance-reviews.create');
+        Route::post('/performance-reviews', [EmployeePerformanceReviewController::class, 'storeForEmployee'])->name('performance-reviews.store');
+        Route::get('/performance-reviews/statistics', [EmployeePerformanceReviewController::class, 'employeeStatistics'])->name('performance-reviews.statistics');
     });
 
     // Department-specific performance review routes
     Route::prefix('departments/{department}')->name('departments.')->middleware(['auth', 'permission:departments.*'])->group(function () {
         // Department performance review statistics
-        Route::get('/performance-reviews/statistics', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeePerformanceReviewController::class, 'departmentStatistics'])->name('performance-reviews.statistics');
+        Route::get('/performance-reviews/statistics', [EmployeePerformanceReviewController::class, 'departmentStatistics'])->name('performance-reviews.statistics');
     });
 
     // Employee Note management routes (authenticated)
     Route::prefix('employee-notes')->name('employee-notes.')->middleware(['auth', 'permission:employee-notes.*'])->group(function () {
         // Employee note dashboard
-        Route::get('/', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeNoteController::class, 'index'])->name('index');
-        Route::get('/create', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeNoteController::class, 'create'])->name('create');
-        Route::post('/', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeNoteController::class, 'store'])->name('store');
-        Route::get('/{employeeNote}', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeNoteController::class, 'show'])->name('show');
-        Route::get('/{employeeNote}/edit', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeNoteController::class, 'edit'])->name('edit');
-        Route::put('/{employeeNote}', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeNoteController::class, 'update'])->name('update');
-        Route::delete('/{employeeNote}', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeNoteController::class, 'destroy'])->name('destroy');
+        Route::get('/', [EmployeeNoteController::class, 'index'])->name('index');
+        Route::get('/create', [EmployeeNoteController::class, 'create'])->name('create');
+        Route::post('/', [EmployeeNoteController::class, 'store'])->name('store');
+        Route::get('/{employeeNote}', [EmployeeNoteController::class, 'show'])->name('show');
+        Route::get('/{employeeNote}/edit', [EmployeeNoteController::class, 'edit'])->name('edit');
+        Route::put('/{employeeNote}', [EmployeeNoteController::class, 'update'])->name('update');
+        Route::delete('/{employeeNote}', [EmployeeNoteController::class, 'destroy'])->name('destroy');
 
         // Employee note management
-        Route::post('/{employeeNote}/archive', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeNoteController::class, 'archive'])->name('archive');
-        Route::post('/{employeeNote}/unarchive', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeNoteController::class, 'unarchive'])->name('unarchive');
-        Route::post('/{employeeNote}/make-private', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeNoteController::class, 'makePrivate'])->name('make-private');
-        Route::post('/{employeeNote}/make-public', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeNoteController::class, 'makePublic'])->name('make-public');
+        Route::post('/{employeeNote}/archive', [EmployeeNoteController::class, 'archive'])->name('archive');
+        Route::post('/{employeeNote}/unarchive', [EmployeeNoteController::class, 'unarchive'])->name('unarchive');
+        Route::post('/{employeeNote}/make-private', [EmployeeNoteController::class, 'makePrivate'])->name('make-private');
+        Route::post('/{employeeNote}/make-public', [EmployeeNoteController::class, 'makePublic'])->name('make-public');
 
         // Employee note tagging
-        Route::post('/{employeeNote}/tags', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeNoteController::class, 'addTags'])->name('add-tags');
-        Route::delete('/{employeeNote}/tags', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeNoteController::class, 'removeTags'])->name('remove-tags');
+        Route::post('/{employeeNote}/tags', [EmployeeNoteController::class, 'addTags'])->name('add-tags');
+        Route::delete('/{employeeNote}/tags', [EmployeeNoteController::class, 'removeTags'])->name('remove-tags');
 
         // Employee note attachments
-        Route::post('/{employeeNote}/attachments', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeNoteController::class, 'addAttachment'])->name('add-attachment');
-        Route::delete('/{employeeNote}/attachments/{attachment}', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeNoteController::class, 'removeAttachment'])->name('remove-attachment');
+        Route::post('/{employeeNote}/attachments', [EmployeeNoteController::class, 'addAttachment'])->name('add-attachment');
+        Route::delete('/{employeeNote}/attachments/{attachment}', [EmployeeNoteController::class, 'removeAttachment'])->name('remove-attachment');
 
         // Employee note analytics and reporting
-        Route::get('/statistics', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeNoteController::class, 'statistics'])->name('statistics');
+        Route::get('/statistics', [EmployeeNoteController::class, 'statistics'])->name('statistics');
 
         // Import/Export
-        Route::post('/export', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeNoteController::class, 'export'])->name('export');
-        Route::post('/import', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeNoteController::class, 'import'])->name('import');
+        Route::post('/export', [EmployeeNoteController::class, 'export'])->name('export');
+        Route::post('/import', [EmployeeNoteController::class, 'import'])->name('import');
 
         // Bulk operations
-        Route::post('/bulk-archive', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeNoteController::class, 'bulkArchive'])->name('bulk-archive');
-        Route::post('/bulk-delete', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeNoteController::class, 'bulkDelete'])->name('bulk-delete');
+        Route::post('/bulk-archive', [EmployeeNoteController::class, 'bulkArchive'])->name('bulk-archive');
+        Route::post('/bulk-delete', [EmployeeNoteController::class, 'bulkDelete'])->name('bulk-delete');
 
         // Search functionality
-        Route::get('/search', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeNoteController::class, 'search'])->name('search');
+        Route::get('/search', [EmployeeNoteController::class, 'search'])->name('search');
     });
 
     // Employee-specific note routes
     Route::prefix('employees/{employee}')->name('employees.')->middleware(['auth', 'permission:employees.*'])->group(function () {
         // Employee notes
-        Route::get('/notes', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeNoteController::class, 'employeeNotes'])->name('notes');
-        Route::get('/notes/create', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeNoteController::class, 'createForEmployee'])->name('notes.create');
-        Route::post('/notes', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeNoteController::class, 'storeForEmployee'])->name('notes.store');
-        Route::get('/notes/statistics', [\Fereydooni\Shopping\app\Http\Controllers\Web\EmployeeNoteController::class, 'employeeStatistics'])->name('notes.statistics');
+        Route::get('/notes', [EmployeeNoteController::class, 'employeeNotes'])->name('notes');
+        Route::get('/notes/create', [EmployeeNoteController::class, 'createForEmployee'])->name('notes.create');
+        Route::post('/notes', [EmployeeNoteController::class, 'storeForEmployee'])->name('notes.store');
+        Route::get('/notes/statistics', [EmployeeNoteController::class, 'employeeStatistics'])->name('notes.statistics');
     });
 });
 

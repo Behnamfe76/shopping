@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\database\seeders;
 
+use App\Models\User;
 use Carbon\Carbon;
 use Fereydooni\Shopping\app\Enums\LoyaltyReferenceType;
 use Fereydooni\Shopping\app\Enums\LoyaltyTransactionStatus;
@@ -19,7 +20,7 @@ class LoyaltyTransactionSeeder extends Seeder
     {
         // Get existing customers and users
         $customers = Customer::take(10)->get();
-        $users = \App\Models\User::take(5)->get();
+        $users = User::take(5)->get();
 
         if ($customers->isEmpty() || $users->isEmpty()) {
             $this->command->warn('No customers or users found. Please seed customers and users first.');

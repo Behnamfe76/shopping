@@ -3,6 +3,7 @@
 namespace Fereydooni\Shopping\app\Http\Requests;
 
 use Fereydooni\Shopping\app\DTOs\ProductReviewDTO;
+use Fereydooni\Shopping\app\Models\ProductReview;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreProductReviewRequest extends FormRequest
@@ -12,7 +13,7 @@ class StoreProductReviewRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', \Fereydooni\Shopping\app\Models\ProductReview::class);
+        return $this->user()->can('create', ProductReview::class);
     }
 
     /**

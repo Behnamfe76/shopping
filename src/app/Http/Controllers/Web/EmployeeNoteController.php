@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\Response;
 
 class EmployeeNoteController extends Controller
 {
@@ -358,7 +359,7 @@ class EmployeeNoteController extends Controller
     /**
      * Export employee notes
      */
-    public function export(Request $request): \Symfony\Component\HttpFoundation\Response
+    public function export(Request $request): Response
     {
         $request->validate([
             'format' => 'in:json,csv,xml',

@@ -8,6 +8,7 @@ use Fereydooni\Shopping\app\Events\ProviderRating\ProviderRatingFlagged;
 use Fereydooni\Shopping\app\Events\ProviderRating\ProviderRatingRejected;
 use Fereydooni\Shopping\app\Events\ProviderRating\ProviderRatingUpdated;
 use Fereydooni\Shopping\app\Events\ProviderRating\ProviderRatingVerified;
+use Fereydooni\Shopping\app\Models\Provider;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Cache;
@@ -172,7 +173,7 @@ class UpdateProviderRatingRecord implements ShouldQueue
     protected function updateProviderRatingStats(int $providerId): void
     {
         try {
-            $provider = \Fereydooni\Shopping\app\Models\Provider::find($providerId);
+            $provider = Provider::find($providerId);
             if (! $provider) {
                 return;
             }
@@ -208,7 +209,7 @@ class UpdateProviderRatingRecord implements ShouldQueue
     protected function updateProviderCategoryRatingStats(int $providerId, string $category): void
     {
         try {
-            $provider = \Fereydooni\Shopping\app\Models\Provider::find($providerId);
+            $provider = Provider::find($providerId);
             if (! $provider) {
                 return;
             }
@@ -249,7 +250,7 @@ class UpdateProviderRatingRecord implements ShouldQueue
     protected function updateProviderVerifiedRatingStats(int $providerId): void
     {
         try {
-            $provider = \Fereydooni\Shopping\app\Models\Provider::find($providerId);
+            $provider = Provider::find($providerId);
             if (! $provider) {
                 return;
             }
@@ -281,7 +282,7 @@ class UpdateProviderRatingRecord implements ShouldQueue
     protected function updateProviderRejectedRatingStats(int $providerId): void
     {
         try {
-            $provider = \Fereydooni\Shopping\app\Models\Provider::find($providerId);
+            $provider = Provider::find($providerId);
             if (! $provider) {
                 return;
             }
@@ -312,7 +313,7 @@ class UpdateProviderRatingRecord implements ShouldQueue
     protected function updateProviderFlaggedRatingStats(int $providerId): void
     {
         try {
-            $provider = \Fereydooni\Shopping\app\Models\Provider::find($providerId);
+            $provider = Provider::find($providerId);
             if (! $provider) {
                 return;
             }

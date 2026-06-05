@@ -3,6 +3,7 @@
 namespace App\Actions\ProviderContract;
 
 use App\Models\ProviderContract;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class CalculateContractMetricsAction
@@ -95,7 +96,7 @@ class CalculateContractMetricsAction
             return 0;
         }
 
-        $endDate = \Carbon\Carbon::parse($contract->end_date);
+        $endDate = Carbon::parse($contract->end_date);
         $currentDate = now();
 
         if ($endDate->isPast()) {
@@ -114,7 +115,7 @@ class CalculateContractMetricsAction
             return 0;
         }
 
-        $startDate = \Carbon\Carbon::parse($contract->start_date);
+        $startDate = Carbon::parse($contract->start_date);
         $currentDate = now();
 
         if ($startDate->isFuture()) {
@@ -133,8 +134,8 @@ class CalculateContractMetricsAction
             return 0;
         }
 
-        $startDate = \Carbon\Carbon::parse($contract->start_date);
-        $endDate = \Carbon\Carbon::parse($contract->end_date);
+        $startDate = Carbon::parse($contract->start_date);
+        $endDate = Carbon::parse($contract->end_date);
         $currentDate = now();
 
         if ($startDate->isFuture()) {

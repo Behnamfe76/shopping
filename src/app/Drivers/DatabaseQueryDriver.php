@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\app\Drivers;
 
+use App\Models\User;
 use Exception;
 use Fereydooni\Shopping\app\Contracts\QueryDriverInterface;
 use Fereydooni\Shopping\app\Traits\AppliesQueryParameters;
@@ -257,7 +258,7 @@ class DatabaseQueryDriver implements QueryDriverInterface
     protected function getTableModel(string $tableName): string
     {
         return match ($tableName) {
-            'users' => \App\Models\User::class,
+            'users' => User::class,
             default => throw new Exception('Table does not exist: '.$tableName, 500),
         };
     }

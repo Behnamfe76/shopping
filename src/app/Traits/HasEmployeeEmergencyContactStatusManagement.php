@@ -2,7 +2,9 @@
 
 namespace App\Traits;
 
+use App\Events\EmployeeEmergencyContact\EmployeeEmergencyContactSetPrimary;
 use App\Models\EmployeeEmergencyContact;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -23,7 +25,7 @@ trait HasEmployeeEmergencyContactStatusManagement
             $contact->update(['is_primary' => true]);
 
             // Fire event
-            event(new \App\Events\EmployeeEmergencyContact\EmployeeEmergencyContactSetPrimary($contact));
+            event(new EmployeeEmergencyContactSetPrimary($contact));
 
             DB::commit();
 
@@ -170,7 +172,7 @@ trait HasEmployeeEmergencyContactStatusManagement
     /**
      * Get all active emergency contacts for an employee.
      */
-    public function getActiveEmergencyContacts(int $employeeId): \Illuminate\Database\Eloquent\Collection
+    public function getActiveEmergencyContacts(int $employeeId): Collection
     {
         return EmployeeEmergencyContact::where('employee_id', $employeeId)
             ->where('is_active', true)
@@ -182,7 +184,7 @@ trait HasEmployeeEmergencyContactStatusManagement
     /**
      * Get all inactive emergency contacts for an employee.
      */
-    public function getInactiveEmergencyContacts(int $employeeId): \Illuminate\Database\Eloquent\Collection
+    public function getInactiveEmergencyContacts(int $employeeId): Collection
     {
         return EmployeeEmergencyContact::where('employee_id', $employeeId)
             ->where('is_active', false)

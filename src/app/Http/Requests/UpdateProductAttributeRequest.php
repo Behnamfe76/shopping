@@ -5,6 +5,7 @@ namespace Fereydooni\Shopping\app\Http\Requests;
 use Fereydooni\Shopping\app\Enums\ProductAttributeInputType;
 use Fereydooni\Shopping\app\Enums\ProductAttributeType;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class UpdateProductAttributeRequest extends FormRequest
@@ -115,7 +116,7 @@ class UpdateProductAttributeRequest extends FormRequest
         // Generate slug if name is provided but slug is not
         if ($this->has('name') && ! $this->has('slug')) {
             $this->merge([
-                'slug' => \Illuminate\Support\Str::slug($this->name),
+                'slug' => Str::slug($this->name),
             ]);
         }
 

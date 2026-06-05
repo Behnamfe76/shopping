@@ -2,7 +2,9 @@
 
 namespace Fereydooni\Shopping\App\Facades;
 
+use Fereydooni\Shopping\App\Actions\ProviderPayment\CreateProviderPaymentAction;
 use Fereydooni\Shopping\App\DTOs\ProviderPaymentDTO;
+use Fereydooni\Shopping\App\Repositories\ProviderPaymentRepository;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Facade;
@@ -95,7 +97,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static bool isPaymentNumberUnique(string $paymentNumber)
  * @method static array calculatePaymentTotals(int $paymentId)
  *
- * @see \Fereydooni\Shopping\App\Repositories\ProviderPaymentRepository
+ * @see ProviderPaymentRepository
  */
 class ProviderPaymentFacade extends Facade
 {
@@ -112,7 +114,7 @@ class ProviderPaymentFacade extends Facade
      */
     public static function createPayment(array $data): ProviderPaymentDTO
     {
-        $action = app(\Fereydooni\Shopping\App\Actions\ProviderPayment\CreateProviderPaymentAction::class);
+        $action = app(CreateProviderPaymentAction::class);
 
         return $action->execute($data);
     }

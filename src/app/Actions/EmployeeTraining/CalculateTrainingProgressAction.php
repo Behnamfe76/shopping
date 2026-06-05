@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\Actions\EmployeeTraining;
 
+use Carbon\Carbon;
 use Fereydooni\Shopping\Enums\TrainingStatus;
 use Fereydooni\Shopping\Models\EmployeeTraining;
 
@@ -47,8 +48,8 @@ class CalculateTrainingProgressAction
             return null;
         }
 
-        $endDate = \Carbon\Carbon::parse($training->end_date);
-        $now = \Carbon\Carbon::now();
+        $endDate = Carbon::parse($training->end_date);
+        $now = Carbon::now();
 
         if ($endDate->isPast()) {
             return 0; // Overdue
@@ -99,7 +100,7 @@ class CalculateTrainingProgressAction
         }
 
         $daysNeeded = ceil($remainingHours / $hoursPerDay);
-        $estimatedDate = \Carbon\Carbon::now()->addDays($daysNeeded);
+        $estimatedDate = Carbon::now()->addDays($daysNeeded);
 
         return $estimatedDate->format('Y-m-d');
     }
@@ -176,8 +177,8 @@ class CalculateTrainingProgressAction
             return 0.0;
         }
 
-        $startDate = \Carbon\Carbon::parse($training->start_date);
-        $now = \Carbon\Carbon::now();
+        $startDate = Carbon::parse($training->start_date);
+        $now = Carbon::now();
         $elapsedDays = max(1, $startDate->diffInDays($now));
 
         return round($training->hours_completed / $elapsedDays, 2);
@@ -189,8 +190,8 @@ class CalculateTrainingProgressAction
             return 0;
         }
 
-        $startDate = \Carbon\Carbon::parse($training->start_date);
-        $endDate = \Carbon\Carbon::parse($training->end_date);
+        $startDate = Carbon::parse($training->start_date);
+        $endDate = Carbon::parse($training->end_date);
 
         return max(1, $startDate->diffInDays($endDate));
     }

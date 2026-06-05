@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\DTOs\EmployeeBenefitsDTO;
 use App\Models\EmployeeBenefits;
 use App\Repositories\Interfaces\EmployeeBenefitsRepositoryInterface;
+use Carbon\CarbonPeriod;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -1030,7 +1031,7 @@ class EmployeeBenefitsRepository implements EmployeeBenefitsRepositoryInterface
                 ->toArray();
 
             // Fill missing dates with 0
-            $period = \Carbon\CarbonPeriod::create($startDate, $endDate);
+            $period = CarbonPeriod::create($startDate, $endDate);
             $filledTrends = [];
 
             foreach ($period as $date) {

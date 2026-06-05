@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
+use App\Models\User;
 use Exception;
 use Fereydooni\Shopping\app\Events\Provider\PrimaryLocationChanged;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -183,7 +184,7 @@ class SendPrimaryLocationChangedNotification implements ShouldQueue
             // Add new primary location managers if any
             if ($newLocation->contact_email) {
                 // Find user by contact email
-                $contactUser = \App\Models\User::where('email', $newLocation->contact_email)->first();
+                $contactUser = User::where('email', $newLocation->contact_email)->first();
                 if ($contactUser) {
                     $users[] = $contactUser;
                 }
@@ -191,7 +192,7 @@ class SendPrimaryLocationChangedNotification implements ShouldQueue
 
             // Add previous primary location managers if any
             if ($previousLocation && $previousLocation->contact_email) {
-                $previousContactUser = \App\Models\User::where('email', $previousLocation->contact_email)->first();
+                $previousContactUser = User::where('email', $previousLocation->contact_email)->first();
                 if ($previousContactUser) {
                     $users[] = $previousContactUser;
                 }

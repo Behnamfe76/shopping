@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
+use Fereydooni\Shopping\app\Models\ProductAttributeValue;
 use Illuminate\Foundation\Http\FormRequest;
 
 class AssignProductAttributeValueRequest extends FormRequest
@@ -11,7 +12,7 @@ class AssignProductAttributeValueRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('manageRelationships', \Fereydooni\Shopping\app\Models\ProductAttributeValue::class);
+        return $this->user()->can('manageRelationships', ProductAttributeValue::class);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
+use App\Models\User;
 use Carbon\Carbon;
 use Fereydooni\Shopping\app\Enums\DiscountType;
 use Illuminate\Database\Eloquent\Builder;
@@ -65,12 +66,12 @@ class ProductDiscount extends Model
 
     public function createdBy(): BelongsTo
     {
-        return $this->belongsTo(\App\Models\User::class, 'created_by');
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     public function updatedBy(): BelongsTo
     {
-        return $this->belongsTo(\App\Models\User::class, 'updated_by');
+        return $this->belongsTo(User::class, 'updated_by');
     }
 
     // Scopes

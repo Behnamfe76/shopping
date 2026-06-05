@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
+use Fereydooni\Shopping\app\Models\ProductReview;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SearchProductReviewRequest extends FormRequest
@@ -11,7 +12,7 @@ class SearchProductReviewRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('search', \Fereydooni\Shopping\app\Models\ProductReview::class);
+        return $this->user()->can('search', ProductReview::class);
     }
 
     /**

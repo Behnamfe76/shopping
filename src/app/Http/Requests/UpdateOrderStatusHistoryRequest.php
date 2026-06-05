@@ -3,6 +3,7 @@
 namespace Fereydooni\Shopping\app\Http\Requests;
 
 use Fereydooni\Shopping\app\DTOs\OrderStatusHistoryDTO;
+use Fereydooni\Shopping\app\Enums\OrderStatus;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateOrderStatusHistoryRequest extends FormRequest
@@ -26,7 +27,7 @@ class UpdateOrderStatusHistoryRequest extends FormRequest
 
         // Make some fields optional for updates
         $rules['order_id'] = 'sometimes|required|integer|exists:orders,id';
-        $rules['new_status'] = 'sometimes|required|string|in:'.implode(',', array_column(\Fereydooni\Shopping\app\Enums\OrderStatus::cases(), 'value'));
+        $rules['new_status'] = 'sometimes|required|string|in:'.implode(',', array_column(OrderStatus::cases(), 'value'));
         $rules['changed_by'] = 'sometimes|required|integer|exists:users,id';
         $rules['changed_at'] = 'sometimes|required|date';
 

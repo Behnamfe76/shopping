@@ -3,6 +3,8 @@
 namespace App\Traits;
 
 use App\Enums\CertificationStatus;
+use App\Events\ProviderCertification\ProviderCertificationExpired;
+use App\Events\ProviderCertification\ProviderCertificationRenewed;
 use App\Models\ProviderCertification;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
@@ -44,7 +46,7 @@ trait HasProviderCertificationRenewalManagement
             DB::commit();
 
             // Fire renewal event
-            event(new \App\Events\ProviderCertification\ProviderCertificationRenewed($certification, $oldExpiryDate));
+            event(new ProviderCertificationRenewed($certification, $oldExpiryDate));
 
             Log::info('Provider certification renewed', [
                 'certification_id' => $certification->id,
@@ -105,7 +107,7 @@ trait HasProviderCertificationRenewalManagement
             ]);
 
             // Fire expiration event
-            event(new \App\Events\ProviderCertification\ProviderCertificationExpired($certification));
+            event(new ProviderCertificationExpired($certification));
 
             Log::info('Provider certification marked as expired', [
                 'certification_id' => $certification->id,

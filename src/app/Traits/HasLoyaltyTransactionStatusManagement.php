@@ -3,6 +3,10 @@
 namespace Fereydooni\Shopping\app\Traits;
 
 use Fereydooni\Shopping\app\Enums\LoyaltyTransactionStatus;
+use Fereydooni\Shopping\app\Events\LoyaltyTransaction\LoyaltyTransactionExpired;
+use Fereydooni\Shopping\app\Events\LoyaltyTransaction\LoyaltyTransactionReversed;
+use Fereydooni\Shopping\app\Events\LoyaltyTransaction\LoyaltyTransactionUpdated;
+use Fereydooni\Shopping\app\Models\Customer;
 use Fereydooni\Shopping\app\Models\LoyaltyTransaction;
 use Illuminate\Support\Facades\DB;
 
@@ -26,7 +30,7 @@ trait HasLoyaltyTransactionStatusManagement
             $this->updateCustomerLoyaltyPoints($transaction->customer_id, -$transaction->points);
 
             // Dispatch event
-            event(new \Fereydooni\Shopping\app\Events\LoyaltyTransaction\LoyaltyTransactionReversed($transaction));
+            event(new LoyaltyTransactionReversed($transaction));
 
             return true;
         });
@@ -46,7 +50,7 @@ trait HasLoyaltyTransactionStatusManagement
             $this->updateCustomerLoyaltyPoints($transaction->customer_id, -$transaction->points);
 
             // Dispatch event
-            event(new \Fereydooni\Shopping\app\Events\LoyaltyTransaction\LoyaltyTransactionExpired($transaction));
+            event(new LoyaltyTransactionExpired($transaction));
 
             return true;
         });
@@ -66,7 +70,7 @@ trait HasLoyaltyTransactionStatusManagement
             $this->updateCustomerLoyaltyPoints($transaction->customer_id, $transaction->points);
 
             // Dispatch event
-            event(new \Fereydooni\Shopping\app\Events\LoyaltyTransaction\LoyaltyTransactionUpdated($transaction));
+            event(new LoyaltyTransactionUpdated($transaction));
 
             return true;
         });
@@ -84,7 +88,7 @@ trait HasLoyaltyTransactionStatusManagement
             ]);
 
             // Dispatch event
-            event(new \Fereydooni\Shopping\app\Events\LoyaltyTransaction\LoyaltyTransactionUpdated($transaction));
+            event(new LoyaltyTransactionUpdated($transaction));
 
             return true;
         });
@@ -175,7 +179,7 @@ trait HasLoyaltyTransactionStatusManagement
      */
     protected function updateCustomerLoyaltyPoints(int $customerId, int $pointsChange): void
     {
-        $customer = \Fereydooni\Shopping\app\Models\Customer::find($customerId);
+        $customer = Customer::find($customerId);
 
         if ($customer) {
             $customer->increment('loyalty_points', $pointsChange);

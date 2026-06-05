@@ -2,6 +2,8 @@
 
 namespace Fereydooni\Shopping\App\Listeners\ProviderRating;
 
+use App\Models\ProviderRating;
+use App\Models\User;
 use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingApproved;
 use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingCreated;
 use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingFlagged;
@@ -324,7 +326,7 @@ class ProcessRatingModeration implements ShouldQueue
     {
         try {
             // Get user's rating history
-            $userRatings = \App\Models\ProviderRating::where('user_id', $userId)->count();
+            $userRatings = ProviderRating::where('user_id', $userId)->count();
 
             // New users with no history might need moderation
             if ($userRatings === 0) {
@@ -332,7 +334,7 @@ class ProcessRatingModeration implements ShouldQueue
             }
 
             // Check for previously rejected ratings
-            $rejectedCount = \App\Models\ProviderRating::where('user_id', $userId)
+            $rejectedCount = ProviderRating::where('user_id', $userId)
                 ->where('status', 'rejected')
                 ->count();
 
@@ -388,7 +390,7 @@ class ProcessRatingModeration implements ShouldQueue
     {
         try {
             // Check if user has posted multiple ratings in short time
-            $recentRatings = \App\Models\ProviderRating::where('user_id', $userId)
+            $recentRatings = ProviderRating::where('user_id', $userId)
                 ->where('created_at', '>=', now()->subMinutes(5))
                 ->count();
 
@@ -451,7 +453,7 @@ class ProcessRatingModeration implements ShouldQueue
     {
         try {
             // Get users with moderation permissions
-            $moderators = \App\Models\User::permission('provider-rating.moderate')->get();
+            $moderators = User::permission('provider-rating.moderate')->get();
 
             foreach ($moderators as $moderator) {
                 // Send notification to moderator

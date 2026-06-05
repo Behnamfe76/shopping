@@ -3,6 +3,7 @@
 namespace Fereydooni\Shopping\app\Http\Requests;
 
 use Fereydooni\Shopping\app\DTOs\DepartmentDTO;
+use Fereydooni\Shopping\app\Enums\DepartmentStatus;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateDepartmentRequest extends FormRequest
@@ -26,7 +27,7 @@ class UpdateDepartmentRequest extends FormRequest
         // Make all fields optional for updates
         $rules['name'] = 'sometimes|required|string|max:255';
         $rules['code'] = 'sometimes|required|string|max:50|unique:departments,code,'.$department->id;
-        $rules['status'] = 'sometimes|required|in:'.implode(',', array_column(\Fereydooni\Shopping\app\Enums\DepartmentStatus::cases(), 'value'));
+        $rules['status'] = 'sometimes|required|in:'.implode(',', array_column(DepartmentStatus::cases(), 'value'));
 
         return $rules;
     }

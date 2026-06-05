@@ -76,6 +76,10 @@ use Fereydooni\Shopping\app\Events\ProviderInsuranceExpired;
 use Fereydooni\Shopping\app\Events\ProviderInsuranceRenewed;
 use Fereydooni\Shopping\app\Events\ProviderInsuranceUpdated;
 use Fereydooni\Shopping\app\Events\ProviderInsuranceVerified;
+use Fereydooni\Shopping\app\Events\ProviderNote\ProviderNoteArchived;
+use Fereydooni\Shopping\app\Events\ProviderNote\ProviderNoteCreated;
+use Fereydooni\Shopping\app\Events\ProviderNote\ProviderNoteDeleted;
+use Fereydooni\Shopping\app\Events\ProviderNote\ProviderNoteUpdated;
 use Fereydooni\Shopping\app\Listeners\Customer\LogCustomerActivity;
 use Fereydooni\Shopping\app\Listeners\Customer\NotifyCustomerStatusChange;
 use Fereydooni\Shopping\app\Listeners\Customer\UpdateCustomerAnalytics;
@@ -86,44 +90,49 @@ use Fereydooni\Shopping\app\Listeners\Department\UpdateDepartmentHierarchy;
 use Fereydooni\Shopping\app\Listeners\Department\UpdateDepartmentMetrics;
 use Fereydooni\Shopping\app\Listeners\Department\UpdateDepartmentRecords;
 use Fereydooni\Shopping\app\Listeners\EmployeePosition\CreateJobPosting;
+// ProviderInsurance Events
 use Fereydooni\Shopping\app\Listeners\EmployeePosition\LogPositionActivity;
 use Fereydooni\Shopping\app\Listeners\EmployeePosition\SendPositionNotification;
 use Fereydooni\Shopping\app\Listeners\EmployeePosition\UpdateEmployeePositionRecords;
 use Fereydooni\Shopping\app\Listeners\EmployeePosition\UpdatePositionMetrics;
-// ProviderInsurance Events
 use Fereydooni\Shopping\app\Listeners\GenerateProductTagReport;
 use Fereydooni\Shopping\app\Listeners\GenerateProductVariantReport;
 use Fereydooni\Shopping\app\Listeners\LogInsuranceActivity;
+// ProviderInsurance Listeners
 use Fereydooni\Shopping\app\Listeners\LogLocationActivity;
 use Fereydooni\Shopping\app\Listeners\ProcessInsuranceDocument;
 use Fereydooni\Shopping\app\Listeners\ProcessLocationGeocoding;
 use Fereydooni\Shopping\app\Listeners\Provider\LogProviderActivity;
-// ProviderInsurance Listeners
 use Fereydooni\Shopping\app\Listeners\Provider\NotifyProviderStatusChange;
 use Fereydooni\Shopping\app\Listeners\Provider\NotifyQualityIssues;
 use Fereydooni\Shopping\app\Listeners\Provider\SendContractExpirationReminder;
+// ProviderLocation Events
 use Fereydooni\Shopping\app\Listeners\Provider\SendWelcomeEmail;
 use Fereydooni\Shopping\app\Listeners\Provider\UpdateProviderAnalytics;
 use Fereydooni\Shopping\app\Listeners\Provider\UpdateProviderPerformanceMetrics;
 use Fereydooni\Shopping\app\Listeners\Provider\UpdateProviderScore;
-// ProviderLocation Events
 use Fereydooni\Shopping\app\Listeners\ProviderContract\LogProviderContractActivity;
 use Fereydooni\Shopping\app\Listeners\ProviderContract\ProcessContractRenewal;
 use Fereydooni\Shopping\app\Listeners\ProviderContract\SendProviderContractNotification;
+// Provider Listeners
 use Fereydooni\Shopping\app\Listeners\ProviderContract\UpdateProviderContractMetrics;
 use Fereydooni\Shopping\app\Listeners\ProviderContract\UpdateProviderContractRecord;
+use Fereydooni\Shopping\app\Listeners\ProviderNote\LogProviderNoteActivity;
+use Fereydooni\Shopping\app\Listeners\ProviderNote\SendProviderNoteNotification;
+use Fereydooni\Shopping\app\Listeners\ProviderNote\UpdateProviderNoteMetrics;
+// ProviderLocation Listeners
+use Fereydooni\Shopping\app\Listeners\ProviderNote\UpdateProviderNoteRecord;
 use Fereydooni\Shopping\app\Listeners\SendInsuranceExpirationNotification;
 use Fereydooni\Shopping\app\Listeners\SendInsuranceRenewalReminder;
-// Provider Listeners
 use Fereydooni\Shopping\app\Listeners\SendInsuranceVerificationNotification;
 use Fereydooni\Shopping\app\Listeners\SendLocationCreatedNotification;
 use Fereydooni\Shopping\app\Listeners\SendLowStockNotification;
 use Fereydooni\Shopping\app\Listeners\SendOutOfStockNotification;
 use Fereydooni\Shopping\app\Listeners\SendPrimaryLocationChangedNotification;
-// ProviderLocation Listeners
 use Fereydooni\Shopping\app\Listeners\SendProductTagCreatedNotification;
 use Fereydooni\Shopping\app\Listeners\SendProductVariantCreatedNotification;
 use Fereydooni\Shopping\app\Listeners\UpdateInsuranceAnalytics;
+// ProviderContract Listeners
 use Fereydooni\Shopping\app\Listeners\UpdateLocationAnalytics;
 use Fereydooni\Shopping\app\Listeners\UpdateLocationMaps;
 use Fereydooni\Shopping\app\Listeners\UpdateProductFilterCache;
@@ -132,7 +141,6 @@ use Fereydooni\Shopping\app\Listeners\UpdateProductPricingCache;
 use Fereydooni\Shopping\app\Listeners\UpdateProductSearchIndex;
 use Fereydooni\Shopping\app\Listeners\UpdateProductTagCache;
 use Fereydooni\Shopping\app\Listeners\UpdateProductTagIndex;
-// ProviderContract Listeners
 use Fereydooni\Shopping\app\Listeners\UpdateProductVariantCache;
 use Fereydooni\Shopping\app\Listeners\UpdateProviderComplianceStatus;
 use Fereydooni\Shopping\app\Listeners\UpdateProviderLocationCount;
@@ -537,29 +545,29 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         // ProviderNote Events
-        \Fereydooni\Shopping\app\Events\ProviderNote\ProviderNoteCreated::class => [
-            \Fereydooni\Shopping\app\Listeners\ProviderNote\SendProviderNoteNotification::class,
-            \Fereydooni\Shopping\app\Listeners\ProviderNote\LogProviderNoteActivity::class,
-            \Fereydooni\Shopping\app\Listeners\ProviderNote\UpdateProviderNoteRecord::class,
-            \Fereydooni\Shopping\app\Listeners\ProviderNote\UpdateProviderNoteMetrics::class,
+        ProviderNoteCreated::class => [
+            SendProviderNoteNotification::class,
+            LogProviderNoteActivity::class,
+            UpdateProviderNoteRecord::class,
+            UpdateProviderNoteMetrics::class,
         ],
-        \Fereydooni\Shopping\app\Events\ProviderNote\ProviderNoteUpdated::class => [
-            \Fereydooni\Shopping\app\Listeners\ProviderNote\SendProviderNoteNotification::class,
-            \Fereydooni\Shopping\app\Listeners\ProviderNote\LogProviderNoteActivity::class,
-            \Fereydooni\Shopping\app\Listeners\ProviderNote\UpdateProviderNoteRecord::class,
-            \Fereydooni\Shopping\app\Listeners\ProviderNote\UpdateProviderNoteMetrics::class,
+        ProviderNoteUpdated::class => [
+            SendProviderNoteNotification::class,
+            LogProviderNoteActivity::class,
+            UpdateProviderNoteRecord::class,
+            UpdateProviderNoteMetrics::class,
         ],
-        \Fereydooni\Shopping\app\Events\ProviderNote\ProviderNoteArchived::class => [
-            \Fereydooni\Shopping\app\Listeners\ProviderNote\SendProviderNoteNotification::class,
-            \Fereydooni\Shopping\app\Listeners\ProviderNote\LogProviderNoteActivity::class,
-            \Fereydooni\Shopping\app\Listeners\ProviderNote\UpdateProviderNoteRecord::class,
-            \Fereydooni\Shopping\app\Listeners\ProviderNote\UpdateProviderNoteMetrics::class,
+        ProviderNoteArchived::class => [
+            SendProviderNoteNotification::class,
+            LogProviderNoteActivity::class,
+            UpdateProviderNoteRecord::class,
+            UpdateProviderNoteMetrics::class,
         ],
-        \Fereydooni\Shopping\app\Events\ProviderNote\ProviderNoteDeleted::class => [
-            \Fereydooni\Shopping\app\Listeners\ProviderNote\SendProviderNoteNotification::class,
-            \Fereydooni\Shopping\app\Listeners\ProviderNote\LogProviderNoteActivity::class,
-            \Fereydooni\Shopping\app\Listeners\ProviderNote\UpdateProviderNoteRecord::class,
-            \Fereydooni\Shopping\app\Listeners\ProviderNote\UpdateProviderNoteMetrics::class,
+        ProviderNoteDeleted::class => [
+            SendProviderNoteNotification::class,
+            LogProviderNoteActivity::class,
+            UpdateProviderNoteRecord::class,
+            UpdateProviderNoteMetrics::class,
         ],
     ];
 

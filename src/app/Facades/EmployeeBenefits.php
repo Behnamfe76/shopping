@@ -12,6 +12,7 @@ use Fereydooni\Shopping\app\Actions\EmployeeBenefits\TerminateEmployeeBenefitsAc
 use Fereydooni\Shopping\app\Actions\EmployeeBenefits\UpdateEmployeeBenefitsAction;
 use Fereydooni\Shopping\app\DTOs\EmployeeBenefitsDTO;
 use Fereydooni\Shopping\app\Models\EmployeeBenefits;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Facades\Log;
@@ -172,7 +173,7 @@ class EmployeeBenefits extends Facade
     /**
      * Find benefits by employee ID
      */
-    public static function findByEmployee(int $employeeId): \Illuminate\Database\Eloquent\Collection
+    public static function findByEmployee(int $employeeId): Collection
     {
         try {
             $repository = app(EmployeeBenefitsRepository::class);
@@ -191,7 +192,7 @@ class EmployeeBenefits extends Facade
     /**
      * Find active benefits
      */
-    public static function active(): \Illuminate\Database\Eloquent\Collection
+    public static function active(): Collection
     {
         try {
             $repository = app(EmployeeBenefitsRepository::class);

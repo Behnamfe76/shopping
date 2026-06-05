@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\Response;
 
 class CustomerPreferenceController extends Controller
 {
@@ -38,7 +39,7 @@ class CustomerPreferenceController extends Controller
     {
         $this->authorize('create', CustomerPreference::class);
 
-        $customers = \Fereydooni\Shopping\app\Models\Customer::all();
+        $customers = Customer::all();
         $templates = $this->preferenceService->getPreferenceTemplates();
 
         return view('customer-preferences.create', compact('customers', 'templates'));
@@ -94,7 +95,7 @@ class CustomerPreferenceController extends Controller
         $this->authorize('update', $preference);
 
         $preferenceDTO = $this->preferenceService->getPreferenceDTO($preference->id);
-        $customers = \Fereydooni\Shopping\app\Models\Customer::all();
+        $customers = Customer::all();
 
         return view('customer-preferences.edit', compact('preference', 'preferenceDTO', 'customers'));
     }
@@ -188,7 +189,7 @@ class CustomerPreferenceController extends Controller
             $preferences = $this->preferenceService->getAllPreferences();
         }
 
-        $customers = \Fereydooni\Shopping\app\Models\Customer::all();
+        $customers = Customer::all();
 
         return view('customer-preferences.list', compact('preferences', 'customers', 'query', 'customerId', 'type', 'category'));
     }
@@ -245,7 +246,7 @@ class CustomerPreferenceController extends Controller
     /**
      * Export preferences to file.
      */
-    public function export(Customer $customer, Request $request): \Symfony\Component\HttpFoundation\Response
+    public function export(Customer $customer, Request $request): Response
     {
         $this->authorize('exportPreferences', $customer);
 
@@ -312,13 +313,13 @@ class CustomerPreferenceController extends Controller
 
         if ($customerId) {
             $analytics = $this->preferenceService->getCustomerPreferenceAnalytics($customerId);
-            $customer = \Fereydooni\Shopping\app\Models\Customer::find($customerId);
+            $customer = Customer::find($customerId);
         } else {
             $analytics = $this->preferenceService->getGlobalPreferenceAnalytics();
             $customer = null;
         }
 
-        $customers = \Fereydooni\Shopping\app\Models\Customer::all();
+        $customers = Customer::all();
 
         return view('customer-preferences.analytics', compact('analytics', 'customer', 'customers'));
     }
@@ -469,7 +470,7 @@ class CustomerPreferenceController extends Controller
     /**
      * Export preferences to CSV.
      */
-    private function exportToCsv(array $preferences, Customer $customer): \Symfony\Component\HttpFoundation\Response
+    private function exportToCsv(array $preferences, Customer $customer): Response
     {
         $filename = "customer_{$customer->id}_preferences.csv";
 
@@ -502,7 +503,7 @@ class CustomerPreferenceController extends Controller
     /**
      * Export preferences to JSON.
      */
-    private function exportToJson(array $preferences, Customer $customer): \Symfony\Component\HttpFoundation\Response
+    private function exportToJson(array $preferences, Customer $customer): Response
     {
         $filename = "customer_{$customer->id}_preferences.json";
 

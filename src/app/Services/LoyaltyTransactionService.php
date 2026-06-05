@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\app\Services;
 
+use Fereydooni\Shopping\app\DTOs\LoyaltyTransactionDTO;
 use Fereydooni\Shopping\app\Repositories\Interfaces\LoyaltyTransactionRepositoryInterface;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
 use Fereydooni\Shopping\app\Traits\HasLoyaltyPointsManagement;
@@ -23,7 +24,7 @@ class LoyaltyTransactionService
     {
         $this->repository = $repository;
         $this->model = $repository->getModel();
-        $this->dtoClass = \Fereydooni\Shopping\app\DTOs\LoyaltyTransactionDTO::class;
+        $this->dtoClass = LoyaltyTransactionDTO::class;
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
+use Fereydooni\Shopping\app\Models\Order;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SearchOrderRequest extends FormRequest
@@ -11,7 +12,7 @@ class SearchOrderRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('search', \Fereydooni\Shopping\app\Models\Order::class);
+        return $this->user()->can('search', Order::class);
     }
 
     /**

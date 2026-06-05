@@ -4,6 +4,7 @@ namespace Fereydooni\Shopping\app\Facades;
 
 use Fereydooni\Shopping\app\DTOs\TransactionDTO;
 use Fereydooni\Shopping\app\Models\Transaction;
+use Fereydooni\Shopping\app\Services\TransactionService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -75,7 +76,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static array getTransactionStatisticsByGateway(string $gateway)
  * @method static array getTransactionStatisticsByStatus(string $status)
  *
- * @see \Fereydooni\Shopping\app\Services\TransactionService
+ * @see TransactionService
  */
 class TransactionFacade extends Facade
 {

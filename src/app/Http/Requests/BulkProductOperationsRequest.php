@@ -2,13 +2,14 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
+use Fereydooni\Shopping\app\Models\Product;
 use Illuminate\Foundation\Http\FormRequest;
 
 class BulkProductOperationsRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('bulkOperations', \Fereydooni\Shopping\app\Models\Product::class);
+        return $this->user()->can('bulkOperations', Product::class);
     }
 
     public function rules(): array

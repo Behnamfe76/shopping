@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
+use Fereydooni\Shopping\app\Models\ProductVariant;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ImportProductVariantRequest extends FormRequest
@@ -11,7 +12,7 @@ class ImportProductVariantRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('import', \Fereydooni\Shopping\app\Models\ProductVariant::class);
+        return $this->user()->can('import', ProductVariant::class);
     }
 
     /**

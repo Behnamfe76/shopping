@@ -2,20 +2,20 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
-use Fereydooni\Shopping\app\Events\EmployeePerformanceReviewCreated;
-use Fereydooni\Shopping\app\Events\EmployeePerformanceReviewUpdated;
-use Fereydooni\Shopping\app\Events\EmployeePerformanceReviewDeleted;
-use Fereydooni\Shopping\app\Events\EmployeePerformanceReviewSubmitted;
 use Fereydooni\Shopping\app\Events\EmployeePerformanceReviewApproved;
-use Fereydooni\Shopping\app\Events\EmployeePerformanceReviewRejected;
 use Fereydooni\Shopping\app\Events\EmployeePerformanceReviewAssigned;
-use Fereydooni\Shopping\app\Events\EmployeePerformanceReviewScheduled;
+use Fereydooni\Shopping\app\Events\EmployeePerformanceReviewCreated;
+use Fereydooni\Shopping\app\Events\EmployeePerformanceReviewDeleted;
 use Fereydooni\Shopping\app\Events\EmployeePerformanceReviewOverdue;
+use Fereydooni\Shopping\app\Events\EmployeePerformanceReviewRejected;
 use Fereydooni\Shopping\app\Events\EmployeePerformanceReviewReminderSent;
+use Fereydooni\Shopping\app\Events\EmployeePerformanceReviewScheduled;
+use Fereydooni\Shopping\app\Events\EmployeePerformanceReviewSubmitted;
+use Fereydooni\Shopping\app\Events\EmployeePerformanceReviewUpdated;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 
 /**
@@ -31,7 +31,7 @@ class LogEmployeePerformanceReviewActivity implements ShouldQueue
             'review_id' => $event->review->id,
             'employee_id' => $event->review->employee_id,
             'reviewer_id' => $event->review->reviewer_id,
-            'action' => 'created'
+            'action' => 'created',
         ]);
     }
 
@@ -41,7 +41,7 @@ class LogEmployeePerformanceReviewActivity implements ShouldQueue
             'review_id' => $event->review->id,
             'employee_id' => $event->review->employee_id,
             'changes' => $event->changes,
-            'action' => 'updated'
+            'action' => 'updated',
         ]);
     }
 
@@ -50,7 +50,7 @@ class LogEmployeePerformanceReviewActivity implements ShouldQueue
         Log::info('Performance review deleted', [
             'review_id' => $event->review->id,
             'employee_id' => $event->review->employee_id,
-            'action' => 'deleted'
+            'action' => 'deleted',
         ]);
     }
 
@@ -59,7 +59,7 @@ class LogEmployeePerformanceReviewActivity implements ShouldQueue
         Log::info('Performance review submitted', [
             'review_id' => $event->review->id,
             'employee_id' => $event->review->employee_id,
-            'action' => 'submitted'
+            'action' => 'submitted',
         ]);
     }
 
@@ -69,7 +69,7 @@ class LogEmployeePerformanceReviewActivity implements ShouldQueue
             'review_id' => $event->review->id,
             'employee_id' => $event->review->employee_id,
             'approved_by' => $event->approvedBy,
-            'action' => 'approved'
+            'action' => 'approved',
         ]);
     }
 
@@ -80,7 +80,7 @@ class LogEmployeePerformanceReviewActivity implements ShouldQueue
             'employee_id' => $event->review->employee_id,
             'rejected_by' => $event->rejectedBy,
             'reason' => $event->reason,
-            'action' => 'rejected'
+            'action' => 'rejected',
         ]);
     }
 
@@ -90,7 +90,7 @@ class LogEmployeePerformanceReviewActivity implements ShouldQueue
             'review_id' => $event->review->id,
             'employee_id' => $event->review->employee_id,
             'reviewer_id' => $event->reviewerId,
-            'action' => 'assigned'
+            'action' => 'assigned',
         ]);
     }
 
@@ -100,7 +100,7 @@ class LogEmployeePerformanceReviewActivity implements ShouldQueue
             'review_id' => $event->review->id,
             'employee_id' => $event->review->employee_id,
             'review_date' => $event->reviewDate,
-            'action' => 'scheduled'
+            'action' => 'scheduled',
         ]);
     }
 
@@ -109,7 +109,7 @@ class LogEmployeePerformanceReviewActivity implements ShouldQueue
         Log::warning('Performance review overdue', [
             'review_id' => $event->review->id,
             'employee_id' => $event->review->employee_id,
-            'action' => 'overdue'
+            'action' => 'overdue',
         ]);
     }
 
@@ -119,7 +119,7 @@ class LogEmployeePerformanceReviewActivity implements ShouldQueue
             'review_id' => $event->review->id,
             'employee_id' => $event->review->employee_id,
             'reminder_type' => $event->reminderType,
-            'action' => 'reminder_sent'
+            'action' => 'reminder_sent',
         ]);
     }
 }
@@ -241,7 +241,8 @@ class UpdateEmployeePerformanceReviewCache
         // Clear various cache keys related to performance reviews
         Cache::forget("employee_reviews_{$review->employee_id}");
         Cache::forget("reviewer_reviews_{$review->reviewer_id}");
-        Cache::forget("department_reviews_{$review->employee->department_id ?? 'unknown'}");
+        $departmentId = $review->employee->department_id ?? 'unknown';
+        Cache::forget("department_reviews_{$departmentId}");
         Cache::forget('company_review_statistics');
         Cache::forget('pending_approval_count');
         Cache::forget('overdue_reviews_count');
@@ -392,7 +393,7 @@ class CreateEmployeePerformanceReviewAuditLog
     {
         $this->createAuditLog($event->review, 'rejected', [
             'rejected_by' => $event->rejectedBy,
-            'reason' => $event->reason
+            'reason' => $event->reason,
         ]);
     }
 

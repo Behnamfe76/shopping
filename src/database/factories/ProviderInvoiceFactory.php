@@ -7,7 +7,7 @@ use Fereydooni\Shopping\App\Models\ProviderInvoice;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Fereydooni\Shopping\App\Models\ProviderInvoice>
+ * @extends Factory<ProviderInvoice>
  */
 class ProviderInvoiceFactory extends Factory
 {

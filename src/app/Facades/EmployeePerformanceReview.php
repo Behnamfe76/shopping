@@ -3,6 +3,8 @@
 namespace App\Facades;
 
 use App\DTOs\EmployeePerformanceReviewDTO;
+use App\Enums\EmployeePerformanceReviewRating;
+use App\Enums\EmployeePerformanceReviewStatus;
 use App\Services\EmployeePerformanceReviewService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Facade;
@@ -30,7 +32,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static string export(array $filters = [], string $format = 'json')
  * @method static bool import(string $data, string $format = 'json')
  *
- * @see \App\Services\EmployeePerformanceReviewService
+ * @see EmployeePerformanceReviewService
  */
 class EmployeePerformanceReview extends Facade
 {
@@ -497,7 +499,7 @@ class EmployeePerformanceReview extends Facade
      */
     public static function getStatusColors(): array
     {
-        $statuses = \App\Enums\EmployeePerformanceReviewStatus::cases();
+        $statuses = EmployeePerformanceReviewStatus::cases();
         $colors = [];
 
         foreach ($statuses as $status) {
@@ -512,7 +514,7 @@ class EmployeePerformanceReview extends Facade
      */
     public static function getRatingColors(): array
     {
-        $ratings = \App\Enums\EmployeePerformanceReviewRating::cases();
+        $ratings = EmployeePerformanceReviewRating::cases();
         $colors = [];
 
         foreach ($ratings as $rating) {
@@ -527,7 +529,7 @@ class EmployeePerformanceReview extends Facade
      */
     public static function getStatusIcons(): array
     {
-        $statuses = \App\Enums\EmployeePerformanceReviewStatus::cases();
+        $statuses = EmployeePerformanceReviewStatus::cases();
         $icons = [];
 
         foreach ($statuses as $status) {
@@ -542,7 +544,7 @@ class EmployeePerformanceReview extends Facade
      */
     public static function getRatingIcons(): array
     {
-        $ratings = \App\Enums\EmployeePerformanceReviewRating::cases();
+        $ratings = EmployeePerformanceReviewRating::cases();
         $icons = [];
 
         foreach ($ratings as $rating) {

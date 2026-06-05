@@ -124,7 +124,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static array calculateInsights()
  * @method static array forecastTrends(string $period = 'monthly')
  *
- * @see \App\Services\CustomerSegmentService
+ * @see CustomerSegmentService
  */
 class CustomerSegment extends Facade
 {

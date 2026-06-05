@@ -6,6 +6,7 @@ use Fereydooni\Shopping\app\DTOs\BrandDTO;
 use Fereydooni\Shopping\app\Enums\BrandStatus;
 use Fereydooni\Shopping\app\Enums\BrandType;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class UpdateBrandRequest extends FormRequest
@@ -86,7 +87,7 @@ class UpdateBrandRequest extends FormRequest
         // Generate slug if not provided
         if (! $this->has('slug') || empty($this->slug)) {
             $this->merge([
-                'slug' => \Illuminate\Support\Str::slug($this->name),
+                'slug' => Str::slug($this->name),
             ]);
         }
 

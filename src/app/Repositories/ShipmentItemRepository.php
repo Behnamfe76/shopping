@@ -13,6 +13,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class ShipmentItemRepository implements ShipmentItemRepositoryInterface
 {
@@ -436,7 +437,7 @@ class ShipmentItemRepository implements ShipmentItemRepositoryInterface
         $validator = Validator::make($data, $rules, ShipmentItemDTO::messages());
 
         if ($validator->fails()) {
-            throw new \Illuminate\Validation\ValidationException($validator);
+            throw new ValidationException($validator);
         }
 
         return $validator->validated();

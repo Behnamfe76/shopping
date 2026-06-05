@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
+use App\Models\User;
 use Exception;
 use Fereydooni\Shopping\app\Events\Provider\ProviderLocationCreated;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -178,7 +179,7 @@ class SendLocationCreatedNotification implements ShouldQueue
             // Add location managers if any
             if ($location->contact_email) {
                 // Find user by contact email
-                $contactUser = \App\Models\User::where('email', $location->contact_email)->first();
+                $contactUser = User::where('email', $location->contact_email)->first();
                 if ($contactUser) {
                     $users[] = $contactUser;
                 }

@@ -3,6 +3,7 @@
 namespace Fereydooni\Shopping\app\Http\Requests;
 
 use Fereydooni\Shopping\app\DTOs\ProductMetaDTO;
+use Fereydooni\Shopping\app\Models\ProductMeta;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreProductMetaRequest extends FormRequest
@@ -12,7 +13,7 @@ class StoreProductMetaRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', \Fereydooni\Shopping\app\Models\ProductMeta::class);
+        return $this->user()->can('create', ProductMeta::class);
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace Fereydooni\Shopping\app\Http\Requests;
 
 use Fereydooni\Shopping\app\DTOs\ProductDiscountDTO;
+use Fereydooni\Shopping\app\Models\ProductDiscount;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreProductDiscountRequest extends FormRequest
@@ -12,7 +13,7 @@ class StoreProductDiscountRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', \Fereydooni\Shopping\app\Models\ProductDiscount::class);
+        return $this->user()->can('create', ProductDiscount::class);
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Services\ProviderInsuranceService;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\App;
 
@@ -91,8 +92,8 @@ trait HasProviderInsuranceRenewalManagement
             return false;
         }
 
-        $expirationDate = \Carbon\Carbon::parse($insurance->end_date);
-        $now = \Carbon\Carbon::now();
+        $expirationDate = Carbon::parse($insurance->end_date);
+        $now = Carbon::now();
 
         return $expirationDate->diffInDays($now) <= $days && $expirationDate->isFuture();
     }
@@ -107,7 +108,7 @@ trait HasProviderInsuranceRenewalManagement
             return false;
         }
 
-        $expirationDate = \Carbon\Carbon::parse($insurance->end_date);
+        $expirationDate = Carbon::parse($insurance->end_date);
 
         return $expirationDate->isPast();
     }

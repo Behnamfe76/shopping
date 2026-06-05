@@ -4,6 +4,8 @@ namespace Fereydooni\Shopping\app\Services;
 
 use Fereydooni\Shopping\app\DTOs\TeamDTO;
 use Fereydooni\Shopping\app\Enums\TeamStatus;
+use Fereydooni\Shopping\app\Models\Department;
+use Fereydooni\Shopping\app\Models\Employee;
 use Fereydooni\Shopping\app\Models\Team;
 use Fereydooni\Shopping\app\Repositories\Interfaces\TeamRepositoryInterface;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
@@ -107,7 +109,7 @@ class TeamService
     public function addMember(Team $team, int $employeeId, bool $isManager = false): bool
     {
         // Validate employee exists
-        $employee = \Fereydooni\Shopping\app\Models\Employee::find($employeeId);
+        $employee = Employee::find($employeeId);
         if (! $employee) {
             throw new \InvalidArgumentException('Employee not found');
         }
@@ -235,7 +237,7 @@ class TeamService
     {
         // Validate department if provided
         if (isset($data['department_id']) && $data['department_id']) {
-            $department = \Fereydooni\Shopping\app\Models\Department::find($data['department_id']);
+            $department = Department::find($data['department_id']);
             if (! $department) {
                 throw new \InvalidArgumentException('Department not found');
             }

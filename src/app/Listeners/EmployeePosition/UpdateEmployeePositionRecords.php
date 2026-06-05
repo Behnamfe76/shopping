@@ -5,6 +5,7 @@ namespace App\Listeners\EmployeePosition;
 use App\Events\EmployeePosition\EmployeePositionArchived;
 use App\Events\EmployeePosition\EmployeePositionUpdated;
 use App\Models\Employee;
+use App\Models\EmployeePosition;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\DB;
@@ -138,7 +139,7 @@ class UpdateEmployeePositionRecords implements ShouldQueue
 
             if ($replacementPositionId) {
                 // Move employee to replacement position
-                $replacementPosition = \App\Models\EmployeePosition::find($replacementPositionId);
+                $replacementPosition = EmployeePosition::find($replacementPositionId);
 
                 if ($replacementPosition) {
                     $employee->update([

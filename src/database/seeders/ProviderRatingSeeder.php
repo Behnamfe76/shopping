@@ -6,6 +6,7 @@ use App\Enums\RatingCategory;
 use App\Enums\RatingStatus;
 use App\Models\Provider;
 use App\Models\User;
+use Faker\Factory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -384,6 +385,6 @@ class ProviderRatingSeeder extends Seeder
      */
     protected function getFaker()
     {
-        return \Faker\Factory::create();
+        return Factory::create();
     }
 }

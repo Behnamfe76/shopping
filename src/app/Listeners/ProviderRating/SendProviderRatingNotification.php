@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\app\Listeners\ProviderRating;
 
+use App\Models\User;
 use Fereydooni\Shopping\app\Events\ProviderRating\ProviderRatingApproved;
 use Fereydooni\Shopping\app\Events\ProviderRating\ProviderRatingCreated;
 use Fereydooni\Shopping\app\Events\ProviderRating\ProviderRatingFlagged;
@@ -174,7 +175,7 @@ class SendProviderRatingNotification implements ShouldQueue
     protected function notifyModerators($notification): void
     {
         // Get users with moderation permissions
-        $moderators = \App\Models\User::permission('provider-rating.moderate')->get();
+        $moderators = User::permission('provider-rating.moderate')->get();
 
         foreach ($moderators as $moderator) {
             $moderator->notify($notification);

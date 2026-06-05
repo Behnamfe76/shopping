@@ -16,7 +16,7 @@ trait HasLens
     public function lens(): Paginator
     {
         if (! property_exists($this, 'model') || ! is_string($this->model)) {
-            throw new \Exception('Class using HasLens trait must define a public string $model property.');
+            throw new Exception('Class using HasLens trait must define a public string $model property.');
         }
 
         $request = request();

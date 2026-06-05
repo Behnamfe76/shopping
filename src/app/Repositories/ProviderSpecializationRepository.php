@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\DTOs\ProviderSpecializationDTO;
 use App\Models\ProviderSpecialization;
 use App\Repositories\Interfaces\ProviderSpecializationRepositoryInterface;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\CursorPaginator;
@@ -868,8 +869,8 @@ class ProviderSpecializationRepository implements ProviderSpecializationReposito
         $endDate = $endDate ?: now()->format('Y-m-d');
 
         $trends = [];
-        $currentDate = \Carbon\Carbon::parse($startDate);
-        $end = \Carbon\Carbon::parse($endDate);
+        $currentDate = Carbon::parse($startDate);
+        $end = Carbon::parse($endDate);
 
         while ($currentDate <= $end) {
             $date = $currentDate->format('Y-m-d');

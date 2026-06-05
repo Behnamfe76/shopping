@@ -3,6 +3,7 @@
 namespace Fereydooni\Shopping\app\Http\Requests;
 
 use Fereydooni\Shopping\app\DTOs\TeamDTO;
+use Fereydooni\Shopping\app\Models\Team;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreTeamRequest extends FormRequest
@@ -12,7 +13,7 @@ class StoreTeamRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', \Fereydooni\Shopping\app\Models\Team::class);
+        return $this->user()->can('create', Team::class);
     }
 
     /**

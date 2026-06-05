@@ -5,6 +5,8 @@ namespace App\Listeners\ProviderCertification;
 use App\Events\ProviderCertification\ProviderCertificationCreated;
 use App\Events\ProviderCertification\ProviderCertificationRenewed;
 use App\Events\ProviderCertification\ProviderCertificationUpdated;
+use App\Notifications\ProviderCertification\CertificationExpired;
+use App\Notifications\ProviderCertification\CertificationExpiring;
 use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -155,37 +157,37 @@ class ScheduleRenewalReminder implements ShouldQueue
             // Send notification based on reminder type
             switch ($reminderType) {
                 case '90_days_before_expiry':
-                    $provider->notify(new \App\Notifications\ProviderCertification\CertificationExpiring($certification, 90));
+                    $provider->notify(new CertificationExpiring($certification, 90));
                     break;
 
                 case '60_days_before_expiry':
-                    $provider->notify(new \App\Notifications\ProviderCertification\CertificationExpiring($certification, 60));
+                    $provider->notify(new CertificationExpiring($certification, 60));
                     break;
 
                 case '30_days_before_expiry':
-                    $provider->notify(new \App\Notifications\ProviderCertification\CertificationExpiring($certification, 30));
+                    $provider->notify(new CertificationExpiring($certification, 30));
                     break;
 
                 case '14_days_before_expiry':
-                    $provider->notify(new \App\Notifications\ProviderCertification\CertificationExpiring($certification, 14));
+                    $provider->notify(new CertificationExpiring($certification, 14));
                     break;
 
                 case '7_days_before_expiry':
-                    $provider->notify(new \App\Notifications\ProviderCertification\CertificationExpiring($certification, 7));
+                    $provider->notify(new CertificationExpiring($certification, 7));
                     break;
 
                 case '1_day_before_expiry':
-                    $provider->notify(new \App\Notifications\ProviderCertification\CertificationExpiring($certification, 1));
+                    $provider->notify(new CertificationExpiring($certification, 1));
                     break;
 
                 case 'expiry_day':
-                    $provider->notify(new \App\Notifications\ProviderCertification\CertificationExpired($certification));
+                    $provider->notify(new CertificationExpired($certification));
                     break;
 
                 case '1_day_after_expiry':
                 case '7_days_after_expiry':
                 case '30_days_after_expiry':
-                    $provider->notify(new \App\Notifications\ProviderCertification\CertificationExpired($certification));
+                    $provider->notify(new CertificationExpired($certification));
                     break;
             }
 

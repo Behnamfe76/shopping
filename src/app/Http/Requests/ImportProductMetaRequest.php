@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
+use Fereydooni\Shopping\app\Models\ProductMeta;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ImportProductMetaRequest extends FormRequest
@@ -11,7 +12,7 @@ class ImportProductMetaRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('import', \Fereydooni\Shopping\app\Models\ProductMeta::class);
+        return $this->user()->can('import', ProductMeta::class);
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace Fereydooni\Shopping\app\Http\Requests;
 
 use Fereydooni\Shopping\app\DTOs\DepartmentDTO;
+use Fereydooni\Shopping\app\Models\Department;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreDepartmentRequest extends FormRequest
@@ -12,7 +13,7 @@ class StoreDepartmentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', \Fereydooni\Shopping\app\Models\Department::class);
+        return $this->user()->can('create', Department::class);
     }
 
     /**

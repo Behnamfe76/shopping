@@ -3,6 +3,7 @@
 namespace Fereydooni\Shopping\app\Http\Requests;
 
 use Fereydooni\Shopping\app\Enums\AddressType;
+use Fereydooni\Shopping\app\Models\Address;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreAddressRequest extends FormRequest
@@ -12,7 +13,7 @@ class StoreAddressRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', \Fereydooni\Shopping\app\Models\Address::class);
+        return $this->user()->can('create', Address::class);
     }
 
     /**

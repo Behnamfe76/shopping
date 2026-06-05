@@ -4,6 +4,7 @@ namespace Fereydooni\Shopping\app\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ProviderLocationCollection extends ResourceCollection
 {
@@ -18,7 +19,7 @@ class ProviderLocationCollection extends ResourceCollection
             'data' => $this->collection,
 
             // Pagination information
-            'pagination' => $this->when($this->resource instanceof \Illuminate\Pagination\LengthAwarePaginator, function () {
+            'pagination' => $this->when($this->resource instanceof LengthAwarePaginator, function () {
                 return [
                     'current_page' => $this->resource->currentPage(),
                     'last_page' => $this->resource->lastPage(),
@@ -32,7 +33,7 @@ class ProviderLocationCollection extends ResourceCollection
             }),
 
             // Links for pagination
-            'links' => $this->when($this->resource instanceof \Illuminate\Pagination\LengthAwarePaginator, function () {
+            'links' => $this->when($this->resource instanceof LengthAwarePaginator, function () {
                 return [
                     'first' => $this->resource->url(1),
                     'last' => $this->resource->url($this->resource->lastPage()),
@@ -45,27 +46,27 @@ class ProviderLocationCollection extends ResourceCollection
             // Meta information
             'meta' => [
                 'count' => $this->collection->count(),
-                'total_count' => $this->when($this->resource instanceof \Illuminate\Pagination\LengthAwarePaginator,
+                'total_count' => $this->when($this->resource instanceof LengthAwarePaginator,
                     $this->resource->total(),
                     $this->collection->count()
                 ),
-                'per_page' => $this->when($this->resource instanceof \Illuminate\Pagination\LengthAwarePaginator,
+                'per_page' => $this->when($this->resource instanceof LengthAwarePaginator,
                     $this->resource->perPage(),
                     null
                 ),
-                'current_page' => $this->when($this->resource instanceof \Illuminate\Pagination\LengthAwarePaginator,
+                'current_page' => $this->when($this->resource instanceof LengthAwarePaginator,
                     $this->resource->currentPage(),
                     1
                 ),
-                'last_page' => $this->when($this->resource instanceof \Illuminate\Pagination\LengthAwarePaginator,
+                'last_page' => $this->when($this->resource instanceof LengthAwarePaginator,
                     $this->resource->lastPage(),
                     1
                 ),
-                'has_pages' => $this->when($this->resource instanceof \Illuminate\Pagination\LengthAwarePaginator,
+                'has_pages' => $this->when($this->resource instanceof LengthAwarePaginator,
                     $this->resource->hasPages(),
                     false
                 ),
-                'has_more_pages' => $this->when($this->resource instanceof \Illuminate\Pagination\LengthAwarePaginator,
+                'has_more_pages' => $this->when($this->resource instanceof LengthAwarePaginator,
                     $this->resource->hasMorePages(),
                     false
                 ),

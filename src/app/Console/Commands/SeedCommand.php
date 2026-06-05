@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\app\Console\Commands;
 
+use Fereydooni\Shopping\database\seeders\ShoppingDatabaseSeeder;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
@@ -102,7 +103,7 @@ class SeedCommand extends Command
 
         try {
             Artisan::call('db:seed', [
-                '--class' => \Fereydooni\Shopping\database\seeders\ShoppingDatabaseSeeder::class,
+                '--class' => ShoppingDatabaseSeeder::class,
                 '--force' => true,
             ], $this->getOutput());
 

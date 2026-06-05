@@ -4,6 +4,7 @@ namespace Fereydooni\Shopping\app\Facades;
 
 use Fereydooni\Shopping\app\DTOs\OrderStatusHistoryDTO;
 use Fereydooni\Shopping\app\Models\OrderStatusHistory;
+use Fereydooni\Shopping\app\Services\OrderStatusHistoryService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -55,7 +56,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static Collection getMostFrequentStatusChanges(int $limit = 10)
  * @method static array getStatusChangeAnalytics(string $startDate, string $endDate)
  *
- * @see \Fereydooni\Shopping\app\Services\OrderStatusHistoryService
+ * @see OrderStatusHistoryService
  */
 class OrderStatusHistory extends Facade
 {

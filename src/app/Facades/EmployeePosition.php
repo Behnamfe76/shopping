@@ -4,6 +4,8 @@ namespace Fereydooni\Shopping\app\Facades;
 
 use Fereydooni\Shopping\app\DTOs\EmployeePositionDTO;
 use Fereydooni\Shopping\app\Models\EmployeePosition;
+use Fereydooni\Shopping\app\Repositories\EmployeePositionRepository;
+use Fereydooni\Shopping\app\Traits\HasEmployeePositionOperations;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
@@ -105,8 +107,8 @@ use Illuminate\Support\Facades\Facade;
  * @method static int getTotalPositionCount()
  * @method static array getPositionStatistics()
  *
- * @see \Fereydooni\Shopping\app\Repositories\EmployeePositionRepository
- * @see \Fereydooni\Shopping\app\Traits\HasEmployeePositionOperations
+ * @see EmployeePositionRepository
+ * @see HasEmployeePositionOperations
  */
 class EmployeePosition extends Facade
 {

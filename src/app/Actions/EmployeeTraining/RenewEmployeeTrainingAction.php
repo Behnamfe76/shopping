@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\Actions\EmployeeTraining;
 
+use Carbon\Carbon;
 use Fereydooni\Shopping\DTOs\EmployeeTrainingDTO;
 use Fereydooni\Shopping\Enums\TrainingStatus;
 use Fereydooni\Shopping\Models\EmployeeTraining;
@@ -73,7 +74,7 @@ class RenewEmployeeTrainingAction
 
         // Check if renewal date is valid
         if ($renewalDate !== null) {
-            $renewalDateTime = \Carbon\Carbon::parse($renewalDate);
+            $renewalDateTime = Carbon::parse($renewalDate);
             if ($renewalDateTime->isPast()) {
                 throw new \Exception('Renewal date must be in the future');
             }
@@ -81,8 +82,8 @@ class RenewEmployeeTrainingAction
 
         // Check if training is expiring soon or has expired
         if ($training->expiry_date) {
-            $expiryDate = \Carbon\Carbon::parse($training->expiry_date);
-            $now = \Carbon\Carbon::now();
+            $expiryDate = Carbon::parse($training->expiry_date);
+            $now = Carbon::now();
 
             // Allow renewal if expiring within 30 days or already expired
             if ($expiryDate->isFuture() && $expiryDate->diffInDays($now) > 30) {
@@ -147,7 +148,7 @@ class RenewEmployeeTrainingAction
         return 0;
     }
 
-    private function calculateNewExpiryDate(EmployeeTraining $training): \Carbon\Carbon
+    private function calculateNewExpiryDate(EmployeeTraining $training): Carbon
     {
         // Calculate new expiry date based on training type and company policy
         $baseExpiryPeriod = $this->getBaseExpiryPeriod($training->training_type);

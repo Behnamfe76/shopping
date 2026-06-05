@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
+use App\Models\User;
 use Fereydooni\Shopping\app\Events\OrderTimelineGenerated;
 use Fereydooni\Shopping\app\Services\OrderStatusHistoryService;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -137,7 +138,7 @@ class GenerateTimelineReport implements ShouldQueue
         }
 
         // Send to admin users
-        $adminUsers = \App\Models\User::whereHas('roles', function ($query) {
+        $adminUsers = User::whereHas('roles', function ($query) {
             $query->where('name', 'admin');
         })->get();
 

@@ -3,7 +3,35 @@
 namespace Fereydooni\Shopping\App\Facades;
 
 use App\DTOs\ProviderRatingDTO;
+use App\Models\Provider;
 use App\Models\ProviderRating;
+use App\Models\ProviderRatingVote;
+use App\Models\User;
+use App\Repositories\Interfaces\ProviderRatingRepositoryInterface;
+use App\Repositories\ProviderRatingRepository;
+use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingApproved;
+use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingCreated;
+use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingFlagged;
+use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingRejected;
+use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingUpdated;
+use Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingVerified;
+use Fereydooni\Shopping\App\Listeners\ProviderRating\LogProviderRatingActivity;
+use Fereydooni\Shopping\App\Listeners\ProviderRating\ProcessRatingModeration;
+use Fereydooni\Shopping\App\Listeners\ProviderRating\SendProviderRatingNotification;
+use Fereydooni\Shopping\App\Listeners\ProviderRating\UpdateProviderRatingMetrics;
+use Fereydooni\Shopping\App\Listeners\ProviderRating\UpdateProviderRatingRecord;
+use Fereydooni\Shopping\App\Notifications\ProviderRating\RatingApproved;
+use Fereydooni\Shopping\App\Notifications\ProviderRating\RatingFlagged;
+use Fereydooni\Shopping\App\Notifications\ProviderRating\RatingHelpfulVote;
+use Fereydooni\Shopping\App\Notifications\ProviderRating\RatingReceived;
+use Fereydooni\Shopping\App\Notifications\ProviderRating\RatingRejected;
+use Fereydooni\Shopping\App\Notifications\ProviderRating\RatingVerified;
+use Fereydooni\Shopping\App\Providers\ProviderRatingServiceProvider;
+use Fereydooni\Shopping\App\Services\ProviderRatingService;
+use Fereydooni\Shopping\App\Traits\HasProviderRatingAnalytics;
+use Fereydooni\Shopping\App\Traits\HasProviderRatingModeration;
+use Fereydooni\Shopping\App\Traits\HasProviderRatingOperations;
+use Fereydooni\Shopping\App\Traits\HasProviderRatingVoting;
 use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
@@ -153,7 +181,7 @@ class ProviderRating extends Facade
      */
     protected static function getFacadeAccessorClass(): string
     {
-        return \Fereydooni\Shopping\App\Services\ProviderRatingService::class;
+        return ProviderRatingService::class;
     }
 
     /**
@@ -177,7 +205,7 @@ class ProviderRating extends Facade
      */
     protected static function getFacadeAccessorRepository(): object
     {
-        return app(\App\Repositories\Interfaces\ProviderRatingRepositoryInterface::class);
+        return app(ProviderRatingRepositoryInterface::class);
     }
 
     /**
@@ -185,7 +213,7 @@ class ProviderRating extends Facade
      */
     protected static function getFacadeAccessorModel(): string
     {
-        return \App\Models\ProviderRating::class;
+        return ProviderRating::class;
     }
 
     /**
@@ -193,7 +221,7 @@ class ProviderRating extends Facade
      */
     protected static function getFacadeAccessorDTO(): string
     {
-        return \App\DTOs\ProviderRatingDTO::class;
+        return ProviderRatingDTO::class;
     }
 
     /**
@@ -201,7 +229,7 @@ class ProviderRating extends Facade
      */
     protected static function getFacadeAccessorInterface(): string
     {
-        return \App\Repositories\Interfaces\ProviderRatingRepositoryInterface::class;
+        return ProviderRatingRepositoryInterface::class;
     }
 
     /**
@@ -209,7 +237,7 @@ class ProviderRating extends Facade
      */
     protected static function getFacadeAccessorImplementation(): string
     {
-        return \App\Repositories\ProviderRatingRepository::class;
+        return ProviderRatingRepository::class;
     }
 
     /**
@@ -218,10 +246,10 @@ class ProviderRating extends Facade
     protected static function getFacadeAccessorTraits(): array
     {
         return [
-            \Fereydooni\Shopping\App\Traits\HasProviderRatingOperations::class,
-            \Fereydooni\Shopping\App\Traits\HasProviderRatingModeration::class,
-            \Fereydooni\Shopping\App\Traits\HasProviderRatingVoting::class,
-            \Fereydooni\Shopping\App\Traits\HasProviderRatingAnalytics::class,
+            HasProviderRatingOperations::class,
+            HasProviderRatingModeration::class,
+            HasProviderRatingVoting::class,
+            HasProviderRatingAnalytics::class,
         ];
     }
 
@@ -231,12 +259,12 @@ class ProviderRating extends Facade
     protected static function getFacadeAccessorEvents(): array
     {
         return [
-            \Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingCreated::class,
-            \Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingUpdated::class,
-            \Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingApproved::class,
-            \Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingRejected::class,
-            \Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingFlagged::class,
-            \Fereydooni\Shopping\App\Events\ProviderRating\ProviderRatingVerified::class,
+            ProviderRatingCreated::class,
+            ProviderRatingUpdated::class,
+            ProviderRatingApproved::class,
+            ProviderRatingRejected::class,
+            ProviderRatingFlagged::class,
+            ProviderRatingVerified::class,
         ];
     }
 
@@ -246,11 +274,11 @@ class ProviderRating extends Facade
     protected static function getFacadeAccessorListeners(): array
     {
         return [
-            \Fereydooni\Shopping\App\Listeners\ProviderRating\SendProviderRatingNotification::class,
-            \Fereydooni\Shopping\App\Listeners\ProviderRating\UpdateProviderRatingRecord::class,
-            \Fereydooni\Shopping\App\Listeners\ProviderRating\LogProviderRatingActivity::class,
-            \Fereydooni\Shopping\App\Listeners\ProviderRating\UpdateProviderRatingMetrics::class,
-            \Fereydooni\Shopping\App\Listeners\ProviderRating\ProcessRatingModeration::class,
+            SendProviderRatingNotification::class,
+            UpdateProviderRatingRecord::class,
+            LogProviderRatingActivity::class,
+            UpdateProviderRatingMetrics::class,
+            ProcessRatingModeration::class,
         ];
     }
 
@@ -260,12 +288,12 @@ class ProviderRating extends Facade
     protected static function getFacadeAccessorNotifications(): array
     {
         return [
-            \Fereydooni\Shopping\App\Notifications\ProviderRating\RatingReceived::class,
-            \Fereydooni\Shopping\App\Notifications\ProviderRating\RatingApproved::class,
-            \Fereydooni\Shopping\App\Notifications\ProviderRating\RatingRejected::class,
-            \Fereydooni\Shopping\App\Notifications\ProviderRating\RatingFlagged::class,
-            \Fereydooni\Shopping\App\Notifications\ProviderRating\RatingVerified::class,
-            \Fereydooni\Shopping\App\Notifications\ProviderRating\RatingHelpfulVote::class,
+            RatingReceived::class,
+            RatingApproved::class,
+            RatingRejected::class,
+            RatingFlagged::class,
+            RatingVerified::class,
+            RatingHelpfulVote::class,
         ];
     }
 
@@ -300,10 +328,10 @@ class ProviderRating extends Facade
     protected static function getFacadeAccessorModels(): array
     {
         return [
-            'ProviderRating' => \App\Models\ProviderRating::class,
-            'ProviderRatingVote' => \App\Models\ProviderRatingVote::class,
-            'Provider' => \App\Models\Provider::class,
-            'User' => \App\Models\User::class,
+            'ProviderRating' => ProviderRating::class,
+            'ProviderRatingVote' => ProviderRatingVote::class,
+            'Provider' => Provider::class,
+            'User' => User::class,
         ];
     }
 
@@ -313,7 +341,7 @@ class ProviderRating extends Facade
     protected static function getFacadeAccessorDTOs(): array
     {
         return [
-            'ProviderRatingDTO' => \App\DTOs\ProviderRatingDTO::class,
+            'ProviderRatingDTO' => ProviderRatingDTO::class,
         ];
     }
 
@@ -323,8 +351,8 @@ class ProviderRating extends Facade
     protected static function getFacadeAccessorRepositories(): array
     {
         return [
-            'ProviderRatingRepositoryInterface' => \App\Repositories\Interfaces\ProviderRatingRepositoryInterface::class,
-            'ProviderRatingRepository' => \App\Repositories\ProviderRatingRepository::class,
+            'ProviderRatingRepositoryInterface' => ProviderRatingRepositoryInterface::class,
+            'ProviderRatingRepository' => ProviderRatingRepository::class,
         ];
     }
 
@@ -334,7 +362,7 @@ class ProviderRating extends Facade
     protected static function getFacadeAccessorServices(): array
     {
         return [
-            'ProviderRatingService' => \Fereydooni\Shopping\App\Services\ProviderRatingService::class,
+            'ProviderRatingService' => ProviderRatingService::class,
         ];
     }
 
@@ -344,7 +372,7 @@ class ProviderRating extends Facade
     protected static function getFacadeAccessorProviders(): array
     {
         return [
-            'ProviderRatingServiceProvider' => \Fereydooni\Shopping\App\Providers\ProviderRatingServiceProvider::class,
+            'ProviderRatingServiceProvider' => ProviderRatingServiceProvider::class,
         ];
     }
 

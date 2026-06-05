@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\EmployeePerformanceReviewRating;
 use App\Enums\EmployeePerformanceReviewStatus;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -343,7 +344,7 @@ class EmployeePerformanceReview extends Model
             ->avg('overall_rating') ?? 0.0;
     }
 
-    public static function getOverdueReviews(): \Illuminate\Database\Eloquent\Collection
+    public static function getOverdueReviews(): Collection
     {
         return static::where('next_review_date', '<', now())
             ->whereNotIn('status', ['approved', 'rejected'])

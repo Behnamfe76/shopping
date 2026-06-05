@@ -11,7 +11,7 @@ use Fereydooni\Shopping\App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Fereydooni\Shopping\App\Models\ProviderSpecialization>
+ * @extends Factory<ProviderSpecialization>
  */
 class ProviderSpecializationFactory extends Factory
 {

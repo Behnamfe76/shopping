@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
+use App\Http\Controllers\Controller;
 use Fereydooni\Shopping\app\Enums\DepartmentStatus;
 use Fereydooni\Shopping\app\Facades\Department as DepartmentFacade;
 use Fereydooni\Shopping\app\Http\Requests\StoreDepartmentRequest;
@@ -12,7 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
-class DepartmentController extends \App\Http\Controllers\Controller
+class DepartmentController extends Controller
 {
     /**
      * Display a listing of departments.

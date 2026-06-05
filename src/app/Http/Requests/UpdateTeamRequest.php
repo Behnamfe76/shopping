@@ -3,6 +3,7 @@
 namespace Fereydooni\Shopping\app\Http\Requests;
 
 use Fereydooni\Shopping\app\DTOs\TeamDTO;
+use Fereydooni\Shopping\app\Enums\TeamStatus;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateTeamRequest extends FormRequest
@@ -27,7 +28,7 @@ class UpdateTeamRequest extends FormRequest
         $rules['name'] = 'sometimes|required|string|max:255';
         $rules['code'] = 'sometimes|required|string|max:50|unique:teams,code,'.$team->id;
         $rules['department_id'] = 'sometimes|required|integer|exists:departments,id';
-        $rules['status'] = 'sometimes|required|in:'.implode(',', array_column(\Fereydooni\Shopping\app\Enums\TeamStatus::cases(), 'value'));
+        $rules['status'] = 'sometimes|required|in:'.implode(',', array_column(TeamStatus::cases(), 'value'));
 
         return $rules;
     }

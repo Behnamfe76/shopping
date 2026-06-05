@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
+use Fereydooni\Shopping\app\Models\ProviderCommunication;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -9,7 +10,7 @@ class SendCommunicationRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('send', \Fereydooni\Shopping\app\Models\ProviderCommunication::class);
+        return $this->user()->can('send', ProviderCommunication::class);
     }
 
     public function rules(): array

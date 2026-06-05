@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\App\Facades;
 
+use Fereydooni\Shopping\App\Services\ProviderService;
 use Illuminate\Support\Facades\Facade;
 
 /**
@@ -91,7 +92,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static array getProviderCertifications(int $providerId)
  * @method static array getProviderInsurance(int $providerId)
  *
- * @see \Fereydooni\Shopping\App\Services\ProviderService
+ * @see ProviderService
  */
 class Provider extends Facade
 {

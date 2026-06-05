@@ -4,6 +4,8 @@ namespace App\Http\Requests;
 
 use App\Enums\PerformanceGrade;
 use App\Enums\PeriodType;
+use App\Models\ProviderPerformance;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -14,7 +16,7 @@ class StoreProviderPerformanceRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', \App\Models\ProviderPerformance::class);
+        return $this->user()->can('create', ProviderPerformance::class);
     }
 
     /**
@@ -342,7 +344,7 @@ class StoreProviderPerformanceRequest extends FormRequest
     /**
      * Handle a failed validation attempt.
      */
-    protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator): void
+    protected function failedValidation(Validator $validator): void
     {
         // You can customize the response here if needed
         parent::failedValidation($validator);

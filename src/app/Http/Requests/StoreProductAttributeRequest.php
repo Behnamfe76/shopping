@@ -4,7 +4,9 @@ namespace Fereydooni\Shopping\app\Http\Requests;
 
 use Fereydooni\Shopping\app\Enums\ProductAttributeInputType;
 use Fereydooni\Shopping\app\Enums\ProductAttributeType;
+use Fereydooni\Shopping\app\Models\ProductAttribute;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 
 class StoreProductAttributeRequest extends FormRequest
 {
@@ -13,7 +15,7 @@ class StoreProductAttributeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', \Fereydooni\Shopping\app\Models\ProductAttribute::class);
+        return $this->user()->can('create', ProductAttribute::class);
     }
 
     /**
@@ -116,7 +118,7 @@ class StoreProductAttributeRequest extends FormRequest
         // Generate slug if not provided
         if (! $this->has('slug') && $this->has('name')) {
             $this->merge([
-                'slug' => \Illuminate\Support\Str::slug($this->name),
+                'slug' => Str::slug($this->name),
             ]);
         }
 

@@ -8,7 +8,7 @@ use Fereydooni\Shopping\app\Models\EmployeeEmergencyContact;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Fereydooni\Shopping\app\Models\EmployeeEmergencyContact>
+ * @extends Factory<EmployeeEmergencyContact>
  */
 class EmployeeEmergencyContactFactory extends Factory
 {

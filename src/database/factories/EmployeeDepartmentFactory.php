@@ -7,7 +7,7 @@ use Fereydooni\Shopping\app\Models\Employee;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Department>
+ * @extends Factory<\App\Models\Department>
  */
 class DepartmentFactory extends Factory
 {

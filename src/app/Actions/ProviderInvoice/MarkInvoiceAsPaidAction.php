@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\App\Actions\ProviderInvoice;
 
+use Carbon\Carbon;
 use Exception;
 use Fereydooni\Shopping\App\DTOs\ProviderInvoiceDTO;
 use Fereydooni\Shopping\App\Enums\InvoiceStatus;
@@ -75,7 +76,7 @@ class MarkInvoiceAsPaidAction
     protected function validatePaymentDate(?string $paymentDate, ProviderInvoice $invoice): void
     {
         if ($paymentDate) {
-            $paymentDateObj = \Carbon\Carbon::parse($paymentDate);
+            $paymentDateObj = Carbon::parse($paymentDate);
             $invoiceDate = $invoice->invoice_date;
 
             if ($paymentDateObj->isBefore($invoiceDate)) {

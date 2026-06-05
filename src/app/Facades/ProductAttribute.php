@@ -6,6 +6,7 @@ use Fereydooni\Shopping\app\DTOs\ProductAttributeDTO;
 use Fereydooni\Shopping\app\DTOs\ProductAttributeValueDTO;
 use Fereydooni\Shopping\app\Models\ProductAttribute as ProductAttributeModel;
 use Fereydooni\Shopping\app\Models\ProductAttributeValue;
+use Fereydooni\Shopping\app\Services\ProductAttributeService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -90,7 +91,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static int getAttributeValueCount(int $attributeId)
  * @method static int getAttributeValueUsage(int $attributeId, int $valueId)
  *
- * @see \Fereydooni\Shopping\app\Services\ProductAttributeService
+ * @see ProductAttributeService
  */
 class ProductAttribute extends Facade
 {

@@ -5,6 +5,7 @@ namespace Fereydooni\Shopping\app\Traits;
 use Fereydooni\Shopping\app\Enums\SegmentPriority;
 use Fereydooni\Shopping\app\Enums\SegmentStatus;
 use Fereydooni\Shopping\app\Models\CustomerSegment;
+use Fereydooni\Shopping\app\Models\CustomerSegmentHistory;
 use Illuminate\Support\Facades\DB;
 
 trait HasCustomerSegmentStatusManagement
@@ -215,7 +216,7 @@ trait HasCustomerSegmentStatusManagement
     {
         // Log the status change in segment history
         if (class_exists('Fereydooni\Shopping\app\Models\CustomerSegmentHistory')) {
-            \Fereydooni\Shopping\app\Models\CustomerSegmentHistory::logAction(
+            CustomerSegmentHistory::logAction(
                 $segment,
                 $action,
                 "Segment status changed from {$oldStatus->label()} to {$newStatus->label()}",
@@ -230,7 +231,7 @@ trait HasCustomerSegmentStatusManagement
     {
         // Log the property change in segment history
         if (class_exists('Fereydooni\Shopping\app\Models\CustomerSegmentHistory')) {
-            \Fereydooni\Shopping\app\Models\CustomerSegmentHistory::logAction(
+            CustomerSegmentHistory::logAction(
                 $segment,
                 $action,
                 'Segment property changed: '.implode(', ', array_keys($newValues)),

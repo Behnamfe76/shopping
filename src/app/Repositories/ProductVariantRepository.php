@@ -3,6 +3,7 @@
 namespace Fereydooni\Shopping\app\Repositories;
 
 use Fereydooni\Shopping\app\DTOs\ProductVariantDTO;
+use Fereydooni\Shopping\app\Models\Product;
 use Fereydooni\Shopping\app\Models\ProductVariant;
 use Fereydooni\Shopping\app\Repositories\Interfaces\ProductVariantRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
@@ -533,7 +534,7 @@ class ProductVariantRepository implements ProductVariantRepositoryInterface
 
     public function generateSku(int $productId, array $attributeValues): string
     {
-        $product = \Fereydooni\Shopping\app\Models\Product::find($productId);
+        $product = Product::find($productId);
         $baseSku = $product ? $product->sku : 'PROD'.$productId;
 
         $attributeString = implode('-', array_values($attributeValues));

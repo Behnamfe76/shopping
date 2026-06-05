@@ -2,6 +2,14 @@
 
 namespace App\Facades;
 
+use App\Events\ProviderCertification\ProviderCertificationCreated;
+use App\Events\ProviderCertification\ProviderCertificationDeleted;
+use App\Events\ProviderCertification\ProviderCertificationRejected;
+use App\Events\ProviderCertification\ProviderCertificationRenewed;
+use App\Events\ProviderCertification\ProviderCertificationRevoked;
+use App\Events\ProviderCertification\ProviderCertificationSuspended;
+use App\Events\ProviderCertification\ProviderCertificationUpdated;
+use App\Events\ProviderCertification\ProviderCertificationVerified;
 use App\Models\ProviderCertification;
 use App\Repositories\ProviderCertificationRepository;
 use Illuminate\Pagination\CursorPaginator;
@@ -104,7 +112,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static int processRenewalReminders()
  * @method static int processExpirationNotifications()
  *
- * @see \App\Repositories\ProviderCertificationRepository
+ * @see ProviderCertificationRepository
  */
 class ProviderCertification extends Facade
 {
@@ -133,7 +141,7 @@ class ProviderCertification extends Facade
             $certification = static::repository()->create($data);
 
             // Fire creation event
-            event(new \App\Events\ProviderCertification\ProviderCertificationCreated($certification));
+            event(new ProviderCertificationCreated($certification));
 
             return $certification;
         } catch (\Exception $e) {
@@ -156,7 +164,7 @@ class ProviderCertification extends Facade
 
             if ($success) {
                 // Fire update event
-                event(new \App\Events\ProviderCertification\ProviderCertificationUpdated($certification, $oldData));
+                event(new ProviderCertificationUpdated($certification, $oldData));
             }
 
             return $success;
@@ -180,7 +188,7 @@ class ProviderCertification extends Facade
 
             if ($success) {
                 // Fire deletion event
-                event(new \App\Events\ProviderCertification\ProviderCertificationDeleted($certification));
+                event(new ProviderCertificationDeleted($certification));
             }
 
             return $success;
@@ -207,7 +215,7 @@ class ProviderCertification extends Facade
 
             if ($success) {
                 // Fire verification event
-                event(new \App\Events\ProviderCertification\ProviderCertificationVerified($certification, $verifiedBy));
+                event(new ProviderCertificationVerified($certification, $verifiedBy));
             }
 
             return $success;
@@ -235,7 +243,7 @@ class ProviderCertification extends Facade
 
             if ($success) {
                 // Fire rejection event
-                event(new \App\Events\ProviderCertification\ProviderCertificationRejected($certification, $rejectedBy, $reason));
+                event(new ProviderCertificationRejected($certification, $rejectedBy, $reason));
             }
 
             return $success;
@@ -265,7 +273,7 @@ class ProviderCertification extends Facade
 
             if ($success) {
                 // Fire renewal event
-                event(new \App\Events\ProviderCertification\ProviderCertificationRenewed($certification, $oldExpiryDate));
+                event(new ProviderCertificationRenewed($certification, $oldExpiryDate));
             }
 
             return $success;
@@ -291,7 +299,7 @@ class ProviderCertification extends Facade
 
             if ($success) {
                 // Fire suspension event
-                event(new \App\Events\ProviderCertification\ProviderCertificationSuspended($certification, $reason));
+                event(new ProviderCertificationSuspended($certification, $reason));
             }
 
             return $success;
@@ -317,7 +325,7 @@ class ProviderCertification extends Facade
 
             if ($success) {
                 // Fire revocation event
-                event(new \App\Events\ProviderCertification\ProviderCertificationRevoked($certification, $reason));
+                event(new ProviderCertificationRevoked($certification, $reason));
             }
 
             return $success;

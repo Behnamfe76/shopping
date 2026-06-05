@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -36,7 +37,7 @@ class OrderStatusHistory extends Model
 
     public function changedByUser(): BelongsTo
     {
-        return $this->belongsTo(\App\Models\User::class, 'changed_by');
+        return $this->belongsTo(User::class, 'changed_by');
     }
 
     /**

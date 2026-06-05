@@ -3,7 +3,9 @@
 namespace Fereydooni\Shopping\app\Http\Requests;
 
 use Fereydooni\Shopping\app\DTOs\CategoryDTO;
+use Fereydooni\Shopping\app\Models\Category;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 
 class StoreCategoryRequest extends FormRequest
 {
@@ -12,7 +14,7 @@ class StoreCategoryRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', \Fereydooni\Shopping\app\Models\Category::class);
+        return $this->user()->can('create', Category::class);
     }
 
     /**
@@ -62,7 +64,7 @@ class StoreCategoryRequest extends FormRequest
         // Generate slug if not provided
         if (! $this->has('slug') || empty($this->slug)) {
             $this->merge([
-                'slug' => \Illuminate\Support\Str::slug($this->name),
+                'slug' => Str::slug($this->name),
             ]);
         }
 

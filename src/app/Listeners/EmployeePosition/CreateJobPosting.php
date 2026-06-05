@@ -3,6 +3,7 @@
 namespace App\Listeners\EmployeePosition;
 
 use App\Events\EmployeePosition\EmployeePositionSetHiring;
+use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\DB;
@@ -179,7 +180,7 @@ class CreateJobPosting implements ShouldQueue
 
         // If expected fill date is provided and it's sooner than calculated deadline, use it
         if ($expectedFillDate) {
-            $expectedDate = \Carbon\Carbon::parse($expectedFillDate);
+            $expectedDate = Carbon::parse($expectedFillDate);
             if ($expectedDate->isBefore($deadline)) {
                 $deadline = $expectedDate->subDays(7); // 1 week before expected fill date
             }

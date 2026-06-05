@@ -2,6 +2,105 @@
 
 namespace Fereydooni\Shopping;
 
+use App\Models\User;
+use Fereydooni\Shopping\app\Console\Commands\InstallRoutesCommand;
+use Fereydooni\Shopping\app\Console\Commands\ListRoutesCommand;
+use Fereydooni\Shopping\app\Console\Commands\SeedCommand;
+use Fereydooni\Shopping\app\Console\Commands\SeedRequiredDataCommand;
+use Fereydooni\Shopping\app\Console\Commands\UninstallRoutesCommand;
+use Fereydooni\Shopping\app\Managers\QueryManager;
+use Fereydooni\Shopping\app\Models\Address;
+use Fereydooni\Shopping\app\Models\Brand;
+use Fereydooni\Shopping\app\Models\Category;
+use Fereydooni\Shopping\app\Models\Customer;
+use Fereydooni\Shopping\app\Models\CustomerCommunication;
+use Fereydooni\Shopping\app\Models\CustomerNote;
+use Fereydooni\Shopping\app\Models\CustomerPreference;
+use Fereydooni\Shopping\app\Models\CustomerWishlist;
+use Fereydooni\Shopping\app\Models\Department;
+use Fereydooni\Shopping\app\Models\Employee;
+use Fereydooni\Shopping\app\Models\EmployeePosition;
+use Fereydooni\Shopping\app\Models\LoyaltyTransaction;
+use Fereydooni\Shopping\app\Models\Order;
+use Fereydooni\Shopping\app\Models\OrderItem;
+use Fereydooni\Shopping\app\Models\OrderStatusHistory;
+use Fereydooni\Shopping\app\Models\Product;
+use Fereydooni\Shopping\app\Models\ProductAttribute;
+use Fereydooni\Shopping\app\Models\ProductAttributeValue;
+use Fereydooni\Shopping\app\Models\ProductDiscount;
+use Fereydooni\Shopping\app\Models\ProductMeta;
+use Fereydooni\Shopping\app\Models\ProductReview;
+use Fereydooni\Shopping\app\Models\ProductTag;
+use Fereydooni\Shopping\app\Models\ProductVariant;
+use Fereydooni\Shopping\app\Models\ProviderInsurance;
+use Fereydooni\Shopping\app\Models\ProviderLocation;
+use Fereydooni\Shopping\app\Models\ShipmentItem;
+use Fereydooni\Shopping\app\Models\Subscription;
+use Fereydooni\Shopping\app\Models\Team;
+use Fereydooni\Shopping\app\Models\Transaction;
+use Fereydooni\Shopping\app\Models\UserSubscription;
+use Fereydooni\Shopping\app\Policies\AddressPolicy;
+use Fereydooni\Shopping\app\Policies\BrandPolicy;
+use Fereydooni\Shopping\app\Policies\CategoryPolicy;
+use Fereydooni\Shopping\app\Policies\CustomerCommunicationPolicy;
+use Fereydooni\Shopping\app\Policies\CustomerNotePolicy;
+use Fereydooni\Shopping\app\Policies\CustomerPolicy;
+use Fereydooni\Shopping\app\Policies\CustomerPreferencePolicy;
+use Fereydooni\Shopping\app\Policies\CustomerWishlistPolicy;
+use Fereydooni\Shopping\app\Policies\DepartmentPolicy;
+use Fereydooni\Shopping\app\Policies\EmployeePolicy;
+use Fereydooni\Shopping\app\Policies\EmployeePositionPolicy;
+use Fereydooni\Shopping\app\Policies\LoyaltyTransactionPolicy;
+use Fereydooni\Shopping\app\Policies\OrderItemPolicy;
+use Fereydooni\Shopping\app\Policies\OrderPolicy;
+use Fereydooni\Shopping\app\Policies\OrderStatusHistoryPolicy;
+use Fereydooni\Shopping\app\Policies\ProductAttributePolicy;
+use Fereydooni\Shopping\app\Policies\ProductAttributeValuePolicy;
+use Fereydooni\Shopping\app\Policies\ProductDiscountPolicy;
+use Fereydooni\Shopping\app\Policies\ProductMetaPolicy;
+use Fereydooni\Shopping\app\Policies\ProductPolicy;
+use Fereydooni\Shopping\app\Policies\ProductReviewPolicy;
+use Fereydooni\Shopping\app\Policies\ProductTagPolicy;
+use Fereydooni\Shopping\app\Policies\ProductVariantPolicy;
+use Fereydooni\Shopping\app\Policies\ProviderInsurancePolicy;
+use Fereydooni\Shopping\app\Policies\ProviderLocationPolicy;
+use Fereydooni\Shopping\app\Policies\ShipmentItemPolicy;
+use Fereydooni\Shopping\app\Policies\SubscriptionPolicy;
+use Fereydooni\Shopping\app\Policies\TeamPolicy;
+use Fereydooni\Shopping\app\Policies\TransactionPolicy;
+use Fereydooni\Shopping\app\Policies\UserPolicy;
+use Fereydooni\Shopping\app\Policies\UserSubscriptionPolicy;
+use Fereydooni\Shopping\app\Providers\EventServiceProvider;
+use Fereydooni\Shopping\app\Repositories\BrandRepository;
+use Fereydooni\Shopping\app\Repositories\CategoryRepository;
+use Fereydooni\Shopping\app\Repositories\CustomerRepository;
+use Fereydooni\Shopping\app\Repositories\DepartmentRepository;
+use Fereydooni\Shopping\app\Repositories\EmployeeRepository;
+use Fereydooni\Shopping\app\Repositories\Interfaces\BrandRepositoryInterface;
+use Fereydooni\Shopping\app\Repositories\Interfaces\CategoryRepositoryInterface;
+use Fereydooni\Shopping\app\Repositories\Interfaces\CustomerRepositoryInterface;
+use Fereydooni\Shopping\app\Repositories\Interfaces\DepartmentRepositoryInterface;
+use Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeRepositoryInterface;
+use Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeRepositoryInterface;
+use Fereydooni\Shopping\app\Repositories\Interfaces\ProductRepositoryInterface;
+use Fereydooni\Shopping\app\Repositories\Interfaces\ProductTagRepositoryInterface;
+use Fereydooni\Shopping\app\Repositories\Interfaces\TeamRepositoryInterface;
+use Fereydooni\Shopping\app\Repositories\Interfaces\UserRepositoryInterface;
+use Fereydooni\Shopping\app\Repositories\ProductAttributeRepository;
+use Fereydooni\Shopping\app\Repositories\ProductRepository;
+use Fereydooni\Shopping\app\Repositories\ProductTagRepository;
+use Fereydooni\Shopping\app\Repositories\TeamRepository;
+use Fereydooni\Shopping\app\Repositories\UserRepository;
+use Fereydooni\Shopping\app\Services\BrandService;
+use Fereydooni\Shopping\app\Services\CategoryService;
+use Fereydooni\Shopping\app\Services\CustomerService;
+use Fereydooni\Shopping\app\Services\DepartmentService;
+use Fereydooni\Shopping\app\Services\EmployeeService;
+use Fereydooni\Shopping\app\Services\ProductAttributeService;
+use Fereydooni\Shopping\app\Services\ProductService;
+use Fereydooni\Shopping\app\Services\ProductTagService;
+use Fereydooni\Shopping\app\Services\TeamService;
+use Fereydooni\Shopping\app\Services\UserService;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -15,7 +114,7 @@ class ShoppingServiceProvider extends ServiceProvider
         );
 
         // Register QueryManager as singleton
-        $this->app->singleton(\Fereydooni\Shopping\app\Managers\QueryManager::class);
+        $this->app->singleton(QueryManager::class);
 
         // // Register Address Repository
         // $this->app->bind(
@@ -25,161 +124,161 @@ class ShoppingServiceProvider extends ServiceProvider
 
         // Register Category Repository
         $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\CategoryRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\CategoryRepository::class
+            CategoryRepositoryInterface::class,
+            CategoryRepository::class
         );
 
         // Register Category Service
         $this->app->scoped('shopping.category', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\CategoryService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CategoryRepositoryInterface::class)
+            return new CategoryService(
+                $app->make(CategoryRepositoryInterface::class)
             );
         });
 
         // Register ProductTag Facade
         $this->app->singleton('shopping.category.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\CategoryService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CategoryRepositoryInterface::class)
+            return new CategoryService(
+                $app->make(CategoryRepositoryInterface::class)
             );
         });
 
         // Register Department Repository
         $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\DepartmentRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\DepartmentRepository::class
+            DepartmentRepositoryInterface::class,
+            DepartmentRepository::class
         );
 
         // Register Department Service
         $this->app->scoped('shopping.department', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\DepartmentService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\DepartmentRepositoryInterface::class)
+            return new DepartmentService(
+                $app->make(DepartmentRepositoryInterface::class)
             );
         });
 
         // Register Department Facade
         $this->app->singleton('shopping.department.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\DepartmentService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\DepartmentRepositoryInterface::class)
+            return new DepartmentService(
+                $app->make(DepartmentRepositoryInterface::class)
             );
         });
 
         // Register Team Repository
         $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\TeamRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\TeamRepository::class
+            TeamRepositoryInterface::class,
+            TeamRepository::class
         );
 
         // Register Team Service
         $this->app->scoped('shopping.team', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\TeamService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\TeamRepositoryInterface::class)
+            return new TeamService(
+                $app->make(TeamRepositoryInterface::class)
             );
         });
 
         // Register Team Facade
         $this->app->singleton('shopping.team.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\TeamService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\TeamRepositoryInterface::class)
+            return new TeamService(
+                $app->make(TeamRepositoryInterface::class)
             );
         });
 
         // Register Brand Repository
         $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\BrandRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\BrandRepository::class
+            BrandRepositoryInterface::class,
+            BrandRepository::class
         );
 
         // Register Brand Service
         $this->app->scoped('shopping.brand', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\BrandService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\BrandRepositoryInterface::class)
+            return new BrandService(
+                $app->make(BrandRepositoryInterface::class)
             );
         });
 
         // Register Brand Facade
         $this->app->singleton('shopping.brand.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\BrandService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\BrandRepositoryInterface::class)
+            return new BrandService(
+                $app->make(BrandRepositoryInterface::class)
             );
         });
 
         // Register Product Repository
         $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\ProductRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\ProductRepository::class
+            ProductRepositoryInterface::class,
+            ProductRepository::class
         );
 
         // Register Product Service
         $this->app->scoped('shopping.product', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\ProductService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductRepositoryInterface::class)
+            return new ProductService(
+                $app->make(ProductRepositoryInterface::class)
             );
         });
 
         // Register Product Facade
         $this->app->singleton('shopping.product.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\ProductService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductRepositoryInterface::class)
+            return new ProductService(
+                $app->make(ProductRepositoryInterface::class)
             );
         });
 
         // Register User Service
         $this->app->scoped('shopping.user', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\UserService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\UserRepositoryInterface::class)
+            return new UserService(
+                $app->make(UserRepositoryInterface::class)
             );
         });
 
         // Register User Repository
         $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\UserRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\UserRepository::class
+            UserRepositoryInterface::class,
+            UserRepository::class
         );
 
         // Register User Facade
         $this->app->singleton('shopping.user.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\UserService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\UserRepositoryInterface::class)
+            return new UserService(
+                $app->make(UserRepositoryInterface::class)
             );
         });
 
         // Register Customer Service
         $this->app->scoped('shopping.customer', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\CustomerService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerRepositoryInterface::class)
+            return new CustomerService(
+                $app->make(CustomerRepositoryInterface::class)
             );
         });
 
         // Register Customer Repository
         $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\CustomerRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\CustomerRepository::class
+            CustomerRepositoryInterface::class,
+            CustomerRepository::class
         );
 
         // Register Customer Facade
         $this->app->singleton('shopping.customer.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\CustomerService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\CustomerRepositoryInterface::class)
+            return new CustomerService(
+                $app->make(CustomerRepositoryInterface::class)
             );
         });
 
         // Register Employee Service
         $this->app->scoped('shopping.customer', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\EmployeeService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeRepositoryInterface::class)
+            return new EmployeeService(
+                $app->make(EmployeeRepositoryInterface::class)
             );
         });
 
         // Register Employee Repository
         $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\EmployeeRepository::class
+            EmployeeRepositoryInterface::class,
+            EmployeeRepository::class
         );
 
         // Register Employee Facade
         $this->app->singleton('shopping.customer.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\EmployeeService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\EmployeeRepositoryInterface::class)
+            return new EmployeeService(
+                $app->make(EmployeeRepositoryInterface::class)
             );
         });
 
@@ -416,20 +515,20 @@ class ShoppingServiceProvider extends ServiceProvider
 
         // Register ProductAttribute Repository
         $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\ProductAttributeRepository::class
+            ProductAttributeRepositoryInterface::class,
+            ProductAttributeRepository::class
         );
 
         // Register ProductAttribute Service
         $this->app->scoped('shopping.product-attribute', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\ProductAttributeService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeRepositoryInterface::class)
+            return new ProductAttributeService(
+                $app->make(ProductAttributeRepositoryInterface::class)
             );
         });
 
         $this->app->singleton('shopping.product-attribute.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\ProductAttributeService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductAttributeRepositoryInterface::class)
+            return new ProductAttributeService(
+                $app->make(ProductAttributeRepositoryInterface::class)
             );
         });
 
@@ -532,21 +631,21 @@ class ShoppingServiceProvider extends ServiceProvider
 
         // Register ProductTag Repository
         $this->app->bind(
-            \Fereydooni\Shopping\app\Repositories\Interfaces\ProductTagRepositoryInterface::class,
-            \Fereydooni\Shopping\app\Repositories\ProductTagRepository::class
+            ProductTagRepositoryInterface::class,
+            ProductTagRepository::class
         );
 
         // Register ProductTag Service
         $this->app->scoped('shopping.product-tag', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\ProductTagService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductTagRepositoryInterface::class)
+            return new ProductTagService(
+                $app->make(ProductTagRepositoryInterface::class)
             );
         });
 
         // Register ProductTag Facade
         $this->app->singleton('shopping.product-tag.facade', function ($app) {
-            return new \Fereydooni\Shopping\app\Services\ProductTagService(
-                $app->make(\Fereydooni\Shopping\app\Repositories\Interfaces\ProductTagRepositoryInterface::class)
+            return new ProductTagService(
+                $app->make(ProductTagRepositoryInterface::class)
             );
         });
 
@@ -723,11 +822,11 @@ class ShoppingServiceProvider extends ServiceProvider
         // Register console commands
         if ($this->app->runningInConsole()) {
             $this->commands([
-                \Fereydooni\Shopping\app\Console\Commands\InstallRoutesCommand::class,
-                \Fereydooni\Shopping\app\Console\Commands\UninstallRoutesCommand::class,
-                \Fereydooni\Shopping\app\Console\Commands\ListRoutesCommand::class,
-                \Fereydooni\Shopping\app\Console\Commands\SeedCommand::class,
-                \Fereydooni\Shopping\app\Console\Commands\SeedRequiredDataCommand::class,
+                InstallRoutesCommand::class,
+                UninstallRoutesCommand::class,
+                ListRoutesCommand::class,
+                SeedCommand::class,
+                SeedRequiredDataCommand::class,
             ]);
         }
 
@@ -744,7 +843,7 @@ class ShoppingServiceProvider extends ServiceProvider
         ], 'shopping-seeders');
 
         // Register event service provider
-        $this->app->register(\Fereydooni\Shopping\app\Providers\EventServiceProvider::class);
+        $this->app->register(EventServiceProvider::class);
 
         // Register policies
         $this->registerPolicies();
@@ -776,39 +875,39 @@ class ShoppingServiceProvider extends ServiceProvider
      */
     protected function registerPolicies(): void
     {
-        Gate::policy(\Fereydooni\Shopping\app\Models\Team::class, \Fereydooni\Shopping\app\Policies\TeamPolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\Address::class, \Fereydooni\Shopping\app\Policies\AddressPolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\Customer::class, \Fereydooni\Shopping\app\Policies\CustomerPolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\Employee::class, \Fereydooni\Shopping\app\Policies\EmployeePolicy::class);
-        Gate::policy(\App\Models\User::class, \Fereydooni\Shopping\app\Policies\UserPolicy::class);
+        Gate::policy(Team::class, TeamPolicy::class);
+        Gate::policy(Address::class, AddressPolicy::class);
+        Gate::policy(Customer::class, CustomerPolicy::class);
+        Gate::policy(Employee::class, EmployeePolicy::class);
+        Gate::policy(User::class, UserPolicy::class);
         // Gate::policy(\Fereydooni\Shopping\app\Models\CustomerSegment::class, \Fereydooni\Shopping\app\Policies\CustomerSegmentPolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\CustomerPreference::class, \Fereydooni\Shopping\app\Policies\CustomerPreferencePolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\CustomerWishlist::class, \Fereydooni\Shopping\app\Policies\CustomerWishlistPolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\CustomerNote::class, \Fereydooni\Shopping\app\Policies\CustomerNotePolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\CustomerCommunication::class, \Fereydooni\Shopping\app\Policies\CustomerCommunicationPolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\LoyaltyTransaction::class, \Fereydooni\Shopping\app\Policies\LoyaltyTransactionPolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\Category::class, \Fereydooni\Shopping\app\Policies\CategoryPolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\Brand::class, \Fereydooni\Shopping\app\Policies\BrandPolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\Order::class, \Fereydooni\Shopping\app\Policies\OrderPolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\OrderItem::class, \Fereydooni\Shopping\app\Policies\OrderItemPolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\OrderStatusHistory::class, \Fereydooni\Shopping\app\Policies\OrderStatusHistoryPolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\ProductAttribute::class, \Fereydooni\Shopping\app\Policies\ProductAttributePolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\ProductAttributeValue::class, \Fereydooni\Shopping\app\Policies\ProductAttributeValuePolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\ProductDiscount::class, \Fereydooni\Shopping\app\Policies\ProductDiscountPolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\Product::class, \Fereydooni\Shopping\app\Policies\ProductPolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\ProductMeta::class, \Fereydooni\Shopping\app\Policies\ProductMetaPolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\ProductReview::class, \Fereydooni\Shopping\app\Policies\ProductReviewPolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\ProductTag::class, \Fereydooni\Shopping\app\Policies\ProductTagPolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\ProductVariant::class, \Fereydooni\Shopping\app\Policies\ProductVariantPolicy::class);
+        Gate::policy(CustomerPreference::class, CustomerPreferencePolicy::class);
+        Gate::policy(CustomerWishlist::class, CustomerWishlistPolicy::class);
+        Gate::policy(CustomerNote::class, CustomerNotePolicy::class);
+        Gate::policy(CustomerCommunication::class, CustomerCommunicationPolicy::class);
+        Gate::policy(LoyaltyTransaction::class, LoyaltyTransactionPolicy::class);
+        Gate::policy(Category::class, CategoryPolicy::class);
+        Gate::policy(Brand::class, BrandPolicy::class);
+        Gate::policy(Order::class, OrderPolicy::class);
+        Gate::policy(OrderItem::class, OrderItemPolicy::class);
+        Gate::policy(OrderStatusHistory::class, OrderStatusHistoryPolicy::class);
+        Gate::policy(ProductAttribute::class, ProductAttributePolicy::class);
+        Gate::policy(ProductAttributeValue::class, ProductAttributeValuePolicy::class);
+        Gate::policy(ProductDiscount::class, ProductDiscountPolicy::class);
+        Gate::policy(Product::class, ProductPolicy::class);
+        Gate::policy(ProductMeta::class, ProductMetaPolicy::class);
+        Gate::policy(ProductReview::class, ProductReviewPolicy::class);
+        Gate::policy(ProductTag::class, ProductTagPolicy::class);
+        Gate::policy(ProductVariant::class, ProductVariantPolicy::class);
         // Gate::policy(\Fereydooni\Shopping\app\Models\Shipment::class, \Fereydooni\Shopping\app\Policies\ShipmentPolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\ShipmentItem::class, \Fereydooni\Shopping\app\Policies\ShipmentItemPolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\Transaction::class, \Fereydooni\Shopping\app\Policies\TransactionPolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\Subscription::class, \Fereydooni\Shopping\app\Policies\SubscriptionPolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\UserSubscription::class, \Fereydooni\Shopping\app\Policies\UserSubscriptionPolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\Department::class, \Fereydooni\Shopping\app\Policies\DepartmentPolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\EmployeePosition::class, \Fereydooni\Shopping\app\Policies\EmployeePositionPolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\ProviderLocation::class, \Fereydooni\Shopping\app\Policies\ProviderLocationPolicy::class);
-        Gate::policy(\Fereydooni\Shopping\app\Models\ProviderInsurance::class, \Fereydooni\Shopping\app\Policies\ProviderInsurancePolicy::class);
+        Gate::policy(ShipmentItem::class, ShipmentItemPolicy::class);
+        Gate::policy(Transaction::class, TransactionPolicy::class);
+        Gate::policy(Subscription::class, SubscriptionPolicy::class);
+        Gate::policy(UserSubscription::class, UserSubscriptionPolicy::class);
+        Gate::policy(Department::class, DepartmentPolicy::class);
+        Gate::policy(EmployeePosition::class, EmployeePositionPolicy::class);
+        Gate::policy(ProviderLocation::class, ProviderLocationPolicy::class);
+        Gate::policy(ProviderInsurance::class, ProviderInsurancePolicy::class);
         // Gate::policy(\Fereydooni\Shopping\app\Models\ProviderCommunication::class, \Fereydooni\Shopping\app\Policies\ProviderCommunicationPolicy::class);
 
         // Register permissions
@@ -830,10 +929,10 @@ class ShoppingServiceProvider extends ServiceProvider
     protected function registerFacadeAliases(): void
     {
         // Register EmployeePosition facade alias
-        $this->app->alias('shopping.employee-position.facade', \Fereydooni\Shopping\app\Facades\EmployeePosition::class);
+        $this->app->alias('shopping.employee-position.facade', app\Facades\EmployeePosition::class);
 
         // Register ProviderLocation facade alias
-        $this->app->alias('shopping.provider-location.facade', \Fereydooni\Shopping\app\Facades\ProviderLocation::class);
+        $this->app->alias('shopping.provider-location.facade', app\Facades\ProviderLocation::class);
 
         // Register ProviderInsurance facade alias
         //        $this->app->alias('shopping.provider-insurance.facade', \Fereydooni\Shopping\app\Facades\ProviderInsurance::class);

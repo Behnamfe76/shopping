@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\app\Http\Controllers\Api\V1;
 
+use App\Http\Controllers\Controller;
 use Fereydooni\Shopping\app\Enums\ProductStatus;
 use Fereydooni\Shopping\app\Enums\ProductType;
 use Fereydooni\Shopping\app\Facades\Product as ProductFacade;
@@ -23,7 +24,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
-class ProductController extends \App\Http\Controllers\Controller
+class ProductController extends Controller
 {
     /**
      * Display a listing of products.

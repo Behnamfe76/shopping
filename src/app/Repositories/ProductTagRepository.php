@@ -3,6 +3,7 @@
 namespace Fereydooni\Shopping\app\Repositories;
 
 use Fereydooni\Shopping\app\DTOs\ProductTagDTO;
+use Fereydooni\Shopping\app\Models\Product;
 use Fereydooni\Shopping\app\Models\ProductTag;
 use Fereydooni\Shopping\app\Repositories\Interfaces\ProductTagRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
@@ -428,7 +429,7 @@ class ProductTagRepository implements ProductTagRepositoryInterface
 
     public function syncTags(int $productId, array $tagIds): bool
     {
-        $product = \Fereydooni\Shopping\app\Models\Product::find($productId);
+        $product = Product::find($productId);
         if (! $product) {
             return false;
         }

@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
+use Fereydooni\Shopping\app\Models\ProductMeta;
 use Illuminate\Foundation\Http\FormRequest;
 
 class BulkProductMetaRequest extends FormRequest
@@ -11,7 +12,7 @@ class BulkProductMetaRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('bulkManage', \Fereydooni\Shopping\app\Models\ProductMeta::class);
+        return $this->user()->can('bulkManage', ProductMeta::class);
     }
 
     /**

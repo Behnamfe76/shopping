@@ -8,7 +8,7 @@ use Fereydooni\Shopping\app\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Fereydooni\Shopping\app\Models\ProviderNote>
+ * @extends Factory<ProviderNote>
  */
 class ProviderNoteFactory extends Factory
 {

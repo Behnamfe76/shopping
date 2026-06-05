@@ -2,12 +2,16 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
+use Illuminate\Pagination\CursorPaginator;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+
 trait GetPaginationAttibutes
 {
     public function getMeta($resource)
     {
         switch ($resource) {
-            case $resource instanceof \Illuminate\Pagination\LengthAwarePaginator:
+            case $resource instanceof LengthAwarePaginator:
                 return [
                     'last_page' => $this?->lastPage() ?? null,
                     'total' => $this->total(),
@@ -18,7 +22,7 @@ trait GetPaginationAttibutes
                     'per_page' => $this->perPage() ?? null,
                     'to' => $this->lastItem() ?? null,
                 ];
-            case $resource instanceof \Illuminate\Pagination\Paginator:
+            case $resource instanceof Paginator:
                 return [
                     'current_page' => $this->currentPage() ?? null,
                     'from' => $this->firstItem() ?? null,
@@ -26,7 +30,7 @@ trait GetPaginationAttibutes
                     'per_page' => $this->perPage() ?? null,
                     'to' => $this->lastItem() ?? null,
                 ];
-            case $resource instanceof \Illuminate\Pagination\CursorPaginator:
+            case $resource instanceof CursorPaginator:
                 return [
                     'path' => $this->path(),
                     'per_page' => $this->perPage(),
@@ -46,14 +50,14 @@ trait GetPaginationAttibutes
         ];
 
         switch ($resource) {
-            case $resource instanceof \Illuminate\Pagination\LengthAwarePaginator:
+            case $resource instanceof LengthAwarePaginator:
                 return array_merge($links, [
                     'first' => $this->url(1) ?? null,
                     'last' => $this->url($this?->lastPage()) ?? null,
                 ]);
-            case $resource instanceof \Illuminate\Pagination\Paginator:
+            case $resource instanceof Paginator:
                 return $links;
-            case $resource instanceof \Illuminate\Pagination\CursorPaginator:
+            case $resource instanceof CursorPaginator:
                 return $links;
             default:
                 return null;

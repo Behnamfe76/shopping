@@ -3,6 +3,7 @@
 namespace App\Facades;
 
 use App\Services\ProviderCommunicationService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Facade;
 
 /**
@@ -44,7 +45,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static array bulkDeleteCommunications(array $communicationIds)
  * @method static \App\Services\ProviderCommunicationService getService()
  *
- * @see \App\Services\ProviderCommunicationService
+ * @see ProviderCommunicationService
  */
 class ProviderCommunication extends Facade
 {
@@ -61,7 +62,7 @@ class ProviderCommunication extends Facade
     /**
      * Get the service instance directly
      *
-     * @return \App\Services\ProviderCommunicationService
+     * @return ProviderCommunicationService
      */
     public static function getService()
     {
@@ -261,7 +262,7 @@ class ProviderCommunication extends Facade
     /**
      * Get recent communications for a provider
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
     public static function getRecentForProvider(int $providerId, int $limit = 5)
     {
@@ -271,7 +272,7 @@ class ProviderCommunication extends Facade
     /**
      * Get recent communications for a user
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
     public static function getRecentForUser(int $userId, int $limit = 5)
     {

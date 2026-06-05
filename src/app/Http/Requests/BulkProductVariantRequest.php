@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
+use Fereydooni\Shopping\app\Models\ProductVariant;
 use Illuminate\Foundation\Http\FormRequest;
 
 class BulkProductVariantRequest extends FormRequest
@@ -11,7 +12,7 @@ class BulkProductVariantRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('bulkManage', \Fereydooni\Shopping\app\Models\ProductVariant::class);
+        return $this->user()->can('bulkManage', ProductVariant::class);
     }
 
     /**

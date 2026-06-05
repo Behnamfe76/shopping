@@ -5,6 +5,9 @@ namespace Fereydooni\Shopping\app\Traits;
 use Fereydooni\Shopping\app\Enums\LoyaltyReferenceType;
 use Fereydooni\Shopping\app\Enums\LoyaltyTransactionStatus;
 use Fereydooni\Shopping\app\Enums\LoyaltyTransactionType;
+use Fereydooni\Shopping\app\Events\LoyaltyTransaction\LoyaltyPointsEarned;
+use Fereydooni\Shopping\app\Events\LoyaltyTransaction\LoyaltyPointsRedeemed;
+use Fereydooni\Shopping\app\Models\Customer;
 use Fereydooni\Shopping\app\Models\LoyaltyTransaction;
 use Illuminate\Support\Facades\DB;
 
@@ -33,7 +36,7 @@ trait HasLoyaltyPointsManagement
             $this->updateCustomerLoyaltyPoints($customerId, $points);
 
             // Dispatch event
-            event(new \Fereydooni\Shopping\app\Events\LoyaltyTransaction\LoyaltyPointsEarned($transaction));
+            event(new LoyaltyPointsEarned($transaction));
 
             return $transaction;
         });
@@ -68,7 +71,7 @@ trait HasLoyaltyPointsManagement
             $this->updateCustomerLoyaltyPoints($customerId, -$points);
 
             // Dispatch event
-            event(new \Fereydooni\Shopping\app\Events\LoyaltyTransaction\LoyaltyPointsRedeemed($transaction));
+            event(new LoyaltyPointsRedeemed($transaction));
 
             return $transaction;
         });
@@ -177,7 +180,7 @@ trait HasLoyaltyPointsManagement
      */
     protected function getCustomerTotalSpent(int $customerId): float
     {
-        $customer = \Fereydooni\Shopping\app\Models\Customer::find($customerId);
+        $customer = Customer::find($customerId);
 
         return $customer ? $customer->total_spent : 0;
     }
@@ -187,7 +190,7 @@ trait HasLoyaltyPointsManagement
      */
     protected function updateCustomerLoyaltyPoints(int $customerId, int $pointsChange): void
     {
-        $customer = \Fereydooni\Shopping\app\Models\Customer::find($customerId);
+        $customer = Customer::find($customerId);
 
         if ($customer) {
             $customer->increment('loyalty_points', $pointsChange);

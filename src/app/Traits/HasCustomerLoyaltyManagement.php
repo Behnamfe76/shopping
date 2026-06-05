@@ -2,7 +2,12 @@
 
 namespace Fereydooni\Shopping\app\Traits;
 
+use Fereydooni\Shopping\app\Events\Customer\LoyaltyPointsAdded;
+use Fereydooni\Shopping\app\Events\Customer\LoyaltyPointsDeducted;
 use Fereydooni\Shopping\app\Models\Customer;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 trait HasCustomerLoyaltyManagement
 {
@@ -101,7 +106,7 @@ trait HasCustomerLoyaltyManagement
     /**
      * Get customers by loyalty points range
      */
-    public function getCustomersByLoyaltyPointsRange(int $minPoints, int $maxPoints): \Illuminate\Database\Eloquent\Collection
+    public function getCustomersByLoyaltyPointsRange(int $minPoints, int $maxPoints): Collection
     {
         return $this->repository->findByLoyaltyPointsRange($minPoints, $maxPoints);
     }
@@ -109,7 +114,7 @@ trait HasCustomerLoyaltyManagement
     /**
      * Get customers by loyalty points range as DTOs
      */
-    public function getCustomersByLoyaltyPointsRangeDTO(int $minPoints, int $maxPoints): \Illuminate\Database\Eloquent\Collection
+    public function getCustomersByLoyaltyPointsRangeDTO(int $minPoints, int $maxPoints): Collection
     {
         return $this->repository->findByLoyaltyPointsRangeDTO($minPoints, $maxPoints);
     }
@@ -117,7 +122,7 @@ trait HasCustomerLoyaltyManagement
     /**
      * Get most loyal customers
      */
-    public function getMostLoyal(int $limit = 10): \Illuminate\Database\Eloquent\Collection
+    public function getMostLoyal(int $limit = 10): Collection
     {
         return $this->repository->getMostLoyal($limit);
     }
@@ -125,7 +130,7 @@ trait HasCustomerLoyaltyManagement
     /**
      * Get most loyal customers as DTOs
      */
-    public function getMostLoyalDTO(int $limit = 10): \Illuminate\Database\Eloquent\Collection
+    public function getMostLoyalDTO(int $limit = 10): Collection
     {
         return $this->repository->getMostLoyalDTO($limit);
     }
@@ -135,7 +140,7 @@ trait HasCustomerLoyaltyManagement
      */
     protected function validateLoyaltyPointsOperation(Customer $customer, int $points, string $operation): void
     {
-        $validator = \Illuminate\Support\Facades\Validator::make([], []);
+        $validator = Validator::make([], []);
 
         if ($points <= 0) {
             $validator->errors()->add('points', 'Points must be greater than zero.');
@@ -146,7 +151,7 @@ trait HasCustomerLoyaltyManagement
         }
 
         if ($validator->errors()->isNotEmpty()) {
-            throw new \Illuminate\Validation\ValidationException($validator);
+            throw new ValidationException($validator);
         }
     }
 
@@ -155,7 +160,7 @@ trait HasCustomerLoyaltyManagement
      */
     protected function fireLoyaltyPointsAddedEvent(Customer $customer, int $points, ?string $reason = null, int $newBalance = 0): void
     {
-        event(new \Fereydooni\Shopping\app\Events\Customer\LoyaltyPointsAdded($customer, $points, $reason, $newBalance));
+        event(new LoyaltyPointsAdded($customer, $points, $reason, $newBalance));
     }
 
     /**
@@ -163,7 +168,7 @@ trait HasCustomerLoyaltyManagement
      */
     protected function fireLoyaltyPointsDeductedEvent(Customer $customer, int $points, ?string $reason = null, int $newBalance = 0): void
     {
-        event(new \Fereydooni\Shopping\app\Events\Customer\LoyaltyPointsDeducted($customer, $points, $reason, $newBalance));
+        event(new LoyaltyPointsDeducted($customer, $points, $reason, $newBalance));
     }
 
     /**
@@ -172,6 +177,6 @@ trait HasCustomerLoyaltyManagement
     protected function fireLoyaltyPointsResetEvent(Customer $customer): void
     {
         // This could be a new event or reuse existing one
-        event(new \Fereydooni\Shopping\app\Events\Customer\LoyaltyPointsDeducted($customer, $customer->loyalty_points, 'Reset', 0));
+        event(new LoyaltyPointsDeducted($customer, $customer->loyalty_points, 'Reset', 0));
     }
 }

@@ -5,6 +5,7 @@ namespace Fereydooni\Shopping\app\Http\Requests;
 use Fereydooni\Shopping\app\DTOs\CategoryDTO;
 use Fereydooni\Shopping\app\Enums\CategoryStatus;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class UpdateCategoryRequest extends FormRequest
@@ -75,7 +76,7 @@ class UpdateCategoryRequest extends FormRequest
         // Generate slug if not provided
         if (! $this->has('slug') || empty($this->slug)) {
             $this->merge([
-                'slug' => \Illuminate\Support\Str::slug($this->name),
+                'slug' => Str::slug($this->name),
             ]);
         }
 

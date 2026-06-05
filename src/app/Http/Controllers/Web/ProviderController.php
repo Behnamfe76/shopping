@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ProviderController extends Controller
 {
@@ -240,7 +241,7 @@ class ProviderController extends Controller
     /**
      * Export providers to file
      */
-    public function export(Request $request): \Symfony\Component\HttpFoundation\BinaryFileResponse
+    public function export(Request $request): BinaryFileResponse
     {
         try {
             $format = $request->get('format', 'csv');

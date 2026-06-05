@@ -9,7 +9,7 @@ use App\Models\ProviderContract;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ProviderContract>
+ * @extends Factory<ProviderContract>
  */
 class ProviderContractFactory extends Factory
 {

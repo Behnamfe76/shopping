@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\database\seeders;
 
+use Faker\Factory;
 use Fereydooni\Shopping\app\Enums\Relationship;
 use Fereydooni\Shopping\app\Models\Employee;
 use Fereydooni\Shopping\app\Models\EmployeeEmergencyContact;
@@ -323,6 +324,6 @@ class EmployeeEmergencyContactSeeder extends Seeder
      */
     protected function getFaker()
     {
-        return \Faker\Factory::create();
+        return Factory::create();
     }
 }

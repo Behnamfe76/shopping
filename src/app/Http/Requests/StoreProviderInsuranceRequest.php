@@ -5,6 +5,7 @@ namespace Fereydooni\Shopping\app\Http\Requests;
 use Fereydooni\Shopping\app\Enums\InsuranceStatus;
 use Fereydooni\Shopping\app\Enums\InsuranceType;
 use Fereydooni\Shopping\app\Enums\VerificationStatus;
+use Fereydooni\Shopping\app\Models\ProviderInsurance;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -15,7 +16,7 @@ class StoreProviderInsuranceRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', \Fereydooni\Shopping\app\Models\ProviderInsurance::class);
+        return $this->user()->can('create', ProviderInsurance::class);
     }
 
     /**

@@ -5,6 +5,7 @@ namespace Fereydooni\Shopping\app\Services;
 use Fereydooni\Shopping\app\DTOs\DepartmentDTO;
 use Fereydooni\Shopping\app\Enums\DepartmentStatus;
 use Fereydooni\Shopping\app\Models\Department;
+use Fereydooni\Shopping\app\Models\Employee;
 use Fereydooni\Shopping\app\Repositories\Interfaces\DepartmentRepositoryInterface;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
 use Illuminate\Database\Eloquent\Collection;
@@ -246,7 +247,7 @@ class DepartmentService
 
         // Validate manager if provided
         if (isset($data['manager_id']) && $data['manager_id']) {
-            $manager = \Fereydooni\Shopping\app\Models\Employee::find($data['manager_id']);
+            $manager = Employee::find($data['manager_id']);
             if (! $manager) {
                 throw new \InvalidArgumentException('Manager not found');
             }

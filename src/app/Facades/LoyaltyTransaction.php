@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\app\Facades;
 
+use Fereydooni\Shopping\app\Services\LoyaltyTransactionService;
 use Illuminate\Support\Facades\Facade;
 
 /**
@@ -86,7 +87,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static array calculateInsights()
  * @method static array forecastTrends(string $period = 'monthly')
  *
- * @see \Fereydooni\Shopping\app\Services\LoyaltyTransactionService
+ * @see LoyaltyTransactionService
  */
 class LoyaltyTransaction extends Facade
 {

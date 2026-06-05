@@ -4,6 +4,8 @@ namespace App\Traits;
 
 use App\Enums\CertificationStatus;
 use App\Enums\CertificationVerificationStatus;
+use App\Events\ProviderCertification\ProviderCertificationRejected;
+use App\Events\ProviderCertification\ProviderCertificationVerified;
 use App\Models\ProviderCertification;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -39,7 +41,7 @@ trait HasProviderCertificationVerification
             DB::commit();
 
             // Fire verification event
-            event(new \App\Events\ProviderCertification\ProviderCertificationVerified($certification, $verifiedBy));
+            event(new ProviderCertificationVerified($certification, $verifiedBy));
 
             Log::info('Provider certification verified', [
                 'certification_id' => $certification->id,
@@ -82,7 +84,7 @@ trait HasProviderCertificationVerification
             DB::commit();
 
             // Fire rejection event
-            event(new \App\Events\ProviderCertification\ProviderCertificationRejected($certification, $rejectedBy, $reason));
+            event(new ProviderCertificationRejected($certification, $rejectedBy, $reason));
 
             Log::info('Provider certification rejected', [
                 'certification_id' => $certification->id,

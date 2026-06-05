@@ -2,6 +2,10 @@
 
 namespace App\Facades;
 
+use App\DTOs\ProviderPerformanceDTO;
+use App\Enums\PerformanceGrade;
+use App\Enums\PeriodType;
+use App\Repositories\Interfaces\ProviderPerformanceRepositoryInterface;
 use App\Services\ProviderPerformanceService;
 use Illuminate\Support\Facades\Facade;
 
@@ -140,7 +144,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static array getPerformanceReports(int $providerId, string $reportType)
  * @method static array getGlobalPerformanceReports(string $reportType)
  *
- * @see \App\Services\ProviderPerformanceService
+ * @see ProviderPerformanceService
  */
 class ProviderPerformance extends Facade
 {
@@ -157,7 +161,7 @@ class ProviderPerformance extends Facade
     /**
      * Get the service instance.
      *
-     * @return \App\Services\ProviderPerformanceService
+     * @return ProviderPerformanceService
      */
     public static function getFacadeRoot()
     {
@@ -167,7 +171,7 @@ class ProviderPerformance extends Facade
     /**
      * Get the service instance.
      *
-     * @return \App\Services\ProviderPerformanceService
+     * @return ProviderPerformanceService
      */
     public static function service()
     {
@@ -177,7 +181,7 @@ class ProviderPerformance extends Facade
     /**
      * Get the repository instance.
      *
-     * @return \App\Repositories\Interfaces\ProviderPerformanceRepositoryInterface
+     * @return ProviderPerformanceRepositoryInterface
      */
     public static function repository()
     {
@@ -197,16 +201,16 @@ class ProviderPerformance extends Facade
     /**
      * Get the DTO instance.
      *
-     * @return \App\DTOs\ProviderPerformanceDTO
+     * @return ProviderPerformanceDTO
      */
     public static function dto()
     {
-        return new \App\DTOs\ProviderPerformanceDTO(
+        return new ProviderPerformanceDTO(
             id: null,
             provider_id: 0,
             period_start: '',
             period_end: '',
-            period_type: \App\Enums\PeriodType::MONTHLY,
+            period_type: PeriodType::MONTHLY,
             total_orders: 0,
             total_revenue: 0.0,
             average_order_value: 0.0,
@@ -224,7 +228,7 @@ class ProviderPerformance extends Facade
             fill_rate: 0.0,
             accuracy_rate: 0.0,
             performance_score: 0.0,
-            performance_grade: \App\Enums\PerformanceGrade::C,
+            performance_grade: PerformanceGrade::C,
             is_verified: false,
             verified_by: null,
             verified_at: null,
@@ -244,8 +248,8 @@ class ProviderPerformance extends Facade
     public static function enums()
     {
         return [
-            'performance_grades' => \App\Enums\PerformanceGrade::cases(),
-            'period_types' => \App\Enums\PeriodType::cases(),
+            'performance_grades' => PerformanceGrade::cases(),
+            'period_types' => PeriodType::cases(),
         ];
     }
 
@@ -256,7 +260,7 @@ class ProviderPerformance extends Facade
      */
     public static function grades()
     {
-        return \App\Enums\PerformanceGrade::cases();
+        return PerformanceGrade::cases();
     }
 
     /**
@@ -266,7 +270,7 @@ class ProviderPerformance extends Facade
      */
     public static function periodTypes()
     {
-        return \App\Enums\PeriodType::cases();
+        return PeriodType::cases();
     }
 
     /**
@@ -277,7 +281,7 @@ class ProviderPerformance extends Facade
     public static function gradeDescriptions()
     {
         $grades = [];
-        foreach (\App\Enums\PerformanceGrade::cases() as $grade) {
+        foreach (PerformanceGrade::cases() as $grade) {
             $grades[$grade->value] = $grade->getDescription();
         }
 
@@ -292,7 +296,7 @@ class ProviderPerformance extends Facade
     public static function gradeColors()
     {
         $colors = [];
-        foreach (\App\Enums\PerformanceGrade::cases() as $grade) {
+        foreach (PerformanceGrade::cases() as $grade) {
             $colors[$grade->value] = $grade->getColor();
         }
 
@@ -307,7 +311,7 @@ class ProviderPerformance extends Facade
     public static function gradeScoreRanges()
     {
         $ranges = [];
-        foreach (\App\Enums\PerformanceGrade::cases() as $grade) {
+        foreach (PerformanceGrade::cases() as $grade) {
             $ranges[$grade->value] = $grade->getScoreRange();
         }
 
@@ -322,7 +326,7 @@ class ProviderPerformance extends Facade
     public static function periodTypeDescriptions()
     {
         $descriptions = [];
-        foreach (\App\Enums\PeriodType::cases() as $periodType) {
+        foreach (PeriodType::cases() as $periodType) {
             $descriptions[$periodType->value] = $periodType->getDescription();
         }
 
@@ -337,7 +341,7 @@ class ProviderPerformance extends Facade
     public static function periodTypeLabels()
     {
         $labels = [];
-        foreach (\App\Enums\PeriodType::cases() as $periodType) {
+        foreach (PeriodType::cases() as $periodType) {
             $labels[$periodType->value] = $periodType->getLabel();
         }
 
@@ -352,7 +356,7 @@ class ProviderPerformance extends Facade
     public static function periodTypeDays()
     {
         $days = [];
-        foreach (\App\Enums\PeriodType::cases() as $periodType) {
+        foreach (PeriodType::cases() as $periodType) {
             $days[$periodType->value] = $periodType->getDays();
         }
 
@@ -364,7 +368,7 @@ class ProviderPerformance extends Facade
      */
     public static function isScoreInGrade(float $score, string $grade): bool
     {
-        $gradeEnum = \App\Enums\PerformanceGrade::from($grade);
+        $gradeEnum = PerformanceGrade::from($grade);
         $range = $gradeEnum->getScoreRange();
 
         return $score >= $range[0] && $score <= $range[1];
@@ -397,7 +401,7 @@ class ProviderPerformance extends Facade
     public static function getGradeDescriptionForScore(float $score): string
     {
         $grade = static::getGradeForScore($score);
-        $gradeEnum = \App\Enums\PerformanceGrade::from($grade);
+        $gradeEnum = PerformanceGrade::from($grade);
 
         return $gradeEnum->getDescription();
     }
@@ -408,7 +412,7 @@ class ProviderPerformance extends Facade
     public static function getGradeColorForScore(float $score): string
     {
         $grade = static::getGradeForScore($score);
-        $gradeEnum = \App\Enums\PerformanceGrade::from($grade);
+        $gradeEnum = PerformanceGrade::from($grade);
 
         return $gradeEnum->getColor();
     }

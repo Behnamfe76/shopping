@@ -2,7 +2,10 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
+use Fereydooni\Shopping\app\Models\ProviderLocation;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\ValidationException;
 
 class SearchLocationRequest extends FormRequest
 {
@@ -11,7 +14,7 @@ class SearchLocationRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('search', \Fereydooni\Shopping\app\Models\ProviderLocation::class);
+        return $this->user()->can('search', ProviderLocation::class);
     }
 
     /**
@@ -204,8 +207,8 @@ class SearchLocationRequest extends FormRequest
     /**
      * Handle a failed validation attempt.
      */
-    protected function failedValidation(\Illuminate\Contracts\Validation\Validator $validator): void
+    protected function failedValidation(Validator $validator): void
     {
-        throw new \Illuminate\Validation\ValidationException($validator);
+        throw new ValidationException($validator);
     }
 }

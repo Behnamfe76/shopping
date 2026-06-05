@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
+use App\Models\User;
 use Fereydooni\Shopping\app\Enums\LoyaltyReferenceType;
 use Fereydooni\Shopping\app\Enums\LoyaltyTransactionStatus;
 use Fereydooni\Shopping\app\Enums\LoyaltyTransactionType;
@@ -56,12 +57,12 @@ class LoyaltyTransaction extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(\App\Models\User::class);
+        return $this->belongsTo(User::class);
     }
 
     public function reversedByUser(): BelongsTo
     {
-        return $this->belongsTo(\App\Models\User::class, 'reversed_by');
+        return $this->belongsTo(User::class, 'reversed_by');
     }
 
     public function reference(): MorphTo

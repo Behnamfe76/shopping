@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\app\Listeners;
 
+use App\Models\User;
 use Fereydooni\Shopping\app\Events\OrderStatusChanged;
 use Fereydooni\Shopping\app\Notifications\OrderStatusChangedNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -63,7 +64,7 @@ class SendStatusChangeNotification implements ShouldQueue
     private function notifyAdmins($order, $history): void
     {
         // Get admin users (this would depend on your user roles/permissions system)
-        $adminUsers = \App\Models\User::whereHas('roles', function ($query) {
+        $adminUsers = User::whereHas('roles', function ($query) {
             $query->where('name', 'admin');
         })->get();
 

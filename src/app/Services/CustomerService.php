@@ -6,6 +6,7 @@ use App\Models\User;
 use Fereydooni\Shopping\app\DTOs\CustomerDTO;
 use Fereydooni\Shopping\app\Enums\CustomerStatus;
 use Fereydooni\Shopping\app\Enums\CustomerType;
+use Fereydooni\Shopping\app\Events\Customer\CustomerDeleted;
 use Fereydooni\Shopping\app\Models\Customer;
 use Fereydooni\Shopping\app\Repositories\Interfaces\CustomerRepositoryInterface;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
@@ -289,7 +290,7 @@ class CustomerService
 
         if ($result) {
             // Fire customer deleted event
-            event(new \Fereydooni\Shopping\app\Events\Customer\CustomerDeleted($customer));
+            event(new CustomerDeleted($customer));
         }
 
         return $result;

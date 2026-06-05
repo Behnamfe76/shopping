@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
+use Fereydooni\Shopping\app\Models\ProductTag;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreProductTagRequest extends FormRequest
@@ -11,7 +12,7 @@ class StoreProductTagRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user()->can('create', \Fereydooni\Shopping\app\Models\ProductTag::class);
+        return $this->user()->can('create', ProductTag::class);
     }
 
     /**

@@ -9,6 +9,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\Response;
 
 class CustomerController extends Controller
 {
@@ -190,7 +191,7 @@ class CustomerController extends Controller
     /**
      * Handle customer data export.
      */
-    public function export(Request $request): \Symfony\Component\HttpFoundation\Response
+    public function export(Request $request): Response
     {
         $this->authorize('exportData');
 

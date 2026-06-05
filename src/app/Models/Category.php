@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
+use Fereydooni\Shopping\app\Enums\CategoryStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -27,7 +28,7 @@ class Category extends Model implements HasMedia
     ];
 
     protected $casts = [
-        'status' => \Fereydooni\Shopping\app\Enums\CategoryStatus::class,
+        'status' => CategoryStatus::class,
         'is_default' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',

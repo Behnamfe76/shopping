@@ -4,6 +4,7 @@ namespace Fereydooni\Shopping\app\Facades;
 
 use Fereydooni\Shopping\app\DTOs\OrderItemDTO;
 use Fereydooni\Shopping\app\Models\OrderItem as OrderItemModel;
+use Fereydooni\Shopping\app\Services\OrderItemService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -95,7 +96,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static Collection getUnshippedItems()
  * @method static Collection getUnshippedItemsDTO()
  *
- * @see \Fereydooni\Shopping\app\Services\OrderItemService
+ * @see OrderItemService
  */
 class OrderItem extends Facade
 {

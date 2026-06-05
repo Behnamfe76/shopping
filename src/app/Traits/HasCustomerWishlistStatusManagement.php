@@ -3,6 +3,12 @@
 namespace Fereydooni\Shopping\app\Traits;
 
 use Fereydooni\Shopping\app\Enums\WishlistPriority;
+use Fereydooni\Shopping\app\Events\CustomerWishlist\WishlistMadePrivate;
+use Fereydooni\Shopping\app\Events\CustomerWishlist\WishlistMadePublic;
+use Fereydooni\Shopping\app\Events\CustomerWishlist\WishlistMarkedAsNotified;
+use Fereydooni\Shopping\app\Events\CustomerWishlist\WishlistPriceDropDetected;
+use Fereydooni\Shopping\app\Events\CustomerWishlist\WishlistPriceUpdated;
+use Fereydooni\Shopping\app\Events\CustomerWishlist\WishlistPriorityChanged;
 use Fereydooni\Shopping\app\Models\CustomerWishlist;
 use Illuminate\Support\Facades\Log;
 
@@ -18,7 +24,7 @@ trait HasCustomerWishlistStatusManagement
 
             if ($result) {
                 // Trigger event for wishlist made public
-                event(new \Fereydooni\Shopping\app\Events\CustomerWishlist\WishlistMadePublic($wishlist));
+                event(new WishlistMadePublic($wishlist));
             }
 
             return $result;
@@ -42,7 +48,7 @@ trait HasCustomerWishlistStatusManagement
 
             if ($result) {
                 // Trigger event for wishlist made private
-                event(new \Fereydooni\Shopping\app\Events\CustomerWishlist\WishlistMadePrivate($wishlist));
+                event(new WishlistMadePrivate($wishlist));
             }
 
             return $result;
@@ -67,7 +73,7 @@ trait HasCustomerWishlistStatusManagement
 
             if ($result && $oldPriority !== $priority) {
                 // Trigger event for priority change
-                event(new \Fereydooni\Shopping\app\Events\CustomerWishlist\WishlistPriorityChanged($wishlist, $oldPriority, $priority));
+                event(new WishlistPriorityChanged($wishlist, $oldPriority, $priority));
             }
 
             return $result;
@@ -92,7 +98,7 @@ trait HasCustomerWishlistStatusManagement
 
             if ($result) {
                 // Trigger event for wishlist marked as notified
-                event(new \Fereydooni\Shopping\app\Events\CustomerWishlist\WishlistMarkedAsNotified($wishlist));
+                event(new WishlistMarkedAsNotified($wishlist));
             }
 
             return $result;
@@ -134,11 +140,11 @@ trait HasCustomerWishlistStatusManagement
 
             if ($result) {
                 // Trigger event for price update
-                event(new \Fereydooni\Shopping\app\Events\CustomerWishlist\WishlistPriceUpdated($wishlist, $oldPrice, $currentPrice));
+                event(new WishlistPriceUpdated($wishlist, $oldPrice, $currentPrice));
 
                 // Check for price drop
                 if ($this->checkPriceDrop($wishlist)) {
-                    event(new \Fereydooni\Shopping\app\Events\CustomerWishlist\WishlistPriceDropDetected($wishlist));
+                    event(new WishlistPriceDropDetected($wishlist));
                 }
             }
 
@@ -164,7 +170,7 @@ trait HasCustomerWishlistStatusManagement
 
             if ($hasPriceDrop && $wishlist->price_drop_notification && ! $wishlist->is_notified) {
                 // Trigger price drop event
-                event(new \Fereydooni\Shopping\app\Events\CustomerWishlist\WishlistPriceDropDetected($wishlist));
+                event(new WishlistPriceDropDetected($wishlist));
             }
 
             return $hasPriceDrop;
@@ -283,7 +289,7 @@ trait HasCustomerWishlistStatusManagement
 
             if ($result) {
                 // Trigger event for notification settings changed
-                event(new \Fereydooni\Shopping\app\Events\CustomerWishlist\WishlistPriceUpdated($wishlist, null, null));
+                event(new WishlistPriceUpdated($wishlist, null, null));
             }
 
             return $result;

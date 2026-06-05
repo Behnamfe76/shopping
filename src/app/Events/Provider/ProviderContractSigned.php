@@ -3,6 +3,7 @@
 namespace Fereydooni\Shopping\app\Events\Provider;
 
 use Fereydooni\Shopping\app\Models\ProviderContract;
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Auth\User;
@@ -34,7 +35,7 @@ class ProviderContractSigned
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return \Illuminate\Broadcasting\Channel|array
+     * @return Channel|array
      */
     public function broadcastOn()
     {

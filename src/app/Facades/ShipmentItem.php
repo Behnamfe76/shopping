@@ -4,6 +4,7 @@ namespace Fereydooni\Shopping\app\Facades;
 
 use Fereydooni\Shopping\app\DTOs\ShipmentItemDTO;
 use Fereydooni\Shopping\app\Models\ShipmentItem as ShipmentItemModel;
+use Fereydooni\Shopping\app\Services\ShipmentItemService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -72,7 +73,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static bool bulkDeleteShipmentItems(array $ids)
  * @method static array getShipmentItemsAnalytics(int $shipmentId)
  *
- * @see \Fereydooni\Shopping\app\Services\ShipmentItemService
+ * @see ShipmentItemService
  */
 class ShipmentItem extends Facade
 {

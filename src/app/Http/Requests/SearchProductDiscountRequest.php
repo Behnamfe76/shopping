@@ -2,13 +2,14 @@
 
 namespace Fereydooni\Shopping\app\Http\Requests;
 
+use Fereydooni\Shopping\app\Models\ProductDiscount;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SearchProductDiscountRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('search', \Fereydooni\Shopping\app\Models\ProductDiscount::class);
+        return $this->user()->can('search', ProductDiscount::class);
     }
 
     public function rules(): array

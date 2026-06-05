@@ -3,7 +3,12 @@
 namespace Fereydooni\Shopping\app\Services;
 
 use Fereydooni\Shopping\app\DTOs\CustomerWishlistDTO;
+use Fereydooni\Shopping\app\Events\CustomerWishlist\CustomerWishlistDeleted;
+use Fereydooni\Shopping\app\Events\CustomerWishlist\CustomerWishlistUpdated;
+use Fereydooni\Shopping\app\Events\CustomerWishlist\ProductAddedToWishlist;
+use Fereydooni\Shopping\app\Events\CustomerWishlist\ProductRemovedFromWishlist;
 use Fereydooni\Shopping\app\Models\CustomerWishlist;
+use Fereydooni\Shopping\app\Models\Product;
 use Fereydooni\Shopping\app\Repositories\Interfaces\CustomerWishlistRepositoryInterface;
 use Fereydooni\Shopping\app\Traits\HasCrudOperations;
 use Fereydooni\Shopping\app\Traits\HasCustomerWishlistOperations;
@@ -38,7 +43,7 @@ class CustomerWishlistService
         try {
             // Get current product price if not provided
             if (! isset($data['price_when_added'])) {
-                $product = app(\Fereydooni\Shopping\app\Models\Product::class)->find($productId);
+                $product = app(Product::class)->find($productId);
                 if ($product && $product->price) {
                     $data['price_when_added'] = $product->price;
                     $data['current_price'] = $product->price;
@@ -49,7 +54,7 @@ class CustomerWishlistService
 
             if ($wishlist) {
                 // Trigger event for product added to wishlist
-                event(new \Fereydooni\Shopping\app\Events\CustomerWishlist\ProductAddedToWishlist($wishlist));
+                event(new ProductAddedToWishlist($wishlist));
             }
 
             return $wishlist;
@@ -77,7 +82,7 @@ class CustomerWishlistService
 
                 if ($result) {
                     // Trigger event for product removed from wishlist
-                    event(new \Fereydooni\Shopping\app\Events\CustomerWishlist\ProductRemovedFromWishlist($wishlist));
+                    event(new ProductRemovedFromWishlist($wishlist));
                 }
 
                 return $result;
@@ -116,7 +121,7 @@ class CustomerWishlistService
 
             if ($updatedWishlist) {
                 // Trigger event for wishlist updated
-                event(new \Fereydooni\Shopping\app\Events\CustomerWishlist\CustomerWishlistUpdated($wishlist));
+                event(new CustomerWishlistUpdated($wishlist));
             }
 
             return $updatedWishlist;
@@ -452,7 +457,7 @@ class CustomerWishlistService
 
             if ($result) {
                 // Trigger event for wishlist deleted
-                event(new \Fereydooni\Shopping\app\Events\CustomerWishlist\CustomerWishlistDeleted($wishlist));
+                event(new CustomerWishlistDeleted($wishlist));
             }
 
             return $result;

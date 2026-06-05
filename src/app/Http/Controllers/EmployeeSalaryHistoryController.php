@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class EmployeeSalaryHistoryController extends Controller
 {
@@ -270,7 +271,7 @@ class EmployeeSalaryHistoryController extends Controller
     /**
      * Export salary history data
      */
-    public function export(Request $request): \Symfony\Component\HttpFoundation\BinaryFileResponse
+    public function export(Request $request): BinaryFileResponse
     {
         Gate::authorize('employee-salary-history.export');
 

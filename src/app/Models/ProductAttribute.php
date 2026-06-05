@@ -2,6 +2,7 @@
 
 namespace Fereydooni\Shopping\app\Models;
 
+use App\Models\User;
 use Fereydooni\Shopping\app\Enums\ProductAttributeInputType;
 use Fereydooni\Shopping\app\Enums\ProductAttributeType;
 use Illuminate\Database\Eloquent\Model;
@@ -54,12 +55,12 @@ class ProductAttribute extends Model
 
     public function creator(): BelongsTo
     {
-        return $this->belongsTo(\App\Models\User::class, 'created_by');
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     public function updater(): BelongsTo
     {
-        return $this->belongsTo(\App\Models\User::class, 'updated_by');
+        return $this->belongsTo(User::class, 'updated_by');
     }
 
     public function scopeActive($query)

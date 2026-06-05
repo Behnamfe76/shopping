@@ -3,8 +3,13 @@
 namespace Fereydooni\Shopping\app\Traits;
 
 use Fereydooni\Shopping\app\Enums\CustomerStatus;
+use Fereydooni\Shopping\app\Events\Customer\CustomerActivated;
+use Fereydooni\Shopping\app\Events\Customer\CustomerDeactivated;
+use Fereydooni\Shopping\app\Events\Customer\CustomerSuspended;
 use Fereydooni\Shopping\app\Models\Customer;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 trait HasCustomerStatusManagement
 {
@@ -101,7 +106,7 @@ trait HasCustomerStatusManagement
      */
     protected function validateCustomerStatusChange(Customer $customer, string $newStatus): void
     {
-        $validator = \Illuminate\Support\Facades\Validator::make([], []);
+        $validator = Validator::make([], []);
 
         // Check if status change is valid
         $validStatuses = [
@@ -131,7 +136,7 @@ trait HasCustomerStatusManagement
         }
 
         if ($validator->errors()->isNotEmpty()) {
-            throw new \Illuminate\Validation\ValidationException($validator);
+            throw new ValidationException($validator);
         }
     }
 
@@ -143,14 +148,14 @@ trait HasCustomerStatusManagement
         switch ($newStatus) {
             case CustomerStatus::ACTIVE:
                 if ($customer->status === CustomerStatus::SUSPENDED) {
-                    event(new \Fereydooni\Shopping\app\Events\Customer\CustomerActivated($customer));
+                    event(new CustomerActivated($customer));
                 }
                 break;
             case CustomerStatus::INACTIVE:
-                event(new \Fereydooni\Shopping\app\Events\Customer\CustomerDeactivated($customer));
+                event(new CustomerDeactivated($customer));
                 break;
             case CustomerStatus::SUSPENDED:
-                event(new \Fereydooni\Shopping\app\Events\Customer\CustomerSuspended($customer, $reason));
+                event(new CustomerSuspended($customer, $reason));
                 break;
         }
     }

@@ -3,6 +3,7 @@
 namespace Fereydooni\Shopping\app\Traits;
 
 use Fereydooni\Shopping\app\Models\ProviderCommunication;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Str;
 
 trait HasProviderCommunicationThreadManagement
@@ -36,7 +37,7 @@ trait HasProviderCommunicationThreadManagement
     /**
      * Get thread communications
      */
-    public function getThreadCommunications(string $threadId, int $limit = 50): \Illuminate\Database\Eloquent\Collection
+    public function getThreadCommunications(string $threadId, int $limit = 50): Collection
     {
         return ProviderCommunication::where('thread_id', $threadId)
             ->orderBy('created_at', 'asc')
@@ -137,7 +138,7 @@ trait HasProviderCommunicationThreadManagement
     /**
      * Get thread participants
      */
-    public function getThreadParticipants(string $threadId): \Illuminate\Database\Eloquent\Collection
+    public function getThreadParticipants(string $threadId): Collection
     {
         return ProviderCommunication::where('thread_id', $threadId)
             ->with('user:id,name,email')
